@@ -1,8 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    compileSdk 25
 
     defaultConfig {
         applicationId "com.ringdroid"
@@ -10,9 +9,14 @@ android {
         // WARNING: if you increase targetSdkVersion you will need to take care of requesting
         // permissions at run time, as described here:
         // https://developer.android.com/training/permissions/index.html
+        //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 22
         versionCode 20704
         versionName "2.7.4"
+
+        lint {
+            ignore 'ProtectedPermissions', 'GradleOverrides', 'OldTargetApi'
+        }
     }
 
     buildTypes {

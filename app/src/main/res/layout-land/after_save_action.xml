@@ -23,35 +23,38 @@
     android:orientation="vertical">
 
     <TextView
-       android:text="@string/what_to_do_with_ringtone"
-       android:textColor="#ffffffff"
-       android:textSize="14sp"
-       android:layout_width="wrap_content" 
-       android:layout_height="wrap_content"
-       android:layout_margin="10sp" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:text="@string/what_to_do_with_ringtone"
+        android:textColor="#ffffffff"
+        android:textSize="14sp" />
 
     <LinearLayout
-       android:layout_width="fill_parent"
-       android:layout_height="wrap_content"
-       android:orientation="horizontal"
-       android:layout_margin="10sp">
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:orientation="horizontal">
 
-      <Button android:id="@+id/button_make_default"
-         android:text="@string/make_default_ringtone_button"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/button_make_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/make_default_ringtone_button" />
 
-      <Button android:id="@+id/button_choose_contact"
-         android:text="@string/choose_contact_ringtone_button"
-         android:layout_width="wrap_content" 
-         android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/button_choose_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_contact_ringtone_button" />
 
-      <Button android:id="@+id/button_do_nothing"
-         android:text="@string/do_nothing_with_ringtone_button"
-         android:layout_marginLeft="20sp"
-         android:layout_weight="1"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/button_do_nothing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20sp"
+            android:layout_weight="1"
+            android:text="@string/do_nothing_with_ringtone_button" />
 
     </LinearLayout>
 

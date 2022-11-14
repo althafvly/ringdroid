@@ -19,12 +19,11 @@ package com.ringdroid;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Message;
-import android.view.View;
 import android.widget.Button;
 
 public class AfterSaveActionDialog extends Dialog {
 
-    private Message mResponse;
+    private final Message mResponse;
 
     public AfterSaveActionDialog(Context context, Message response) {
         super(context);
@@ -34,24 +33,12 @@ public class AfterSaveActionDialog extends Dialog {
 
         setTitle(R.string.alert_title_success);
 
-        ((Button)findViewById(R.id.button_make_default))
-            .setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View view) {
-                        closeAndSendResult(R.id.button_make_default);
-                    }
-                });
-        ((Button)findViewById(R.id.button_choose_contact))
-            .setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View view) {
-                        closeAndSendResult(R.id.button_choose_contact);
-                    }
-                });
-        ((Button)findViewById(R.id.button_do_nothing))
-            .setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View view) {
-                        closeAndSendResult(R.id.button_do_nothing);
-                    }
-                });
+        ((Button) findViewById(R.id.button_make_default))
+                .setOnClickListener(view -> closeAndSendResult(R.id.button_make_default));
+        ((Button) findViewById(R.id.button_choose_contact))
+                .setOnClickListener(view -> closeAndSendResult(R.id.button_choose_contact));
+        ((Button) findViewById(R.id.button_do_nothing))
+                .setOnClickListener(view -> closeAndSendResult(R.id.button_do_nothing));
 
         mResponse = response;
     }

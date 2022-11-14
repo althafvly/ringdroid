@@ -20,44 +20,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300sp"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dip"
     android:layout_marginRight="10dip"
+    android:layout_marginBottom="10dip"
     android:orientation="vertical">
 
     <TextView
-       android:text="@string/what_to_do_with_ringtone"
-       android:textColor="#ffffffff"
-       android:textSize="14sp"
-       android:layout_marginLeft="15sp"
-       android:layout_marginTop="15sp"
-       android:layout_marginRight="15sp"
-       android:layout_marginBottom="15sp"
-       android:layout_width="fill_parent" 
-       android:layout_height="wrap_content" />
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15sp"
+        android:layout_marginTop="15sp"
+        android:layout_marginRight="15sp"
+        android:layout_marginBottom="15sp"
+        android:text="@string/what_to_do_with_ringtone"
+        android:textColor="#ffffffff"
+        android:textSize="14sp" />
 
-      <Button android:id="@+id/button_make_default"
-         android:text="@string/make_default_ringtone_button"
-         android:layout_width="fill_parent" 
-         android:layout_height="wrap_content"
-         android:layout_marginLeft="15sp"
-	 android:layout_marginTop="10sp"
-	 android:layout_marginRight="15sp" />
+    <Button
+        android:id="@+id/button_make_default"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15sp"
+        android:layout_marginTop="10sp"
+        android:layout_marginRight="15sp"
+        android:text="@string/make_default_ringtone_button" />
 
-      <Button android:id="@+id/button_choose_contact"
-         android:text="@string/choose_contact_ringtone_button"
-         android:layout_width="fill_parent" 
-         android:layout_height="wrap_content"
-         android:layout_marginLeft="15sp"
-	 android:layout_marginTop="10sp"
-	 android:layout_marginRight="15sp" />
+    <Button
+        android:id="@+id/button_choose_contact"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15sp"
+        android:layout_marginTop="10sp"
+        android:layout_marginRight="15sp"
+        android:text="@string/choose_contact_ringtone_button" />
 
-      <Button android:id="@+id/button_do_nothing"
-         android:text="@string/do_nothing_with_ringtone_button"
-         android:layout_width="fill_parent" 
-         android:layout_height="wrap_content"
-         android:layout_marginLeft="15sp"
-	 android:layout_marginTop="20sp"
-	 android:layout_marginRight="15sp"
-         android:layout_marginBottom="15sp" />
+    <Button
+        android:id="@+id/button_do_nothing"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15sp"
+        android:layout_marginTop="20sp"
+        android:layout_marginRight="15sp"
+        android:layout_marginBottom="15sp"
+        android:text="@string/do_nothing_with_ringtone_button" />
 
 </LinearLayout>

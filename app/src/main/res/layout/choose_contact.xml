@@ -22,34 +22,36 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-  <LinearLayout
-    style="@style/ChooseContactBackground"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical">
+    <LinearLayout
+        style="@style/ChooseContactBackground"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
 
-    <ImageView
-     android:src="@drawable/search"
-     android:layout_marginLeft="8dip"
-     android:layout_width="wrap_content"
-     android:layout_height="wrap_content" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dip"
+            android:src="@drawable/search" />
 
-    <EditText android:id="@+id/search_filter"
-     android:textSize="18sp"
-     android:inputType="text"
-     android:layout_margin="8dip"
-     android:layout_width="0px"
-     android:layout_height="wrap_content"
-     android:layout_weight="1">
-    </EditText>
+        <EditText
+            android:id="@+id/search_filter"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dip"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:textSize="18sp"></EditText>
 
-  </LinearLayout>
+    </LinearLayout>
 
-  <ListView android:id="@+id/android:list"
-     android:layout_width="fill_parent"
-     android:layout_height="0px"
-     android:layout_weight="1">
-     <requestFocus />
-  </ListView>
+    <ListView
+        android:id="@+id/android:list"
+        android:layout_width="fill_parent"
+        android:layout_height="0px"
+        android:layout_weight="1">
+
+        <requestFocus />
+    </ListView>
 
 </LinearLayout>

@@ -110,8 +110,7 @@
     <string name="delete_audio">Effacer audio</string>
 
     <string name="confirm_delete_ringdroid">Etes vous sûr?</string>
-    <string name="confirm_delete_non_ringdroid"
-    >Etes vous sûr? Ce fichier n\'a pas été créé en utilisant Ringdroid!</string>
+    <string name="confirm_delete_non_ringdroid">Etes vous sûr? Ce fichier n\'a pas été créé en utilisant Ringdroid!</string>
 
     <string name="delete_ok_button">Effacer</string>
     <string name="delete_cancel_button">Annuler</string>

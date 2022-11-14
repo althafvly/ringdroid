@@ -110,8 +110,7 @@
     <string name="delete_audio">オーディオファイルを削除する</string>
 
     <string name="confirm_delete_ringdroid">本当に削除しますか？</string>
-    <string name="confirm_delete_non_ringdroid"
-    >このファイルはRingdroid以外のアプリケーションを使用して作成されたものです。本当に削除しますか？</string>
+    <string name="confirm_delete_non_ringdroid">このファイルはRingdroid以外のアプリケーションを使用して作成されたものです。本当に削除しますか？</string>
 
     <string name="delete_ok_button">削除</string>
     <string name="delete_cancel_button">キャンセル</string>
