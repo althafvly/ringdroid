@@ -1,5 +1,8 @@
-local.properties
 .gradle
 .idea
 build
+debug
 gradle
+release
+local.properties
+gradlew*
