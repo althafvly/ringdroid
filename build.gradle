@@ -17,16 +17,13 @@ buildscript {
 apply plugin: 'com.android.application'
 
 android {
-    compileSdk 25
+    compileSdk 26
 
     defaultConfig {
         applicationId "com.ringdroid"
-        minSdkVersion 16
-        // WARNING: if you increase targetSdkVersion you will need to take care of requesting
-        // permissions at run time, as described here:
-        // https://developer.android.com/training/permissions/index.html
-        //noinspection ExpiredTargetSdkVersion
-        targetSdkVersion 22
+        minSdkVersion 26
+        //noinspection ExpiredTargetSdkVersion,EditedTargetSdkVersion
+        targetSdkVersion 26
         versionCode 20704
         versionName "2.7.4"
 

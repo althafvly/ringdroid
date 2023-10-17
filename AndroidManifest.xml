@@ -23,10 +23,6 @@
     android:versionCode="20704"
     android:versionName="2.7.4">
 
-    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="25" />
-
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
@@ -44,16 +40,19 @@
 
         <!-- Main activity that's launched when the user opens Ringdroid. -->
         <activity
+            android:name=".PermissionSplashActivity"
+            android:label="@string/main_activity_label"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".RingdroidSelectActivity"
             android:exported="true"
             android:label="@string/main_activity_label">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
 
