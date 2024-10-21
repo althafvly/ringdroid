@@ -1,18 +1,19 @@
 apply plugin: 'com.android.application'
 
 android {
+    //noinspection GradleDependency
     compileSdk 26
 
     defaultConfig {
         applicationId "com.ringdroid"
-        minSdkVersion 26
-        //noinspection ExpiredTargetSdkVersion,EditedTargetSdkVersion
-        targetSdkVersion 26
+        minSdk 26
+        //noinspection ExpiredTargetSdkVersion
+        targetSdk 26
         versionCode 20704
         versionName "2.7.4"
 
-        lint {
-            ignore 'ProtectedPermissions', 'GradleOverrides', 'OldTargetApi'
+        buildFeatures {
+            buildConfig = true
         }
     }
 
