@@ -1,8 +1,5 @@
 .gradle
-.idea
-build
-debug
-gradle
-release
+/.idea
+.DS_Store
+/build
 local.properties
-gradlew*
