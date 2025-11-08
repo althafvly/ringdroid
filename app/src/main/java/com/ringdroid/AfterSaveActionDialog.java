@@ -19,7 +19,6 @@ package com.ringdroid;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Message;
-import android.widget.Button;
 
 public class AfterSaveActionDialog extends Dialog {
 
@@ -33,12 +32,10 @@ public class AfterSaveActionDialog extends Dialog {
 
         setTitle(R.string.alert_title_success);
 
-        ((Button) findViewById(R.id.button_make_default))
-                .setOnClickListener(view -> closeAndSendResult(R.id.button_make_default));
-        ((Button) findViewById(R.id.button_choose_contact))
+        findViewById(R.id.button_make_default).setOnClickListener(view -> closeAndSendResult(R.id.button_make_default));
+        findViewById(R.id.button_choose_contact)
                 .setOnClickListener(view -> closeAndSendResult(R.id.button_choose_contact));
-        ((Button) findViewById(R.id.button_do_nothing))
-                .setOnClickListener(view -> closeAndSendResult(R.id.button_do_nothing));
+        findViewById(R.id.button_do_nothing).setOnClickListener(view -> closeAndSendResult(R.id.button_do_nothing));
 
         mResponse = response;
     }

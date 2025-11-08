@@ -35,12 +35,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * After a ringtone has been saved, this activity lets you pick a contact
- * and assign the ringtone to that contact.
+ * After a ringtone has been saved, this activity lets you pick a contact and
+ * assign the ringtone to that contact.
  */
-public class ChooseContactActivity
-        extends ListActivity
-        implements TextWatcher, LoaderManager.LoaderCallbacks<Cursor> {
+public class ChooseContactActivity extends ListActivity implements TextWatcher, LoaderManager.LoaderCallbacks<Cursor> {
     private TextView mFilter;
     private SimpleCursorAdapter mAdapter;
     private Uri mRingtoneUri;
@@ -48,9 +46,7 @@ public class ChooseContactActivity
     public ChooseContactActivity() {
     }
 
-    /**
-     * Called when the activity is first created.
-     */
+    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -64,57 +60,43 @@ public class ChooseContactActivity
         setContentView(R.layout.choose_contact);
 
         try {
-            mAdapter = new SimpleCursorAdapter(
-                    this,
+            mAdapter = new SimpleCursorAdapter(this,
                     // Use a template that displays a text view
                     R.layout.contact_row,
                     // Set an empty cursor right now. Will be set in onLoadFinished()
                     null,
                     // Map from database columns...
-                    new String[]{
-                            Contacts.CUSTOM_RINGTONE,
-                            Contacts.STARRED,
-                            Contacts.DISPLAY_NAME},
+                    new String[]{Contacts.CUSTOM_RINGTONE, Contacts.STARRED, Contacts.DISPLAY_NAME},
                     // To widget ids in the row layout...
-                    new int[]{
-                            R.id.row_ringtone,
-                            R.id.row_starred,
-                            R.id.row_display_name},
-                    0);
+                    new int[]{R.id.row_ringtone, R.id.row_starred, R.id.row_display_name}, 0);
 
-            mAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-                public boolean setViewValue(View view,
-                                            Cursor cursor,
-                                            int columnIndex) {
-                    String name = cursor.getColumnName(columnIndex);
-                    String value = cursor.getString(columnIndex);
-                    if (name.equals(Contacts.CUSTOM_RINGTONE)) {
-                        if (value != null && value.length() > 0) {
-                            view.setVisibility(View.VISIBLE);
-                        } else {
-                            view.setVisibility(View.INVISIBLE);
-                        }
-                        return true;
+            mAdapter.setViewBinder((view, cursor, columnIndex) -> {
+                String name = cursor.getColumnName(columnIndex);
+                String value = cursor.getString(columnIndex);
+                if (name.equals(Contacts.CUSTOM_RINGTONE)) {
+                    if (value != null && !value.isEmpty()) {
+                        view.setVisibility(View.VISIBLE);
+                    } else {
+                        view.setVisibility(View.INVISIBLE);
                     }
-                    if (name.equals(Contacts.STARRED)) {
-                        if (value != null && value.equals("1")) {
-                            view.setVisibility(View.VISIBLE);
-                        } else {
-                            view.setVisibility(View.INVISIBLE);
-                        }
-                        return true;
-                    }
-
-                    return false;
+                    return true;
                 }
+                if (name.equals(Contacts.STARRED)) {
+                    if (value != null && value.equals("1")) {
+                        view.setVisibility(View.VISIBLE);
+                    } else {
+                        view.setVisibility(View.INVISIBLE);
+                    }
+                    return true;
+                }
+
+                return false;
             });
 
             setListAdapter(mAdapter);
 
             // On click, assign ringtone to contact
-            getListView().setOnItemClickListener(
-                    (parent, view, position, id) -> assignRingtoneToContact()
-            );
+            getListView().setOnItemClickListener((parent, view, position, id) -> assignRingtoneToContact());
 
             getLoaderManager().initLoader(0, null, this);
 
@@ -123,7 +105,7 @@ public class ChooseContactActivity
             Log.e("Ringdroid", e.toString());
         }
 
-        mFilter = (TextView) findViewById(R.id.search_filter);
+        mFilter = findViewById(R.id.search_filter);
         if (mFilter != null) {
             mFilter.addTextChangedListener(this);
         }
@@ -143,13 +125,9 @@ public class ChooseContactActivity
         values.put(Contacts.CUSTOM_RINGTONE, mRingtoneUri.toString());
         getContentResolver().update(uri, values, null, null);
 
-        String message =
-                getResources().getText(R.string.success_contact_ringtone) +
-                        " " +
-                        displayName;
+        String message = getResources().getText(R.string.success_contact_ringtone) + " " + displayName;
 
-        Toast.makeText(this, message, Toast.LENGTH_SHORT)
-                .show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         finish();
     }
 
@@ -163,8 +141,8 @@ public class ChooseContactActivity
 
     /* Implementation of TextWatcher.afterTextChanged */
     public void afterTextChanged(Editable s) {
-        //String filterStr = mFilter.getText().toString();
-        //mAdapter.changeCursor(createCursor(filterStr));
+        // String filterStr = mFilter.getText().toString();
+        // mAdapter.changeCursor(createCursor(filterStr));
         Bundle args = new Bundle();
         args.putString("filter", mFilter.getText().toString());
         getLoaderManager().restartLoader(0, args, this);
@@ -175,26 +153,14 @@ public class ChooseContactActivity
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String selection = null;
         String filter = args != null ? args.getString("filter") : null;
-        if (filter != null && filter.length() > 0) {
+        if (filter != null && !filter.isEmpty()) {
             selection = "(DISPLAY_NAME LIKE \"%" + filter + "%\")";
         }
-        return new CursorLoader(
-                this,
-                Contacts.CONTENT_URI,
-                new String[]{
-                        Contacts._ID,
-                        Contacts.CUSTOM_RINGTONE,
-                        Contacts.DISPLAY_NAME,
-                        Contacts.LAST_TIME_CONTACTED,
-                        Contacts.STARRED,
-                        Contacts.TIMES_CONTACTED},
-                selection,
-                null,
-                "STARRED DESC, " +
-                        "TIMES_CONTACTED DESC, " +
-                        "LAST_TIME_CONTACTED DESC, " +
-                        "DISPLAY_NAME ASC"
-        );
+        return new CursorLoader(this, Contacts.CONTENT_URI,
+                new String[]{Contacts._ID, Contacts.CUSTOM_RINGTONE, Contacts.DISPLAY_NAME,
+                        Contacts.LAST_TIME_CONTACTED, Contacts.STARRED, Contacts.TIMES_CONTACTED},
+                selection, null,
+                "STARRED DESC, " + "TIMES_CONTACTED DESC, " + "LAST_TIME_CONTACTED DESC, " + "DISPLAY_NAME ASC");
     }
 
     /* Implementation of LoaderCallbacks.onLoadFinished */
@@ -208,7 +174,7 @@ public class ChooseContactActivity
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         // This is called when the last Cursor provided to onLoadFinished()
-        // above is about to be closed.  We need to make sure we are no
+        // above is about to be closed. We need to make sure we are no
         // longer using it.
         mAdapter.swapCursor(null);
     }

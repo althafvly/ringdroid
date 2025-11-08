@@ -16,12 +16,12 @@
 
 package com.ringdroid.soundfile;
 
-public class Atom {  // note: latest versions of spec simply call it 'box' instead of 'atom'.
+public class Atom { // note: latest versions of spec simply call it 'box' instead of 'atom'.
     private final int mType;
-    private final byte mVersion;  // if negative, then the atom does not contain version and flags data.
+    private final byte mVersion; // if negative, then the atom does not contain version and flags data.
     private final int mFlags;
-    private int mSize;  // includes atom header (8 bytes)
-    private byte[] mData;  // an atom can either contain data or children, but not both.
+    private int mSize; // includes atom header (8 bytes)
+    private byte[] mData; // an atom can either contain data or children, but not both.
     private Atom[] mChildren;
 
     // create an empty atom of the given type.
@@ -46,7 +46,7 @@ public class Atom {  // note: latest versions of spec simply call it 'box' inste
 
     // set the size field of the atom based on its content.
     private void setSize() {
-        int size = 8;  // type + size
+        int size = 8; // type + size
         if (mVersion >= 0) {
             size += 4; // version + flags
         }
@@ -132,7 +132,8 @@ public class Atom {  // note: latest versions of spec simply call it 'box' inste
         return null;
     }
 
-    // return a byte array containing the full content of the atom (including header)
+    // return a byte array containing the full content of the atom (including
+    // header)
     public byte[] getBytes() {
         byte[] atom_bytes = new byte[mSize];
         int offset = 0;

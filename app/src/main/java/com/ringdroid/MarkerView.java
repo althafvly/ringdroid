@@ -26,13 +26,13 @@ import android.widget.ImageView;
 
 /**
  * Represents a draggable start or end marker.
+ *
  * <p>
- * Most events are passed back to the client class using a
- * listener interface.
+ * Most events are passed back to the client class using a listener interface.
+ *
  * <p>
- * This class directly keeps track of its own velocity, though,
- * accelerating as the user holds down the left or right arrows
- * while this control is focused.
+ * This class directly keeps track of its own velocity, though, accelerating as
+ * the user holds down the left or right arrows while this control is focused.
  */
 public class MarkerView extends ImageView {
 
@@ -57,18 +57,18 @@ public class MarkerView extends ImageView {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_DOWN :
                 requestFocus();
                 // We use raw x because this window itself is going to
                 // move, which will screw up the "local" coordinates
                 mListener.markerTouchStart(this, event.getRawX());
                 break;
-            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_MOVE :
                 // We use raw x because this window itself is going to
                 // move, which will screw up the "local" coordinates
                 mListener.markerTouchMove(this, event.getRawX());
                 break;
-            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_UP :
                 mListener.markerTouchEnd(this);
                 break;
         }
@@ -76,8 +76,7 @@ public class MarkerView extends ImageView {
     }
 
     @Override
-    protected void onFocusChanged(boolean gainFocus, int direction,
-                                  Rect previouslyFocusedRect) {
+    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         if (gainFocus && mListener != null)
             mListener.markerFocus(this);
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
@@ -94,7 +93,7 @@ public class MarkerView extends ImageView {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         mVelocity++;
-        int v = (int) Math.sqrt(1 + mVelocity / 2);
+        int v = (int) Math.sqrt(1 + (double) mVelocity / 2);
         if (mListener != null) {
             if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
                 mListener.markerLeft(this, v);

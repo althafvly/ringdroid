@@ -17,21 +17,22 @@
 package com.ringdroid.soundfile;
 
 public class MP4Header {
-    private int[] mFrameSize;    // size of each AAC frames, in bytes. First one should be 2.
-    private int mMaxFrameSize;   // size of the biggest frame.
-    private int mTotSize;        // size of the AAC stream.
-    private int mBitrate;        // bitrate used to encode the AAC stream.
-    private byte[] mTime;        // time used for 'creation time' and 'modification time' fields.
-    private byte[] mDurationMS;  // duration of stream in milliseconds.
-    private byte[] mNumSamples;  // number of samples in the stream.
-    private byte[] mHeader;      // the complete header.
-    private int mSampleRate;     // sampling frequency in Hz (e.g. 44100).
-    private int mChannels;       // number of channels.
+    private int[] mFrameSize; // size of each AAC frames, in bytes. First one should be 2.
+    private int mMaxFrameSize; // size of the biggest frame.
+    private int mTotSize; // size of the AAC stream.
+    private int mBitrate; // bitrate used to encode the AAC stream.
+    private byte[] mTime; // time used for 'creation time' and 'modification time' fields.
+    private byte[] mDurationMS; // duration of stream in milliseconds.
+    private byte[] mNumSamples; // number of samples in the stream.
+    private byte[] mHeader; // the complete header.
+    private int mSampleRate; // sampling frequency in Hz (e.g. 44100).
+    private int mChannels; // number of channels.
 
-    // Creates a new MP4Header object that should be used to generate an .m4a file header.
+    // Creates a new MP4Header object that should be used to generate an .m4a file
+    // header.
     public MP4Header(int sampleRate, int numChannels, int[] frame_size, int bitrate) {
         if (frame_size == null || frame_size.length < 2 || frame_size[0] != 2) {
-            //TODO(nfaralli): log something here
+            // TODO(nfaralli): log something here
             return;
         }
         mSampleRate = sampleRate;
@@ -47,34 +48,25 @@ public class MP4Header {
             mTotSize += mFrameSize[i];
         }
         long time = System.currentTimeMillis() / 1000;
-        time += (66 * 365 + 16) * 24 * 60 * 60;  // number of seconds between 1904 and 1970
+        time += (66 * 365 + 16) * 24 * 60 * 60; // number of seconds between 1904 and 1970
         mTime = new byte[4];
         mTime[0] = (byte) ((time >> 24) & 0xFF);
         mTime[1] = (byte) ((time >> 16) & 0xFF);
         mTime[2] = (byte) ((time >> 8) & 0xFF);
         mTime[3] = (byte) (time & 0xFF);
-        int numSamples = 1024 * (frame_size.length - 1);  // 1st frame does not contain samples.
+        int numSamples = 1024 * (frame_size.length - 1); // 1st frame does not contain samples.
         int durationMS = (numSamples * 1000) / mSampleRate;
-        if ((numSamples * 1000) % mSampleRate > 0) {  // round the duration up.
+        if ((numSamples * 1000) % mSampleRate > 0) { // round the duration up.
             durationMS++;
         }
-        mNumSamples = new byte[]{
-                (byte) ((numSamples >> 26) & 0XFF),
-                (byte) ((numSamples >> 16) & 0XFF),
-                (byte) ((numSamples >> 8) & 0XFF),
-                (byte) (numSamples & 0XFF)
-        };
-        mDurationMS = new byte[]{
-                (byte) ((durationMS >> 26) & 0XFF),
-                (byte) ((durationMS >> 16) & 0XFF),
-                (byte) ((durationMS >> 8) & 0XFF),
-                (byte) (durationMS & 0XFF)
-        };
+        mNumSamples = new byte[]{(byte) ((numSamples >> 26) & 0XFF), (byte) ((numSamples >> 16) & 0XFF),
+                (byte) ((numSamples >> 8) & 0XFF), (byte) (numSamples & 0XFF)};
+        mDurationMS = new byte[]{(byte) ((durationMS >> 26) & 0XFF), (byte) ((durationMS >> 16) & 0XFF),
+                (byte) ((durationMS >> 8) & 0XFF), (byte) (durationMS & 0XFF)};
         setHeader();
     }
 
-    public static byte[] getMP4Header(
-            int sampleRate, int numChannels, int[] frame_size, int bitrate) {
+    public static byte[] getMP4Header(int sampleRate, int numChannels, int[] frame_size, int bitrate) {
         return new MP4Header(sampleRate, numChannels, frame_size, bitrate).mHeader;
     }
 
@@ -105,7 +97,7 @@ public class MP4Header {
         // create the atoms needed to build the header.
         Atom a_ftyp = getFTYPAtom();
         Atom a_moov = getMOOVAtom();
-        Atom a_mdat = new Atom("mdat");  // create an empty atom. The AAC stream data should follow
+        Atom a_mdat = new Atom("mdat"); // create an empty atom. The AAC stream data should follow
         // immediately after. The correct size will be set later.
 
         // set the correct chunk offset in the stco atom.
@@ -116,14 +108,14 @@ public class MP4Header {
         }
         byte[] data = a_stco.getData();
         int chunk_offset = a_ftyp.getSize() + a_moov.getSize() + a_mdat.getSize();
-        int offset = data.length - 4;  // here stco should contain only one chunk offset.
+        int offset = data.length - 4; // here stco should contain only one chunk offset.
         data[offset++] = (byte) ((chunk_offset >> 24) & 0xFF);
         data[offset++] = (byte) ((chunk_offset >> 16) & 0xFF);
         data[offset++] = (byte) ((chunk_offset >> 8) & 0xFF);
         data[offset++] = (byte) (chunk_offset & 0xFF);
 
         // create the header byte array based on the previous atoms.
-        byte[] header = new byte[chunk_offset];  // here chunk_offset is also the size of the header
+        byte[] header = new byte[chunk_offset]; // here chunk_offset is also the size of the header
         offset = 0;
         for (Atom atom : new Atom[]{a_ftyp, a_moov, a_mdat}) {
             byte[] atom_bytes = atom.getBytes();
@@ -131,7 +123,7 @@ public class MP4Header {
             offset += atom_bytes.length;
         }
 
-        //set the correct size of the mdat atom
+        // set the correct size of the mdat atom
         int size = 8 + mTotSize;
         offset -= 8;
         header[offset++] = (byte) ((size >> 24) & 0xFF);
@@ -144,13 +136,10 @@ public class MP4Header {
 
     private Atom getFTYPAtom() {
         Atom atom = new Atom("ftyp");
-        atom.setData(new byte[]{
-                'M', '4', 'A', ' ',  // Major brand
-                0, 0, 0, 0,          // Minor version
-                'M', '4', 'A', ' ',  // compatible brands
-                'm', 'p', '4', '2',
-                'i', 's', 'o', 'm'
-        });
+        atom.setData(new byte[]{'M', '4', 'A', ' ', // Major brand
+                0, 0, 0, 0, // Minor version
+                'M', '4', 'A', ' ', // compatible brands
+                'm', 'p', '4', '2', 'i', 's', 'o', 'm'});
         return atom;
     }
 
@@ -163,26 +152,23 @@ public class MP4Header {
 
     private Atom getMVHDAtom() {
         Atom atom = new Atom("mvhd", (byte) 0, 0);
-        atom.setData(new byte[]{
-                mTime[0], mTime[1], mTime[2], mTime[3],  // creation time.
-                mTime[0], mTime[1], mTime[2], mTime[3],  // modification time.
-                0, 0, 0x03, (byte) 0xE8,  // timescale = 1000 => duration expressed in ms.
-                mDurationMS[0], mDurationMS[1], mDurationMS[2], mDurationMS[3],  // duration in ms.
-                0, 1, 0, 0,  // rate = 1.0
-                1, 0,        // volume = 1.0
-                0, 0,        // reserved
-                0, 0, 0, 0,  // reserved
-                0, 0, 0, 0,  // reserved
-                0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  // unity matrix
-                0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0x40, 0, 0, 0,
-                0, 0, 0, 0,  // pre-defined
-                0, 0, 0, 0,  // pre-defined
-                0, 0, 0, 0,  // pre-defined
-                0, 0, 0, 0,  // pre-defined
-                0, 0, 0, 0,  // pre-defined
-                0, 0, 0, 0,  // pre-defined
-                0, 0, 0, 2   // next track ID
+        atom.setData(new byte[]{mTime[0], mTime[1], mTime[2], mTime[3], // creation time.
+                mTime[0], mTime[1], mTime[2], mTime[3], // modification time.
+                0, 0, 0x03, (byte) 0xE8, // timescale = 1000 => duration expressed in ms.
+                mDurationMS[0], mDurationMS[1], mDurationMS[2], mDurationMS[3], // duration in ms.
+                0, 1, 0, 0, // rate = 1.0
+                1, 0, // volume = 1.0
+                0, 0, // reserved
+                0, 0, 0, 0, // reserved
+                0, 0, 0, 0, // reserved
+                0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // unity matrix
+                0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x40, 0, 0, 0, 0, 0, 0, 0, // pre-defined
+                0, 0, 0, 0, // pre-defined
+                0, 0, 0, 0, // pre-defined
+                0, 0, 0, 0, // pre-defined
+                0, 0, 0, 0, // pre-defined
+                0, 0, 0, 0, // pre-defined
+                0, 0, 0, 2 // next track ID
         });
         return atom;
     }
@@ -195,24 +181,21 @@ public class MP4Header {
     }
 
     private Atom getTKHDAtom() {
-        Atom atom = new Atom("tkhd", (byte) 0, 0x07);  // track enabled, in movie, and in preview.
-        atom.setData(new byte[]{
-                mTime[0], mTime[1], mTime[2], mTime[3],  // creation time.
-                mTime[0], mTime[1], mTime[2], mTime[3],  // modification time.
-                0, 0, 0, 1,  // track ID
-                0, 0, 0, 0,  // reserved
-                mDurationMS[0], mDurationMS[1], mDurationMS[2], mDurationMS[3],  // duration in ms.
-                0, 0, 0, 0,  // reserved
-                0, 0, 0, 0,  // reserved
-                0, 0,        // layer
-                0, 0,        // alternate group
-                1, 0,        // volume = 1.0
-                0, 0,        // reserved
-                0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  // unity matrix
-                0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0x40, 0, 0, 0,
-                0, 0, 0, 0,  // width
-                0, 0, 0, 0   // height
+        Atom atom = new Atom("tkhd", (byte) 0, 0x07); // track enabled, in movie, and in preview.
+        atom.setData(new byte[]{mTime[0], mTime[1], mTime[2], mTime[3], // creation time.
+                mTime[0], mTime[1], mTime[2], mTime[3], // modification time.
+                0, 0, 0, 1, // track ID
+                0, 0, 0, 0, // reserved
+                mDurationMS[0], mDurationMS[1], mDurationMS[2], mDurationMS[3], // duration in ms.
+                0, 0, 0, 0, // reserved
+                0, 0, 0, 0, // reserved
+                0, 0, // layer
+                0, 0, // alternate group
+                1, 0, // volume = 1.0
+                0, 0, // reserved
+                0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // unity matrix
+                0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x40, 0, 0, 0, 0, 0, 0, 0, // width
+                0, 0, 0, 0 // height
         });
         return atom;
     }
@@ -227,30 +210,26 @@ public class MP4Header {
 
     private Atom getMDHDAtom() {
         Atom atom = new Atom("mdhd", (byte) 0, 0);
-        atom.setData(new byte[]{
-                mTime[0], mTime[1], mTime[2], mTime[3],  // creation time.
-                mTime[0], mTime[1], mTime[2], mTime[3],  // modification time.
-                (byte) (mSampleRate >> 24), (byte) (mSampleRate >> 16),  // timescale = Fs =>
-                (byte) (mSampleRate >> 8), (byte) (mSampleRate),  // duration expressed in samples.
-                mNumSamples[0], mNumSamples[1], mNumSamples[2], mNumSamples[3],  // duration
-                0, 0,     // languages
-                0, 0      // pre-defined
+        atom.setData(new byte[]{mTime[0], mTime[1], mTime[2], mTime[3], // creation time.
+                mTime[0], mTime[1], mTime[2], mTime[3], // modification time.
+                (byte) (mSampleRate >> 24), (byte) (mSampleRate >> 16), // timescale = Fs =>
+                (byte) (mSampleRate >> 8), (byte) (mSampleRate), // duration expressed in samples.
+                mNumSamples[0], mNumSamples[1], mNumSamples[2], mNumSamples[3], // duration
+                0, 0, // languages
+                0, 0 // pre-defined
         });
         return atom;
     }
 
     private Atom getHDLRAtom() {
         Atom atom = new Atom("hdlr", (byte) 0, 0);
-        atom.setData(new byte[]{
-                0, 0, 0, 0,  // pre-defined
-                's', 'o', 'u', 'n',  // handler type
-                0, 0, 0, 0,  // reserved
-                0, 0, 0, 0,  // reserved
-                0, 0, 0, 0,  // reserved
-                'S', 'o', 'u', 'n',  // name (used only for debugging and inspection purposes).
-                'd', 'H', 'a', 'n',
-                'd', 'l', 'e', '\0'
-        });
+        atom.setData(new byte[]{0, 0, 0, 0, // pre-defined
+                's', 'o', 'u', 'n', // handler type
+                0, 0, 0, 0, // reserved
+                0, 0, 0, 0, // reserved
+                0, 0, 0, 0, // reserved
+                'S', 'o', 'u', 'n', // name (used only for debugging and inspection purposes).
+                'd', 'H', 'a', 'n', 'd', 'l', 'e', '\0'});
         return atom;
     }
 
@@ -264,9 +243,8 @@ public class MP4Header {
 
     private Atom getSMHDAtom() {
         Atom atom = new Atom("smhd", (byte) 0, 0);
-        atom.setData(new byte[]{
-                0, 0,     // balance (center)
-                0, 0      // reserved
+        atom.setData(new byte[]{0, 0, // balance (center)
+                0, 0 // reserved
         });
         return atom;
     }
@@ -281,7 +259,7 @@ public class MP4Header {
         Atom atom = new Atom("dref", (byte) 0, 0);
         byte[] url = getURLAtom().getBytes();
         byte[] data = new byte[4 + url.length];
-        data[3] = 0x01;  // entry count = 1
+        data[3] = 0x01; // entry count = 1
         System.arraycopy(url, 0, data, 4, url.length);
         atom.setData(data);
         return atom;
@@ -305,7 +283,7 @@ public class MP4Header {
         Atom atom = new Atom("stsd", (byte) 0, 0);
         byte[] mp4a = getMP4AAtom().getBytes();
         byte[] data = new byte[4 + mp4a.length];
-        data[3] = 0x01;  // entry count = 1
+        data[3] = 0x01; // entry count = 1
         System.arraycopy(mp4a, 0, data, 4, mp4a.length);
         atom.setData(data);
         return atom;
@@ -314,16 +292,16 @@ public class MP4Header {
     // See also Part 14 section 5.6.1 of ISO/IEC 14496 for this atom.
     private Atom getMP4AAtom() {
         Atom atom = new Atom("mp4a");
-        byte[] ase = new byte[]{  // Audio Sample Entry data
-                0, 0, 0, 0, 0, 0,  // reserved
-                0, 1,  // data reference index
-                0, 0, 0, 0,  // reserved
-                0, 0, 0, 0,  // reserved
-                (byte) (mChannels >> 8), (byte) mChannels,  // channel count
+        byte[] ase = new byte[]{ // Audio Sample Entry data
+                0, 0, 0, 0, 0, 0, // reserved
+                0, 1, // data reference index
+                0, 0, 0, 0, // reserved
+                0, 0, 0, 0, // reserved
+                (byte) (mChannels >> 8), (byte) mChannels, // channel count
                 0, 0x10, // sample size
-                0, 0,  // pre-defined
-                0, 0,  // reserved
-                (byte) (mSampleRate >> 8), (byte) (mSampleRate), 0, 0,  // sample rate
+                0, 0, // pre-defined
+                0, 0, // reserved
+                (byte) (mSampleRate >> 8), (byte) (mSampleRate), 0, 0, // sample rate
         };
         byte[] esds = getESDSAtom().getBytes();
         byte[] data = new byte[ase.length + esds.length];
@@ -339,20 +317,23 @@ public class MP4Header {
         return atom;
     }
 
-    // Returns an ES Descriptor for an ISO/IEC 14496-3 audio stream, AAC LC, 44100Hz, 2 channels,
-    // 1024 samples per frame per channel. The decoder buffer size is set so that it can contain at
+    // Returns an ES Descriptor for an ISO/IEC 14496-3 audio stream, AAC LC,
+    // 44100Hz, 2 channels,
+    // 1024 samples per frame per channel. The decoder buffer size is set so that it
+    // can contain at
     // least 2 frames. (See section 7.2.6.5 of ISO/IEC 14496-1 for more details).
     private byte[] getESDescriptor() {
-        int[] samplingFrequencies = new int[]{96000, 88200, 64000, 48000, 44100, 32000, 24000,
-                22050, 16000, 12000, 11025, 8000, 7350};
+        int[] samplingFrequencies = new int[]{96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 16000, 12000,
+                11025, 8000, 7350};
         // First 5 bytes of the ES Descriptor.
         byte[] ESDescriptor_top = new byte[]{0x03, 0x19, 0x00, 0x00, 0x00};
-        // First 4 bytes of Decoder Configuration Descriptor. Audio ISO/IEC 14496-3, AudioStream.
+        // First 4 bytes of Decoder Configuration Descriptor. Audio ISO/IEC 14496-3,
+        // AudioStream.
         byte[] decConfigDescr_top = new byte[]{0x04, 0x11, 0x40, 0x15};
         // Audio Specific Configuration: AAC LC, 1024 samples/frame/channel.
         // Sampling frequency and channels configuration are not set yet.
         byte[] audioSpecificConfig = new byte[]{0x05, 0x02, 0x10, 0x00};
-        byte[] slConfigDescr = new byte[]{0x06, 0x01, 0x02};  // specific for MP4 file.
+        byte[] slConfigDescr = new byte[]{0x06, 0x01, 0x02}; // specific for MP4 file.
         int offset;
         int bufferSize = 0x300;
         while (bufferSize < 2 * mMaxFrameSize) {
@@ -389,8 +370,7 @@ public class MP4Header {
         }
         audioSpecificConfig[2] |= (byte) ((index >> 1) & 0x07);
         audioSpecificConfig[3] |= (byte) (((index & 1) << 7) | ((mChannels & 0x0F) << 3));
-        System.arraycopy(
-                audioSpecificConfig, 0, decConfigDescr, offset, audioSpecificConfig.length);
+        System.arraycopy(audioSpecificConfig, 0, decConfigDescr, offset, audioSpecificConfig.length);
 
         // create the ES Descriptor
         byte[] ESDescriptor = new byte[2 + ESDescriptor_top[1]];
@@ -405,13 +385,14 @@ public class MP4Header {
     private Atom getSTTSAtom() {
         Atom atom = new Atom("stts", (byte) 0, 0);
         int numAudioFrames = mFrameSize.length - 1;
-        atom.setData(new byte[]{
-                0, 0, 0, 0x02,  // entry count
-                0, 0, 0, 0x01,  // first frame contains no audio
-                0, 0, 0, 0,
-                (byte) ((numAudioFrames >> 24) & 0xFF), (byte) ((numAudioFrames >> 16) & 0xFF),
-                (byte) ((numAudioFrames >> 8) & 0xFF), (byte) (numAudioFrames & 0xFF),
-                0, 0, 0x04, 0,  // delay between frames = 1024 samples (cf. timescale = Fs)
+        atom.setData(new byte[]{0, 0, 0, 0x02, // entry count
+                0, 0, 0, 0x01, // first frame contains no audio
+                0, 0, 0, 0, (byte) ((numAudioFrames >> 24) & 0xFF), (byte) ((numAudioFrames >> 16) & 0xFF),
+                (byte) ((numAudioFrames >> 8) & 0xFF), (byte) (numAudioFrames & 0xFF), 0, 0, 0x04, 0, // delay between
+                                                                                                        // frames = 1024
+                                                                                                        // samples (cf.
+                                                                                                        // timescale =
+                                                                                                        // Fs)
         });
         return atom;
     }
@@ -419,12 +400,11 @@ public class MP4Header {
     private Atom getSTSCAtom() {
         Atom atom = new Atom("stsc", (byte) 0, 0);
         int numFrames = mFrameSize.length;
-        atom.setData(new byte[]{
-                0, 0, 0, 0x01,  // entry count
-                0, 0, 0, 0x01,  // first chunk
-                (byte) ((numFrames >> 24) & 0xFF), (byte) ((numFrames >> 16) & 0xFF),  // samples per
-                (byte) ((numFrames >> 8) & 0xFF), (byte) (numFrames & 0xFF),           // chunk
-                0, 0, 0, 0x01,  // sample description index
+        atom.setData(new byte[]{0, 0, 0, 0x01, // entry count
+                0, 0, 0, 0x01, // first chunk
+                (byte) ((numFrames >> 24) & 0xFF), (byte) ((numFrames >> 16) & 0xFF), // samples per
+                (byte) ((numFrames >> 8) & 0xFF), (byte) (numFrames & 0xFF), // chunk
+                0, 0, 0, 0x01, // sample description index
         });
         return atom;
     }
@@ -434,11 +414,11 @@ public class MP4Header {
         int numFrames = mFrameSize.length;
         byte[] data = new byte[8 + 4 * numFrames];
         int offset = 0;
-        data[offset++] = 0;  // sample size (=0 => each frame can have a different size)
+        data[offset++] = 0; // sample size (=0 => each frame can have a different size)
         data[offset++] = 0;
         data[offset++] = 0;
         data[offset++] = 0;
-        data[offset++] = (byte) ((numFrames >> 24) & 0xFF);  // sample count
+        data[offset++] = (byte) ((numFrames >> 24) & 0xFF); // sample count
         data[offset++] = (byte) ((numFrames >> 16) & 0xFF);
         data[offset++] = (byte) ((numFrames >> 8) & 0xFF);
         data[offset++] = (byte) (numFrames & 0xFF);
@@ -454,9 +434,8 @@ public class MP4Header {
 
     private Atom getSTCOAtom() {
         Atom atom = new Atom("stco", (byte) 0, 0);
-        atom.setData(new byte[]{
-                0, 0, 0, 0x01,   // entry count
-                0, 0, 0, 0  // chunk offset. Set to 0 here. Must be set later. Here it should be
+        atom.setData(new byte[]{0, 0, 0, 0x01, // entry count
+                0, 0, 0, 0 // chunk offset. Set to 0 here. Must be set later. Here it should be
                 // the size of the complete header, as the AAC stream will follow
                 // immediately.
         });

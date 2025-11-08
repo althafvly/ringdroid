@@ -27,7 +27,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-
 import java.util.ArrayList;
 
 public class FileSaveDialog extends Dialog {
@@ -46,10 +45,7 @@ public class FileSaveDialog extends Dialog {
     private final ArrayList<String> mTypeArray;
     private int mPreviousSelection;
 
-    public FileSaveDialog(Context context,
-                          Resources resources,
-                          String originalName,
-                          Message response) {
+    public FileSaveDialog(Context context, Resources resources, String originalName, Message response) {
         super(context);
 
         // Inflate our UI from its XML layout description.
@@ -63,14 +59,12 @@ public class FileSaveDialog extends Dialog {
         mTypeArray.add(resources.getString(R.string.type_notification));
         mTypeArray.add(resources.getString(R.string.type_ringtone));
 
-        mFilename = (EditText) findViewById(R.id.filename);
+        mFilename = findViewById(R.id.filename);
         mOriginalName = originalName;
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                context, android.R.layout.simple_spinner_item, mTypeArray);
-        adapter.setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item);
-        mTypeSpinner = (Spinner) findViewById(R.id.ringtone_type);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, mTypeArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mTypeSpinner = findViewById(R.id.ringtone_type);
         mTypeSpinner.setAdapter(adapter);
         mTypeSpinner.setSelection(FILE_KIND_RINGTONE);
         mPreviousSelection = FILE_KIND_RINGTONE;
@@ -78,10 +72,7 @@ public class FileSaveDialog extends Dialog {
         setFilenameEditBoxFromName(false);
 
         mTypeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent,
-                                       View v,
-                                       int position,
-                                       long id) {
+            public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
                 setFilenameEditBoxFromName(true);
             }
 
@@ -89,7 +80,7 @@ public class FileSaveDialog extends Dialog {
             }
         });
 
-        Button save = (Button) findViewById(R.id.save);
+        Button save = findViewById(R.id.save);
         View.OnClickListener saveListener = new View.OnClickListener() {
             public void onClick(View view) {
                 mResponse.obj = mFilename.getText();
@@ -99,37 +90,16 @@ public class FileSaveDialog extends Dialog {
             }
         };
         save.setOnClickListener(saveListener);
-        Button cancel = (Button) findViewById(R.id.cancel);
+        Button cancel = findViewById(R.id.cancel);
         View.OnClickListener cancelListener = view -> dismiss();
         cancel.setOnClickListener(cancelListener);
         mResponse = response;
     }
 
-    /**
-     * Return a human-readable name for a kind (music, alarm, ringtone, ...).
-     * These won't be displayed on-screen (just in logs) so they shouldn't
-     * be translated.
-     */
-    public static String KindToName(int kind) {
-        switch (kind) {
-            default:
-                return "Unknown";
-            case FILE_KIND_MUSIC:
-                return "Music";
-            case FILE_KIND_ALARM:
-                return "Alarm";
-            case FILE_KIND_NOTIFICATION:
-                return "Notification";
-            case FILE_KIND_RINGTONE:
-                return "Ringtone";
-        }
-    }
-
     private void setFilenameEditBoxFromName(boolean onlyIfNotEdited) {
         if (onlyIfNotEdited) {
             CharSequence currentText = mFilename.getText();
-            String expectedText = mOriginalName + " " +
-                    mTypeArray.get(mPreviousSelection);
+            String expectedText = mOriginalName + " " + mTypeArray.get(mPreviousSelection);
 
             if (!expectedText.contentEquals(currentText)) {
                 return;

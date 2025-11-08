@@ -22,9 +22,7 @@ import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.media.MediaRecorder;
-import android.os.Build;
 import android.util.Log;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -42,28 +40,32 @@ public class SoundFile {
     // Member variables representing frame data
     private String mFileType;
     private int mFileSize;
-    private int mAvgBitRate;  // Average bit rate in kbps.
+    private int mAvgBitRate; // Average bit rate in kbps.
     private int mSampleRate;
     private int mChannels;
-    private int mNumSamples;  // total number of samples per channel in audio file
-    private ByteBuffer mDecodedBytes;  // Raw audio data
-    private ShortBuffer mDecodedSamples;  // shared buffer with mDecodedBytes.
+    private int mNumSamples; // total number of samples per channel in audio file
+    private ByteBuffer mDecodedBytes; // Raw audio data
+    private ShortBuffer mDecodedSamples; // shared buffer with mDecodedBytes.
     // mDecodedSamples has the following format:
     // {s1c1, s1c2, ..., s1cM, s2c1, ..., s2cM, ..., sNc1, ..., sNcM}
     // where sicj is the ith sample of the jth channel (a sample is a signed short)
-    // M is the number of channels (e.g. 2 for stereo) and N is the number of samples per channel.
+    // M is the number of channels (e.g. 2 for stereo) and N is the number of
+    // samples per channel.
 
-    // Member variables for hack (making it work with old version, until app just uses the samples).
+    // Member variables for hack (making it work with old version, until app just
+    // uses the samples).
     private int mNumFrames;
     private int[] mFrameGains;
     private int[] mFrameLens;
     private int[] mFrameOffsets;
 
-    // A SoundFile object should only be created using the static methods create() and record().
+    // A SoundFile object should only be created using the static methods create()
+    // and record().
     private SoundFile() {
     }
 
-    // TODO(nfaralli): what is the real list of supported extensions? Is it device dependent?
+    // TODO(nfaralli): what is the real list of supported extensions? Is it device
+    // dependent?
     public static String[] getSupportedExtensions() {
         return new String[]{"mp3", "wav", "3gpp", "3gp", "amr", "aac", "m4a", "ogg"};
     }
@@ -79,10 +81,8 @@ public class SoundFile {
     }
 
     // Create and return a SoundFile object using the file fileName.
-    public static SoundFile create(String fileName,
-                                   ProgressListener progressListener)
-            throws
-            java.io.IOException, InvalidInputException {
+    public static SoundFile create(String fileName, ProgressListener progressListener)
+            throws java.io.IOException, InvalidInputException {
         // First check that the file exists and that its extension is supported.
         File f = new File(fileName);
         if (!f.exists()) {
@@ -131,34 +131,30 @@ public class SoundFile {
     }
 
     public int getNumSamples() {
-        return mNumSamples;  // Number of samples per channel.
+        return mNumSamples; // Number of samples per channel.
     }
 
-    // Should be removed when the app will use directly the samples instead of the frames.
+    // Should be removed when the app will use directly the samples instead of the
+    // frames.
     public int getNumFrames() {
         return mNumFrames;
     }
 
-    // Should be removed when the app will use directly the samples instead of the frames.
+    // Should be removed when the app will use directly the samples instead of the
+    // frames.
     public int getSamplesPerFrame() {
-        return 1024;  // just a fixed value here...
+        return 1024; // just a fixed value here...
     }
 
-    // Should be removed when the app will use directly the samples instead of the frames.
+    // Should be removed when the app will use directly the samples instead of the
+    // frames.
     public int[] getFrameGains() {
         return mFrameGains;
     }
 
     public ShortBuffer getSamples() {
         if (mDecodedSamples != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
-                    Build.VERSION.SDK_INT <= Build.VERSION_CODES.N_MR1) {
-                // Hack for Nougat where asReadOnlyBuffer fails to respect byte ordering.
-                // See https://code.google.com/p/android/issues/detail?id=223824
-                return mDecodedSamples;
-            } else {
-                return mDecodedSamples.asReadOnlyBuffer();
-            }
+            return mDecodedSamples.asReadOnlyBuffer();
         } else {
             return null;
         }
@@ -168,9 +164,7 @@ public class SoundFile {
         mProgressListener = progressListener;
     }
 
-    private void ReadFile(File inputFile)
-            throws
-            java.io.IOException, InvalidInputException {
+    private void ReadFile(File inputFile) throws java.io.IOException, InvalidInputException {
         MediaExtractor extractor = new MediaExtractor();
         MediaFormat format = null;
         int i;
@@ -196,14 +190,13 @@ public class SoundFile {
         mChannels = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
         mSampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE);
         // Expected total number of samples per channel.
-        int expectedNumSamples =
-                (int) ((format.getLong(MediaFormat.KEY_DURATION) / 1000000.f) * mSampleRate + 0.5f);
+        int expectedNumSamples = (int) ((format.getLong(MediaFormat.KEY_DURATION) / 1000000.f) * mSampleRate + 0.5f);
 
         MediaCodec codec = MediaCodec.createDecoderByType(format.getString(MediaFormat.KEY_MIME));
         codec.configure(format, null, null, 0);
         codec.start();
 
-        int decodedSamplesSize = 0;  // size of the output buffer containing decoded samples.
+        int decodedSamplesSize = 0; // size of the output buffer containing decoded samples.
         byte[] decodedSamples = null;
         ByteBuffer[] inputBuffers = codec.getInputBuffers();
         ByteBuffer[] outputBuffers = codec.getOutputBuffers();
@@ -213,9 +206,12 @@ public class SoundFile {
         int tot_size_read = 0;
         boolean done_reading = false;
 
-        // Set the size of the decoded samples buffer to 1MB (~6sec of a stereo stream at 44.1kHz).
-        // For longer streams, the buffer size will be increased later on, calculating a rough
-        // estimate of the total size needed to store all the samples in order to resize the buffer
+        // Set the size of the decoded samples buffer to 1MB (~6sec of a stereo stream
+        // at 44.1kHz).
+        // For longer streams, the buffer size will be increased later on, calculating a
+        // rough
+        // estimate of the total size needed to store all the samples in order to resize
+        // the buffer
         // only once.
         mDecodedBytes = ByteBuffer.allocate(1 << 20);
         boolean firstSampleData = true;
@@ -224,8 +220,7 @@ public class SoundFile {
             int inputBufferIndex = codec.dequeueInputBuffer(100);
             if (!done_reading && inputBufferIndex >= 0) {
                 sample_size = extractor.readSampleData(inputBuffers[inputBufferIndex], 0);
-                if (firstSampleData
-                        && format.getString(MediaFormat.KEY_MIME).equals("audio/mp4a-latm")
+                if (firstSampleData && format.getString(MediaFormat.KEY_MIME).equals("audio/mp4a-latm")
                         && sample_size == 2) {
                     // For some reasons on some devices (e.g. the Samsung S3) you should not
                     // provide the first two bytes of an AAC stream, otherwise the MediaCodec will
@@ -237,8 +232,7 @@ public class SoundFile {
                     tot_size_read += sample_size;
                 } else if (sample_size < 0) {
                     // All samples have been read.
-                    codec.queueInputBuffer(
-                            inputBufferIndex, 0, 0, -1, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
+                    codec.queueInputBuffer(inputBufferIndex, 0, 0, -1, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
                     done_reading = true;
                 } else {
                     presentation_time = extractor.getSampleTime();
@@ -295,7 +289,7 @@ public class SoundFile {
                         // instance with the data decoded so far.
                         break;
                     }
-                    //ByteBuffer newDecodedBytes = ByteBuffer.allocate(newSize);
+                    // ByteBuffer newDecodedBytes = ByteBuffer.allocate(newSize);
                     mDecodedBytes.rewind();
                     assert newDecodedBytes != null;
                     newDecodedBytes.put(mDecodedBytes);
@@ -312,16 +306,19 @@ public class SoundFile {
                 // We got all the decoded data from the decoder. Stop here.
                 // Theoretically dequeueOutputBuffer(info, ...) should have set info.flags to
                 // MediaCodec.BUFFER_FLAG_END_OF_STREAM. However some phones (e.g. Samsung S3)
-                // won't do that for some files (e.g. with mono AAC files), in which case subsequent
+                // won't do that for some files (e.g. with mono AAC files), in which case
+                // subsequent
                 // calls to dequeueOutputBuffer may result in the application crashing, without
                 // even an exception being thrown... Hence the second check.
-                // (for mono AAC files, the S3 will actually double each sample, as if the stream
-                // was stereo. The resulting stream is half what it's supposed to be and with a much
+                // (for mono AAC files, the S3 will actually double each sample, as if the
+                // stream
+                // was stereo. The resulting stream is half what it's supposed to be and with a
+                // much
                 // lower pitch.)
                 break;
             }
         }
-        mNumSamples = mDecodedBytes.position() / (mChannels * 2);  // One sample = 2 bytes.
+        mNumSamples = mDecodedBytes.position() / (mChannels * 2); // One sample = 2 bytes.
         mDecodedBytes.rewind();
         mDecodedBytes.order(ByteOrder.LITTLE_ENDIAN);
         mDecodedSamples = mDecodedBytes.asShortBuffer();
@@ -341,8 +338,7 @@ public class SoundFile {
         mFrameOffsets = new int[mNumFrames];
         int j;
         int gain, value;
-        int frameLens = (int) ((1000 * mAvgBitRate / 8) *
-                ((float) getSamplesPerFrame() / mSampleRate));
+        int frameLens = (int) (((float) (1000 * mAvgBitRate) / 8) * ((float) getSamplesPerFrame() / mSampleRate));
         for (i = 0; i < mNumFrames; i++) {
             gain = -1;
             for (j = 0; j < getSamplesPerFrame(); j++) {
@@ -357,39 +353,36 @@ public class SoundFile {
                     gain = value;
                 }
             }
-            mFrameGains[i] = (int) Math.sqrt(gain);  // here gain = sqrt(max value of 1st channel)...
-            mFrameLens[i] = frameLens;  // totally not accurate...
-            mFrameOffsets[i] = (int) (i * (1000 * mAvgBitRate / 8) *  //  = i * frameLens
+            mFrameGains[i] = (int) Math.sqrt(gain); // here gain = sqrt(max value of 1st channel)...
+            mFrameLens[i] = frameLens; // totally not accurate...
+            mFrameOffsets[i] = (int) (i * ((float) (1000 * mAvgBitRate) / 8) * // = i * frameLens
                     ((float) getSamplesPerFrame() / mSampleRate));
         }
         mDecodedSamples.rewind();
-        // DumpSamples();  // Uncomment this line to dump the samples in a TSV file.
+        // DumpSamples(); // Uncomment this line to dump the samples in a TSV file.
     }
 
     private void RecordAudio() {
         if (mProgressListener == null) {
-            // A progress listener is mandatory here, as it will let us know when to stop recording.
+            // A progress listener is mandatory here, as it will let us know when to stop
+            // recording.
             return;
         }
         mInputFile = null;
         mFileType = "raw";
         mFileSize = 0;
         mSampleRate = 44100;
-        mChannels = 1;  // record mono audio.
-        short[] buffer = new short[1024];  // buffer contains 1 mono frame of 1024 16 bits samples
-        int minBufferSize = AudioRecord.getMinBufferSize(
-                mSampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
-        // make sure minBufferSize can contain at least 1 second of audio (16 bits sample).
+        mChannels = 1; // record mono audio.
+        short[] buffer = new short[1024]; // buffer contains 1 mono frame of 1024 16 bits samples
+        int minBufferSize = AudioRecord.getMinBufferSize(mSampleRate, AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT);
+        // make sure minBufferSize can contain at least 1 second of audio (16 bits
+        // sample).
         if (minBufferSize < mSampleRate * 2) {
             minBufferSize = mSampleRate * 2;
         }
-        AudioRecord audioRecord = new AudioRecord(
-                MediaRecorder.AudioSource.DEFAULT,
-                mSampleRate,
-                AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT,
-                minBufferSize
-        );
+        AudioRecord audioRecord = new AudioRecord(MediaRecorder.AudioSource.DEFAULT, mSampleRate,
+                AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, minBufferSize);
 
         // Allocate memory for 20 seconds first. Reallocate later if more is needed.
         mDecodedBytes = ByteBuffer.allocate(20 * mSampleRate * 2);
@@ -401,7 +394,7 @@ public class SoundFile {
             if (mDecodedSamples.remaining() < 1024) {
                 // Try to allocate memory for 10 additional seconds.
                 int newCapacity = mDecodedBytes.capacity() + 10 * mSampleRate * 2;
-                ByteBuffer newDecodedBytes = null;
+                ByteBuffer newDecodedBytes;
                 try {
                     newDecodedBytes = ByteBuffer.allocate(newCapacity);
                 } catch (OutOfMemoryError oome) {
@@ -416,13 +409,13 @@ public class SoundFile {
                 mDecodedSamples = mDecodedBytes.asShortBuffer();
                 mDecodedSamples.position(position);
             }
-            // TODO(nfaralli): maybe use the read method that takes a direct ByteBuffer argument.
+            // TODO(nfaralli): maybe use the read method that takes a direct ByteBuffer
+            // argument.
             audioRecord.read(buffer, 0, buffer.length);
             mDecodedSamples.put(buffer);
             // Let the progress listener know how many seconds have been recorded.
             // The returned value tells us if we should keep recording or stop.
-            if (mProgressListener.reportProgress(
-                    (float) (mDecodedSamples.position()) / mSampleRate)) {
+            if (mProgressListener.reportProgress((float) (mDecodedSamples.position()) / mSampleRate)) {
                 break;
             }
         }
@@ -439,8 +432,8 @@ public class SoundFile {
             mNumFrames++;
         }
         mFrameGains = new int[mNumFrames];
-        mFrameLens = null;  // not needed for recorded audio
-        mFrameOffsets = null;  // not needed for recorded audio
+        mFrameLens = null; // not needed for recorded audio
+        mFrameOffsets = null; // not needed for recorded audio
         int i, j;
         int gain, value;
         for (i = 0; i < mNumFrames; i++) {
@@ -455,29 +448,28 @@ public class SoundFile {
                     gain = value;
                 }
             }
-            mFrameGains[i] = (int) Math.sqrt(gain);  // here gain = sqrt(max value of 1st channel)...
+            mFrameGains[i] = (int) Math.sqrt(gain); // here gain = sqrt(max value of 1st channel)...
         }
         mDecodedSamples.rewind();
-        // DumpSamples();  // Uncomment this line to dump the samples in a TSV file.
+        // DumpSamples(); // Uncomment this line to dump the samples in a TSV file.
     }
 
     // should be removed in the near future...
-    public void WriteFile(File outputFile, int startFrame, int numFrames)
-            throws java.io.IOException {
+    public void WriteFile(File outputFile, int startFrame, int numFrames) throws java.io.IOException {
         float startTime = (float) startFrame * getSamplesPerFrame() / mSampleRate;
         float endTime = (float) (startFrame + numFrames) * getSamplesPerFrame() / mSampleRate;
         WriteFile(outputFile, startTime, endTime);
     }
 
-    public void WriteFile(File outputFile, float startTime, float endTime)
-            throws java.io.IOException {
+    public void WriteFile(File outputFile, float startTime, float endTime) throws java.io.IOException {
         int startOffset = (int) (startTime * mSampleRate) * 2 * mChannels;
         int numSamples = (int) ((endTime - startTime) * mSampleRate);
-        // Some devices have problems reading mono AAC files (e.g. Samsung S3). Making it stereo.
+        // Some devices have problems reading mono AAC files (e.g. Samsung S3). Making
+        // it stereo.
         int numChannels = (mChannels == 1) ? 2 : mChannels;
 
         String mimeType = "audio/mp4a-latm";
-        int bitrate = 64000 * numChannels;  // rule of thumb for a good quality: 64kbps per channel.
+        int bitrate = 64000 * numChannels; // rule of thumb for a good quality: 64kbps per channel.
         MediaCodec codec = MediaCodec.createEncoderByType(mimeType);
         MediaFormat format = MediaFormat.createAudioFormat(mimeType, mSampleRate, numChannels);
         format.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
@@ -485,7 +477,7 @@ public class SoundFile {
         codec.start();
 
         // Get an estimation of the encoded data based on the bitrate. Add 10% to it.
-        int estimatedEncodedSize = (int) ((endTime - startTime) * (bitrate / 8) * 1.1);
+        int estimatedEncodedSize = (int) ((endTime - startTime) * ((double) bitrate / 8) * 1.1);
         ByteBuffer encodedBytes = ByteBuffer.allocate(estimatedEncodedSize);
         ByteBuffer[] inputBuffers = codec.getInputBuffers();
         ByteBuffer[] outputBuffers = codec.getOutputBuffers();
@@ -493,11 +485,11 @@ public class SoundFile {
         boolean done_reading = false;
         long presentation_time = 0;
 
-        int frame_size = 1024;  // number of samples per frame per channel for an mp4 (AAC) stream.
-        byte[] buffer = new byte[frame_size * numChannels * 2];  // a sample is coded with a short.
+        int frame_size = 1024; // number of samples per frame per channel for an mp4 (AAC) stream.
+        byte[] buffer = new byte[frame_size * numChannels * 2]; // a sample is coded with a short.
         mDecodedBytes.position(startOffset);
-        numSamples += (2 * frame_size);  // Adding 2 frames, Cf. priming frames for AAC.
-        int tot_num_frames = 1 + (numSamples / frame_size);  // first AAC frame = 2 bytes
+        numSamples += (2 * frame_size); // Adding 2 frames, Cf. priming frames for AAC.
+        int tot_num_frames = 1 + (numSamples / frame_size); // first AAC frame = 2 bytes
         if (numSamples % frame_size != 0) {
             tot_num_frames++;
         }
@@ -505,7 +497,7 @@ public class SoundFile {
         int num_out_frames = 0;
         int num_frames = 0;
         int num_samples_left = numSamples;
-        int encodedSamplesSize = 0;  // size of the output buffer containing the encoded samples.
+        int encodedSamplesSize = 0; // size of the output buffer containing the encoded samples.
         byte[] encodedSamples = null;
         while (true) {
             // Feed the samples to the encoder.
@@ -513,8 +505,7 @@ public class SoundFile {
             if (!done_reading && inputBufferIndex >= 0) {
                 if (num_samples_left <= 0) {
                     // All samples have been read.
-                    codec.queueInputBuffer(
-                            inputBufferIndex, 0, 0, -1, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
+                    codec.queueInputBuffer(inputBufferIndex, 0, 0, -1, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
                     done_reading = true;
                 } else {
                     inputBuffers[inputBufferIndex].clear();
@@ -526,7 +517,7 @@ public class SoundFile {
                     int bufferSize = (mChannels == 1) ? (buffer.length / 2) : buffer.length;
                     if (mDecodedBytes.remaining() < bufferSize) {
                         for (int i = mDecodedBytes.remaining(); i < bufferSize; i++) {
-                            buffer[i] = 0;  // pad with extra 0s to make a full frame.
+                            buffer[i] = 0; // pad with extra 0s to make a full frame.
                         }
                         mDecodedBytes.get(buffer, 0, mDecodedBytes.remaining());
                     } else {
@@ -543,8 +534,7 @@ public class SoundFile {
                     num_samples_left -= frame_size;
                     inputBuffers[inputBufferIndex].put(buffer);
                     presentation_time = (long) (((num_frames++) * frame_size * 1e6) / mSampleRate);
-                    codec.queueInputBuffer(
-                            inputBufferIndex, 0, buffer.length, presentation_time, 0);
+                    codec.queueInputBuffer(inputBufferIndex, 0, buffer.length, presentation_time, 0);
                 }
             }
 
@@ -561,8 +551,8 @@ public class SoundFile {
                 outputBuffers[outputBufferIndex].get(encodedSamples, 0, info.size);
                 outputBuffers[outputBufferIndex].clear();
                 codec.releaseOutputBuffer(outputBufferIndex, false);
-                if (encodedBytes.remaining() < info.size) {  // Hopefully this should not happen.
-                    estimatedEncodedSize = (int) (estimatedEncodedSize * 1.2);  // Add 20%.
+                if (encodedBytes.remaining() < info.size) { // Hopefully this should not happen.
+                    estimatedEncodedSize = (int) (estimatedEncodedSize * 1.2); // Add 20%.
                     ByteBuffer newEncodedBytes = ByteBuffer.allocate(estimatedEncodedSize);
                     int position = encodedBytes.position();
                     encodedBytes.rewind();
@@ -588,8 +578,7 @@ public class SoundFile {
         buffer = new byte[4096];
         try {
             FileOutputStream outputStream = new FileOutputStream(outputFile);
-            outputStream.write(
-                    MP4Header.getMP4Header(mSampleRate, numChannels, frame_sizes, bitrate));
+            outputStream.write(MP4Header.getMP4Header(mSampleRate, numChannels, frame_sizes, bitrate));
             while (encoded_size - encodedBytes.position() > buffer.length) {
                 encodedBytes.get(buffer);
                 outputStream.write(buffer);
@@ -606,14 +595,17 @@ public class SoundFile {
         }
     }
 
-    // Method used to swap the left and right channels (needed for stereo WAV files).
-    // buffer contains the PCM data: {sample 1 right, sample 1 left, sample 2 right, etc.}
+    // Method used to swap the left and right channels (needed for stereo WAV
+    // files).
+    // buffer contains the PCM data: {sample 1 right, sample 1 left, sample 2 right,
+    // etc.}
     // The size of a sample is assumed to be 16 bits (for a single channel).
-    // When done, buffer will contain {sample 1 left, sample 1 right, sample 2 left, etc.}
+    // When done, buffer will contain {sample 1 left, sample 1 right, sample 2 left,
+    // etc.}
     private void swapLeftRightChannels(byte[] buffer) {
         byte[] left = new byte[2];
         byte[] right = new byte[2];
-        if (buffer.length % 4 != 0) {  // 2 channels, 2 bytes per sample (for one channel).
+        if (buffer.length % 4 != 0) { // 2 channels, 2 bytes per sample (for one channel).
             // Invalid buffer size.
             return;
         }
@@ -630,15 +622,13 @@ public class SoundFile {
     }
 
     // should be removed in the near future...
-    public void WriteWAVFile(File outputFile, int startFrame, int numFrames)
-            throws java.io.IOException {
+    public void WriteWAVFile(File outputFile, int startFrame, int numFrames) throws java.io.IOException {
         float startTime = (float) startFrame * getSamplesPerFrame() / mSampleRate;
         float endTime = (float) (startFrame + numFrames) * getSamplesPerFrame() / mSampleRate;
         WriteWAVFile(outputFile, startTime, endTime);
     }
 
-    public void WriteWAVFile(File outputFile, float startTime, float endTime)
-            throws java.io.IOException {
+    public void WriteWAVFile(File outputFile, float startTime, float endTime) throws java.io.IOException {
         int startOffset = (int) (startTime * mSampleRate) * 2 * mChannels;
         int numSamples = (int) ((endTime - startTime) * mSampleRate);
 
@@ -647,14 +637,14 @@ public class SoundFile {
         outputStream.write(WAVHeader.getWAVHeader(mSampleRate, mChannels, numSamples));
 
         // Write the samples to the file, 1024 at a time.
-        byte[] buffer = new byte[1024 * mChannels * 2];  // Each sample is coded with a short.
+        byte[] buffer = new byte[1024 * mChannels * 2]; // Each sample is coded with a short.
         mDecodedBytes.position(startOffset);
         int numBytesLeft = numSamples * mChannels * 2;
         while (numBytesLeft >= buffer.length) {
             if (mDecodedBytes.remaining() < buffer.length) {
                 // This should not happen.
                 for (int i = mDecodedBytes.remaining(); i < buffer.length; i++) {
-                    buffer[i] = 0;  // pad with extra 0s to make a full frame.
+                    buffer[i] = 0; // pad with extra 0s to make a full frame.
                 }
                 mDecodedBytes.get(buffer, 0, mDecodedBytes.remaining());
             } else {
@@ -670,7 +660,7 @@ public class SoundFile {
             if (mDecodedBytes.remaining() < numBytesLeft) {
                 // This should not happen.
                 for (int i = mDecodedBytes.remaining(); i < numBytesLeft; i++) {
-                    buffer[i] = 0;  // pad with extra 0s to make a full frame.
+                    buffer[i] = 0; // pad with extra 0s to make a full frame.
                 }
                 mDecodedBytes.get(buffer, 0, mDecodedBytes.remaining());
             } else {
@@ -694,9 +684,9 @@ public class SoundFile {
     // Progress listener interface.
     public interface ProgressListener {
         /**
-         * Will be called by the SoundFile class periodically
-         * with values between 0.0 and 1.0.  Return true to continue
-         * loading the file or recording the audio, and false to cancel or stop recording.
+         * Will be called by the SoundFile class periodically with values between 0.0
+         * and 1.0. Return true to continue loading the file or recording the audio, and
+         * false to cancel or stop recording.
          */
         boolean reportProgress(double fractionComplete);
     }

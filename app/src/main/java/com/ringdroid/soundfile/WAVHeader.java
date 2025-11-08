@@ -17,17 +17,17 @@
 package com.ringdroid.soundfile;
 
 public class WAVHeader {
-    private final int mSampleRate;         // sampling frequency in Hz (e.g. 44100).
-    private final int mChannels;           // number of channels.
-    private final int mNumSamples;         // total number of samples per channel.
-    private final int mNumBytesPerSample;  // number of bytes per sample, all channels included.
-    private byte[] mHeader;          // the complete header.
+    private final int mSampleRate; // sampling frequency in Hz (e.g. 44100).
+    private final int mChannels; // number of channels.
+    private final int mNumSamples; // total number of samples per channel.
+    private final int mNumBytesPerSample; // number of bytes per sample, all channels included.
+    private byte[] mHeader; // the complete header.
 
     public WAVHeader(int sampleRate, int numChannels, int numSamples) {
         mSampleRate = sampleRate;
         mChannels = numChannels;
         mNumSamples = numSamples;
-        mNumBytesPerSample = 2 * mChannels;  // assuming 2 bytes per sample (for 1 channel)
+        mNumBytesPerSample = 2 * mChannels; // assuming 2 bytes per sample (for 1 channel)
         mHeader = null;
         setHeader();
     }
@@ -78,9 +78,9 @@ public class WAVHeader {
         // set the fmt chunk
         System.arraycopy(new byte[]{'f', 'm', 't', ' '}, 0, header, offset, 4);
         offset += 4;
-        System.arraycopy(new byte[]{0x10, 0, 0, 0}, 0, header, offset, 4);  // chunk size = 16
+        System.arraycopy(new byte[]{0x10, 0, 0, 0}, 0, header, offset, 4); // chunk size = 16
         offset += 4;
-        System.arraycopy(new byte[]{1, 0}, 0, header, offset, 2);  // format = 1 for PCM
+        System.arraycopy(new byte[]{1, 0}, 0, header, offset, 2); // format = 1 for PCM
         offset += 2;
         header[offset++] = (byte) (mChannels & 0xFF);
         header[offset++] = (byte) ((mChannels >> 8) & 0xFF);
