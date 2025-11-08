@@ -33,11 +33,12 @@ jobs:
 
       - name: Create Release
         if: github.ref == 'refs/heads/master'
-        uses: marvinpinto/action-automatic-releases@latest
+        uses: ncipollo/release-action@v1
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: "latest"
+          tag: "latest"
+          name: "latest"
           prerelease: true
-          title: "${{ env.GITHUB_SHA }}"
-          files: |
-            app/build/outputs/apk/debug/app-debug.apk
+          artifacts: app/build/outputs/apk/debug/app-debug.apk
+          token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: true
+          replacesArtifacts: true
