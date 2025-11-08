@@ -16,6 +16,8 @@
 
 package com.ringdroid.soundfile;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaCodec;
@@ -362,6 +364,7 @@ public class SoundFile {
         // DumpSamples(); // Uncomment this line to dump the samples in a TSV file.
     }
 
+    @SuppressLint("MissingPermission")
     private void RecordAudio() {
         if (mProgressListener == null) {
             // A progress listener is mandatory here, as it will let us know when to stop
@@ -440,7 +443,7 @@ public class SoundFile {
             gain = -1;
             for (j = 0; j < getSamplesPerFrame(); j++) {
                 if (mDecodedSamples.remaining() > 0) {
-                    value = java.lang.Math.abs(mDecodedSamples.get());
+                    value = Math.abs(mDecodedSamples.get());
                 } else {
                     value = 0;
                 }

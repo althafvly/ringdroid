@@ -26,6 +26,7 @@ import android.database.Cursor;
 import android.database.MergeCursor;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -77,6 +78,25 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
     private boolean mShowAll;
     private Cursor mInternalCursor;
     private Cursor mExternalCursor;
+
+    private static final String[] AUDIO_PROJECTION = {
+            MediaStore.Audio.Media._ID,
+            MediaStore.Audio.Media.TITLE,
+            MediaStore.Audio.Media.ARTIST,
+            MediaStore.Audio.Media.ALBUM,
+            MediaStore.Audio.Media.DURATION,
+            MediaStore.Audio.Media.SIZE,
+            MediaStore.Audio.Media.MIME_TYPE,
+
+            // Flags your UI uses:
+            MediaStore.Audio.Media.IS_RINGTONE,
+            MediaStore.Audio.Media.IS_ALARM,
+            MediaStore.Audio.Media.IS_NOTIFICATION,
+            MediaStore.Audio.Media.IS_MUSIC,
+
+            // File path — will be non-null since we use MANAGE_EXTERNAL_STORAGE
+            MediaStore.Audio.Media.DATA
+    };
 
     /** Called when the activity is first created. */
     @Override
@@ -490,8 +510,14 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
         }
 
         String[] selectionArgs = selectionArgsList.toArray(new String[0]);
-        return new CursorLoader(this, baseUri, projection, selection.toString(), selectionArgs,
-                MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            return new CursorLoader(this, baseUri, projection, selection.toString(), selectionArgs,
+                    MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+        } else {
+            return new CursorLoader(this, baseUri, AUDIO_PROJECTION, selection.toString(),
+                    selectionArgs, MediaStore.Audio.Media.TITLE + " ASC"
+            );
+        }
     }
 
     /* Implementation of LoaderCallbacks.onLoadFinished */

@@ -1,15 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    //noinspection GradleDependency
-    compileSdk 26
+    compileSdk 36
     namespace "com.ringdroid"
 
     defaultConfig {
         applicationId "com.ringdroid"
         minSdk 26
-        //noinspection ExpiredTargetSdkVersion
-        targetSdk 26
+        targetSdk 36
         versionCode 20704
         versionName "2.7.4"
     }
