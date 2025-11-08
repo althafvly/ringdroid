@@ -47,7 +47,7 @@
         android:icon="@drawable/ringdroidlogo"
         android:label="@string/ringdroid_app_name"
         android:largeHeap="true"
-        android:theme="@android:style/Theme.Material">
+        android:theme="@style/AppTheme">
 
         <!-- Main activity that's launched when the user opens Ringdroid. -->
         <activity

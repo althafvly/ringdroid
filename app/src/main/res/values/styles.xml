@@ -19,6 +19,11 @@
 
 <resources>
 
+    <style name="AppTheme" parent="@android:style/Theme.Material">
+        <!-- Disable edge-to-edge -->
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
     <style name="AudioFileInfoOverlayText">
         <item name="android:paddingLeft">4px</item>
         <item name="android:paddingBottom">4px</item>
