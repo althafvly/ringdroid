@@ -17,13 +17,13 @@ jobs:
           java-version: '17'
 
       - name: Build with Gradle
-        run: ./gradlew assembleDebug lint
+        run: ./gradlew assembleGithubDebug lint
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/github/debug/app-github-debug.apk
 
       - name: Android Lint Report
         uses: yutailang0119/action-android-lint@v4
@@ -38,7 +38,7 @@ jobs:
           tag: "latest"
           name: "latest"
           prerelease: true
-          artifacts: app/build/outputs/apk/debug/app-debug.apk
+          artifacts: app/build/outputs/apk/github/debug/app-github-debug.apk
           token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: true
           replacesArtifacts: true

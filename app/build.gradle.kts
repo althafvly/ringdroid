@@ -24,4 +24,18 @@ android {
             )
         }
     }
+
+    flavorDimensions += "distribution"
+
+    productFlavors {
+        create("github") {
+            dimension = "distribution"
+        }
+
+        create("fdroid") {
+            dimension = "distribution"
+            // F-Droid package name
+            applicationId = "org.thayyil.ringdroid"
+        }
+    }
 }
