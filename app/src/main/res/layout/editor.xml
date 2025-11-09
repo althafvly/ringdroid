@@ -27,13 +27,6 @@
         android:layout_height="0px"
         android:layout_weight="1">
 
-        <!--ImageView
-         android:id="@+id/bkgnd"
-         android:layout_width="fill_parent"
-         android:layout_height="fill_parent"
-         android:scaleType="centerCrop"
-         android:src="@drawable/bkgnd"-->
-
         <com.ringdroid.WaveformView
             android:id="@+id/waveform"
             android:layout_width="fill_parent"
@@ -99,7 +92,7 @@
             android:layout_width="64dip"
             android:layout_height="52dip"
             android:layout_marginTop="6dip"
-            android:layout_marginRight="5dip"
+            android:layout_marginEnd="5dip"
             android:layout_marginBottom="6dip"
             android:contentDescription="@string/ffwd"
             android:src="@android:drawable/ic_media_next" />
@@ -133,8 +126,8 @@
             android:id="@+id/starttext"
             android:layout_width="70dip"
             android:layout_height="40dip"
-            android:layout_marginLeft="10dip"
-            android:layout_marginRight="30dip"
+            android:layout_marginStart="10dip"
+            android:layout_marginEnd="30dip"
             android:gravity="center"
             android:inputType="number|numberDecimal"
             android:textSize="16sp" />
@@ -155,7 +148,7 @@
             android:id="@+id/endtext"
             android:layout_width="70dip"
             android:layout_height="40dip"
-            android:layout_marginLeft="10dip"
+            android:layout_marginStart="10dip"
             android:gravity="center"
             android:inputType="number|numberDecimal"
             android:textSize="16sp" />

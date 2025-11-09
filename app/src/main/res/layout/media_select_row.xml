@@ -25,7 +25,7 @@
         android:id="@+id/row_icon"
         android:layout_width="40dip"
         android:layout_height="fill_parent"
-        android:layout_marginLeft="4dip"
+        android:layout_marginStart="4dip"
         android:gravity="center_vertical"
         android:scaleType="center" />
 
@@ -47,7 +47,7 @@
                 android:id="@+id/row_artist"
                 android:layout_width="0px"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="1dip"
+                android:layout_marginStart="1dip"
                 android:layout_weight="1"
                 android:singleLine="true"
                 android:textColor="#ff99ff"
@@ -57,7 +57,7 @@
                 android:id="@+id/row_album"
                 android:layout_width="0px"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dip"
+                android:layout_marginStart="8dip"
                 android:layout_weight="1"
                 android:singleLine="true"
                 android:textColor="#ffff99"
