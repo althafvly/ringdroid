@@ -19,6 +19,7 @@ package com.ringdroid;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -266,6 +267,15 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
         }
     }
 
+    private boolean isSystemFile(String path) {
+        return path != null && (
+                path.startsWith("/system/") ||
+                        path.startsWith("/product/") ||
+                        path.startsWith("/vendor/") ||
+                        path.startsWith("/system_ext/")
+        );
+    }
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -276,7 +286,13 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
         menu.setHeaderTitle(title);
 
         menu.add(0, CMD_EDIT, 0, R.string.context_menu_edit);
-        menu.add(0, CMD_DELETE, 0, R.string.context_menu_delete);
+
+        String filename = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
+
+        // Only show delete if NOT a system-provided tone
+        if (!isSystemFile(filename)) {
+            menu.add(0, CMD_DELETE, 0, R.string.context_menu_delete);
+        }
 
         // Add items to the context menu item based on file type
         if (0 != c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE))) {
@@ -402,21 +418,30 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
 
     private void onDelete() {
         Cursor c = mAdapter.getCursor();
-        int dataIndex = c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
-        String filename = c.getString(dataIndex);
+        if (c == null) return;
 
-        int uriIndex = getUriIndex(c);
-        if (uriIndex == -1) {
-            showFinalAlert(getResources().getText(R.string.delete_failed));
-            return;
+        long id = c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
+        Uri contentUri = ContentUris.withAppendedId(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+
+        // Legacy direct file delete (Android 9 and below)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            int dataIndex = c.getColumnIndex(MediaStore.Audio.Media.DATA);
+            if (dataIndex != -1) {
+                String filePath = c.getString(dataIndex);
+                if (filePath != null) {
+                    new File(filePath).delete();
+                }
+            }
         }
 
-        if (!new File(filename).delete()) {
+        try {
+            if (getContentResolver().delete(contentUri, null, null) == 0) {
+                showFinalAlert(getResources().getText(R.string.delete_failed));
+            }
+        } catch (Exception e) {
             showFinalAlert(getResources().getText(R.string.delete_failed));
         }
-
-        String itemUri = c.getString(uriIndex) + "/" + c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
-        getContentResolver().delete(Uri.parse(itemUri), null, null);
     }
 
     private void showFinalAlert(CharSequence message) {
