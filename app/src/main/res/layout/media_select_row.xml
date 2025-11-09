@@ -91,6 +91,6 @@
         android:contentDescription="@string/button_options"
         android:gravity="center_vertical"
         android:scaleType="center"
-        android:src="@drawable/navigation_expand" />
+        android:src="@drawable/baseline_navigate_next_24" />
 
 </LinearLayout>

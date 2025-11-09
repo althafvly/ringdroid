@@ -42,7 +42,9 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
+
 import com.ringdroid.soundfile.SoundFile;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -181,16 +183,16 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
 
     private void setSoundIconFromCursor(ImageView view, Cursor cursor) {
         if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE))) {
-            view.setImageResource(R.drawable.type_ringtone);
+            view.setImageResource(R.drawable.baseline_call_24);
             ((View) view.getParent()).setBackgroundColor(getResources().getColor(R.color.type_bkgnd_ringtone));
         } else if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_ALARM))) {
-            view.setImageResource(R.drawable.type_alarm);
+            view.setImageResource(R.drawable.baseline_access_alarm_24);
             ((View) view.getParent()).setBackgroundColor(getResources().getColor(R.color.type_bkgnd_alarm));
         } else if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_NOTIFICATION))) {
-            view.setImageResource(R.drawable.type_notification);
+            view.setImageResource(R.drawable.baseline_notifications_24);
             ((View) view.getParent()).setBackgroundColor(getResources().getColor(R.color.type_bkgnd_notification));
         } else if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_MUSIC))) {
-            view.setImageResource(R.drawable.type_music);
+            view.setImageResource(R.drawable.baseline_music_note_24);
             ((View) view.getParent()).setBackgroundColor(getResources().getColor(R.color.type_bkgnd_music));
         }
 

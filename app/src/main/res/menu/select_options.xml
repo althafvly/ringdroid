@@ -3,13 +3,13 @@
     <item
         android:id="@+id/action_search_filter"
         android:actionViewClass="android.widget.SearchView"
-        android:icon="@drawable/ic_action_search"
+        android:icon="@drawable/baseline_search_24"
         android:showAsAction="always|collapseActionView"
         android:title="@string/search_edit_box" />
 
     <item
         android:id="@+id/action_record"
-        android:icon="@drawable/ic_action_microphone"
+        android:icon="@drawable/baseline_mic_24"
         android:showAsAction="always"
         android:title="@string/button_start_record_activity" />
 

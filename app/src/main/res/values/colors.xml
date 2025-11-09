@@ -34,4 +34,6 @@
     <color name="type_bkgnd_music">#88000000</color>
     <color name="type_bkgnd_unsupported">#88cccccc</color>
 
+    <color name="ic_launcher_background">#FFFFFF</color>
+
 </resources>
