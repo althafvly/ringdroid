@@ -2,6 +2,8 @@
 
 **Ringdroid is now on GitHub!**
 
+**9 November 2025: Ringdroid 2.7.5 adds full support for scoped storage and Upto Android 16 devices, including improved handling of permissions. This release also introduces interface polish, WebP optimizations.**
+
 **2 December 2016: Ringdroid 2.7.4 contains a fix for an [audio bug](https://github.com/google/ringdroid/issues/20) reported by users using 'Nougat' (Android 7.x).**
 
 **22 June 2015: Ringdroid 2.7.3 contains fixes for several bugs reported by users of Ringdroid 2.7.2, and it uses WAV as a fall-back audio format for saving ringtones in case the default AAC (.m4a) encoding fails.**
