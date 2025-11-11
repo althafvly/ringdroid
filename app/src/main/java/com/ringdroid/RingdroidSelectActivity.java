@@ -377,7 +377,7 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
         try {
             // Go to the choose contact activity
             Intent intent = new Intent(Intent.ACTION_EDIT, getUri());
-            intent.setClassName("com.ringdroid", "com.ringdroid.ChooseContactActivity");
+            intent.setClass(this, ChooseContactActivity.class);
             startActivityForResult(intent, REQUEST_CODE_CHOOSE_CONTACT);
         } catch (Exception e) {
             Log.e("Ringdroid", "Couldn't open Choose Contact window");
@@ -457,7 +457,7 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
         try {
             Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse("record"));
             intent.putExtra("was_get_content_intent", mWasGetContentIntent);
-            intent.setClassName("com.ringdroid", "com.ringdroid.RingdroidEditActivity");
+            intent.setClass(this, RingdroidEditActivity.class);
             startActivityForResult(intent, REQUEST_CODE_EDIT);
         } catch (Exception e) {
             Log.e("Ringdroid", "Couldn't start editor");
@@ -471,7 +471,7 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
         try {
             Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse(filename));
             intent.putExtra("was_get_content_intent", mWasGetContentIntent);
-            intent.setClassName("com.ringdroid", "com.ringdroid.RingdroidEditActivity");
+            intent.setClass(this, RingdroidEditActivity.class);
             startActivityForResult(intent, REQUEST_CODE_EDIT);
         } catch (Exception e) {
             Log.e("Ringdroid", "Couldn't start editor");

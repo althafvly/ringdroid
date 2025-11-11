@@ -1368,7 +1368,7 @@ public class RingdroidEditActivity extends Activity
     private void chooseContactForRingtone(Uri uri) {
         try {
             Intent intent = new Intent(Intent.ACTION_EDIT, uri);
-            intent.setClassName("com.ringdroid", "com.ringdroid.ChooseContactActivity");
+            intent.setClass(this, ChooseContactActivity.class);
             startActivityForResult(intent, REQUEST_CODE_CHOOSE_CONTACT);
         } catch (Exception e) {
             Log.e("Ringdroid", "Couldn't open Choose Contact window");
