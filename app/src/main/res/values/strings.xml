@@ -172,7 +172,17 @@
     <string name="about_title">About Ringdroid</string>
     <string name="about_text"><![CDATA[Use Ringdroid to edit MP3, OGG, WAV, AAC, and AMR audio files and create ringtones, alarms, and notifications from them.\n\nTip: copy audio files to your SD card using a USB cable.\n\nTip: tap anywhere on the waveform to start playing at that position.\n\nTip: while playing, tap the word Start or End to quickly set the start and end markers to the current playback time.\n\nVersion %s\n\nDeveloper: Dominic Mazzoni, Nicolas Faralli, althafvly\nGraphics: Joseph Wain\nSupport and evangelizing: Eugene Koh\nEnhancements: Dan Klufas\n\nRingdroid is free software, distributed under the Apache 2.0 license.  Source code is on github.com/google/ringdroid\n]]></string>
 
-    <string name="allow_modify_system_settings">Please allow Modify System Settings to set ringtones.</string>
-    <string name="allow_file_access">Please grant Full File Access.</string>
+    <string name="require_contacts_permission">Please enable contacts permission to assign a ringtone.</string>
+    <string name="required_mic_permission">Microphone permission required to record audio</string>
+    <string name="required_system_modify_permission">Modify system settings permission is required to set ringtone</string>
+    <string name="storage_permission">Storage Permission</string>
+    <string name="write_system_settings">Write System Settings</string>
+    <string name="mic_permission">Microphone Permission</string>
+    <string name="contacts_permission">Contacts Permission</string>
+    <string name="start">Start</string>
+    <string name="storage_permission_summary">Needed to save and access audio files (Required for app to work)</string>
+    <string name="write_system_settings_summary">Needed to set ringtones as system default</string>
+    <string name="mic_permission_summary">Needed to record your own audio clips</string>
+    <string name="contact_permission_summary">Needed to assign ringtones to your contacts</string>
 
 </resources>

@@ -1,96 +1,88 @@
 package com.ringdroid;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.widget.Button;
+import android.widget.Switch;
 
 public class PermissionSplashActivity extends Activity {
 
-    private static final int PERMISSION_REQUEST_CODE = 1;
+    private Switch storageSwitch;
+    private Switch writeSettingsSwitch;
+    private Switch micSwitch;
+    private Switch contactSwitch;
+    private Button nextButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.permission_screen);
+
+        storageSwitch = findViewById(R.id.switch_storage);
+        writeSettingsSwitch = findViewById(R.id.switch_write_settings);
+        micSwitch = findViewById(R.id.switch_mic);
+        contactSwitch = findViewById(R.id.switch_contacts);
+        nextButton = findViewById(R.id.btn_next);
+
+        if (PermissionUtils.hasStoragePermission(this)) {
+            startMainActivity();
+        } else {
+            updateUI();
+        }
+    }
+
+    private void updateUI() {
+        boolean hasStoragePermission = PermissionUtils.hasStoragePermission(this);
+        boolean hasWritePermission = Settings.System.canWrite(this);
+        boolean hasContactPermissions = PermissionUtils.hasContactPermissions(this);
+        boolean hasMicPermissions = PermissionUtils.hasMicPermissions(this);
+
+        storageSwitch.setChecked(hasStoragePermission);
+        storageSwitch.setClickable(!hasStoragePermission);
+        storageSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                PermissionUtils.requestStoragePermission(this);
+            }
+        });
+
+        writeSettingsSwitch.setChecked(hasWritePermission);
+        writeSettingsSwitch.setClickable(!hasWritePermission);
+        writeSettingsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                PermissionUtils.openWriteSettingsScreen(this);
+            }
+        });
+
+        contactSwitch.setChecked(hasContactPermissions);
+        contactSwitch.setClickable(!hasContactPermissions);
+        contactSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                PermissionUtils.requestContactPermissions(this);
+            }
+        });
+
+        micSwitch.setChecked(hasMicPermissions);
+        micSwitch.setClickable(!hasMicPermissions);
+        micSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                PermissionUtils.requestMicPermissions(this);
+            }
+        });
+
+        nextButton.setEnabled(hasStoragePermission);
+        nextButton.setOnClickListener(v -> startMainActivity());
+    }
+
+    private void startMainActivity() {
+        startActivity(new Intent(this, RingdroidSelectActivity.class));
+        finish();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        // Now handle permission flow reliably
-        if (!arePermissionsGranted()) {
-            requestBasePermissions();
-            return;
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-                && !Environment.isExternalStorageManager()) {
-            requestAllFilesAccess();
-            return;
-        }
-
-        if (!Settings.System.canWrite(this)) {
-            requestWriteSettingsPermission();
-            return;
-        }
-
-        startMainActivity();
-    }
-
-    private String[] getRequiredPermissions() {
-        List<String> perms = new ArrayList<>();
-        perms.add(Manifest.permission.READ_CONTACTS);
-        perms.add(Manifest.permission.WRITE_CONTACTS);
-        perms.add(Manifest.permission.RECORD_AUDIO);
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            perms.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-
-        return perms.toArray(new String[0]);
-    }
-
-    private boolean arePermissionsGranted() {
-        for (String p : getRequiredPermissions()) {
-            if (checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED)
-                return false;
-        }
-        return true;
-    }
-
-    private void requestBasePermissions() {
-        requestPermissions(getRequiredPermissions(), PERMISSION_REQUEST_CODE);
-    }
-
-    @TargetApi(Build.VERSION_CODES.R)
-    private void requestAllFilesAccess() {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-        intent.setData(Uri.parse("package:" + getPackageName()));
-        Toast.makeText(this, R.string.allow_file_access, Toast.LENGTH_LONG).show();
-        startActivity(intent);
-    }
-
-    private void requestWriteSettingsPermission() {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-        intent.setData(Uri.parse("package:" + getPackageName()));
-        Toast.makeText(this, R.string.allow_modify_system_settings, Toast.LENGTH_LONG).show();
-        startActivity(intent);
-    }
-
-    private void startMainActivity() {
-        Intent intent = new Intent(this, RingdroidSelectActivity.class);
-        startActivity(intent);
-        finish();
+        updateUI();
     }
 }

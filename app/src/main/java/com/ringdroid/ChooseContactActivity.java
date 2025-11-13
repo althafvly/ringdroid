@@ -22,6 +22,7 @@ import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -59,6 +60,19 @@ public class ChooseContactActivity extends ListActivity implements TextWatcher, 
         // Inflate our UI from its XML layout description.
         setContentView(R.layout.choose_contact);
 
+        if (PermissionUtils.hasContactPermissions(this)) {
+            loadData();
+        } else {
+            PermissionUtils.requestContactPermissions(this);
+        }
+
+        mFilter = findViewById(R.id.search_filter);
+        if (mFilter != null) {
+            mFilter.addTextChangedListener(this);
+        }
+    }
+
+    private void loadData() {
         try {
             mAdapter = new SimpleCursorAdapter(this,
                     // Use a template that displays a text view
@@ -99,15 +113,31 @@ public class ChooseContactActivity extends ListActivity implements TextWatcher, 
             getListView().setOnItemClickListener((parent, view, position, id) -> assignRingtoneToContact());
 
             getLoaderManager().initLoader(0, null, this);
-
         } catch (SecurityException e) {
             // No permission to retrieve contacts?
             Log.e("Ringdroid", e.toString());
         }
+    }
 
-        mFilter = findViewById(R.id.search_filter);
-        if (mFilter != null) {
-            mFilter.addTextChangedListener(this);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode != PermissionUtils.CONTACT_PERMISSION_REQUEST) return;
+
+        boolean allPermissionsGranted = true;
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                allPermissionsGranted = false;
+                break;
+            }
+        }
+
+        if (allPermissionsGranted) {
+            loadData();
+        } else {
+            Toast.makeText(this, R.string.require_contacts_permission, Toast.LENGTH_LONG).show();
+            finish();
         }
     }
 

@@ -41,7 +41,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
 import com.ringdroid.soundfile.SoundFile;
 
@@ -330,15 +329,11 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
         // If the item is a ringtone then set the default ringtone,
         // otherwise it has to be a notification so set the default notification sound
         if (0 != c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE))) {
-            RingtoneManager.setActualDefaultRingtoneUri(RingdroidSelectActivity.this, RingtoneManager.TYPE_RINGTONE,
-                    getUri());
-            Toast.makeText(RingdroidSelectActivity.this, R.string.default_ringtone_success_message, Toast.LENGTH_SHORT)
-                    .show();
+            RingdroidUtils.setDefaultRingTone(RingdroidSelectActivity.this,
+                    RingtoneManager.TYPE_RINGTONE, getUri(), false);
         } else {
-            RingtoneManager.setActualDefaultRingtoneUri(RingdroidSelectActivity.this, RingtoneManager.TYPE_NOTIFICATION,
-                    getUri());
-            Toast.makeText(RingdroidSelectActivity.this, R.string.default_notification_success_message,
-                    Toast.LENGTH_SHORT).show();
+            RingdroidUtils.setDefaultRingTone(RingdroidSelectActivity.this,
+                    RingtoneManager.TYPE_NOTIFICATION, getUri(), false);
         }
     }
 

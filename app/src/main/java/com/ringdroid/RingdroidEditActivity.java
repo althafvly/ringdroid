@@ -209,6 +209,29 @@ public class RingdroidEditActivity extends Activity
                 .setPositiveButton(R.string.alert_ok_button, null).setCancelable(false).show();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PermissionUtils.MIC_PERMISSION_REQUEST) {
+            boolean micPermissionGranted = true;
+
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    micPermissionGranted = false;
+                    break;
+                }
+            }
+
+            if (micPermissionGranted) {
+                recordAudio();
+            } else {
+                Toast.makeText(this, R.string.required_mic_permission, Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+    }
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle icicle) {
@@ -247,7 +270,11 @@ public class RingdroidEditActivity extends Activity
         if (!mFilename.equals("record")) {
             loadFromFile();
         } else {
-            recordAudio();
+            if (PermissionUtils.hasMicPermissions(this)) {
+                recordAudio();
+            } else {
+                PermissionUtils.requestMicPermissions(this);
+            }
         }
     }
 
@@ -1328,9 +1355,8 @@ public class RingdroidEditActivity extends Activity
             new AlertDialog.Builder(RingdroidEditActivity.this).setTitle(R.string.alert_title_success)
                     .setMessage(R.string.set_default_notification)
                     .setPositiveButton(R.string.alert_yes_button, (dialog, whichButton) -> {
-                        RingtoneManager.setActualDefaultRingtoneUri(RingdroidEditActivity.this,
-                                RingtoneManager.TYPE_NOTIFICATION, newUri);
-                        finish();
+                        RingdroidUtils.setDefaultRingTone(RingdroidEditActivity.this,
+                                RingtoneManager.TYPE_NOTIFICATION, newUri, true);
                     }).setNegativeButton(R.string.alert_no_button, (dialog, whichButton) -> finish())
                     .setCancelable(false).show();
             return;
@@ -1345,11 +1371,8 @@ public class RingdroidEditActivity extends Activity
                 int actionId = response.arg1;
                 switch (actionId) {
                     case R.id.button_make_default :
-                        RingtoneManager.setActualDefaultRingtoneUri(RingdroidEditActivity.this,
-                                RingtoneManager.TYPE_RINGTONE, newUri);
-                        Toast.makeText(RingdroidEditActivity.this, R.string.default_ringtone_success_message,
-                                Toast.LENGTH_SHORT).show();
-                        finish();
+                        RingdroidUtils.setDefaultRingTone(RingdroidEditActivity.this,
+                                RingtoneManager.TYPE_RINGTONE, newUri, true);
                         break;
                     case R.id.button_choose_contact :
                         chooseContactForRingtone(newUri);
