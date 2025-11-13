@@ -360,12 +360,26 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
     private Uri getUri() {
         // Get the uri of the item that is in the row
         Cursor c = mAdapter.getCursor();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            int idCol = c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID);
+            long id = c.getLong(idCol);
+
+            return ContentUris.withAppendedId(
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    id
+            );
+        }
+
         int uriIndex = getUriIndex(c);
         if (uriIndex == -1) {
             return null;
         }
-        String itemUri = c.getString(uriIndex) + "/" + c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
-        return (Uri.parse(itemUri));
+
+        String itemUri = c.getString(uriIndex) + "/" +
+                c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
+
+        return Uri.parse(itemUri);
     }
 
     private boolean chooseContactForRingtone(MenuItem item) {
