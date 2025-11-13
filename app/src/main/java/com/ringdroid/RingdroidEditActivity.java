@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -237,7 +238,7 @@ public class RingdroidEditActivity extends Activity
         mSoundFile = null;
         mKeyDown = false;
 
-        mHandler = new Handler();
+        mHandler = new Handler(Looper.getMainLooper());
 
         loadGui();
 
@@ -1339,7 +1340,7 @@ public class RingdroidEditActivity extends Activity
         // three choices: make this your default ringtone, assign it to a
         // contact, or do nothing.
 
-        final Handler handler = new Handler() {
+        final Handler handler = new Handler(Looper.getMainLooper()) {
             public void handleMessage(Message response) {
                 int actionId = response.arg1;
                 switch (actionId) {
@@ -1380,7 +1381,7 @@ public class RingdroidEditActivity extends Activity
             handlePause();
         }
 
-        final Handler handler = new Handler() {
+        final Handler handler = new Handler(Looper.getMainLooper()) {
             public void handleMessage(Message response) {
                 CharSequence newTitle = (CharSequence) response.obj;
                 mNewFileKind = response.arg1;
