@@ -11,8 +11,8 @@ android {
         applicationId = "com.ringdroid"
         minSdk = 26
         targetSdk = 36
-        versionCode = 20706
-        versionName = "2.7.6"
+        versionCode = 20707
+        versionName = "2.7.7"
     }
 
     buildTypes {
