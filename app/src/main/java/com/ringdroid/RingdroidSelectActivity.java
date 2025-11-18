@@ -105,6 +105,8 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
+        handleIncoming(getIntent());
+
         mShowAll = false;
 
         String status = Environment.getExternalStorageState();
@@ -473,12 +475,36 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
         }
     }
 
+    private void handleIncoming(Intent intent) {
+        Uri audioUri = null;
+        String action = intent.getAction();
+
+        if (Intent.ACTION_VIEW.equals(action)) {
+            audioUri = intent.getData();
+        } else if (Intent.ACTION_SEND.equals(action)) {
+            audioUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        }
+
+        if (audioUri != null) {
+            File file = FilesUtil.getFileFromUri(this, audioUri);
+            if (file != null) {
+                startRingdroidEditor(Uri.fromFile(file));
+            } else {
+                Log.e("Ringdroid", "Could not resolve file: " + audioUri);
+            }
+        }
+    }
+
     private void startRingdroidEditor() {
         Cursor c = mAdapter.getCursor();
         int dataIndex = c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
         String filename = c.getString(dataIndex);
+        startRingdroidEditor(Uri.parse(filename));
+    }
+
+    private void startRingdroidEditor(Uri filename) {
         try {
-            Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse(filename));
+            Intent intent = new Intent(Intent.ACTION_EDIT, filename);
             intent.putExtra("was_get_content_intent", mWasGetContentIntent);
             intent.setClass(this, RingdroidEditActivity.class);
             startActivityForResult(intent, REQUEST_CODE_EDIT);
