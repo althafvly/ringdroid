@@ -7,7 +7,7 @@ import android.provider.Settings;
 import android.widget.Button;
 import android.widget.Switch;
 
-public class PermissionSplashActivity extends Activity {
+public class PermissionActivity extends Activity {
 
     private Switch storageSwitch;
     private Switch writeSettingsSwitch;

@@ -52,7 +52,7 @@
 
         <!-- Main activity that's launched when the user opens Ringdroid. -->
         <activity
-            android:name=".PermissionSplashActivity"
+            android:name=".PermissionActivity"
             android:label="@string/main_activity_label"
             android:exported="true">
             <intent-filter>
