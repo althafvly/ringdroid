@@ -151,6 +151,30 @@
      -->
 
     <string name="about_title">Ringdroid について</string>
-    <string name="about_text"><![CDATA[Use Ringdroid to edit MP3, OGG, WAV, AAC, and AMR audio files and create ringtones, alarms, and notifications from them.\n\nTip: copy audio files to your SD card using a USB cable.\n\nTip: long-press on an audio file from the main screen to delete it.  More below…\n\nTip: tap anywhere on the waveform to start playing at that position.\n\nTip: while playing, tap the word Start or End to quickly set the start and end markers to the current playback time.\n\nTip: Use the jog wheel for more precise adjustments.\n\nVersion %s\n\nDeveloper: Dominic Mazzoni, Nicolas Faralli, althafvly\nGraphics: Joseph Wain\nSupport and evangelizing: Eugene Koh\n\nRingdroid is free software, distributed under the Apache 2.0 license.  Source code is on github.com/google/ringdroid\n]]></string>
+    <string name="about_text_html">
+    <![CDATA[
+        <b>Ringdroid</b><br><br>
+        Ringdroid を使用して MP3、OGG、WAV、AAC、AMR の音声ファイルを編集し、着信音、アラーム、通知音を作成できます。<br><br>
+
+        <b>ヒント：</b><br>
+        • USB ケーブルを使って音声ファイルをコピー<br>
+        • 波形上の任意の場所をタップしてその位置から再生<br>
+        • 再生中に「開始」または「終了」をタップしてマーカーを設定<br><br>
+
+        <b>バージョン: %s</b><br><br>
+
+        <b>開発者：</b><br>
+        Dominic Mazzoni<br>
+        Nicolas Faralli<br>
+        althafvly<br><br>
+
+        <b>グラフィック：</b> Joseph Wain<br>
+        <b>サポート：</b> Eugene Koh<br>
+        <b>改善：</b> Dan Klufas<br><br>
+
+        Ringdroid は Apache 2.0 ライセンスのもとで提供されるフリーソフトです。<br>
+        ソースコード：<a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+    ]]>
+    </string>
 
 </resources>

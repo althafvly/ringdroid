@@ -32,7 +32,9 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -204,9 +206,19 @@ public class RingdroidEditActivity extends Activity
         } catch (PackageManager.NameNotFoundException e) {
             versionName = "unknown";
         }
-        new AlertDialog.Builder(activity).setTitle(R.string.about_title)
-                .setMessage(activity.getString(R.string.about_text, versionName))
-                .setPositiveButton(R.string.alert_ok_button, null).setCancelable(false).show();
+
+        String html = activity.getString(R.string.about_text_html, versionName);
+        AlertDialog dialog = new AlertDialog.Builder(activity)
+                .setTitle(R.string.about_title)
+                .setMessage(Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY))
+                .setPositiveButton(R.string.alert_ok_button, null)
+                .show();
+
+        // Make links clickable
+        TextView messageView = dialog.findViewById(android.R.id.message);
+        if (messageView != null) {
+            messageView.setMovementMethod(LinkMovementMethod.getInstance());
+        }
     }
 
     @Override

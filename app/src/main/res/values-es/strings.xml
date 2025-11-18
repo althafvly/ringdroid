@@ -115,5 +115,29 @@
        Acerca de
        -->
     <string name="about_title">Acerca de Ringdroid</string>
-    <string name="about_text"><![CDATA[Usa Ringdroid para editar archivos de sonido MP3, OGG, WAV, AAC y AMR y crear tonos, alarmas y notificaciones.\n\nTruco: copia archivos de sonido en la tarjeta SD con un cable USB.\n\nTruco: para eliminar un archivo de sonido, púlsalo durante unos segundos en la pantalla principal. Más…\n\nTruco: toca en cualquier parte de la onda para empezar a reproducir desde ese punto.\n\nTruco: durante la reproducción, toca la palabra Inicio o Fin para definir rápidamente los marcadores de inicio y fin.\n\nTruco: usa el botón para ajustes más precisos.\n\nVersión %s\n\nDesarrollador: Dominic Mazzoni, Nicolas Faralli\nGráficos: Joseph Wain\nSoporte y textos: Eugene Koh\n\nRingdroid es software gratuito distribuido con la licencia Apache 2.0. El código fuente está en github.com/google/ringdroid\n]]></string>
+    <string name="about_text_html">
+    <![CDATA[
+        <b>Ringdroid</b><br><br>
+        Usa Ringdroid para editar archivos de audio MP3, OGG, WAV, AAC y AMR y crear tonos, alarmas y notificaciones.<br><br>
+
+        <b>Consejos:</b><br>
+        • Copia archivos de audio usando un cable USB<br>
+        • Toca cualquier parte de la forma de onda para reproducir desde allí<br>
+        • Durante la reproducción, toca “Inicio” o “Fin” para ajustar los marcadores<br><br>
+
+        <b>Versión: %s</b><br><br>
+
+        <b>Desarrolladores:</b><br>
+        Dominic Mazzoni<br>
+        Nicolas Faralli<br>
+        althafvly<br><br>
+
+        <b>Gráficos:</b> Joseph Wain<br>
+        <b>Soporte:</b> Eugene Koh<br>
+        <b>Mejoras:</b> Dan Klufas<br><br>
+
+        Ringdroid es software libre bajo la licencia Apache 2.0.<br>
+        Código fuente: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+    ]]>
+    </string>
 </resources>

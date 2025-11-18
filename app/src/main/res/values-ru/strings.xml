@@ -118,6 +118,30 @@
     <!--      About      -->
 
     <string name="about_title">О программе Ringdroid</string>
-    <string name="about_text"><![CDATA[Редактируйте в программе Ringdroid аудиофайлы MP3, OGG, WAV, AAC и AMR, создавайте сигналы звонка, будильника и уведомления.\n\nСовет. Копируйте аудиофайлы на SD-карту с помощью кабеля USB.\n\nСовет. Чтобы удалить файл, нажмите и удерживайте его на главном экране.  См. ниже…\n\nСовет. Коснитесь графика сигнала в любом месте, чтобы начать воспроизведение.\n\nСовет. Для быстрой установки маркеров начала или конца фрагмента коснитесь во время воспроизведения слова Начало или Конец.\n\nСовет. Для точной настройки используйте колесико мыши.\n\nВерсия %s\n\nРазработчик: Dominic Mazzoni, Nicolas Faralli\nГрафика: Joseph Wain\nПоддержка и реклама: Eugene Koh\n\nRingdroid – это открытое ПО, распространяемое по лицензии Apache 2.0.  Исходный код см. на github.com/google/ringdroid\n]]></string>
+    <string name="about_text_html">
+    <![CDATA[
+        <b>Ringdroid</b><br><br>
+        Используйте Ringdroid для редактирования аудиофайлов MP3, OGG, WAV, AAC и AMR и создания рингтонов, будильников и уведомлений.<br><br>
+
+        <b>Советы:</b><br>
+        • Копируйте аудиофайлы через USB-кабель<br>
+        • Нажмите на любую точку волны, чтобы начать воспроизведение оттуда<br>
+        • Во время воспроизведения нажмите «Начало» или «Конец» для установки маркеров<br><br>
+
+        <b>Версия: %s</b><br><br>
+
+        <b>Разработчики:</b><br>
+        Dominic Mazzoni<br>
+        Nicolas Faralli<br>
+        althafvly<br><br>
+
+        <b>Графика:</b> Joseph Wain<br>
+        <b>Поддержка:</b> Eugene Koh<br>
+        <b>Улучшения:</b> Dan Klufas<br><br>
+
+        Ringdroid — свободное ПО под лицензией Apache 2.0.<br>
+        Исходный код: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+    ]]>
+    </string>
 
 </resources>

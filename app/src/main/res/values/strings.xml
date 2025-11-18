@@ -170,7 +170,31 @@
      -->
 
     <string name="about_title">About Ringdroid</string>
-    <string name="about_text"><![CDATA[Use Ringdroid to edit MP3, OGG, WAV, AAC, and AMR audio files and create ringtones, alarms, and notifications from them.\n\nTip: copy audio files to your SD card using a USB cable.\n\nTip: tap anywhere on the waveform to start playing at that position.\n\nTip: while playing, tap the word Start or End to quickly set the start and end markers to the current playback time.\n\nVersion %s\n\nDeveloper: Dominic Mazzoni, Nicolas Faralli, althafvly\nGraphics: Joseph Wain\nSupport and evangelizing: Eugene Koh\nEnhancements: Dan Klufas\n\nRingdroid is free software, distributed under the Apache 2.0 license.  Source code is on github.com/google/ringdroid\n]]></string>
+    <string name="about_text_html">
+        <![CDATA[
+            <b>Ringdroid</b><br><br>
+            Use Ringdroid to edit MP3, OGG, WAV, AAC, and AMR audio files and create ringtones, alarms, and notifications.<br><br>
+
+            <b>Tips:</b><br>
+            • Copy audio files using USB<br>
+            • Tap anywhere on the waveform to play<br>
+            • Tap Start/End while playing to set markers<br><br>
+
+            <b>Version: %s</b><br><br>
+
+            <b>Developers:</b><br>
+            Dominic Mazzoni<br>
+            Nicolas Faralli<br>
+            althafvly<br><br>
+
+            <b>Graphics:</b> Joseph Wain<br>
+            <b>Support:</b> Eugene Koh<br>
+            <b>Enhancements:</b> Dan Klufas<br><br>
+
+            Ringdroid is free software under Apache 2.0.<br>
+            Source code: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+        ]]>
+    </string>
 
     <string name="require_contacts_permission">Please enable contacts permission to assign a ringtone.</string>
     <string name="required_mic_permission">Microphone permission required to record audio</string>

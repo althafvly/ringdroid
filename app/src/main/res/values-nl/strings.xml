@@ -153,6 +153,30 @@
      -->
 
     <string name="about_title">Over Ringdroid</string>
-    <string name="about_text"><![CDATA[Met Ringdroid kunt u MP3-, OGG-, WAV-, AAC- en AMR-audiobestanden bewerken en beltonen, alarmen en meldingen van deze bestanden maken.\n\nTip: kopieer audiobestanden naar uw SD-kaart met een USB-kabel.\n\nTip: druk lang op een audiobestand in het hoofdscherm om het te verwijderen. Meer hieronder…\n\nTip: tik ergens op de golfvorm om het afspelen te starten vanaf die positie.\n\nTip: tik tijdens het afspelen op het woord Start of Eind om snel de start- en eindmarkeringen in te stellen op de huidige afspeeltijd.\n\nTip: gebruik de draaiknop voor nauwkeurigere aanpassingen.\n\nVersie %s\n\nOntwikkelaar: Dominic Mazzoni, Nicolas Faralli\nGraphics: Joseph Wain\nOndersteuning en evangelisatie: Eugene Koh\n\nRingdroid is gratis software, gedistribueerd onder de Apache 2.0-licentie. Broncode is beschikbaar op github.com/google/ringdroid\n]]></string>
+    <string name="about_text_html">
+    <![CDATA[
+        <b>Ringdroid</b><br><br>
+        Gebruik Ringdroid om MP3-, OGG-, WAV-, AAC- en AMR-audio te bewerken en er beltonen, alarmen en meldingen van te maken.<br><br>
+
+        <b>Tips:</b><br>
+        • Audio­bestanden kopiëren via USB<br>
+        • Tik ergens op de golfvorm om vanaf dat punt af te spelen<br>
+        • Tik tijdens het afspelen op “Start” of “Einde” om markeringen te zetten<br><br>
+
+        <b>Versie: %s</b><br><br>
+
+        <b>Ontwikkelaars:</b><br>
+        Dominic Mazzoni<br>
+        Nicolas Faralli<br>
+        althafvly<br><br>
+
+        <b>Grafisch ontwerp:</b> Joseph Wain<br>
+        <b>Ondersteuning:</b> Eugene Koh<br>
+        <b>Verbeteringen:</b> Dan Klufas<br><br>
+
+        Ringdroid is vrije software onder de Apache 2.0-licentie.<br>
+        Broncode: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+    ]]>
+    </string>
 
 </resources>
