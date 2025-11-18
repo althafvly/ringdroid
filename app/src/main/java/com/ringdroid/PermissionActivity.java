@@ -2,6 +2,7 @@ package com.ringdroid;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.Button;
@@ -35,7 +36,12 @@ public class PermissionActivity extends Activity {
 
     private void updateUI() {
         boolean hasStoragePermission = PermissionUtils.hasStoragePermission(this);
-        boolean hasWritePermission = Settings.System.canWrite(this);
+        boolean hasWritePermission;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            hasWritePermission = true;
+        } else {
+            hasWritePermission = Settings.System.canWrite(this);
+        }
         boolean hasContactPermissions = PermissionUtils.hasContactPermissions(this);
         boolean hasMicPermissions = PermissionUtils.hasMicPermissions(this);
 

@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ringdroid"
-        minSdk = 26
+        minSdk = 21
         targetSdk = 36
         versionCode = 20707
         versionName = "2.7.7"

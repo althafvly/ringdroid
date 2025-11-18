@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -208,11 +209,17 @@ public class RingdroidEditActivity extends Activity
         }
 
         String html = activity.getString(R.string.about_text_html, versionName);
-        AlertDialog dialog = new AlertDialog.Builder(activity)
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity)
                 .setTitle(R.string.about_title)
-                .setMessage(Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY))
-                .setPositiveButton(R.string.alert_ok_button, null)
-                .show();
+                .setPositiveButton(R.string.alert_ok_button, null);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            builder.setMessage(Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            builder.setMessage(Html.fromHtml(html)); // deprecated but works on < 24
+        }
+
+        AlertDialog dialog = builder.show();
 
         // Make links clickable
         TextView messageView = dialog.findViewById(android.R.id.message);

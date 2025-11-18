@@ -1,6 +1,7 @@
 package com.ringdroid;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -16,11 +17,19 @@ public class PermissionUtils {
     public static final int MIC_PERMISSION_REQUEST = 3;
 
     public static boolean hasContactPermissions(Activity activity) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+
         return activity.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
                 && activity.checkSelfPermission(Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED;
     }
 
     public static void requestContactPermissions(Activity activity) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+
         activity.requestPermissions(
                 new String[]{
                         Manifest.permission.READ_CONTACTS,
@@ -31,10 +40,18 @@ public class PermissionUtils {
     }
 
     public static boolean hasMicPermissions(Activity activity) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+
         return activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 
     public static void requestMicPermissions(Activity activity) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+
         activity.requestPermissions(
                 new String[]{
                         Manifest.permission.RECORD_AUDIO
@@ -44,6 +61,10 @@ public class PermissionUtils {
     }
 
     public static boolean hasStoragePermission(Activity activity) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             return activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED;
@@ -53,6 +74,10 @@ public class PermissionUtils {
     }
 
     public static void requestStoragePermission(Activity activity) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             activity.requestPermissions(
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -70,6 +95,7 @@ public class PermissionUtils {
         activity.startActivity(intent);
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     public static void openWriteSettingsScreen(Activity activity) {
         Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
                 .setData(Uri.parse("package:" + activity.getPackageName()));
