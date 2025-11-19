@@ -16,7 +16,6 @@
 
 package com.ringdroid.soundfile;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -25,11 +24,10 @@ import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.media.MediaRecorder;
 import android.util.Log;
+import com.ringdroid.FilesUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
@@ -594,7 +592,7 @@ public class SoundFile {
             outputStream.close();
         } catch (IOException e) {
             Log.e("Ringdroid", "Failed to create the .m4a file.");
-            Log.e("Ringdroid", getStackTrace(e));
+            Log.e("Ringdroid", FilesUtil.getStackTrace(e));
         }
     }
 
@@ -675,13 +673,6 @@ public class SoundFile {
             outputStream.write(buffer, 0, numBytesLeft);
         }
         outputStream.close();
-    }
-
-    // Return the stack trace of a given exception.
-    private String getStackTrace(Exception e) {
-        StringWriter writer = new StringWriter();
-        e.printStackTrace(new PrintWriter(writer));
-        return writer.toString();
     }
 
     // Progress listener interface.

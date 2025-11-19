@@ -1,7 +1,6 @@
 package com.ringdroid;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -12,9 +11,9 @@ import android.os.Environment;
 import android.provider.Settings;
 
 public class PermissionUtils {
-    private static final int STORAGE_PERMISSION_REQUEST = 1;
     public static final int CONTACT_PERMISSION_REQUEST = 2;
     public static final int MIC_PERMISSION_REQUEST = 3;
+    private static final int STORAGE_PERMISSION_REQUEST = 1;
 
     public static boolean hasContactPermissions(Activity activity) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -22,7 +21,8 @@ public class PermissionUtils {
         }
 
         return activity.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
-                && activity.checkSelfPermission(Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+                && activity
+                        .checkSelfPermission(Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED;
     }
 
     public static void requestContactPermissions(Activity activity) {
@@ -30,13 +30,8 @@ public class PermissionUtils {
             return;
         }
 
-        activity.requestPermissions(
-                new String[]{
-                        Manifest.permission.READ_CONTACTS,
-                        Manifest.permission.WRITE_CONTACTS
-                },
-                CONTACT_PERMISSION_REQUEST
-        );
+        activity.requestPermissions(new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS},
+                CONTACT_PERMISSION_REQUEST);
     }
 
     public static boolean hasMicPermissions(Activity activity) {
@@ -52,12 +47,7 @@ public class PermissionUtils {
             return;
         }
 
-        activity.requestPermissions(
-                new String[]{
-                        Manifest.permission.RECORD_AUDIO
-                },
-                MIC_PERMISSION_REQUEST
-        );
+        activity.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, MIC_PERMISSION_REQUEST);
     }
 
     public static boolean hasStoragePermission(Activity activity) {
@@ -66,8 +56,8 @@ public class PermissionUtils {
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            return activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED;
+            return activity.checkSelfPermission(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         } else {
             return Environment.isExternalStorageManager();
         }
@@ -79,10 +69,8 @@ public class PermissionUtils {
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            activity.requestPermissions(
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    STORAGE_PERMISSION_REQUEST
-            );
+            activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    STORAGE_PERMISSION_REQUEST);
         } else {
             openManageAllFilesScreen(activity);
         }

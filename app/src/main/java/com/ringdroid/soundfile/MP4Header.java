@@ -70,29 +70,6 @@ public class MP4Header {
         return new MP4Header(sampleRate, numChannels, frame_size, bitrate).mHeader;
     }
 
-    public String toString() {
-        StringBuilder str = new StringBuilder();
-        if (mHeader == null) {
-            return str.toString();
-        }
-        int num_32bits_per_lines = 8;
-        int count = 0;
-        for (byte b : mHeader) {
-            boolean break_line = count > 0 && count % (num_32bits_per_lines * 4) == 0;
-            boolean insert_space = count > 0 && count % 4 == 0 && !break_line;
-            if (break_line) {
-                str.append('\n');
-            }
-            if (insert_space) {
-                str.append(' ');
-            }
-            str.append(String.format("%02X", b));
-            count++;
-        }
-
-        return str.toString();
-    }
-
     private void setHeader() {
         // create the atoms needed to build the header.
         Atom a_ftyp = getFTYPAtom();
@@ -436,8 +413,8 @@ public class MP4Header {
         Atom atom = new Atom("stco", (byte) 0, 0);
         atom.setData(new byte[]{0, 0, 0, 0x01, // entry count
                 0, 0, 0, 0 // chunk offset. Set to 0 here. Must be set later. Here it should be
-                // the size of the complete header, as the AAC stream will follow
-                // immediately.
+                            // the size of the complete header, as the AAC stream will follow
+                            // immediately.
         });
         return atom;
     }

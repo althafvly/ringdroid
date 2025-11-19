@@ -6,29 +6,45 @@
 
     <!-- Golden Border -->
     <path
-        android:strokeColor="#FFC94D"
-        android:strokeWidth="1.5"
         android:fillColor="@android:color/transparent"
-        android:pathData="M6,6h48a4,4 0 0 1 4,4v10a4,4 0 0 1 -4,4H6a4,4 0 0 1 -4,-4V10a4,4 0 0 1 4,-4z"/>
+        android:pathData="M6,6h48a4,4 0 0 1 4,4v10a4,4 0 0 1 -4,4H6a4,4 0 0 1 -4,-4V10a4,4 0 0 1 4,-4z"
+        android:strokeWidth="1.5"
+        android:strokeColor="#FFC94D" />
 
     <!-- Background Fill -->
     <path
         android:fillColor="#7A8791"
-        android:pathData="M6,6h48a4,4 0 0 1 4,4v10a4,4 0 0 1 -4,4H6a4,4 0 0 1 -4,-4V10a4,4 0 0 1 4,-4z"/>
+        android:pathData="M6,6h48a4,4 0 0 1 4,4v10a4,4 0 0 1 -4,4H6a4,4 0 0 1 -4,-4V10a4,4 0 0 1 4,-4z" />
 
     <!-- Left arrow -->
-    <path android:fillColor="#FFFFFF" android:pathData="M12,15l4,-4v8z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,15l4,-4v8z" />
 
     <!-- Grip lines -->
-    <path android:fillColor="#FFFFFF" android:pathData="M26,11h1v8h-1z"/>
-    <path android:fillColor="#FFFFFF" android:pathData="M28,11h1v8h-1z"/>
-    <path android:fillColor="#FFFFFF" android:pathData="M30,11h1v8h-1z"/>
-    <path android:fillColor="#FFFFFF" android:pathData="M32,11h1v8h-1z"/>
-    <path android:fillColor="#FFFFFF" android:pathData="M34,11h1v8h-1z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M26,11h1v8h-1z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M28,11h1v8h-1z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M30,11h1v8h-1z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M32,11h1v8h-1z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,11h1v8h-1z" />
 
     <!-- Right arrow -->
-    <path android:fillColor="#FFFFFF" android:pathData="M48,15l-4,-4v8z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M48,15l-4,-4v8z" />
 
     <!-- Top Arrow -->
-    <path android:fillColor="#FFFFFF" android:pathData="M30,2l-4,4h8z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M30,2l-4,4h8z" />
 </vector>

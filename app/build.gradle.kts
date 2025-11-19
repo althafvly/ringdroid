@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.spotless)
 }
 
 android {
@@ -38,4 +39,24 @@ android {
             applicationId = "org.thayyil.ringdroid"
         }
     }
+}
+
+spotless {
+    java {
+        removeUnusedImports()
+        eclipse()
+        leadingSpacesToTabs(2)
+        leadingTabsToSpaces(4)
+        target("src/*/java/**/*.java")
+    }
+    format("xml") {
+        target("src/**/*.xml")
+        targetExclude("**/build/", ".idea/")
+        trimTrailingWhitespace()
+        leadingTabsToSpaces()
+    }
+}
+
+tasks.named("preBuild") {
+    dependsOn("spotlessCheck")
 }

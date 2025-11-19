@@ -209,8 +209,7 @@ public class RingdroidEditActivity extends Activity
         }
 
         String html = activity.getString(R.string.about_text_html, versionName);
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity)
-                .setTitle(R.string.about_title)
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity).setTitle(R.string.about_title)
                 .setPositiveButton(R.string.alert_ok_button, null);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -686,24 +685,6 @@ public class RingdroidEditActivity extends Activity
         updateDisplay();
     }
 
-    private final Runnable mTimerRunnable = new Runnable() {
-        public void run() {
-            // Updating an EditText is slow on Android. Make sure
-            // we only do the update if the text has actually changed.
-            if (mStartPos != mLastDisplayedStartPos && !mStartText.hasFocus()) {
-                mStartText.setText(formatTime(mStartPos));
-                mLastDisplayedStartPos = mStartPos;
-            }
-
-            if (mEndPos != mLastDisplayedEndPos && !mEndText.hasFocus()) {
-                mEndText.setText(formatTime(mEndPos));
-                mLastDisplayedEndPos = mEndPos;
-            }
-
-            mHandler.postDelayed(mTimerRunnable, 100);
-        }
-    };
-
     private void loadFromFile() {
         mFile = new File(mFilename);
 
@@ -781,6 +762,24 @@ public class RingdroidEditActivity extends Activity
         });
         mLoadSoundFileThread.start();
     }
+
+    private final Runnable mTimerRunnable = new Runnable() {
+        public void run() {
+            // Updating an EditText is slow on Android. Make sure
+            // we only do the update if the text has actually changed.
+            if (mStartPos != mLastDisplayedStartPos && !mStartText.hasFocus()) {
+                mStartText.setText(formatTime(mStartPos));
+                mLastDisplayedStartPos = mStartPos;
+            }
+
+            if (mEndPos != mLastDisplayedEndPos && !mEndText.hasFocus()) {
+                mEndText.setText(formatTime(mEndPos));
+                mLastDisplayedEndPos = mEndPos;
+            }
+
+            mHandler.postDelayed(mTimerRunnable, 100);
+        }
+    };
 
     private void recordAudio() {
         mFile = null;
@@ -1115,7 +1114,7 @@ public class RingdroidEditActivity extends Activity
         CharSequence title;
         if (e != null) {
             Log.e("Ringdroid", "Error: " + message);
-            Log.e("Ringdroid", getStackTrace(e));
+            Log.e("Ringdroid", FilesUtil.getStackTrace(e));
             title = getResources().getText(R.string.alert_title_failure);
             setResult(RESULT_CANCELED, new Intent());
         } else {
@@ -1374,8 +1373,8 @@ public class RingdroidEditActivity extends Activity
             new AlertDialog.Builder(RingdroidEditActivity.this).setTitle(R.string.alert_title_success)
                     .setMessage(R.string.set_default_notification)
                     .setPositiveButton(R.string.alert_yes_button, (dialog, whichButton) -> {
-                        RingdroidUtils.setDefaultRingTone(RingdroidEditActivity.this,
-                                RingtoneManager.TYPE_NOTIFICATION, newUri, true);
+                        RingdroidUtils.setDefaultRingTone(RingdroidEditActivity.this, RingtoneManager.TYPE_NOTIFICATION,
+                                newUri, true);
                     }).setNegativeButton(R.string.alert_no_button, (dialog, whichButton) -> finish())
                     .setCancelable(false).show();
             return;
@@ -1390,8 +1389,8 @@ public class RingdroidEditActivity extends Activity
                 int actionId = response.arg1;
                 switch (actionId) {
                     case R.id.button_make_default :
-                        RingdroidUtils.setDefaultRingTone(RingdroidEditActivity.this,
-                                RingtoneManager.TYPE_RINGTONE, newUri, true);
+                        RingdroidUtils.setDefaultRingTone(RingdroidEditActivity.this, RingtoneManager.TYPE_RINGTONE,
+                                newUri, true);
                         break;
                     case R.id.button_choose_contact :
                         chooseContactForRingtone(newUri);
@@ -1437,11 +1436,5 @@ public class RingdroidEditActivity extends Activity
 
     private long getCurrentTime() {
         return System.nanoTime() / 1000000;
-    }
-
-    private String getStackTrace(Exception e) {
-        StringWriter writer = new StringWriter();
-        e.printStackTrace(new PrintWriter(writer));
-        return writer.toString();
     }
 }

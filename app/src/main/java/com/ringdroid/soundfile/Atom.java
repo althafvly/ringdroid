@@ -164,25 +164,4 @@ public class Atom { // note: latest versions of spec simply call it 'box' instea
         }
         return atom_bytes;
     }
-
-    // Used for debugging purpose only.
-    public String toString() {
-        StringBuilder str = new StringBuilder();
-        byte[] atom_bytes = getBytes();
-
-        for (int i = 0; i < atom_bytes.length; i++) {
-            if (i % 8 == 0 && i > 0) {
-                str.append('\n');
-            }
-            str.append(String.format("0x%02X", atom_bytes[i]));
-            if (i < atom_bytes.length - 1) {
-                str.append(',');
-                if (i % 8 < 7) {
-                    str.append(' ');
-                }
-            }
-        }
-        str.append('\n');
-        return str.toString();
-    }
 }

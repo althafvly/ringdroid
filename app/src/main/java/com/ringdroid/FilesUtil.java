@@ -7,8 +7,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class FilesUtil {
 
@@ -24,8 +25,7 @@ public class FilesUtil {
                 String[] split = docId.split(":");
 
                 if (split.length == 2 && "primary".equalsIgnoreCase(split[0])) {
-                    return Environment.getExternalStorageDirectory().getAbsolutePath()
-                            + "/" + split[1];
+                    return Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + split[1];
                 }
             }
 
@@ -43,10 +43,8 @@ public class FilesUtil {
 
             if ("com.android.providers.downloads.documents".equals(authority)) {
                 String id = DocumentsContract.getDocumentId(uri);
-                Uri contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"),
-                        Long.parseLong(id)
-                );
+                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),
+                        Long.parseLong(id));
                 return getDataColumn(context, contentUri, null, null);
             }
 
@@ -56,16 +54,15 @@ public class FilesUtil {
         return null;
     }
 
-    private static String getDataColumn(Context context, Uri uri,
-                                        String sel, String[] selArgs) {
-        String[] projection = { MediaStore.MediaColumns.DATA };
-        try (Cursor cursor = context.getContentResolver()
-                .query(uri, projection, sel, selArgs, null)) {
+    private static String getDataColumn(Context context, Uri uri, String sel, String[] selArgs) {
+        String[] projection = {MediaStore.MediaColumns.DATA};
+        try (Cursor cursor = context.getContentResolver().query(uri, projection, sel, selArgs, null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 int idx = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
                 return cursor.getString(idx);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         return null;
     }
@@ -73,5 +70,11 @@ public class FilesUtil {
     public static File getFileFromUri(Context context, Uri uri) {
         String fullPath = getFullPathFromUri(context, uri);
         return fullPath != null ? new File(fullPath) : null;
+    }
+
+    public static String getStackTrace(Exception e) {
+        StringWriter writer = new StringWriter();
+        e.printStackTrace(new PrintWriter(writer));
+        return writer.toString();
     }
 }

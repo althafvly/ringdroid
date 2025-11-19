@@ -123,7 +123,8 @@ public class ChooseContactActivity extends ListActivity implements TextWatcher, 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode != PermissionUtils.CONTACT_PERMISSION_REQUEST) return;
+        if (requestCode != PermissionUtils.CONTACT_PERMISSION_REQUEST)
+            return;
 
         boolean allPermissionsGranted = true;
         for (int result : grantResults) {
@@ -171,8 +172,6 @@ public class ChooseContactActivity extends ListActivity implements TextWatcher, 
 
     /* Implementation of TextWatcher.afterTextChanged */
     public void afterTextChanged(Editable s) {
-        // String filterStr = mFilter.getText().toString();
-        // mAdapter.changeCursor(createCursor(filterStr));
         Bundle args = new Bundle();
         args.putString("filter", mFilter.getText().toString());
         getLoaderManager().restartLoader(0, args, this);

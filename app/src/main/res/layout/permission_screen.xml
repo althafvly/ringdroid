@@ -19,11 +19,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
                 android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:layout_marginTop="16dp">
+                android:paddingBottom="12dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -32,19 +32,19 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:text="@string/storage_permission"
-                        android:textSize="18sp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@string/storage_permission"
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/summary_storage"
-                        android:text="@string/storage_permission_summary"
-                        android:textSize="14sp"
-                        android:textColor="#777"
-                        android:layout_marginTop="2dp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/storage_permission_summary"
+                        android:textColor="#777"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <Switch
@@ -56,11 +56,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
                 android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:layout_marginTop="16dp">
+                android:paddingBottom="12dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -69,19 +69,19 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:text="@string/write_system_settings"
-                        android:textSize="18sp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@string/write_system_settings"
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/summary_write_settings"
-                        android:text="@string/write_system_settings_summary"
-                        android:textSize="14sp"
-                        android:textColor="#777"
-                        android:layout_marginTop="2dp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/write_system_settings_summary"
+                        android:textColor="#777"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <Switch
@@ -93,11 +93,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
                 android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:layout_marginTop="16dp">
+                android:paddingBottom="12dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -106,19 +106,19 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:text="@string/mic_permission"
-                        android:textSize="18sp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@string/mic_permission"
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/summary_mic"
-                        android:text="@string/mic_permission_summary"
-                        android:textSize="14sp"
-                        android:textColor="#777"
-                        android:layout_marginTop="2dp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/mic_permission_summary"
+                        android:textColor="#777"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <Switch
@@ -130,11 +130,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
                 android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:layout_marginTop="16dp">
+                android:paddingBottom="12dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -143,19 +143,19 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:text="@string/contacts_permission"
-                        android:textSize="18sp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@string/contacts_permission"
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/summary_contacts"
-                        android:text="@string/contact_permission_summary"
-                        android:textSize="14sp"
-                        android:textColor="#777"
-                        android:layout_marginTop="2dp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/contact_permission_summary"
+                        android:textColor="#777"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <Switch
@@ -170,14 +170,14 @@
             android:id="@+id/btn_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/start"
+            android:layout_marginTop="40dp"
             android:enabled="false"
             android:paddingLeft="36dp"
-            android:paddingRight="36dp"
             android:paddingTop="12dp"
+            android:paddingRight="36dp"
             android:paddingBottom="12dp"
-            android:textSize="18sp"
-            android:layout_marginTop="40dp" />
+            android:text="@string/start"
+            android:textSize="18sp" />
 
     </LinearLayout>
 

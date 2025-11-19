@@ -41,9 +41,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
-
 import com.ringdroid.soundfile.SoundFile;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -74,31 +72,22 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
             "\"" + MediaStore.Audio.Media.EXTERNAL_CONTENT_URI + "\""};
     private static final int INTERNAL_CURSOR_ID = 0;
     private static final int EXTERNAL_CURSOR_ID = 1;
+    private static final String[] AUDIO_PROJECTION = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,
+            MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION,
+            MediaStore.Audio.Media.SIZE, MediaStore.Audio.Media.MIME_TYPE,
+
+            // Flags your UI uses:
+            MediaStore.Audio.Media.IS_RINGTONE, MediaStore.Audio.Media.IS_ALARM, MediaStore.Audio.Media.IS_NOTIFICATION,
+            MediaStore.Audio.Media.IS_MUSIC,
+
+            // File path — will be non-null since we use MANAGE_EXTERNAL_STORAGE
+            MediaStore.Audio.Media.DATA};
     private SearchView mFilter;
     private SimpleCursorAdapter mAdapter;
     private boolean mWasGetContentIntent;
     private boolean mShowAll;
     private Cursor mInternalCursor;
     private Cursor mExternalCursor;
-
-    private static final String[] AUDIO_PROJECTION = {
-            MediaStore.Audio.Media._ID,
-            MediaStore.Audio.Media.TITLE,
-            MediaStore.Audio.Media.ARTIST,
-            MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.DURATION,
-            MediaStore.Audio.Media.SIZE,
-            MediaStore.Audio.Media.MIME_TYPE,
-
-            // Flags your UI uses:
-            MediaStore.Audio.Media.IS_RINGTONE,
-            MediaStore.Audio.Media.IS_ALARM,
-            MediaStore.Audio.Media.IS_NOTIFICATION,
-            MediaStore.Audio.Media.IS_MUSIC,
-
-            // File path — will be non-null since we use MANAGE_EXTERNAL_STORAGE
-            MediaStore.Audio.Media.DATA
-    };
 
     /** Called when the activity is first created. */
     @Override
@@ -152,16 +141,8 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
             getLoaderManager().initLoader(INTERNAL_CURSOR_ID, null, this);
             getLoaderManager().initLoader(EXTERNAL_CURSOR_ID, null, this);
 
-        } catch (SecurityException e) {
-            // No permission to retrieve audio?
+        } catch (SecurityException | IllegalArgumentException e) {
             Log.e("Ringdroid", e.toString());
-
-            // TODO error 1
-        } catch (IllegalArgumentException e) {
-            // No permission to retrieve audio?
-            Log.e("Ringdroid", e.toString());
-
-            // TODO error 2
         }
 
         mAdapter.setViewBinder((view, cursor, columnIndex) -> {
@@ -271,12 +252,8 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
     }
 
     private boolean isSystemFile(String path) {
-        return path != null && (
-                path.startsWith("/system/") ||
-                        path.startsWith("/product/") ||
-                        path.startsWith("/vendor/") ||
-                        path.startsWith("/system_ext/")
-        );
+        return path != null && (path.startsWith("/system/") || path.startsWith("/product/")
+                || path.startsWith("/vendor/") || path.startsWith("/system_ext/"));
     }
 
     @Override
@@ -331,11 +308,11 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
         // If the item is a ringtone then set the default ringtone,
         // otherwise it has to be a notification so set the default notification sound
         if (0 != c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE))) {
-            RingdroidUtils.setDefaultRingTone(RingdroidSelectActivity.this,
-                    RingtoneManager.TYPE_RINGTONE, getUri(), false);
+            RingdroidUtils.setDefaultRingTone(RingdroidSelectActivity.this, RingtoneManager.TYPE_RINGTONE, getUri(),
+                    false);
         } else {
-            RingdroidUtils.setDefaultRingTone(RingdroidSelectActivity.this,
-                    RingtoneManager.TYPE_NOTIFICATION, getUri(), false);
+            RingdroidUtils.setDefaultRingTone(RingdroidSelectActivity.this, RingtoneManager.TYPE_NOTIFICATION, getUri(),
+                    false);
         }
     }
 
@@ -367,10 +344,7 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
             int idCol = c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID);
             long id = c.getLong(idCol);
 
-            return ContentUris.withAppendedId(
-                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                    id
-            );
+            return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
         }
 
         int uriIndex = getUriIndex(c);
@@ -378,8 +352,7 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
             return null;
         }
 
-        String itemUri = c.getString(uriIndex) + "/" +
-                c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
+        String itemUri = c.getString(uriIndex) + "/" + c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
 
         return Uri.parse(itemUri);
     }
@@ -431,11 +404,11 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
 
     private void onDelete() {
         Cursor c = mAdapter.getCursor();
-        if (c == null) return;
+        if (c == null)
+            return;
 
         long id = c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
-        Uri contentUri = ContentUris.withAppendedId(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+        Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
 
         // Legacy direct file delete (Android 9 and below)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -576,9 +549,8 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
             return new CursorLoader(this, baseUri, projection, selection.toString(), selectionArgs,
                     MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
         } else {
-            return new CursorLoader(this, baseUri, AUDIO_PROJECTION, selection.toString(),
-                    selectionArgs, MediaStore.Audio.Media.TITLE + " ASC"
-            );
+            return new CursorLoader(this, baseUri, AUDIO_PROJECTION, selection.toString(), selectionArgs,
+                    MediaStore.Audio.Media.TITLE + " ASC");
         }
     }
 

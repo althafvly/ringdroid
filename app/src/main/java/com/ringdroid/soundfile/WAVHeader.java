@@ -36,29 +36,6 @@ public class WAVHeader {
         return new WAVHeader(sampleRate, numChannels, numSamples).mHeader;
     }
 
-    public String toString() {
-        StringBuilder str = new StringBuilder();
-        if (mHeader == null) {
-            return str.toString();
-        }
-        int num_32bits_per_lines = 8;
-        int count = 0;
-        for (byte b : mHeader) {
-            boolean break_line = count > 0 && count % (num_32bits_per_lines * 4) == 0;
-            boolean insert_space = count > 0 && count % 4 == 0 && !break_line;
-            if (break_line) {
-                str.append('\n');
-            }
-            if (insert_space) {
-                str.append(' ');
-            }
-            str.append(String.format("%02X", b));
-            count++;
-        }
-
-        return str.toString();
-    }
-
     private void setHeader() {
         byte[] header = new byte[46];
         int offset = 0;
