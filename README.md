@@ -1,6 +1,20 @@
-![](https://github.com/google/ringdroid/wiki/images/header.png)
+# Ringdroid
 
-**Ringdroid is now on GitHub!**
+You can now easily download Ringdroid from F-Droid:
+
+Download from F-Droid:
+
+<a href="https://f-droid.org/packages/org.thayyil.ringdroid/">
+  <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" width="200" />
+</a>
+
+Download from Github:
+
+<a href="https://github.com/althafvly/ringdroid/releases/latest">
+  <img src="https://img.shields.io/github/v/release/althafvly/ringdroid?label=GitHub%20Releases&logo=github" alt="GitHub Releases"  width="200" />
+</a>
+
+&nbsp;
 
 **9 November 2025: Ringdroid 2.7.5 adds full support for scoped storage and Upto Android 16 devices, including improved handling of permissions. This release also introduces interface polish, WebP optimizations.**
 
@@ -18,14 +32,10 @@
 
 Ringdroid is an [Android](https://developers.google.com/android) application for recording and editing sounds, and creating ringtones, directly on the handset.
 
-If you have an Android phone, just click on "Market" and search for "Ringdroid" to install it, or open the "Barcode Scanner" app and point to the [QR code](http://phandroid.com/2009/07/29/qr-code-faq-and-fun/) at the top of this page.
-
   * [FAQ](https://github.com/google/ringdroid/wiki/FAQ)
   * [User Guide](https://github.com/google/ringdroid/wiki/Using-Ringdroid)
-  * [Screenshots](https://github.com/google/ringdroid/wiki/Screenshots)
-  * [APKs](https://github.com/google/ringdroid/wiki/APKs)
-  * [Survey](http://spreadsheets.google.com/viewform?key=pjClfOcMDHuckMdw44cfgNA)
-  * [Ringdroid Discuss Group](http://groups.google.com/group/ringdroid-discuss)
+  * [Old APKs](https://github.com/google/ringdroid/wiki/APKs)
+  * [Issues](https://github.com/althafvly/ringdroid/issues)
 
 For developers:
 
@@ -35,7 +45,6 @@ For developers:
 
 See also:
 
-  * [Watch this video](http://www.phonedog.com/cell-phone-videos/t-mobile-g1-review-phone-and-ringtones.aspx) of Noah Kravitz of phonedog.com creating a ringtone using Ringdroid!
   * [How to put Ringtones on Droid HD](http://www.youtube.com/watch?v=AnAZ829lDVo)
 
 #### Features
@@ -60,4 +69,5 @@ Supported file formats right now include:
 * 3GPP/AMR (this is the format used when you record sounds directly on the handset)
 * OGG
 
-![](https://github.com/google/ringdroid/wiki/images/ringdroid_screenshot_2_small.png)
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="300" />
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="300" />
