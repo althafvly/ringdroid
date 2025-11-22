@@ -1,6 +1,9 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -39,6 +42,17 @@ android {
             applicationId = "org.thayyil.ringdroid"
         }
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_21
+        }
+    }
 }
 
 spotless {
@@ -48,6 +62,11 @@ spotless {
         leadingSpacesToTabs(2)
         leadingTabsToSpaces(4)
         target("src/*/java/**/*.java")
+    }
+    kotlin {
+        ktlint()
+        leadingTabsToSpaces(2)
+        target("src/*/java/**/*.kt")
     }
     format("xml") {
         target("src/**/*.xml")
