@@ -3,6 +3,7 @@ agp = "8.13.0"
 annotation = "1.9.1"
 spotless = "8.1.0"
 kotlin = "2.2.0"
+material = "1.13.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -11,3 +12,4 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 [libraries]
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }

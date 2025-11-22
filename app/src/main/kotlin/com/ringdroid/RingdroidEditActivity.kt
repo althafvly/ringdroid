@@ -17,7 +17,6 @@ package com.ringdroid
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
@@ -43,6 +42,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -80,7 +80,9 @@ class RingdroidEditActivity :
     private var mFinishActivity = false
     private var mTimerTextView: TextView? = null
     private var mAlertDialog: AlertDialog? = null
-    private var mProgressDialog: ProgressDialog? = null
+    private var mProgressDialog: AlertDialog? = null
+    private var mLoadingProgressBar: ProgressBar? = null
+
     private var mSoundFile: SoundFile? = null
     private var mFile: File? = null
     private var mFilename: String? = null
@@ -706,21 +708,31 @@ class RingdroidEditActivity :
         mLoadingLastUpdateTime = this.currentTime
         mLoadingKeepGoing = true
         mFinishActivity = false
-        mProgressDialog = ProgressDialog(this@RingdroidEditActivity)
-        mProgressDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
-        mProgressDialog!!.setTitle(R.string.progress_dialog_loading)
-        mProgressDialog!!.setCancelable(true)
-        mProgressDialog!!.setOnCancelListener { dialog: DialogInterface? ->
-            mLoadingKeepGoing = false
-            mFinishActivity = true
-        }
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_progress_horizontal, null)
+        val progressBar = dialogView.findViewById<ProgressBar>(R.id.progress_bar)
+        progressBar.max = 100
+        mLoadingProgressBar = progressBar
+
+        mProgressDialog =
+            AlertDialog
+                .Builder(this@RingdroidEditActivity)
+                .setTitle(R.string.progress_dialog_loading)
+                .setView(dialogView)
+                .setCancelable(true)
+                .setOnCancelListener { dialog: DialogInterface? ->
+                    mLoadingKeepGoing = false
+                    mFinishActivity = true
+                }.create()
         mProgressDialog!!.show()
 
         val listener: SoundFile.ProgressListener =
             SoundFile.ProgressListener { fractionComplete: Double ->
                 val now = this.currentTime
                 if (now - mLoadingLastUpdateTime > 100) {
-                    mProgressDialog!!.progress = (mProgressDialog!!.max * fractionComplete).toInt()
+                    mLoadingProgressBar?.let { bar ->
+                        bar.progress = (fractionComplete * 100).toInt()
+                    }
                     mLoadingLastUpdateTime = now
                 }
                 !mLoadingKeepGoing
@@ -1175,7 +1187,7 @@ class RingdroidEditActivity :
             .setMessage(message)
             .setPositiveButton(
                 R.string.alert_ok_button,
-            ) { dialog: DialogInterface?, whichButton: Int -> finish() }
+            ) { dialog: DialogInterface?, id: Int -> finish() }
             .setCancelable(false)
             .show()
     }
@@ -1257,11 +1269,14 @@ class RingdroidEditActivity :
         val duration = (endTime - startTime + 0.5).toInt()
 
         // Create an indeterminate progress dialog
-        mProgressDialog = ProgressDialog(this)
-        mProgressDialog!!.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        mProgressDialog!!.setTitle(R.string.progress_dialog_saving)
-        mProgressDialog!!.isIndeterminate = true
-        mProgressDialog!!.setCancelable(false)
+        val view = layoutInflater.inflate(R.layout.dialog_progress, null)
+        mProgressDialog =
+            AlertDialog
+                .Builder(this)
+                .setTitle(R.string.progress_dialog_saving)
+                .setView(view)
+                .setCancelable(false)
+                .create()
         mProgressDialog!!.show()
 
         // Save the sound file in a background thread

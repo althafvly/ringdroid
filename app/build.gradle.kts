@@ -75,4 +75,5 @@ tasks.named("preBuild") {
 
 dependencies {
     implementation(libs.androidx.annotation)
+    implementation(libs.material)
 }
