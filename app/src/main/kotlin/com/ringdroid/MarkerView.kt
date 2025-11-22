@@ -22,7 +22,7 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.MotionEvent
-import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import kotlin.math.sqrt
 
 /**
@@ -38,9 +38,9 @@ import kotlin.math.sqrt
  * the user holds down the left or right arrows while this control is focused.
  */
 class MarkerView(
-    context: Context?,
+    context: Context,
     attrs: AttributeSet?,
-) : ImageView(context, attrs) {
+) : AppCompatImageView(context, attrs) {
     private var mVelocity: Int
 
     private var mListener: MarkerListener?

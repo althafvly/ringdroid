@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/action_search_filter"
-        android:actionViewClass="android.widget.SearchView"
+        app:actionViewClass="android.widget.SearchView"
         android:icon="@drawable/baseline_search_24"
-        android:showAsAction="always|collapseActionView"
+        app:showAsAction="always|collapseActionView"
         android:title="@string/search_edit_box" />
 
     <item
         android:id="@+id/action_record"
         android:icon="@drawable/baseline_mic_24"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:title="@string/button_start_record_activity" />
 
     <item
         android:id="@+id/action_about"
-        android:showAsAction="ifRoom"
+        app:showAsAction="ifRoom"
         android:title="@string/menu_about" />
 
     <item
         android:id="@+id/action_show_all_audio"
-        android:showAsAction="ifRoom"
+        app:showAsAction="ifRoom"
         android:title="@string/menu_show_all_audio" />
 
 </menu>
