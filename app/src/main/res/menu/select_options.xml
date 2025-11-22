@@ -15,12 +15,14 @@
 
     <item
         android:id="@+id/action_about"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:title="@string/menu_about" />
 
     <item
         android:id="@+id/action_show_all_audio"
-        android:showAsAction="ifRoom"
-        android:title="@string/menu_show_all_audio" />
+        android:showAsAction="never"
+        android:title="@string/menu_show_all_audio"
+        android:checkable="true"
+        android:checked="false" />
 
 </menu>

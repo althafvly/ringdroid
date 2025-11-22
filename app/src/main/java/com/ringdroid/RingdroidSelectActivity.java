@@ -82,6 +82,9 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
 
             // File path — will be non-null since we use MANAGE_EXTERNAL_STORAGE
             MediaStore.Audio.Media.DATA};
+
+    private final String[] blockedDirs = {"espeak-data/scratch", "/product/", "/system/", "/system_ext/", "/vendor/"};
+
     private SearchView mFilter;
     private SimpleCursorAdapter mAdapter;
     private boolean mWasGetContentIntent;
@@ -227,9 +230,7 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.action_about).setVisible(true);
         menu.findItem(R.id.action_record).setVisible(true);
-        // TODO(nfaralli): do we really need a "Show all audio" item now?
         menu.findItem(R.id.action_show_all_audio).setVisible(true);
-        menu.findItem(R.id.action_show_all_audio).setEnabled(!mShowAll);
         return true;
     }
 
@@ -243,7 +244,9 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
                 onRecord();
                 return true;
             case R.id.action_show_all_audio :
-                mShowAll = true;
+                boolean newState = !item.isChecked();
+                item.setChecked(newState);
+                mShowAll = newState;
                 refreshListView();
                 return true;
             default :
@@ -252,8 +255,16 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
     }
 
     private boolean isSystemFile(String path) {
-        return path != null && (path.startsWith("/system/") || path.startsWith("/product/")
-                || path.startsWith("/vendor/") || path.startsWith("/system_ext/"));
+        if (path == null)
+            return false;
+
+        for (String dir : blockedDirs) {
+            if (path.contains(dir)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -530,8 +541,17 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
             }
             selection.append(")");
 
-            selection = new StringBuilder("(" + selection + ") AND (_DATA NOT LIKE ?)");
-            selectionArgsList.add("%espeak-data/scratch%");
+            selection.append(" AND (");
+
+            for (int i = 0; i < blockedDirs.length; i++) {
+                if (i > 0) {
+                    selection.append(" AND ");
+                }
+                selection.append("_DATA NOT LIKE ?");
+                selectionArgsList.add("%" + blockedDirs[i] + "%");
+            }
+
+            selection.append(")");
         }
 
         String filter = args != null ? args.getString("filter") : null;
