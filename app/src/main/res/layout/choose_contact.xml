@@ -46,9 +46,9 @@
     </LinearLayout>
 
     <ListView
-        android:id="@+id/android:list"
+        android:id="@android:id/list"
         android:layout_width="fill_parent"
-        android:layout_height="0px"
+        android:layout_height="0dp"
         android:layout_weight="1">
 
         <requestFocus />
