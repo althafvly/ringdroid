@@ -16,7 +16,7 @@
 
 package com.ringdroid;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
@@ -31,6 +31,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +40,7 @@ import android.widget.Toast;
  * After a ringtone has been saved, this activity lets you pick a contact and
  * assign the ringtone to that contact.
  */
-public class ChooseContactActivity extends ListActivity implements TextWatcher, LoaderManager.LoaderCallbacks<Cursor> {
+public class ChooseContactActivity extends Activity implements TextWatcher, LoaderManager.LoaderCallbacks<Cursor> {
     private TextView mFilter;
     private SimpleCursorAdapter mAdapter;
     private Uri mRingtoneUri;
@@ -74,6 +75,7 @@ public class ChooseContactActivity extends ListActivity implements TextWatcher, 
 
     private void loadData() {
         try {
+            ListView listView = findViewById(android.R.id.list);
             mAdapter = new SimpleCursorAdapter(this,
                     // Use a template that displays a text view
                     R.layout.contact_row,
@@ -107,10 +109,10 @@ public class ChooseContactActivity extends ListActivity implements TextWatcher, 
                 return false;
             });
 
-            setListAdapter(mAdapter);
+            listView.setAdapter(mAdapter);
 
             // On click, assign ringtone to contact
-            getListView().setOnItemClickListener((parent, view, position, id) -> assignRingtoneToContact());
+            listView.setOnItemClickListener((parent, view, position, id) -> assignRingtoneToContact());
 
             getLoaderManager().initLoader(0, null, this);
         } catch (SecurityException e) {

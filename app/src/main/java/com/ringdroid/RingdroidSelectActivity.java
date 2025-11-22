@@ -16,8 +16,8 @@
 
 package com.ringdroid;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.CursorLoader;
@@ -39,6 +39,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import com.ringdroid.soundfile.SoundFile;
@@ -51,7 +52,7 @@ import java.util.Objects;
  * audio file or using an intent to record a new one, and then launches
  * RingdroidEditActivity from here.
  */
-public class RingdroidSelectActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class RingdroidSelectActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
     // Result codes
     private static final int REQUEST_CODE_EDIT = 1;
     private static final int REQUEST_CODE_CHOOSE_CONTACT = 2;
@@ -121,6 +122,8 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
         // Inflate our UI from its XML layout description.
         setContentView(R.layout.media_select);
 
+        ListView listView = findViewById(android.R.id.list);
+
         try {
             mAdapter = new SimpleCursorAdapter(this,
                     // Use a template that displays a text view
@@ -132,12 +135,11 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
                     new int[]{R.id.row_artist, R.id.row_album, R.id.row_title, R.id.row_icon, R.id.row_options_button},
                     0);
 
-            setListAdapter(mAdapter);
-
-            getListView().setItemsCanFocus(true);
+            listView.setAdapter(mAdapter);
+            listView.setItemsCanFocus(true);
 
             // Normal click - open the editor
-            getListView().setOnItemClickListener((parent, view, position, id) -> startRingdroidEditor());
+            listView.setOnItemClickListener((parent, view, position, id) -> startRingdroidEditor());
 
             mInternalCursor = null;
             mExternalCursor = null;
@@ -163,7 +165,7 @@ public class RingdroidSelectActivity extends ListActivity implements LoaderManag
         });
 
         // Long-press opens a context menu
-        registerForContextMenu(getListView());
+        registerForContextMenu(listView);
     }
 
     private void setSoundIconFromCursor(ImageView view, Cursor cursor) {
