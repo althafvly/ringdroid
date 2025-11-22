@@ -22,29 +22,6 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        style="@style/ChooseContactBackground"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dip"
-            android:src="@drawable/baseline_search_24" />
-
-        <EditText
-            android:id="@+id/search_filter"
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dip"
-            android:layout_weight="1"
-            android:inputType="text"
-            android:textSize="18sp" />
-
-    </LinearLayout>
-
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"

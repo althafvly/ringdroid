@@ -27,21 +27,22 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract.Contacts;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /**
  * After a ringtone has been saved, this activity lets you pick a contact and
  * assign the ringtone to that contact.
  */
-public class ChooseContactActivity extends Activity implements TextWatcher, LoaderManager.LoaderCallbacks<Cursor> {
-    private TextView mFilter;
+public class ChooseContactActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+    private SearchView mFilter;
     private SimpleCursorAdapter mAdapter;
     private Uri mRingtoneUri;
 
@@ -65,11 +66,6 @@ public class ChooseContactActivity extends Activity implements TextWatcher, Load
             loadData();
         } else {
             PermissionUtils.requestContactPermissions(this);
-        }
-
-        mFilter = findViewById(R.id.search_filter);
-        if (mFilter != null) {
-            mFilter.addTextChangedListener(this);
         }
     }
 
@@ -122,6 +118,38 @@ public class ChooseContactActivity extends Activity implements TextWatcher, Load
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.contacts_options, menu);
+
+        mFilter = (SearchView) menu.findItem(R.id.action_search_filter).getActionView();
+        if (mFilter != null) {
+            mFilter.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                public boolean onQueryTextChange(String newText) {
+                    refreshListView();
+                    return true;
+                }
+
+                public boolean onQueryTextSubmit(String query) {
+                    refreshListView();
+                    return true;
+                }
+            });
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_about) {
+            RingdroidEditActivity.onAbout(this);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -164,18 +192,9 @@ public class ChooseContactActivity extends Activity implements TextWatcher, Load
         finish();
     }
 
-    /* Implementation of TextWatcher.beforeTextChanged */
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-    }
-
-    /* Implementation of TextWatcher.onTextChanged */
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-    }
-
-    /* Implementation of TextWatcher.afterTextChanged */
-    public void afterTextChanged(Editable s) {
+    public void refreshListView() {
         Bundle args = new Bundle();
-        args.putString("filter", mFilter.getText().toString());
+        args.putString("filter", mFilter.getQuery().toString());
         getLoaderManager().restartLoader(0, args, this);
     }
 
