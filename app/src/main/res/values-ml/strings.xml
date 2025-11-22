@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_edit_box">തിരയുക</string>
+
+    <string name="button_start_record_activity">പുതിയത് റെക്കോർഡ് ചെയ്യുക</string>
+
+    <string name="sdcard_readonly">ക്ഷമിക്കണം, SD കാർഡ് റീഡ്-ഓൺലിയായി മൗണ്ട് ചെയ്‌തിരിക്കുന്നു. Ringdroid-ന് എഴുതാനാകണം.</string>
+    <string name="no_sdcard">ക്ഷമിക്കണം, SD കാർഡ് ഇട്ടിട്ടില്ലെങ്കിൽ Ringdroid പ്രവർത്തിപ്പിക്കാൻ കഴിയില്ല.</string>
+    <string name="sdcard_shared">ക്ഷമിക്കണം, നിങ്ങളുടെ ഹാൻഡ്‌സെറ്റ് ഒരു USB ഉപകരണമായി മൗണ്ട് ചെയ്‌തിരിക്കുമ്പോൾ Ringdroid-ന് പ്രവർത്തിക്കാൻ കഴിയില്ല.</string>
+
+    <string name="button_options">ഓപ്ഷനുകൾ</string>
+
+    <string name="start_label">തുടക്കം:</string>
+    <string name="end_label">അവസാനം:</string>
+
+    <string name="edit_intent">എഡിറ്റ് ചെയ്യുക</string>
+
+    <string name="time_seconds">സെക്കന്റുകൾ</string>
+
+    <string name="what_to_do_with_ringtone">സേവ് ചെയ്തു! ഇത് നിങ്ങളുടെ ഡിഫോൾട്ട് റിംഗ്‌ടോൺ ആക്കണോ അതോ ഒരു കോൺടാക്റ്റിന് നൽകണോ?</string>
+    <string name="set_default_notification">സേവ് ചെയ്തു! ഇത് നിങ്ങളുടെ ഡിഫോൾട്ട് നോട്ടിഫിക്കേഷനാക്കണോ?</string>
+
+    <string name="make_default_ringtone_button">ഡിഫോൾട്ട് ആക്കുക</string>
+    <string name="choose_contact_ringtone_button">കോൺടാക്റ്റിന് നൽകുക</string>
+    <string name="do_nothing_with_ringtone_button">അടയ്ക്കുക</string>
+
+    <string name="progress_dialog_loading">ലോഡ് ചെയ്യുന്നു…</string>
+    <string name="progress_dialog_recording">റെക്കോർഡ് ചെയ്യുന്നു…</string>
+    <string name="progress_dialog_saving">സേവ് ചെയ്യുന്നു…</string>
+    <string name="progress_dialog_cancel">റദ്ദാക്കുക</string>
+    <string name="progress_dialog_stop">നിർത്തുക</string>
+
+    <string name="start_marker">തുടക്ക മാർക്കർ</string>
+    <string name="end_marker">അവസാന മാർക്കർ</string>
+    <string name="rewind">പുറകിലേക്ക്</string>
+    <string name="play">പ്ലേ ചെയ്യുക</string>
+    <string name="ffwd">വേഗത്തിൽ മുന്നോട്ട്</string>
+    <string name="zoom_in">സൂം ഇൻ</string>
+    <string name="zoom_out">സൂം ഔട്ട്</string>
+    <string name="save_button">സേവ് ചെയ്യുക</string>
+
+    <string name="menu_reset">പുനഃസജ്ജമാക്കുക</string>
+    <string name="menu_about">വിവരം</string>
+    <string name="menu_show_all_audio">എല്ലാ ഓഡിയോയും കാണിക്കുക</string>
+
+    <string name="context_menu_delete">ഡിലീറ്റ് ചെയ്യുക</string>
+    <string name="context_menu_default_ringtone">ഡിഫോൾട്ട് റിംഗ്‌ടോൺ ആയി സജ്ജമാക്കുക</string>
+    <string name="context_menu_contact">കോൺടാക്റ്റിന് നൽകുക</string>
+    <string name="context_menu_default_notification">ഡിഫോൾട്ട് നോട്ടിഫിക്കേഷനായി സജ്ജമാക്കുക</string>
+
+    <string name="file_save_title">ഇതുപോലെ സേവ് ചെയ്യുക:</string>
+
+    <string name="ringtone_type_label">തരം:</string>
+
+    <string name="type_music">സംഗീതം</string>
+    <string name="type_alarm">അലാറം</string>
+    <string name="type_notification">നോട്ടിഫിക്കേഷൻ</string>
+    <string name="type_ringtone">റിംഗ്‌ടോൺ</string>
+
+    <string name="ringtone_name_label">പേര്:</string>
+
+    <string name="delete_ringtone">റിംഗ്‌ടോൺ ഡിലീറ്റ് ചെയ്യുക</string>
+    <string name="delete_alarm">അലാറം ഡിലീറ്റ് ചെയ്യുക</string>
+    <string name="delete_notification">നോട്ടിഫിക്കേഷൻ ഡിലീറ്റ് ചെയ്യുക</string>
+    <string name="delete_music">സംഗീതം ഡിലീറ്റ് ചെയ്യുക</string>
+    <string name="delete_audio">ഓഡിയോ ഡിലീറ്റ് ചെയ്യുക</string>
+
+    <string name="confirm_delete_ringdroid">നിങ്ങൾ ഉറപ്പാണോ?</string>
+    <string name="confirm_delete_non_ringdroid">നിങ്ങൾ ഉറപ്പാണോ? ഈ ഫയൽ Ringdroid ഉപയോഗിച്ച് ഉണ്ടാക്കിയതല്ല!</string>
+
+
+    <string name="delete_failed">ഫയൽ ഡിലീറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല</string>
+
+    <string name="alert_title_success">വിജയം</string>
+    <string name="alert_title_failure">പിശക്</string>
+    <string name="alert_ok_button">ശരി</string>
+    <string name="alert_yes_button">അതെ, ദയവായി!</string>
+    <string name="alert_no_button">വേണ്ട, നന്ദി.</string>
+
+    <string name="save_success_message">സേവ് ചെയ്തു!</string>
+    <string name="default_ringtone_success_message">ഡിഫോൾട്ട് റിംഗ്‌ടോൺ മാറ്റി</string>
+    <string name="default_notification_success_message">ഡിഫോൾട്ട് നോട്ടിഫിക്കേഷൻ ശബ്ദം മാറ്റി</string>
+    <string name="play_error">ഈ മീഡിയ ഫയൽ പ്ലേ ചെയ്യാൻ കഴിയുന്നില്ല</string>
+    <string name="no_unique_filename">തനതായ ഫയൽ നാമം കണ്ടെത്താൻ കഴിഞ്ഞില്ല</string>
+    <string name="record_error">ഓഡിയോ റെക്കോർഡിംഗിൽ പിശക്</string>
+    <string name="too_small_error">ഇത്രയും ചെറിയ ഫയൽ സേവ് ചെയ്യാൻ കഴിയില്ല, വലുതാക്കി നോക്കുക.</string>
+    <string name="write_error">ഫയൽ എഴുതുന്നതിൽ പിശക്</string>
+    <string name="read_error">ഫയൽ വായിക്കുന്നതിൽ പിശക്</string>
+
+    <string name="no_space_error">നിങ്ങളുടെ SD കാർഡ് നിറഞ്ഞിരിക്കുന്നു, ഈ ഫയൽ സേവ് ചെയ്യാൻ ആവശ്യത്തിന് സ്ഥലമില്ല.</string>
+
+    <string name="bad_extension_error">ക്ഷമിക്കണം, Ringdroid-ന് ഈ തരം ഫയലുകൾ എഡിറ്റ് ചെയ്യാൻ ഇതുവരെ കഴിഞ്ഞിട്ടില്ല</string>
+    <string name="no_extension_error">ക്ഷമിക്കണം, .mp3 അല്ലെങ്കിൽ .wav പോലുള്ള എക്സ്റ്റൻഷൻ ഇല്ലെങ്കിൽ Ringdroid-ന് ഒരു ഫയൽ എഡിറ്റ് ചെയ്യാൻ കഴിയില്ല</string>
+
+    <string name="choose_contact_title">ഏത് കോൺടാക്റ്റിനാണ് റിംഗ്‌ടോൺ നൽകേണ്ടത്?</string>
+    <string name="success_contact_ringtone">റിംഗ്‌ടോൺ വിജയകരമായി നൽകി:</string>
+
+    <string name="about_title">Ringdroid നെക്കുറിച്ച്</string>
+    <string name="about_text_html">
+        <![CDATA[
+            <b>Ringdroid</b><br><br>
+            MP3, OGG, WAV, AAC, AMR ഓഡിയോ ഫയലുകൾ എഡിറ്റ് ചെയ്യാനും റിംഗ്‌ടോണുകൾ, അലാറങ്ങൾ, നോട്ടിഫിക്കേഷനുകൾ എന്നിവ ഉണ്ടാക്കാനും Ringdroid ഉപയോഗിക്കുക.<br><br>
+
+            <b>നുറുങ്ങുകൾ:</b><br>
+            • USB ഉപയോഗിച്ച് ഓഡിയോ ഫയലുകൾ കോപ്പി ചെയ്യുക<br>
+            • പ്ലേ ചെയ്യാൻ വേവ്‌ഫോമിൽ എവിടെയെങ്കിലും ടാപ്പുചെയ്യുക<br>
+            • മാർക്കറുകൾ സജ്ജമാക്കാൻ പ്ലേ ചെയ്യുമ്പോൾ Start/End ടാപ്പുചെയ്യുക<br><br>
+
+            <b>പതിപ്പ്: %s</b><br><br>
+
+            <b>ഡെവലപ്പർമാർ:</b><br>
+            Dominic Mazzoni<br>
+            Nicolas Faralli<br>
+            althafvly<br><br>
+
+            <b>ഗ്രാഫിക്സ്:</b> Joseph Wain<br>
+            <b>പിന്തുണ:</b> Eugene Koh<br>
+            <b>മെച്ചപ്പെടുത്തലുകൾ:</b> Dan Klufas<br><br>
+
+            Ringdroid Apache 2.0-ന് കീഴിലുള്ള സൗജന്യ സോഫ്റ്റ്‌വെയറാണ്.<br>
+            സോഴ്സ് കോഡ്: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+        ]]>
+    </string>
+
+    <string name="require_contacts_permission">ഒരു റിംഗ്‌ടോൺ നൽകുന്നതിന് കോൺടാക്റ്റ് പെർമിഷൻ (അനുമതി) പ്രവർത്തനക്ഷമമാക്കുക.</string>
+    <string name="required_mic_permission">ഓഡിയോ റെക്കോർഡ് ചെയ്യാൻ മൈക്രോഫോൺ പെർമിഷൻ ആവശ്യമാണ്</string>
+    <string name="required_system_modify_permission">റിംഗ്‌ടോൺ സജ്ജമാക്കാൻ സിസ്റ്റം ക്രമീകരണങ്ങൾ മാറ്റാനുള്ള അനുമതി ആവശ്യമാണ്</string>
+    <string name="storage_permission">സ്റ്റോറേജ് പെർമിഷൻ</string>
+    <string name="write_system_settings">സിസ്റ്റം ക്രമീകരണങ്ങൾ എഴുതുക</string>
+    <string name="mic_permission">മൈക്രോഫോൺ പെർമിഷൻ</string>
+    <string name="contacts_permission">കോൺടാക്റ്റ് പെർമിഷൻ</string>
+    <string name="start">തുടങ്ങുക</string>
+    <string name="storage_permission_summary">ഓഡിയോ ഫയലുകൾ സേവ് ചെയ്യാനും ആക്സസ് ചെയ്യാനും ആവശ്യമാണ് (ശുപാർശ ചെയ്യുന്നത്)\n\nആപ്പിന് വായിക്കാനും എഴുതാനും ഇത് അല്ലെങ്കിൽ മീഡിയ ഓഡിയോ പെർമിഷൻ ആവശ്യമാണ്</string>
+    <string name="write_system_settings_summary">റിംഗ്‌ടോണുകൾ സിസ്റ്റം ഡിഫോൾട്ടായി സജ്ജമാക്കാൻ ആവശ്യമാണ്</string>
+    <string name="mic_permission_summary">നിങ്ങളുടെ സ്വന്തം ഓഡിയോ ക്ലിപ്പുകൾ റെക്കോർഡ് ചെയ്യാൻ ആവശ്യമാണ്</string>
+    <string name="contact_permission_summary">നിങ്ങളുടെ കോൺടാക്റ്റുകൾക്ക് റിംഗ്‌ടോണുകൾ നൽകാൻ ആവശ്യമാണ്</string>
+    <string name="media_audio_permission">മീഡിയ ഓഡിയോ പെർമിഷൻ</string>
+    <string name="media_audio_summary">നിങ്ങളുടെ സ്മാർട്ട്‌ഫോണിൽ നിന്ന് റിംഗ്‌ടോൺ ഫയലുകൾ വായിക്കാൻ ആവശ്യമാണ് \n\nആപ്പിന് വായിക്കാനും എഴുതാനും ഇത് അല്ലെങ്കിൽ സ്റ്റോറേജ് പെർമിഷൻ ആവശ്യമാണ്</string>
+
+</resources>

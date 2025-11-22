@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_edit_box">खोजें</string>
+
+    <string name="button_start_record_activity">नया रिकॉर्ड करें</string>
+
+    <string name="sdcard_readonly">क्षमा करें, SD कार्ड केवल पढ़ने के लिए माउंट किया गया है और Ringdroid को लिखने योग्य होना आवश्यक है।</string>
+    <string name="no_sdcard">क्षमा करें, जब तक आपने SD कार्ड नहीं डाला है, Ringdroid नहीं चल सकता।</string>
+    <string name="sdcard_shared">क्षमा करें, जब तक आपका हैंडसेट एक USB डिवाइस के रूप में माउंट है, Ringdroid नहीं चल सकता।</string>
+
+    <string name="button_options">विकल्प</string>
+
+    <string name="start_label">शुरुआत:</string>
+    <string name="end_label">समाप्ति:</string>
+
+    <string name="edit_intent">संपादित करें</string>
+
+    <string name="time_seconds">सेकंड</string>
+
+    <string name="what_to_do_with_ringtone">सहेज लिया गया! क्या इसे अपना डिफ़ॉल्ट रिंगटोन बनाना है या किसी संपर्क को असाइन करना है?</string>
+    <string name="set_default_notification">सहेज लिया गया! क्या इसे अपनी डिफ़ॉल्ट अधिसूचना बनाना है?</string>
+
+    <string name="make_default_ringtone_button">डिफ़ॉल्ट बनाएं</string>
+    <string name="choose_contact_ringtone_button">संपर्क को असाइन करें</string>
+    <string name="do_nothing_with_ringtone_button">बंद करें</string>
+
+    <string name="progress_dialog_loading">लोड हो रहा है…</string>
+    <string name="progress_dialog_recording">रिकॉर्ड हो रहा है…</string>
+    <string name="progress_dialog_saving">सहेजा जा रहा है…</string>
+    <string name="progress_dialog_cancel">रद्द करें</string>
+    <string name="progress_dialog_stop">रोकें</string>
+
+    <string name="start_marker">शुरुआत मार्कर</string>
+    <string name="end_marker">समाप्ति मार्कर</string>
+    <string name="rewind">पीछे करें</string>
+    <string name="play">चलाएं</string>
+    <string name="ffwd">तेज आगे बढ़ाएँ</string>
+    <string name="zoom_in">ज़ूम इन करें</string>
+    <string name="zoom_out">ज़ूम आउट करें</string>
+    <string name="save_button">सहेजें</string>
+
+    <string name="menu_reset">रीसेट करें</string>
+    <string name="menu_about">के बारे में</string>
+    <string name="menu_show_all_audio">सभी ऑडियो दिखाएँ</string>
+
+    <string name="context_menu_delete">हटाएँ</string>
+    <string name="context_menu_default_ringtone">डिफ़ॉल्ट रिंगटोन के रूप में सेट करें</string>
+    <string name="context_menu_contact">संपर्क को असाइन करें</string>
+    <string name="context_menu_default_notification">डिफ़ॉल्ट अधिसूचना के रूप में सेट करें</string>
+
+    <string name="file_save_title">इस रूप में सहेजें:</string>
+
+    <string name="ringtone_type_label">प्रकार:</string>
+
+    <string name="type_music">संगीत</string>
+    <string name="type_alarm">अलार्म</string>
+    <string name="type_notification">अधिसूचना</string>
+    <string name="type_ringtone">रिंगटोन</string>
+
+    <string name="ringtone_name_label">नाम:</string>
+
+    <string name="delete_ringtone">रिंगटोन हटाएँ</string>
+    <string name="delete_alarm">अलार्म हटाएँ</string>
+    <string name="delete_notification">अधिसूचना हटाएँ</string>
+    <string name="delete_music">संगीत हटाएँ</string>
+    <string name="delete_audio">ऑडियो हटाएँ</string>
+
+    <string name="confirm_delete_ringdroid">क्या आप सुनिश्चित हैं?</string>
+    <string name="confirm_delete_non_ringdroid">क्या आप सुनिश्चित हैं? यह फ़ाइल Ringdroid का उपयोग करके नहीं बनाई गई थी!</string>
+
+
+    <string name="delete_failed">फ़ाइल हटाने में असमर्थ</string>
+
+    <string name="alert_title_success">सफलता</string>
+    <string name="alert_title_failure">त्रुटि</string>
+    <string name="alert_ok_button">ठीक है</string>
+    <string name="alert_yes_button">हाँ, कृपया!</string>
+    <string name="alert_no_button">नहीं, धन्यवाद।</string>
+
+    <string name="save_success_message">सहेज लिया गया!</string>
+    <string name="default_ringtone_success_message">डिफ़ॉल्ट रिंगटोन बदल दिया गया</string>
+    <string name="default_notification_success_message">डिफ़ॉल्ट अधिसूचना ध्वनि बदल दी गई</string>
+    <string name="play_error">इस मीडिया फ़ाइल को चलाने में असमर्थ</string>
+    <string name="no_unique_filename">अद्वितीय फ़ाइल नाम खोजने में असमर्थ</string>
+    <string name="record_error">ऑडियो रिकॉर्ड करने में त्रुटि</string>
+    <string name="too_small_error">इतनी छोटी फ़ाइल को सहेजा नहीं जा सकता, इसे लंबा करने का प्रयास करें।</string>
+    <string name="write_error">फ़ाइल लिखने में त्रुटि</string>
+    <string name="read_error">फ़ाइल पढ़ने में त्रुटि</string>
+
+    <string name="no_space_error">आपका SD कार्ड भरा हुआ है, इस फ़ाइल को सहेजने के लिए पर्याप्त जगह नहीं है।</string>
+
+    <string name="bad_extension_error">क्षमा करें, Ringdroid अभी इस प्रकार की फ़ाइलों को संपादित करने में सक्षम नहीं है</string>
+    <string name="no_extension_error">क्षमा करें, यदि किसी फ़ाइल में .mp3 या .wav जैसा कोई एक्सटेंशन नहीं है तो Ringdroid उसे संपादित नहीं कर सकता</string>
+
+    <string name="choose_contact_title">रिंगटोन किस संपर्क को असाइन करना है?</string>
+    <string name="success_contact_ringtone">रिंगटोन सफलतापूर्वक असाइन किया गया:</string>
+
+    <string name="about_title">Ringdroid के बारे में</string>
+    <string name="about_text_html">
+        <![CDATA[
+            <b>Ringdroid</b><br><br>
+            MP3, OGG, WAV, AAC, और AMR ऑडियो फ़ाइलों को संपादित करने और रिंगटोन, अलार्म और सूचनाएं बनाने के लिए Ringdroid का उपयोग करें।<br><br>
+
+            <b>टिप्स:</b><br>
+            • USB का उपयोग करके ऑडियो फ़ाइलें कॉपी करें<br>
+            • चलाने के लिए वेवफॉर्म पर कहीं भी टैप करें<br>
+            • मार्कर सेट करने के लिए चलाने के दौरान शुरुआत/समाप्ति पर टैप करें<br><br>
+
+            <b>संस्करण: %s</b><br><br>
+
+            <b>डेवलपर्स:</b><br>
+            Dominic Mazzoni<br>
+            Nicolas Faralli<br>
+            althafvly<br><br>
+
+            <b>ग्राफिक्स:</b> Joseph Wain<br>
+            <b>समर्थन:</b> Eugene Koh<br>
+            <b>सुधार:</b> Dan Klufas<br><br>
+
+            Ringdroid Apache 2.0 के तहत एक मुफ्त सॉफ्टवेयर है।<br>
+            स्रोत कोड: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+        ]]>
+    </string>
+
+    <string name="require_contacts_permission">रिंगटोन असाइन करने के लिए कृपया संपर्क अनुमति सक्षम करें।</string>
+    <string name="required_mic_permission">ऑडियो रिकॉर्ड करने के लिए माइक्रोफ़ोन अनुमति आवश्यक है</string>
+    <string name="required_system_modify_permission">रिंगटोन सेट करने के लिए सिस्टम सेटिंग्स को संशोधित करने की अनुमति आवश्यक है</string>
+    <string name="storage_permission">भंडारण अनुमति</string>
+    <string name="write_system_settings">सिस्टम सेटिंग्स लिखें</string>
+    <string name="mic_permission">माइक्रोफ़ोन अनुमति</string>
+    <string name="contacts_permission">संपर्क अनुमति</string>
+    <string name="start">शुरू करें</string>
+    <string name="storage_permission_summary">ऑडियो फ़ाइलों को सहेजने और एक्सेस करने के लिए आवश्यक (अनुशंसित)\n\nऐप को पढ़ने और लिखने के लिए यह या मीडिया ऑडियो अनुमति आवश्यक है</string>
+    <string name="write_system_settings_summary">रिंगटोन को सिस्टम डिफ़ॉल्ट के रूप में सेट करने के लिए आवश्यक है</string>
+    <string name="mic_permission_summary">अपने स्वयं के ऑडियो क्लिप रिकॉर्ड करने के लिए आवश्यक है</string>
+    <string name="contact_permission_summary">अपने संपर्कों को रिंगटोन असाइन करने के लिए आवश्यक है</string>
+    <string name="media_audio_permission">मीडिया ऑडियो अनुमति</string>
+    <string name="media_audio_summary">आपके स्मार्टफोन से रिंगटोन फ़ाइलें पढ़ने के लिए आवश्यक है \n\nऐप को पढ़ने और लिखने के लिए यह या भंडारण अनुमति आवश्यक है</string>
+
+</resources>

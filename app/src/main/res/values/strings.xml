@@ -16,15 +16,15 @@
      * limitations under the License.
      */
 -->
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+<resources>
 
-    <string name="ringdroid_app_name">Ringdroid</string>
+    <string name="ringdroid_app_name" translatable="false">Ringdroid</string>
 
     <!--
      Main / media select activity
      -->
 
-    <string name="main_activity_label">Ringdroid</string>
+    <string name="main_activity_label" translatable="false">@string/ringdroid_app_name</string>
 
     <string name="search_edit_box">Search</string>
 
@@ -70,7 +70,7 @@
     <string name="end_marker">End marker</string>
     <string name="rewind">Rewind</string>
     <string name="play">Play</string>
-    <string name="stop">Stop</string>
+    <string name="stop" translatable="false">@string/progress_dialog_stop</string>
     <string name="ffwd">Fast forward</string>
     <string name="zoom_in">Zoom In</string>
     <string name="zoom_out">Zoom Out</string>
@@ -80,7 +80,7 @@
      Menu items
      -->
 
-    <string name="menu_save">Save</string>
+    <string name="menu_save" translatable="false">@string/save_button</string>
     <string name="menu_reset">Reset</string>
     <string name="menu_about">About</string>
     <string name="menu_show_all_audio">Show All Audio</string>
@@ -89,7 +89,7 @@
      Context menu items
      -->
 
-    <string name="context_menu_edit">Edit</string>
+    <string name="context_menu_edit" translatable="false">@string/edit_intent</string>
     <string name="context_menu_delete">Delete</string>
     <string name="context_menu_default_ringtone">Set as Default Ringtone</string>
     <string name="context_menu_contact">Assign to Contact</string>
@@ -100,8 +100,8 @@
      -->
 
     <string name="file_save_title">Save As:</string>
-    <string name="file_save_button_save">Save</string>
-    <string name="file_save_button_cancel">Cancel</string>
+    <string name="file_save_button_save" translatable="false">@string/save_button</string>
+    <string name="file_save_button_cancel" translatable="false">@string/progress_dialog_cancel</string>
 
     <string name="ringtone_type_label">Type:</string>
 
@@ -112,7 +112,7 @@
 
     <string name="ringtone_name_label">Name:</string>
 
-    <string name="artist_name">Ringdroid</string>
+    <string name="artist_name" translatable="false">@string/ringdroid_app_name</string>
 
     <!--
      Delete confirmation dialog
@@ -127,8 +127,8 @@
     <string name="confirm_delete_ringdroid">Are you sure?</string>
     <string name="confirm_delete_non_ringdroid">Are you sure?  This file was not created using Ringdroid!</string>
 
-    <string name="delete_ok_button">Delete</string>
-    <string name="delete_cancel_button">Cancel</string>
+    <string name="delete_ok_button" translatable="false">@string/context_menu_delete</string>
+    <string name="delete_cancel_button" translatable="false">@string/progress_dialog_cancel</string>
 
     <string name="delete_failed">Unable to delete file</string>
 

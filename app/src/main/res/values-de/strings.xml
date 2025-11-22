@@ -1,38 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    /*
-     * Copyright (C) 2008 Google Inc.
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
--->
 <resources>
+    <string name="search_edit_box">Suchen</string>
 
-    <string name="ringdroid_app_name">Ringdroid</string>
+    <string name="button_start_record_activity">Neu aufnehmen</string>
 
-    <!--      Main / media select activity      -->
+    <string name="sdcard_readonly">Entschuldigung, die SD-Karte ist schreibgeschützt eingebunden und Ringdroid benötigt Schreibzugriff.</string>
+    <string name="no_sdcard">Entschuldigung, Ringdroid kann nur ausgeführt werden, wenn eine SD-Karte eingelegt ist.</string>
+    <string name="sdcard_shared">Entschuldigung, Ringdroid kann nicht ausgeführt werden, solange Ihr Gerät als USB-Gerät eingebunden ist.</string>
 
-    <string name="main_activity_label">Ringdroid</string>
+    <string name="button_options">Optionen</string>
 
-    <string name="button_start_record_activity">Neu aufzeichnen</string>
-
-    <string name="sdcard_readonly">Die SD-Karte ist schreibgeschützt. In Ringdroid muss sie beschreibbar sein.</string>
-    <string name="no_sdcard">Ringdroid kann nur bei eingesetzter SD-Karte ausgeführt werden.</string>
-    <string name="sdcard_shared">Ringdroid kann nur mit einem als USB-Gerät angeschlossenen Gerät ausgeführt werden.</string>
-
-    <!--      Edit activity      -->
-
-    <!-- Labels next to the start and end time edit boxes -->
     <string name="start_label">Start:</string>
     <string name="end_label">Ende:</string>
 
@@ -40,123 +17,124 @@
 
     <string name="time_seconds">Sekunden</string>
 
-    <!-- After you save a notification or ringtone and have more options 	 for what to do with them -->
-    <string name="what_to_do_with_ringtone">Gespeichert!  Dieses Rufzeichen zum Standardrufzeichen machen oder einem Kontakt zuweisen?</string>
-    <string name="set_default_notification">Gespeichert!  Diese Benachrichtigung zur Standardbenachrichtigung machen?</string>
+    <string name="what_to_do_with_ringtone">Gespeichert! Als Standard-Klingelton festlegen oder einem Kontakt zuweisen?</string>
+    <string name="set_default_notification">Gespeichert! Als Standard-Benachrichtigung festlegen?</string>
 
-    <string name="make_default_ringtone_button">Zum Standard machen</string>
-    <string name="choose_contact_ringtone_button">Einem Kontakt zuweisen</string>
+    <string name="make_default_ringtone_button">Als Standard festlegen</string>
+    <string name="choose_contact_ringtone_button">Kontakt zuweisen</string>
     <string name="do_nothing_with_ringtone_button">Schließen</string>
 
-    <!-- Progress dialog text for loading, recording, or saving... -->
     <string name="progress_dialog_loading">Laden…</string>
-    <string name="progress_dialog_recording">Recording…</string>
-    <string name="progress_dialog_saving">Wird gespeichert…</string>
-    <string name="progress_dialog_cancel">Cancel</string>
-    <string name="progress_dialog_stop">Stop</string>
+    <string name="progress_dialog_recording">Aufnahme…</string>
+    <string name="progress_dialog_saving">Speichern…</string>
+    <string name="progress_dialog_cancel">Abbrechen</string>
+    <string name="progress_dialog_stop">Stoppen</string>
 
-    <!--      Menu items      -->
+    <string name="start_marker">Startmarkierung</string>
+    <string name="end_marker">Endmarkierung</string>
+    <string name="rewind">Zurückspulen</string>
+    <string name="play">Wiedergabe</string>
+    <string name="ffwd">Vorspulen</string>
+    <string name="zoom_in">Vergrößern</string>
+    <string name="zoom_out">Verkleinern</string>
+    <string name="save_button">Speichern</string>
 
-    <string name="menu_save">Speichern</string>
     <string name="menu_reset">Zurücksetzen</string>
-    <string name="menu_about">Info</string>
-    <string name="menu_show_all_audio">Alle Audiodateien anz.</string>
+    <string name="menu_about">Über</string>
+    <string name="menu_show_all_audio">Alle Audiodateien anzeigen</string>
 
-    <!--      Context menu items      -->
-
-    <string name="context_menu_edit">Bearbeiten</string>
     <string name="context_menu_delete">Löschen</string>
-    <string name="context_menu_contact">Einem Kontakt zuweisen</string>
-    <string name="context_menu_default_ringtone">Zum Standard machen</string>
-    <string name="context_menu_default_notification">Zum Standard machen</string>
+    <string name="context_menu_default_ringtone">Als Standard-Klingelton festlegen</string>
+    <string name="context_menu_contact">Kontakt zuweisen</string>
+    <string name="context_menu_default_notification">Als Standard-Benachrichtigung festlegen</string>
 
-    <!--      File Save dialog      -->
-
-    <string name="file_save_title">Speichern unter:</string>
-    <string name="file_save_button_save">Speichern</string>
-    <string name="file_save_button_cancel">Abbrechen</string>
+    <string name="file_save_title">Speichern als:</string>
 
     <string name="ringtone_type_label">Typ:</string>
 
     <string name="type_music">Musik</string>
-    <string name="type_alarm">Wecker</string>
+    <string name="type_alarm">Alarm</string>
     <string name="type_notification">Benachrichtigung</string>
-    <string name="type_ringtone">Rufzeichen</string>
+    <string name="type_ringtone">Klingelton</string>
 
     <string name="ringtone_name_label">Name:</string>
 
-    <string name="artist_name">Ringdroid</string>
-
-    <!--      Delete confirmation dialog      -->
-
-    <string name="delete_ringtone">Rufzeichen löschen</string>
-    <string name="delete_alarm">Wecker löschen</string>
+    <string name="delete_ringtone">Klingelton löschen</string>
+    <string name="delete_alarm">Alarm löschen</string>
     <string name="delete_notification">Benachrichtigung löschen</string>
     <string name="delete_music">Musik löschen</string>
     <string name="delete_audio">Audio löschen</string>
 
     <string name="confirm_delete_ringdroid">Sind Sie sicher?</string>
-    <string name="confirm_delete_non_ringdroid">Sind Sie sicher?  Diese Datei wurde nicht mit Ringdroid erstellt!</string>
+    <string name="confirm_delete_non_ringdroid">Sind Sie sicher? Diese Datei wurde nicht mit Ringdroid erstellt!</string>
 
-    <string name="delete_ok_button">Löschen</string>
-    <string name="delete_cancel_button">Abbrechen</string>
 
     <string name="delete_failed">Datei konnte nicht gelöscht werden</string>
-
-    <!--      Success and error messages      -->
 
     <string name="alert_title_success">Erfolg</string>
     <string name="alert_title_failure">Fehler</string>
     <string name="alert_ok_button">OK</string>
     <string name="alert_yes_button">Ja, bitte!</string>
-    <string name="alert_no_button">Nein, vielen Dank.</string>
+    <string name="alert_no_button">Nein, danke.</string>
 
     <string name="save_success_message">Gespeichert!</string>
-    <string name="default_ringtone_success_message">Standardrufzeichen geändert</string>
-    <string name="play_error">Mediendatei kann nicht wiedergegeben werden</string>
-    <string name="no_unique_filename">Eindeutiger Dateiname nicht gefunden</string>
-    <string name="record_error">Error recording audio</string>
-    <string name="too_small_error">Eine so kleine Datei kann nicht gespeichert werden.</string>
+    <string name="default_ringtone_success_message">Standard-Klingelton geändert</string>
+    <string name="default_notification_success_message">Standard-Benachrichtigungston geändert</string>
+    <string name="play_error">Diese Mediendatei kann nicht abgespielt werden</string>
+    <string name="no_unique_filename">Eindeutiger Dateiname konnte nicht gefunden werden</string>
+    <string name="record_error">Fehler bei der Audioaufnahme</string>
+    <string name="too_small_error">Datei ist zu klein zum Speichern, versuchen Sie, sie zu verlängern.</string>
     <string name="write_error">Fehler beim Schreiben der Datei</string>
     <string name="read_error">Fehler beim Lesen der Datei</string>
 
-    <string name="no_space_error">Ihre SD-Karte ist voll. Nicht genügend Platz zum Speichern der Datei.</string>
+    <string name="no_space_error">Ihre SD-Karte ist voll, es ist nicht genug Speicherplatz zum Speichern dieser Datei vorhanden.</string>
 
-    <string name="bad_extension_error">Ringdroid kann noch keine Dateien dieses Typs bearbeiten</string>
-    <string name="no_extension_error">Ringdroid kann nur Dateien mit einer Erweiterung wie .mp3 oder .wav bearbeiten</string>
+    <string name="bad_extension_error">Entschuldigung, Ringdroid kann Dateien dieses Typs noch nicht bearbeiten</string>
+    <string name="no_extension_error">Entschuldigung, Ringdroid kann eine Datei nicht bearbeiten, wenn sie keine Erweiterung wie .mp3 oder .wav hat</string>
 
-    <!--      Choose Contact Activity      -->
+    <string name="choose_contact_title">Wem soll der Klingelton zugewiesen werden?</string>
+    <string name="success_contact_ringtone">Klingelton erfolgreich zugewiesen an:</string>
 
-    <string name="choose_contact_title">Welchen Kontakt soll das Rufzeichen zugewiesen werden?</string>
-    <string name="success_contact_ringtone">Rufzeichen erfolgreich zugewiesen an:</string>
-
-    <!--      About      -->
-
-    <string name="about_title">Info über Ringdroid</string>
+    <string name="about_title">Über Ringdroid</string>
     <string name="about_text_html">
-    <![CDATA[
-        <b>Ringdroid</b><br><br>
-        Mit Ringdroid können Sie MP3-, OGG-, WAV-, AAC- und AMR-Audiodateien bearbeiten und daraus Klingeltöne, Alarme und Benachrichtigungen erstellen.<br><br>
+        <![CDATA[
+            <b>Ringdroid</b><br><br>
+            Verwenden Sie Ringdroid, um MP3-, OGG-, WAV-, AAC- und AMR-Audiodateien zu bearbeiten und Klingeltöne, Alarme und Benachrichtigungen zu erstellen.<br><br>
 
-        <b>Tipps:</b><br>
-        • Audio­dateien per USB übertragen<br>
-        • Beliebige Stelle der Wellenform antippen, um dort abzuspielen<br>
-        • Während der Wiedergabe „Start“ oder „Ende“ tippen, um Marker zu setzen<br><br>
+            <b>Tipps:</b><br>
+            • Kopieren Sie Audiodateien über USB<br>
+            • Tippen Sie zum Abspielen auf eine beliebige Stelle in der Wellenform<br>
+            • Tippen Sie während der Wiedergabe auf Start/Ende, um Markierungen zu setzen<br><br>
 
-        <b>Version: %s</b><br><br>
+            <b>Version: %s</b><br><br>
 
-        <b>Entwickler:</b><br>
-        Dominic Mazzoni<br>
-        Nicolas Faralli<br>
-        althafvly<br><br>
+            <b>Entwickler:</b><br>
+            Dominic Mazzoni<br>
+            Nicolas Faralli<br>
+            althafvly<br><br>
 
-        <b>Grafiken:</b> Joseph Wain<br>
-        <b>Support:</b> Eugene Koh<br>
-        <b>Verbesserungen:</b> Dan Klufas<br><br>
+            <b>Grafik:</b> Joseph Wain<br>
+            <b>Support:</b> Eugene Koh<br>
+            <b>Verbesserungen:</b> Dan Klufas<br><br>
 
-        Ringdroid ist freie Software unter der Apache-2.0-Lizenz.<br>
-        Quellcode: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
-    ]]>
+            Ringdroid ist freie Software unter Apache 2.0.<br>
+            Quellcode: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+        ]]>
     </string>
+
+    <string name="require_contacts_permission">Bitte aktivieren Sie die Kontaktberechtigung, um einen Klingelton zuzuweisen.</string>
+    <string name="required_mic_permission">Mikrofonberechtigung zur Audioaufnahme erforderlich</string>
+    <string name="required_system_modify_permission">Berechtigung zum Ändern der Systemeinstellungen ist erforderlich, um den Klingelton festzulegen</string>
+    <string name="storage_permission">Speicherberechtigung</string>
+    <string name="write_system_settings">Systemeinstellungen schreiben</string>
+    <string name="mic_permission">Mikrofonberechtigung</string>
+    <string name="contacts_permission">Kontaktberechtigung</string>
+    <string name="start">Start</string>
+    <string name="storage_permission_summary">Wird zum Speichern und Zugreifen auf Audiodateien benötigt (Empfohlen)\n\nErfordert diese oder die Medien-Audioberechtigung, damit die App lesen und schreiben kann</string>
+    <string name="write_system_settings_summary">Wird benötigt, um Klingeltöne als Systemstandard festzulegen</string>
+    <string name="mic_permission_summary">Wird benötigt, um eigene Audioclips aufzunehmen</string>
+    <string name="contact_permission_summary">Wird benötigt, um Ihren Kontakten Klingeltöne zuzuweisen</string>
+    <string name="media_audio_permission">Medien-Audioberechtigung</string>
+    <string name="media_audio_summary">Wird benötigt, um Klingelton-Dateien von Ihrem Smartphone zu lesen \n\nErfordert diese oder die Speicherberechtigung, damit die App lesen und schreiben kann</string>
 
 </resources>

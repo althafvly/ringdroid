@@ -1,38 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    /*
-     * Copyright (C) 2008 Google Inc.
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
--->
 <resources>
+    <string name="search_edit_box">Cerca</string>
 
-    <string name="ringdroid_app_name">Ringdroid</string>
+    <string name="button_start_record_activity">Registra Nuovo</string>
 
-    <!--      Main / media select activity      -->
+    <string name="sdcard_readonly">Spiacenti, la scheda SD è montata in sola lettura e Ringdroid richiede che sia scrivibile.</string>
+    <string name="no_sdcard">Spiacenti, Ringdroid non può essere eseguito senza una scheda SD inserita.</string>
+    <string name="sdcard_shared">Spiacenti, Ringdroid non può essere eseguito mentre il dispositivo è montato come dispositivo USB.</string>
 
-    <string name="main_activity_label">Ringdroid</string>
+    <string name="button_options">Opzioni</string>
 
-    <string name="button_start_record_activity">Registra nuovo</string>
-
-    <string name="sdcard_readonly">Scheda SD di sola lettura. Ringdroid richiede una scheda scrivibile.</string>
-    <string name="no_sdcard">Impossibile eseguire Ringdroid senza una scheda SD inserita.</string>
-    <string name="sdcard_shared">Impossibile eseguire Ringdroid con il telefono impostato come periferica USB.</string>
-
-    <!--      Edit activity      -->
-
-    <!-- Labels next to the start and end time edit boxes -->
     <string name="start_label">Inizio:</string>
     <string name="end_label">Fine:</string>
 
@@ -40,123 +17,124 @@
 
     <string name="time_seconds">secondi</string>
 
-    <!-- After you save a notification or ringtone and have more options 	 for what to do with them -->
-    <string name="what_to_do_with_ringtone">Salvataggio eseguito.  Impostare come suoneria predefinita o assegnare a un contatto?</string>
-    <string name="set_default_notification">Salvataggio eseguito.  Impostare come notifica predefinita?</string>
+    <string name="what_to_do_with_ringtone">Salvato! Vuoi impostarlo come suoneria predefinita o assegnarlo a un contatto?</string>
+    <string name="set_default_notification">Salvato! Vuoi impostarlo come notifica predefinita?</string>
 
-    <string name="make_default_ringtone_button">Imposta predefinita</string>
+    <string name="make_default_ringtone_button">Imposta come predefinito</string>
     <string name="choose_contact_ringtone_button">Assegna a contatto</string>
     <string name="do_nothing_with_ringtone_button">Chiudi</string>
 
-    <!-- Progress dialog text for loading, recording, or saving... -->
     <string name="progress_dialog_loading">Caricamento…</string>
-    <string name="progress_dialog_recording">Recording…</string>
+    <string name="progress_dialog_recording">Registrazione…</string>
     <string name="progress_dialog_saving">Salvataggio…</string>
-    <string name="progress_dialog_cancel">Cancel</string>
-    <string name="progress_dialog_stop">Stop</string>
+    <string name="progress_dialog_cancel">Annulla</string>
+    <string name="progress_dialog_stop">Ferma</string>
 
-    <!--      Menu items      -->
+    <string name="start_marker">Indicatore di inizio</string>
+    <string name="end_marker">Indicatore di fine</string>
+    <string name="rewind">Riavvolgi</string>
+    <string name="play">Riproduci</string>
+    <string name="ffwd">Avanti veloce</string>
+    <string name="zoom_in">Ingrandisci</string>
+    <string name="zoom_out">Rimpicciolisci</string>
+    <string name="save_button">Salva</string>
 
-    <string name="menu_save">Salva</string>
-    <string name="menu_reset">Reimposta</string>
-    <string name="menu_about">Info</string>
-    <string name="menu_show_all_audio">Mostra tutto audio</string>
+    <string name="menu_reset">Ripristina</string>
+    <string name="menu_about">Informazioni</string>
+    <string name="menu_show_all_audio">Mostra tutti gli audio</string>
 
-    <!--      Context menu items      -->
-
-    <string name="context_menu_edit">Modifica</string>
     <string name="context_menu_delete">Elimina</string>
+    <string name="context_menu_default_ringtone">Imposta come suoneria predefinita</string>
     <string name="context_menu_contact">Assegna a contatto</string>
-    <string name="context_menu_default_ringtone">Imposta predefinita</string>
-    <string name="context_menu_default_notification">Imposta predefinita</string>
+    <string name="context_menu_default_notification">Imposta come notifica predefinita</string>
 
-    <!--      File Save dialog      -->
-
-    <string name="file_save_title">Salva con nome:</string>
-    <string name="file_save_button_save">Salva</string>
-    <string name="file_save_button_cancel">Annulla</string>
+    <string name="file_save_title">Salva come:</string>
 
     <string name="ringtone_type_label">Tipo:</string>
 
     <string name="type_music">Musica</string>
-    <string name="type_alarm">Allarme</string>
+    <string name="type_alarm">Sveglia</string>
     <string name="type_notification">Notifica</string>
     <string name="type_ringtone">Suoneria</string>
 
     <string name="ringtone_name_label">Nome:</string>
 
-    <string name="artist_name">Ringdroid</string>
+    <string name="delete_ringtone">Elimina Suoneria</string>
+    <string name="delete_alarm">Elimina Sveglia</string>
+    <string name="delete_notification">Elimina Notifica</string>
+    <string name="delete_music">Elimina Musica</string>
+    <string name="delete_audio">Elimina Audio</string>
 
-    <!--      Delete confirmation dialog      -->
+    <string name="confirm_delete_ringdroid">Sei sicuro?</string>
+    <string name="confirm_delete_non_ringdroid">Sei sicuro? Questo file non è stato creato utilizzando Ringdroid!</string>
 
-    <string name="delete_ringtone">Elimina suoneria</string>
-    <string name="delete_alarm">Elimina allarme</string>
-    <string name="delete_notification">Elimina notifica</string>
-    <string name="delete_music">Elimina musica</string>
-    <string name="delete_audio">Elimina audio</string>
 
-    <string name="confirm_delete_ringdroid">Continuare?</string>
-    <string name="confirm_delete_non_ringdroid">Continuare?  Questo file non è stato creato con Ringdroid.</string>
+    <string name="delete_failed">Impossibile eliminare il file</string>
 
-    <string name="delete_ok_button">Elimina</string>
-    <string name="delete_cancel_button">Annulla</string>
-
-    <string name="delete_failed">Impossibile eliminare file</string>
-
-    <!--      Success and error messages      -->
-
-    <string name="alert_title_success">Operazione riuscita</string>
+    <string name="alert_title_success">Successo</string>
     <string name="alert_title_failure">Errore</string>
     <string name="alert_ok_button">OK</string>
-    <string name="alert_yes_button">Sì, grazie.</string>
+    <string name="alert_yes_button">Sì, per favore!</string>
     <string name="alert_no_button">No, grazie.</string>
 
-    <string name="save_success_message">Salvataggio eseguito.</string>
+    <string name="save_success_message">Salvato!</string>
     <string name="default_ringtone_success_message">Suoneria predefinita cambiata</string>
-    <string name="play_error">Impossibile riprodurre file multimediale</string>
-    <string name="no_unique_filename">Impossibile trovare nome file univoco</string>
-    <string name="record_error">Error recording audio</string>
-    <string name="too_small_error">Impossibile salvare file troppo piccolo. Renderlo più lungo.</string>
-    <string name="write_error">Errore scrittura file</string>
-    <string name="read_error">Errore lettura file</string>
+    <string name="default_notification_success_message">Suono di notifica predefinito cambiato</string>
+    <string name="play_error">Impossibile riprodurre questo file multimediale</string>
+    <string name="no_unique_filename">Impossibile trovare un nome file univoco</string>
+    <string name="record_error">Errore durante la registrazione audio</string>
+    <string name="too_small_error">Impossibile salvare un file così piccolo, prova ad allungarlo.</string>
+    <string name="write_error">Errore di scrittura del file</string>
+    <string name="read_error">Errore di lettura del file</string>
 
-    <string name="no_space_error">Scheda SD piena. Spazio insufficiente per salvare questo file.</string>
+    <string name="no_space_error">La tua scheda SD è piena, non c\'è spazio sufficiente per salvare questo file.</string>
 
-    <string name="bad_extension_error">Ringdroid non può ancora modificare file di questo tipo.</string>
-    <string name="no_extension_error">Ringdroid non può modificare un file con estensione diversa da .mp3 o .wav.</string>
+    <string name="bad_extension_error">Spiacenti, Ringdroid non è ancora in grado di modificare file di tipo</string>
+    <string name="no_extension_error">Spiacenti, Ringdroid non può modificare un file se non ha un\'estensione come .mp3 o .wav</string>
 
-    <!--      Choose Contact Activity      -->
+    <string name="choose_contact_title">Assegna la suoneria a quale contatto?</string>
+    <string name="success_contact_ringtone">Suoneria assegnata con successo a:</string>
 
-    <string name="choose_contact_title">A quale contatto assegnare la suoneria?</string>
-    <string name="success_contact_ringtone">Suoneria assegnata a:</string>
-
-    <!--      About      -->
-
-    <string name="about_title">Info su Ringdroid</string>
+    <string name="about_title">Informazioni su Ringdroid</string>
     <string name="about_text_html">
-    <![CDATA[
-        <b>Ringdroid</b><br><br>
-        Usa Ringdroid per modificare file audio MP3, OGG, WAV, AAC e AMR e creare suonerie, allarmi e notifiche.<br><br>
+        <![CDATA[
+            <b>Ringdroid</b><br><br>
+            Usa Ringdroid per modificare file audio MP3, OGG, WAV, AAC e AMR e creare suonerie, sveglie e notifiche.<br><br>
 
-        <b>Suggerimenti:</b><br>
-        • Copia i file audio tramite cavo USB<br>
-        • Tocca un punto qualsiasi dell\'onda per riprodurre da lì<br>
-        • Durante la riproduzione tocca “Inizio” o “Fine” per impostare i marcatori<br><br>
+            <b>Suggerimenti:</b><br>
+            • Copia i file audio tramite USB<br>
+            • Tocca un punto qualsiasi della forma d\'onda per riprodurre<br>
+            • Tocca Inizio/Fine durante la riproduzione per impostare i marcatori<br><br>
 
-        <b>Versione: %s</b><br><br>
+            <b>Versione: %s</b><br><br>
 
-        <b>Sviluppatori:</b><br>
-        Dominic Mazzoni<br>
-        Nicolas Faralli<br>
-        althafvly<br><br>
+            <b>Sviluppatori:</b><br>
+            Dominic Mazzoni<br>
+            Nicolas Faralli<br>
+            althafvly<br><br>
 
-        <b>Grafica:</b> Joseph Wain<br>
-        <b>Supporto:</b> Eugene Koh<br>
-        <b>Miglioramenti:</b> Dan Klufas<br><br>
+            <b>Grafica:</b> Joseph Wain<br>
+            <b>Supporto:</b> Eugene Koh<br>
+            <b>Miglioramenti:</b> Dan Klufas<br><br>
 
-        Ringdroid è software libero sotto licenza Apache 2.0.<br>
-        Codice sorgente: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
-    ]]>
+            Ringdroid è un software libero sotto Apache 2.0.<br>
+            Codice sorgente: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+        ]]>
     </string>
+
+    <string name="require_contacts_permission">Si prega di abilitare il permesso dei contatti per assegnare una suoneria.</string>
+    <string name="required_mic_permission">Permesso microfono richiesto per registrare l\'audio</string>
+    <string name="required_system_modify_permission">Il permesso di modifica delle impostazioni di sistema è richiesto per impostare la suoneria</string>
+    <string name="storage_permission">Permesso di Archiviazione</string>
+    <string name="write_system_settings">Scrivi Impostazioni di Sistema</string>
+    <string name="mic_permission">Permesso Microfono</string>
+    <string name="contacts_permission">Permesso Contatti</string>
+    <string name="start">Inizia</string>
+    <string name="storage_permission_summary">Necessario per salvare e accedere ai file audio (Consigliato)\n\nRichiede questo o il permesso audio multimediale affinché l\'app possa leggere e scrivere</string>
+    <string name="write_system_settings_summary">Necessario per impostare le suonerie come predefinite del sistema</string>
+    <string name="mic_permission_summary">Necessario per registrare i propri clip audio</string>
+    <string name="contact_permission_summary">Necessario per assegnare suonerie ai tuoi contatti</string>
+    <string name="media_audio_permission">Permesso audio multimediale</string>
+    <string name="media_audio_summary">Necessario per leggere i file di suoneria dal tuo smartphone \n\nRichiede questo o il permesso di archiviazione affinché l\'app possa leggere e scrivere</string>
 
 </resources>

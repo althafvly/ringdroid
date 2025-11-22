@@ -1,162 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    /*
-     * Copyright (C) 2008 Google Inc.
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
--->
 <resources>
-
-    <string name="ringdroid_app_name">Программа Ringdroid</string>
-
-    <!--      Main / media select activity      -->
-
-    <string name="main_activity_label">Программа Ringdroid</string>
+    <string name="search_edit_box">Поиск</string>
 
     <string name="button_start_record_activity">Записать новый</string>
 
-    <string name="sdcard_readonly">Извините, SD-карта только для чтения – для Ringdroid требуется записываемая карта.</string>
-    <string name="no_sdcard">Извините, пока не вставлена SD-карта, Ringdroid не работает.</string>
-    <string name="sdcard_shared">Извините, пока телефон подключен к разъему USB, Ringdroid не работает.</string>
+    <string name="sdcard_readonly">К сожалению, SD-карта смонтирована только для чтения, а Ringdroid требует, чтобы она была доступна для записи.</string>
+    <string name="no_sdcard">К сожалению, Ringdroid не может работать, если не вставлена SD-карта.</string>
+    <string name="sdcard_shared">К сожалению, Ringdroid не может работать, пока ваш телефон смонтирован как USB-устройство.</string>
 
-    <!--      Edit activity      -->
+    <string name="button_options">Настройки</string>
 
-    <!-- Labels next to the start and end time edit boxes -->
     <string name="start_label">Начало:</string>
     <string name="end_label">Конец:</string>
 
     <string name="edit_intent">Изменить</string>
 
-    <string name="time_seconds">сек.</string>
+    <string name="time_seconds">секунды</string>
 
-    <!-- After you save a notification or ringtone and have more options 	 for what to do with them -->
-    <string name="what_to_do_with_ringtone">Сохранено!  Сделать сигналом звонка по умолчанию или назначить для контакта?</string>
-    <string name="set_default_notification">Сохранено!  Сделать уведомлением по умолчанию?</string>
+    <string name="what_to_do_with_ringtone">Сохранено! Сделать это стандартным рингтоном или назначить контакту?</string>
+    <string name="set_default_notification">Сохранено! Сделать это стандартным уведомлением?</string>
 
-    <string name="make_default_ringtone_button">По умолчанию</string>
-    <string name="choose_contact_ringtone_button">Назначить для контакта</string>
+    <string name="make_default_ringtone_button">Сделать стандартным</string>
+    <string name="choose_contact_ringtone_button">Назначить контакту</string>
     <string name="do_nothing_with_ringtone_button">Закрыть</string>
 
-    <!-- Progress dialog text for loading or saving... -->
     <string name="progress_dialog_loading">Загрузка…</string>
-    <string name="progress_dialog_recording">Recording…</string>
+    <string name="progress_dialog_recording">Запись…</string>
     <string name="progress_dialog_saving">Сохранение…</string>
-    <string name="progress_dialog_cancel">Cancel</string>
-    <string name="progress_dialog_stop">Stop</string>
+    <string name="progress_dialog_cancel">Отмена</string>
+    <string name="progress_dialog_stop">Стоп</string>
 
-    <!--      Menu items      -->
+    <string name="start_marker">Маркер начала</string>
+    <string name="end_marker">Маркер конца</string>
+    <string name="rewind">Перемотать назад</string>
+    <string name="play">Воспроизвести</string>
+    <string name="ffwd">Перемотать вперед</string>
+    <string name="zoom_in">Увеличить</string>
+    <string name="zoom_out">Уменьшить</string>
+    <string name="save_button">Сохранить</string>
 
-    <string name="menu_save">Сохранить</string>
-    <string name="menu_reset">Сброс</string>
-    <string name="menu_about">Сведения</string>
+    <string name="menu_reset">Сбросить</string>
+    <string name="menu_about">О программе</string>
     <string name="menu_show_all_audio">Показать все аудио</string>
 
-    <!--      Context menu items      -->
-
-    <string name="context_menu_edit">Изменить</string>
     <string name="context_menu_delete">Удалить</string>
-    <string name="context_menu_contact">Назначить для контакта</string>
-    <string name="context_menu_default_ringtone">По умолчанию</string>
-    <string name="context_menu_default_notification">По умолчанию</string>
-
-    <!--      File Save dialog      -->
+    <string name="context_menu_default_ringtone">Установить как рингтон по умолчанию</string>
+    <string name="context_menu_contact">Назначить контакту</string>
+    <string name="context_menu_default_notification">Установить как уведомление по умолчанию</string>
 
     <string name="file_save_title">Сохранить как:</string>
-    <string name="file_save_button_save">Сохранить</string>
-    <string name="file_save_button_cancel">Отменить</string>
 
     <string name="ringtone_type_label">Тип:</string>
 
     <string name="type_music">Музыка</string>
     <string name="type_alarm">Будильник</string>
     <string name="type_notification">Уведомление</string>
-    <string name="type_ringtone">Сигнал звонка</string>
+    <string name="type_ringtone">Рингтон</string>
 
     <string name="ringtone_name_label">Имя:</string>
 
-    <string name="artist_name">Программа Ringdroid</string>
-
-    <!--      Delete confirmation dialog      -->
-
-    <string name="delete_ringtone">Удалить сигнал звонка</string>
-    <string name="delete_alarm">Удалить сигнал будильника</string>
+    <string name="delete_ringtone">Удалить рингтон</string>
+    <string name="delete_alarm">Удалить будильник</string>
     <string name="delete_notification">Удалить уведомление</string>
     <string name="delete_music">Удалить музыку</string>
     <string name="delete_audio">Удалить аудио</string>
 
     <string name="confirm_delete_ringdroid">Вы уверены?</string>
-    <string name="confirm_delete_non_ringdroid">Вы уверены?  Файл создан не в программе Ringdroid!</string>
+    <string name="confirm_delete_non_ringdroid">Вы уверены? Этот файл не был создан с помощью Ringdroid!</string>
 
-    <string name="delete_ok_button">Удалить</string>
-    <string name="delete_cancel_button">Отменить</string>
 
-    <string name="delete_failed">Невозможно удалить файл</string>
+    <string name="delete_failed">Не удалось удалить файл</string>
 
-    <!--      Success and error messages      -->
-
-    <string name="alert_title_success">Готово</string>
+    <string name="alert_title_success">Успех</string>
     <string name="alert_title_failure">Ошибка</string>
     <string name="alert_ok_button">ОК</string>
-    <string name="alert_yes_button">Да!</string>
-    <string name="alert_no_button">Нет.</string>
+    <string name="alert_yes_button">Да, пожалуйста!</string>
+    <string name="alert_no_button">Нет, спасибо.</string>
 
     <string name="save_success_message">Сохранено!</string>
-    <string name="default_ringtone_success_message">Сигнал звонка по умолчанию изменен</string>
-    <string name="play_error">Невозможно воспроизвести файл мультимедиа</string>
-    <string name="no_unique_filename">Не удается найти уникальное имя файла</string>
-    <string name="record_error">Error recording audio</string>
-    <string name="too_small_error">Файл слишком короткий для сохранения, удлините его.</string>
+    <string name="default_ringtone_success_message">Стандартный рингтон изменен</string>
+    <string name="default_notification_success_message">Стандартный звук уведомления изменен</string>
+    <string name="play_error">Не удалось воспроизвести этот медиафайл</string>
+    <string name="no_unique_filename">Не удалось найти уникальное имя файла</string>
+    <string name="record_error">Ошибка записи аудио</string>
+    <string name="too_small_error">Невозможно сохранить такой маленький файл, попробуйте сделать его длиннее.</string>
     <string name="write_error">Ошибка записи файла</string>
     <string name="read_error">Ошибка чтения файла</string>
 
-    <string name="no_space_error">SD-карта заполнена, недостаточно места для сохранения этого файла.</string>
+    <string name="no_space_error">Ваша SD-карта заполнена, недостаточно места для сохранения этого файла.</string>
 
-    <string name="bad_extension_error">Извините, в Ringdroid пока невозможна редакция таких файлов</string>
-    <string name="no_extension_error">Извините, в Ringdroid невозможна редакция файлов с расширением отличным от .mp3 или .wav</string>
+    <string name="bad_extension_error">К сожалению, Ringdroid еще не может редактировать файлы типа</string>
+    <string name="no_extension_error">К сожалению, Ringdroid не может редактировать файл, если у него нет расширения, например .mp3 или .wav</string>
 
-    <!--      Choose Contact Activity      -->
+    <string name="choose_contact_title">Назначить рингтон какому контакту?</string>
+    <string name="success_contact_ringtone">Рингтон успешно назначен контакту:</string>
 
-    <string name="choose_contact_title">Для которого контакта назначить сигнал звонка?</string>
-    <string name="success_contact_ringtone">Сигнал звонка успешно назначен контакту:</string>
-
-    <!--      About      -->
-
-    <string name="about_title">О программе Ringdroid</string>
+    <string name="about_title">О Ringdroid</string>
     <string name="about_text_html">
-    <![CDATA[
-        <b>Ringdroid</b><br><br>
-        Используйте Ringdroid для редактирования аудиофайлов MP3, OGG, WAV, AAC и AMR и создания рингтонов, будильников и уведомлений.<br><br>
+        <![CDATA[
+            <b>Ringdroid</b><br><br>
+            Используйте Ringdroid для редактирования аудиофайлов MP3, OGG, WAV, AAC и AMR и создания рингтонов, будильников и уведомлений.<br><br>
 
-        <b>Советы:</b><br>
-        • Копируйте аудиофайлы через USB-кабель<br>
-        • Нажмите на любую точку волны, чтобы начать воспроизведение оттуда<br>
-        • Во время воспроизведения нажмите «Начало» или «Конец» для установки маркеров<br><br>
+            <b>Советы:</b><br>
+            • Копируйте аудиофайлы через USB<br>
+            • Нажмите в любом месте на форму волны, чтобы воспроизвести<br>
+            • Нажмите Начало/Конец во время воспроизведения, чтобы установить маркеры<br><br>
 
-        <b>Версия: %s</b><br><br>
+            <b>Версия: %s</b><br><br>
 
-        <b>Разработчики:</b><br>
-        Dominic Mazzoni<br>
-        Nicolas Faralli<br>
-        althafvly<br><br>
+            <b>Разработчики:</b><br>
+            Dominic Mazzoni<br>
+            Nicolas Faralli<br>
+            althafvly<br><br>
 
-        <b>Графика:</b> Joseph Wain<br>
-        <b>Поддержка:</b> Eugene Koh<br>
-        <b>Улучшения:</b> Dan Klufas<br><br>
+            <b>Графика:</b> Joseph Wain<br>
+            <b>Поддержка:</b> Eugene Koh<br>
+            <b>Улучшения:</b> Dan Klufas<br><br>
 
-        Ringdroid — свободное ПО под лицензией Apache 2.0.<br>
-        Исходный код: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
-    ]]>
+            Ringdroid — это бесплатное программное обеспечение под лицензией Apache 2.0.<br>
+            Исходный код: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+        ]]>
     </string>
+
+    <string name="require_contacts_permission">Пожалуйста, включите разрешение контактов, чтобы назначить рингтон.</string>
+    <string name="required_mic_permission">Требуется разрешение микрофона для записи аудио</string>
+    <string name="required_system_modify_permission">Требуется разрешение на изменение системных настроек для установки рингтона</string>
+    <string name="storage_permission">Разрешение на хранение</string>
+    <string name="write_system_settings">Изменить системные настройки</string>
+    <string name="mic_permission">Разрешение микрофона</string>
+    <string name="contacts_permission">Разрешение контактов</string>
+    <string name="start">Начать</string>
+    <string name="storage_permission_summary">Требуется для сохранения и доступа к аудиофайлам (Рекомендуется)\n\nТребуется это или разрешение на медиа-аудио для чтения и записи приложением</string>
+    <string name="write_system_settings_summary">Требуется для установки рингтонов в качестве системных по умолчанию</string>
+    <string name="mic_permission_summary">Требуется для записи ваших собственных аудиоклипов</string>
+    <string name="contact_permission_summary">Требуется для назначения рингтонов вашим контактам</string>
+    <string name="media_audio_permission">Разрешение на медиа-аудио</string>
+    <string name="media_audio_summary">Требуется для чтения файлов рингтонов с вашего смартфона \n\nТребуется это или разрешение на хранение для чтения и записи приложением</string>
 
 </resources>

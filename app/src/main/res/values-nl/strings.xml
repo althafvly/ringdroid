@@ -1,91 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    /*
-     * Copyright (C) 2008 Google Inc.
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
--->
 <resources>
-
-    <string name="ringdroid_app_name">Ringdroid</string>
-
-    <!--
-     Main / media select activity
-     -->
-
-    <string name="main_activity_label">Ringdroid</string>
+    <string name="search_edit_box">Zoeken</string>
 
     <string name="button_start_record_activity">Nieuwe opname</string>
 
-    <string name="sdcard_readonly">De SD-kaart is gekoppeld als alleen-lezen en Ringdroid moet naar de kaart kunnen schrijven.</string>
-    <string name="no_sdcard">Ringdroid kan niet worden uitgevoerd tenzij u een SD-kaart hebt geplaatst.</string>
-    <string name="sdcard_shared">Ringdroid kan niet worden uitgevoerd terwijl uw handset is gekoppeld als USB-apparaat.</string>
+    <string name="sdcard_readonly">Sorry, de SD-kaart is alleen-lezen gemount en Ringdroid vereist dat deze beschrijfbaar is.</string>
+    <string name="no_sdcard">Sorry, Ringdroid kan niet worden uitgevoerd tenzij u een SD-kaart hebt geplaatst.</string>
+    <string name="sdcard_shared">Sorry, Ringdroid kan niet worden uitgevoerd terwijl uw toestel is gemount als een USB-apparaat.</string>
 
-    <!--
-     Edit activity
-     -->
+    <string name="button_options">Opties</string>
 
-    <!-- Labels next to the start and end time edit boxes -->
     <string name="start_label">Start:</string>
-    <string name="end_label">Eind:</string>
+    <string name="end_label">Einde:</string>
 
     <string name="edit_intent">Bewerken</string>
 
     <string name="time_seconds">seconden</string>
 
-    <!-- After you save a notification or ringtone and have more options
-     for what to do with them -->
-    <string name="what_to_do_with_ringtone">Opgeslagen. Instellen als standaardbeltoon of toewijzen aan een contact?</string>
-    <string name="set_default_notification">Opgeslagen. Instellen als standaardmelding?</string>
+    <string name="what_to_do_with_ringtone">Opgeslagen! Dit uw standaardbeltoon maken of toewijzen aan een contactpersoon?</string>
+    <string name="set_default_notification">Opgeslagen! Dit uw standaardmelding maken?</string>
 
-    <string name="make_default_ringtone_button">Instellen als standaard</string>
+    <string name="make_default_ringtone_button">Maak Standaard</string>
     <string name="choose_contact_ringtone_button">Toewijzen aan contact</string>
     <string name="do_nothing_with_ringtone_button">Sluiten</string>
 
-    <!-- Progress dialog text for loading, recording, or saving... -->
     <string name="progress_dialog_loading">Laden…</string>
-    <string name="progress_dialog_recording">Recording…</string>
+    <string name="progress_dialog_recording">Opnemen…</string>
     <string name="progress_dialog_saving">Opslaan…</string>
-    <string name="progress_dialog_cancel">Cancel</string>
+    <string name="progress_dialog_cancel">Annuleren</string>
     <string name="progress_dialog_stop">Stop</string>
 
-    <!--
-     Menu items
-     -->
+    <string name="start_marker">Startmarkering</string>
+    <string name="end_marker">Eindmarkering</string>
+    <string name="rewind">Terugspoelen</string>
+    <string name="play">Afspelen</string>
+    <string name="ffwd">Snel vooruitspoelen</string>
+    <string name="zoom_in">Inzoomen</string>
+    <string name="zoom_out">Uitzoomen</string>
+    <string name="save_button">Opslaan</string>
 
-    <string name="menu_save">Opslaan</string>
-    <string name="menu_reset">Opnieuw instellen</string>
+    <string name="menu_reset">Herstellen</string>
     <string name="menu_about">Over</string>
-    <string name="menu_show_all_audio">Alle audio weergeven</string>
+    <string name="menu_show_all_audio">Toon alle audio</string>
 
-    <!--
-     Context menu items
-     -->
-
-    <string name="context_menu_edit">Bewerken</string>
     <string name="context_menu_delete">Verwijderen</string>
+    <string name="context_menu_default_ringtone">Instellen als Standaardbeltoon</string>
     <string name="context_menu_contact">Toewijzen aan contact</string>
-    <string name="context_menu_default_ringtone">Instellen als standaard</string>
-    <string name="context_menu_default_notification">Instellen als standaard</string>
-
-    <!--
-     File Save dialog
-     -->
+    <string name="context_menu_default_notification">Instellen als Standaardmelding</string>
 
     <string name="file_save_title">Opslaan als:</string>
-    <string name="file_save_button_save">Opslaan</string>
-    <string name="file_save_button_cancel">Annuleren</string>
 
     <string name="ringtone_type_label">Type:</string>
 
@@ -96,12 +59,6 @@
 
     <string name="ringtone_name_label">Naam:</string>
 
-    <string name="artist_name">Ringdroid</string>
-
-    <!--
-     Delete confirmation dialog
-     -->
-
     <string name="delete_ringtone">Beltoon verwijderen</string>
     <string name="delete_alarm">Alarm verwijderen</string>
     <string name="delete_notification">Melding verwijderen</string>
@@ -109,73 +66,75 @@
     <string name="delete_audio">Audio verwijderen</string>
 
     <string name="confirm_delete_ringdroid">Weet u het zeker?</string>
-    <string name="confirm_delete_non_ringdroid">Weet u het zeker? Dit bestand is niet gemaakt met Ringdroid.</string>
+    <string name="confirm_delete_non_ringdroid">Weet u het zeker? Dit bestand is niet gemaakt met Ringdroid!</string>
 
-    <string name="delete_ok_button">Verwijderen</string>
-    <string name="delete_cancel_button">Annuleren</string>
 
     <string name="delete_failed">Kan bestand niet verwijderen</string>
-
-    <!--
-     Success and error messages
-     -->
 
     <string name="alert_title_success">Succes</string>
     <string name="alert_title_failure">Fout</string>
     <string name="alert_ok_button">OK</string>
-    <string name="alert_yes_button">Ja, graag.</string>
+    <string name="alert_yes_button">Ja, graag!</string>
     <string name="alert_no_button">Nee, bedankt.</string>
 
-    <string name="save_success_message">Opgeslagen.</string>
+    <string name="save_success_message">Opgeslagen!</string>
     <string name="default_ringtone_success_message">Standaardbeltoon gewijzigd</string>
+    <string name="default_notification_success_message">Standaardmeldingsgeluid gewijzigd</string>
     <string name="play_error">Kan dit mediabestand niet afspelen</string>
-    <string name="no_unique_filename">Kan unieke bestandsnaam niet vinden</string>
-    <string name="record_error">Error recording audio</string>
-    <string name="too_small_error">Kan een bestand dat zo kort is, niet opslaan. Maak het langer.</string>
-    <string name="write_error">Fout bij schrijven van bestand</string>
-    <string name="read_error">Fout bij lezen van bestand</string>
+    <string name="no_unique_filename">Kan geen unieke bestandsnaam vinden</string>
+    <string name="record_error">Fout bij het opnemen van audio</string>
+    <string name="too_small_error">Kan zo\'n klein bestand niet opslaan, probeer het langer te maken.</string>
+    <string name="write_error">Fout bij het schrijven van het bestand</string>
+    <string name="read_error">Fout bij het lezen van het bestand</string>
 
-    <string name="no_space_error">De SD-kaart is vol. Onvoldoende ruimte om dit bestand op te slaan.</string>
+    <string name="no_space_error">Uw SD-kaart is vol, er is niet genoeg ruimte om dit bestand op te slaan.</string>
 
-    <string name="bad_extension_error">Ringdroid kan bestanden van dit type niet bewerken</string>
-    <string name="no_extension_error">Ringdroid kan een bestand niet bewerken als het geen extensie zoals .mp3 of .wav heeft</string>
+    <string name="bad_extension_error">Sorry, Ringdroid is nog niet in staat om bestanden van het type</string>
+    <string name="no_extension_error">Sorry, Ringdroid kan een bestand niet bewerken als het geen extensie heeft zoals .mp3 of .wav</string>
 
-    <!--
-     Choose Contact Activity
-     -->
-
-    <string name="choose_contact_title">Beltoon toewijzen aan welk contact?</string>
-    <string name="success_contact_ringtone">Beltoon toegewezen aan:</string>
-
-    <!--
-     About
-     -->
+    <string name="choose_contact_title">Beltoon toewijzen aan welke contactpersoon?</string>
+    <string name="success_contact_ringtone">Beltoon succesvol toegewezen aan:</string>
 
     <string name="about_title">Over Ringdroid</string>
     <string name="about_text_html">
-    <![CDATA[
-        <b>Ringdroid</b><br><br>
-        Gebruik Ringdroid om MP3-, OGG-, WAV-, AAC- en AMR-audio te bewerken en er beltonen, alarmen en meldingen van te maken.<br><br>
+        <![CDATA[
+            <b>Ringdroid</b><br><br>
+            Gebruik Ringdroid om MP3-, OGG-, WAV-, AAC- en AMR-audiobestanden te bewerken en beltonen, alarmen en meldingen te maken.<br><br>
 
-        <b>Tips:</b><br>
-        • Audio­bestanden kopiëren via USB<br>
-        • Tik ergens op de golfvorm om vanaf dat punt af te spelen<br>
-        • Tik tijdens het afspelen op “Start” of “Einde” om markeringen te zetten<br><br>
+            <b>Tips:</b><br>
+            • Kopieer audiobestanden via USB<br>
+            • Tik ergens op de golfvorm om af te spelen<br>
+            • Tik op Start/Einde tijdens het afspelen om markeringen in te stellen<br><br>
 
-        <b>Versie: %s</b><br><br>
+            <b>Versie: %s</b><br><br>
 
-        <b>Ontwikkelaars:</b><br>
-        Dominic Mazzoni<br>
-        Nicolas Faralli<br>
-        althafvly<br><br>
+            <b>Ontwikkelaars:</b><br>
+            Dominic Mazzoni<br>
+            Nicolas Faralli<br>
+            althafvly<br><br>
 
-        <b>Grafisch ontwerp:</b> Joseph Wain<br>
-        <b>Ondersteuning:</b> Eugene Koh<br>
-        <b>Verbeteringen:</b> Dan Klufas<br><br>
+            <b>Grafisch:</b> Joseph Wain<br>
+            <b>Ondersteuning:</b> Eugene Koh<br>
+            <b>Verbeteringen:</b> Dan Klufas<br><br>
 
-        Ringdroid is vrije software onder de Apache 2.0-licentie.<br>
-        Broncode: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
-    ]]>
+            Ringdroid is gratis software onder Apache 2.0.<br>
+            Broncode: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+        ]]>
     </string>
+
+    <string name="require_contacts_permission">Schakel de contacten toestemming in om een beltoon toe te wijzen.</string>
+    <string name="required_mic_permission">Microfoon toestemming vereist om audio op te nemen</string>
+    <string name="required_system_modify_permission">Toestemming om systeeminstellingen te wijzigen is vereist om de beltoon in te stellen</string>
+    <string name="storage_permission">Opslagtoestemming</string>
+    <string name="write_system_settings">Systeeminstellingen schrijven</string>
+    <string name="mic_permission">Microfoontoestemming</string>
+    <string name="contacts_permission">Contactentoestemming</string>
+    <string name="start">Start</string>
+    <string name="storage_permission_summary">Nodig om audiobestanden op te slaan en te openen (Aanbevolen)\n\nVereist dit of media-audiotoestemming voor de app om te lezen en schrijven</string>
+    <string name="write_system_settings_summary">Nodig om beltonen als systeemstandaard in te stellen</string>
+    <string name="mic_permission_summary">Nodig om uw eigen audioclips op te nemen</string>
+    <string name="contact_permission_summary">Nodig om beltonen aan uw contacten toe te wijzen</string>
+    <string name="media_audio_permission">Media-audiotoestemming</string>
+    <string name="media_audio_summary">Nodig om beltoonbestanden van uw smartphone te lezen \n\nVereist dit of opslagtoestemming voor de app om te lezen en schrijven</string>
 
 </resources>

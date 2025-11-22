@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_edit_box">검색</string>
+
+    <string name="button_start_record_activity">새로 녹음</string>
+
+    <string name="sdcard_readonly">죄송합니다. SD 카드가 읽기 전용으로 마운트되어 있으며 Ringdroid는 쓰기 가능해야 합니다.</string>
+    <string name="no_sdcard">죄송합니다. SD 카드가 삽입되지 않으면 Ringdroid를 실행할 수 없습니다.</string>
+    <string name="sdcard_shared">죄송합니다. 핸드셋이 USB 장치로 마운트되어 있는 동안에는 Ringdroid를 실행할 수 없습니다.</string>
+
+    <string name="button_options">옵션</string>
+
+    <string name="start_label">시작:</string>
+    <string name="end_label">종료:</string>
+
+    <string name="edit_intent">편집</string>
+
+    <string name="time_seconds">초</string>
+
+    <string name="what_to_do_with_ringtone">저장되었습니다! 이것을 기본 벨소리로 설정하거나 연락처에 할당하시겠습니까?</string>
+    <string name="set_default_notification">저장되었습니다! 이것을 기본 알림으로 설정하시겠습니까?</string>
+
+    <string name="make_default_ringtone_button">기본으로 설정</string>
+    <string name="choose_contact_ringtone_button">연락처에 할당</string>
+    <string name="do_nothing_with_ringtone_button">닫기</string>
+
+    <string name="progress_dialog_loading">로드 중…</string>
+    <string name="progress_dialog_recording">녹음 중…</string>
+    <string name="progress_dialog_saving">저장 중…</string>
+    <string name="progress_dialog_cancel">취소</string>
+    <string name="progress_dialog_stop">정지</string>
+
+    <string name="start_marker">시작 마커</string>
+    <string name="end_marker">종료 마커</string>
+    <string name="rewind">되감기</string>
+    <string name="play">재생</string>
+    <string name="ffwd">빨리 감기</string>
+    <string name="zoom_in">확대</string>
+    <string name="zoom_out">축소</string>
+    <string name="save_button">저장</string>
+
+    <string name="menu_reset">재설정</string>
+    <string name="menu_about">정보</string>
+    <string name="menu_show_all_audio">모든 오디오 표시</string>
+
+    <string name="context_menu_delete">삭제</string>
+    <string name="context_menu_default_ringtone">기본 벨소리로 설정</string>
+    <string name="context_menu_contact">연락처에 할당</string>
+    <string name="context_menu_default_notification">기본 알림으로 설정</string>
+
+    <string name="file_save_title">다른 이름으로 저장:</string>
+
+    <string name="ringtone_type_label">유형:</string>
+
+    <string name="type_music">음악</string>
+    <string name="type_alarm">알람</string>
+    <string name="type_notification">알림</string>
+    <string name="type_ringtone">벨소리</string>
+
+    <string name="ringtone_name_label">이름:</string>
+
+    <string name="delete_ringtone">벨소리 삭제</string>
+    <string name="delete_alarm">알람 삭제</string>
+    <string name="delete_notification">알림 삭제</string>
+    <string name="delete_music">음악 삭제</string>
+    <string name="delete_audio">오디오 삭제</string>
+
+    <string name="confirm_delete_ringdroid">확실합니까?</string>
+    <string name="confirm_delete_non_ringdroid">확실합니까? 이 파일은 Ringdroid를 사용하여 생성되지 않았습니다!</string>
+
+
+    <string name="delete_failed">파일을 삭제할 수 없습니다</string>
+
+    <string name="alert_title_success">성공</string>
+    <string name="alert_title_failure">오류</string>
+    <string name="alert_ok_button">확인</string>
+    <string name="alert_yes_button">예, 부탁합니다!</string>
+    <string name="alert_no_button">아니요, 괜찮습니다.</string>
+
+    <string name="save_success_message">저장되었습니다!</string>
+    <string name="default_ringtone_success_message">기본 벨소리가 변경되었습니다</string>
+    <string name="default_notification_success_message">기본 알림 소리가 변경되었습니다</string>
+    <string name="play_error">이 미디어 파일을 재생할 수 없습니다</string>
+    <string name="no_unique_filename">고유한 파일 이름을 찾을 수 없습니다</string>
+    <string name="record_error">오디오 녹음 오류</string>
+    <string name="too_small_error">파일이 너무 작아 저장할 수 없습니다. 더 길게 만들어보세요.</string>
+    <string name="write_error">파일 쓰기 오류</string>
+    <string name="read_error">파일 읽기 오류</string>
+
+    <string name="no_space_error">SD 카드가 가득 찼습니다. 이 파일을 저장할 공간이 충분하지 않습니다.</string>
+
+    <string name="bad_extension_error">죄송합니다. Ringdroid는 아직 이 유형의 파일을 편집할 수 없습니다</string>
+    <string name="no_extension_error">죄송합니다. 파일에 .mp3 또는 .wav와 같은 확장자가 없으면 Ringdroid는 편집할 수 없습니다</string>
+
+    <string name="choose_contact_title">벨소리를 어떤 연락처에 할당하시겠습니까?</string>
+    <string name="success_contact_ringtone">벨소리가 성공적으로 할당되었습니다:</string>
+
+    <string name="about_title">Ringdroid 정보</string>
+    <string name="about_text_html">
+        <![CDATA[
+            <b>Ringdroid</b><br><br>
+            Ringdroid를 사용하여 MP3, OGG, WAV, AAC 및 AMR 오디오 파일을 편집하고 벨소리, 알람 및 알림을 만드세요.<br><br>
+
+            <b>팁:</b><br>
+            • USB를 사용하여 오디오 파일을 복사합니다<br>
+            • 파형의 아무 곳이나 탭하여 재생합니다<br>
+            • 재생 중에 시작/종료를 탭하여 마커를 설정합니다<br><br>
+
+            <b>버전: %s</b><br><br>
+
+            <b>개발자:</b><br>
+            Dominic Mazzoni<br>
+            Nicolas Faralli<br>
+            althafvly<br><br>
+
+            <b>그래픽:</b> Joseph Wain<br>
+            <b>지원:</b> Eugene Koh<br>
+            <b>개선 사항:</b> Dan Klufas<br><br>
+
+            Ringdroid는 Apache 2.0 라이선스 하의 무료 소프트웨어입니다.<br>
+            소스 코드: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+        ]]>
+    </string>
+
+    <string name="require_contacts_permission">벨소리를 할당하려면 연락처 권한을 활성화하세요.</string>
+    <string name="required_mic_permission">오디오 녹음을 위해서는 마이크 권한이 필요합니다</string>
+    <string name="required_system_modify_permission">벨소리를 설정하려면 시스템 설정 수정 권한이 필요합니다</string>
+    <string name="storage_permission">저장소 권한</string>
+    <string name="write_system_settings">시스템 설정 쓰기</string>
+    <string name="mic_permission">마이크 권한</string>
+    <string name="contacts_permission">연락처 권한</string>
+    <string name="start">시작</string>
+    <string name="storage_permission_summary">오디오 파일을 저장하고 액세스하는 데 필요합니다 (권장)\n\n앱이 읽고 쓸 수 있도록 이 권한 또는 미디어 오디오 권한이 필요합니다</string>
+    <string name="write_system_settings_summary">벨소리를 시스템 기본값으로 설정하는 데 필요합니다</string>
+    <string name="mic_permission_summary">자신의 오디오 클립을 녹음하는 데 필요합니다</string>
+    <string name="contact_permission_summary">연락처에 벨소리를 할당하는 데 필요합니다</string>
+    <string name="media_audio_permission">미디어 오디오 권한</string>
+    <string name="media_audio_summary">스마트폰에서 벨소리 파일을 읽는 데 필요합니다 \n\n앱이 읽고 쓸 수 있도록 이 권한 또는 저장소 권한이 필요합니다</string>
+
+</resources>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_edit_box">搜尋</string>
+
+    <string name="button_start_record_activity">錄製新內容</string>
+
+    <string name="sdcard_readonly">抱歉，SD卡已掛載為唯讀，而Ringdroid要求它是可寫入的。</string>
+    <string name="no_sdcard">抱歉，除非您插入了SD卡，否則Ringdroid無法執行。</string>
+    <string name="sdcard_shared">抱歉，當您的手機作為USB設備掛載時，Ringdroid無法執行。</string>
+
+    <string name="button_options">選項</string>
+
+    <string name="start_label">開始:</string>
+    <string name="end_label">結束:</string>
+
+    <string name="edit_intent">編輯</string>
+
+    <string name="time_seconds">秒</string>
+
+    <string name="what_to_do_with_ringtone">已儲存! 將此設為您的預設鈴聲或分配給聯絡人？</string>
+    <string name="set_default_notification">已儲存! 將此設為您的預設通知？</string>
+
+    <string name="make_default_ringtone_button">設為預設</string>
+    <string name="choose_contact_ringtone_button">分配給聯絡人</string>
+    <string name="do_nothing_with_ringtone_button">關閉</string>
+
+    <string name="progress_dialog_loading">正在載入…</string>
+    <string name="progress_dialog_recording">正在錄製…</string>
+    <string name="progress_dialog_saving">正在儲存…</string>
+    <string name="progress_dialog_cancel">取消</string>
+    <string name="progress_dialog_stop">停止</string>
+
+    <string name="start_marker">開始標記</string>
+    <string name="end_marker">結束標記</string>
+    <string name="rewind">倒帶</string>
+    <string name="play">播放</string>
+    <string name="ffwd">快轉</string>
+    <string name="zoom_in">放大</string>
+    <string name="zoom_out">縮小</string>
+    <string name="save_button">儲存</string>
+
+    <string name="menu_reset">重設</string>
+    <string name="menu_about">關於</string>
+    <string name="menu_show_all_audio">顯示所有音訊</string>
+
+    <string name="context_menu_delete">刪除</string>
+    <string name="context_menu_default_ringtone">設為預設鈴聲</string>
+    <string name="context_menu_contact">分配給聯絡人</string>
+    <string name="context_menu_default_notification">設為預設通知</string>
+
+    <string name="file_save_title">另存為:</string>
+
+    <string name="ringtone_type_label">類型:</string>
+
+    <string name="type_music">音樂</string>
+    <string name="type_alarm">鬧鐘</string>
+    <string name="type_notification">通知</string>
+    <string name="type_ringtone">鈴聲</string>
+
+    <string name="ringtone_name_label">名稱:</string>
+
+    <string name="delete_ringtone">刪除鈴聲</string>
+    <string name="delete_alarm">刪除鬧鐘</string>
+    <string name="delete_notification">刪除通知</string>
+    <string name="delete_music">刪除音樂</string>
+    <string name="delete_audio">刪除音訊</string>
+
+    <string name="confirm_delete_ringdroid">您確定嗎?</string>
+    <string name="confirm_delete_non_ringdroid">您確定嗎? 此檔案不是使用 Ringdroid 建立的!</string>
+
+
+    <string name="delete_failed">無法刪除檔案</string>
+
+    <string name="alert_title_success">成功</string>
+    <string name="alert_title_failure">錯誤</string>
+    <string name="alert_ok_button">確定</string>
+    <string name="alert_yes_button">是的，請！</string>
+    <string name="alert_no_button">不，謝謝。</string>
+
+    <string name="save_success_message">已儲存!</string>
+    <string name="default_ringtone_success_message">預設鈴聲已變更</string>
+    <string name="default_notification_success_message">預設通知聲音已變更</string>
+    <string name="play_error">無法播放此媒體檔案</string>
+    <string name="no_unique_filename">無法找到唯一的檔案名稱</string>
+    <string name="record_error">錄製音訊時出錯</string>
+    <string name="too_small_error">無法儲存這麼小的檔案，請嘗試將其加長。</string>
+    <string name="write_error">寫入檔案時出錯</string>
+    <string name="read_error">讀取檔案時出錯</string>
+
+    <string name="no_space_error">您的 SD 卡已滿，沒有足夠的空間儲存此檔案。</string>
+
+    <string name="bad_extension_error">抱歉，Ringdroid 尚不能編輯此類型的檔案</string>
+    <string name="no_extension_error">抱歉，如果檔案沒有 .mp3 或 .wav 等副檔名，Ringdroid 無法編輯它</string>
+
+    <string name="choose_contact_title">將鈴聲分配給哪個聯絡人?</string>
+    <string name="success_contact_ringtone">已成功將鈴聲分配給:</string>
+
+    <string name="about_title">關於 Ringdroid</string>
+    <string name="about_text_html">
+        <![CDATA[
+            <b>Ringdroid</b><br><br>
+            使用 Ringdroid 編輯 MP3、OGG、WAV、AAC 和 AMR 音訊檔案，並建立鈴聲、鬧鐘和通知。<br><br>
+
+            <b>提示:</b><br>
+            • 使用 USB 複製音訊檔案<br>
+            • 輕觸波形圖上的任意位置即可播放<br>
+            • 播放時輕觸「開始/結束」設定標記<br><br>
+
+            <b>版本: %s</b><br><br>
+
+            <b>開發者:</b><br>
+            Dominic Mazzoni<br>
+            Nicolas Faralli<br>
+            althafvly<br><br>
+
+            <b>圖形:</b> Joseph Wain<br>
+            <b>支援:</b> Eugene Koh<br>
+            <b>增強功能:</b> Dan Klufas<br><br>
+
+            Ringdroid 是基於 Apache 2.0 的免費軟體。<br>
+            原始碼: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+        ]]>
+    </string>
+
+    <string name="require_contacts_permission">請啟用聯絡人權限以分配鈴聲。</string>
+    <string name="required_mic_permission">錄製音訊需要麥克風權限</string>
+    <string name="required_system_modify_permission">設定鈴聲需要修改系統設定權限</string>
+    <string name="storage_permission">儲存權限</string>
+    <string name="write_system_settings">寫入系統設定</string>
+    <string name="mic_permission">麥克風權限</string>
+    <string name="contacts_permission">聯絡人權限</string>
+    <string name="start">開始</string>
+    <string name="storage_permission_summary">儲存和存取音訊檔案所需 (建議)\n\n應用程式讀取和寫入需要此權限或媒體音訊權限</string>
+    <string name="write_system_settings_summary">將鈴聲設為系統預設所需</string>
+    <string name="mic_permission_summary">錄製您自己的音訊片段所需</string>
+    <string name="contact_permission_summary">將鈴聲分配給您的聯絡人所需</string>
+    <string name="media_audio_permission">媒體音訊權限</string>
+    <string name="media_audio_summary">從您的智慧型手機讀取鈴聲檔案所需 \n\n應用程式讀取和寫入需要此權限或儲存權限</string>
+
+</resources>

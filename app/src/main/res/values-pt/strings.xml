@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_edit_box">Pesquisar</string>
+
+    <string name="button_start_record_activity">Gravar Novo</string>
+
+    <string name="sdcard_readonly">Desculpe, o cartão SD está montado como somente leitura e o Ringdroid exige que ele seja gravável.</string>
+    <string name="no_sdcard">Desculpe, o Ringdroid não pode ser executado a menos que você tenha um cartão SD inserido.</string>
+    <string name="sdcard_shared">Desculpe, o Ringdroid não pode ser executado enquanto seu aparelho estiver montado como um dispositivo USB.</string>
+
+    <string name="button_options">Opções</string>
+
+    <string name="start_label">Início:</string>
+    <string name="end_label">Fim:</string>
+
+    <string name="edit_intent">Editar</string>
+
+    <string name="time_seconds">segundos</string>
+
+    <string name="what_to_do_with_ringtone">Salvo! Tornar este seu toque padrão ou atribuí-lo a um contato?</string>
+    <string name="set_default_notification">Salvo! Tornar este sua notificação padrão?</string>
+
+    <string name="make_default_ringtone_button">Tornar Padrão</string>
+    <string name="choose_contact_ringtone_button">Atribuir a Contato</string>
+    <string name="do_nothing_with_ringtone_button">Fechar</string>
+
+    <string name="progress_dialog_loading">Carregando…</string>
+    <string name="progress_dialog_recording">Gravando…</string>
+    <string name="progress_dialog_saving">Salvando…</string>
+    <string name="progress_dialog_cancel">Cancelar</string>
+    <string name="progress_dialog_stop">Parar</string>
+
+    <string name="start_marker">Marcador de início</string>
+    <string name="end_marker">Marcador de fim</string>
+    <string name="rewind">Rebobinar</string>
+    <string name="play">Reproduzir</string>
+    <string name="ffwd">Avanço rápido</string>
+    <string name="zoom_in">Aumentar Zoom</string>
+    <string name="zoom_out">Diminuir Zoom</string>
+    <string name="save_button">Salvar</string>
+
+    <string name="menu_reset">Redefinir</string>
+    <string name="menu_about">Sobre</string>
+    <string name="menu_show_all_audio">Mostrar Todo o Áudio</string>
+
+    <string name="context_menu_delete">Excluir</string>
+    <string name="context_menu_default_ringtone">Definir como Toque Padrão</string>
+    <string name="context_menu_contact">Atribuir a Contato</string>
+    <string name="context_menu_default_notification">Definir como Notificação Padrão</string>
+
+    <string name="file_save_title">Salvar como:</string>
+
+    <string name="ringtone_type_label">Tipo:</string>
+
+    <string name="type_music">Música</string>
+    <string name="type_alarm">Alarme</string>
+    <string name="type_notification">Notificação</string>
+    <string name="type_ringtone">Toque</string>
+
+    <string name="ringtone_name_label">Nome:</string>
+
+    <string name="delete_ringtone">Excluir Toque</string>
+    <string name="delete_alarm">Excluir Alarme</string>
+    <string name="delete_notification">Excluir Notificação</string>
+    <string name="delete_music">Excluir Música</string>
+    <string name="delete_audio">Excluir Áudio</string>
+
+    <string name="confirm_delete_ringdroid">Você tem certeza?</string>
+    <string name="confirm_delete_non_ringdroid">Você tem certeza? Este arquivo não foi criado usando o Ringdroid!</string>
+
+
+    <string name="delete_failed">Não foi possível excluir o arquivo</string>
+
+    <string name="alert_title_success">Sucesso</string>
+    <string name="alert_title_failure">Erro</string>
+    <string name="alert_ok_button">OK</string>
+    <string name="alert_yes_button">Sim, por favor!</string>
+    <string name="alert_no_button">Não, obrigado.</string>
+
+    <string name="save_success_message">Salvo!</string>
+    <string name="default_ringtone_success_message">Toque padrão alterado</string>
+    <string name="default_notification_success_message">Som de notificação padrão alterado</string>
+    <string name="play_error">Não é possível reproduzir este arquivo de mídia</string>
+    <string name="no_unique_filename">Não foi possível encontrar um nome de arquivo exclusivo</string>
+    <string name="record_error">Erro ao gravar áudio</string>
+    <string name="too_small_error">Não é possível salvar um arquivo tão pequeno, tente torná-lo mais longo.</string>
+    <string name="write_error">Erro ao escrever o arquivo</string>
+    <string name="read_error">Erro ao ler o arquivo</string>
+
+    <string name="no_space_error">Seu cartão SD está cheio, não há espaço suficiente para salvar este arquivo.</string>
+
+    <string name="bad_extension_error">Desculpe, o Ringdroid ainda não é capaz de editar arquivos do tipo</string>
+    <string name="no_extension_error">Desculpe, o Ringdroid não pode editar um arquivo se ele não tiver uma extensão como .mp3 ou .wav</string>
+
+    <string name="choose_contact_title">Atribuir toque a qual contato?</string>
+    <string name="success_contact_ringtone">Toque atribuído com sucesso a:</string>
+
+    <string name="about_title">Sobre o Ringdroid</string>
+    <string name="about_text_html">
+        <![CDATA[
+            <b>Ringdroid</b><br><br>
+            Use o Ringdroid para editar arquivos de áudio MP3, OGG, WAV, AAC e AMR e criar toques, alarmes e notificações.<br><br>
+
+            <b>Dicas:</b><br>
+            • Copie arquivos de áudio usando USB<br>
+            • Toque em qualquer lugar na forma de onda para reproduzir<br>
+            • Toque em Início/Fim durante a reprodução para definir os marcadores<br><br>
+
+            <b>Versão: %s</b><br><br>
+
+            <b>Desenvolvedores:</b><br>
+            Dominic Mazzoni<br>
+            Nicolas Faralli<br>
+            althafvly<br><br>
+
+            <b>Gráficos:</b> Joseph Wain<br>
+            <b>Suporte:</b> Eugene Koh<br>
+            <b>Aprimoramentos:</b> Dan Klufas<br><br>
+
+            O Ringdroid é um software livre sob a licença Apache 2.0.<br>
+            Código-fonte: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+        ]]>
+    </string>
+
+    <string name="require_contacts_permission">Por favor, ative a permissão de contatos para atribuir um toque.</string>
+    <string name="required_mic_permission">Permissão de microfone necessária para gravar áudio</string>
+    <string name="required_system_modify_permission">A permissão para modificar as configurações do sistema é necessária para definir o toque</string>
+    <string name="storage_permission">Permissão de Armazenamento</string>
+    <string name="write_system_settings">Gravar Configurações do Sistema</string>
+    <string name="mic_permission">Permissão de Microfone</string>
+    <string name="contacts_permission">Permissão de Contatos</string>
+    <string name="start">Iniciar</string>
+    <string name="storage_permission_summary">Necessária para salvar e acessar arquivos de áudio (Recomendado)\n\nExige esta ou a permissão de áudio de mídia para o aplicativo ler e gravar</string>
+    <string name="write_system_settings_summary">Necessária para definir toques como padrão do sistema</string>
+    <string name="mic_permission_summary">Necessária para gravar seus próprios clipes de áudio</string>
+    <string name="contact_permission_summary">Necessária para atribuir toques aos seus contatos</string>
+    <string name="media_audio_permission">Permissão de áudio de mídia</string>
+    <string name="media_audio_summary">Necessária para ler arquivos de toque do seu smartphone \n\nExige esta ou a permissão de armazenamento para o aplicativo ler e gravar</string>
+
+</resources>

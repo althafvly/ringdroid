@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_edit_box">Ara</string>
+
+    <string name="button_start_record_activity">Yeni Kaydet</string>
+
+    <string name="sdcard_readonly">Üzgünüz, SD Kart salt okunur olarak bağlanmış ve Ringdroid yazılabilir olmasını gerektiriyor.</string>
+    <string name="no_sdcard">Üzgünüz, bir SD Kart takılı olmadıkça Ringdroid çalışamaz.</string>
+    <string name="sdcard_shared">Üzgünüz, cep telefonunuz bir USB cihazı olarak bağlıyken Ringdroid çalışamaz.</string>
+
+    <string name="button_options">Seçenekler</string>
+
+    <string name="start_label">Başlangıç:</string>
+    <string name="end_label">Bitiş:</string>
+
+    <string name="edit_intent">Düzenle</string>
+
+    <string name="time_seconds">saniye</string>
+
+    <string name="what_to_do_with_ringtone">Kaydedildi! Bunu varsayılan zil sesiniz yapın veya bir kişiye atayın?</string>
+    <string name="set_default_notification">Kaydedildi! Bunu varsayılan bildiriminiz yapın?</string>
+
+    <string name="make_default_ringtone_button">Varsayılan Yap</string>
+    <string name="choose_contact_ringtone_button">Kişiye Ata</string>
+    <string name="do_nothing_with_ringtone_button">Kapat</string>
+
+    <string name="progress_dialog_loading">Yükleniyor…</string>
+    <string name="progress_dialog_recording">Kaydediliyor…</string>
+    <string name="progress_dialog_saving">Kaydediliyor…</string>
+    <string name="progress_dialog_cancel">İptal</string>
+    <string name="progress_dialog_stop">Durdur</string>
+
+    <string name="start_marker">Başlangıç işareti</string>
+    <string name="end_marker">Bitiş işareti</string>
+    <string name="rewind">Geri sar</string>
+    <string name="play">Oynat</string>
+    <string name="ffwd">Hızlı ileri sar</string>
+    <string name="zoom_in">Yakınlaştır</string>
+    <string name="zoom_out">Uzaklaştır</string>
+    <string name="save_button">Kaydet</string>
+
+    <string name="menu_reset">Sıfırla</string>
+    <string name="menu_about">Hakkında</string>
+    <string name="menu_show_all_audio">Tüm Sesleri Göster</string>
+
+    <string name="context_menu_delete">Sil</string>
+    <string name="context_menu_default_ringtone">Varsayılan Zil Sesi Olarak Ayarla</string>
+    <string name="context_menu_contact">Kişiye Ata</string>
+    <string name="context_menu_default_notification">Varsayılan Bildirim Olarak Ayarla</string>
+
+    <string name="file_save_title">Farklı Kaydet:</string>
+
+    <string name="ringtone_type_label">Tür:</string>
+
+    <string name="type_music">Müzik</string>
+    <string name="type_alarm">Alarm</string>
+    <string name="type_notification">Bildirim</string>
+    <string name="type_ringtone">Zil sesi</string>
+
+    <string name="ringtone_name_label">Ad:</string>
+
+    <string name="delete_ringtone">Zil Sesini Sil</string>
+    <string name="delete_alarm">Alarmı Sil</string>
+    <string name="delete_notification">Bildirimi Sil</string>
+    <string name="delete_music">Müziği Sil</string>
+    <string name="delete_audio">Sesi Sil</string>
+
+    <string name="confirm_delete_ringdroid">Emin misiniz?</string>
+    <string name="confirm_delete_non_ringdroid">Emin misiniz? Bu dosya Ringdroid kullanılarak oluşturulmadı!</string>
+
+
+    <string name="delete_failed">Dosya silinemedi</string>
+
+    <string name="alert_title_success">Başarılı</string>
+    <string name="alert_title_failure">Hata</string>
+    <string name="alert_ok_button">Tamam</string>
+    <string name="alert_yes_button">Evet, lütfen!</string>
+    <string name="alert_no_button">Hayır, teşekkürler.</string>
+
+    <string name="save_success_message">Kaydedildi!</string>
+    <string name="default_ringtone_success_message">Varsayılan zil sesi değiştirildi</string>
+    <string name="default_notification_success_message">Varsayılan bildirim sesi değiştirildi</string>
+    <string name="play_error">Bu medya dosyası oynatılamıyor</string>
+    <string name="no_unique_filename">Benzersiz dosya adı bulunamadı</string>
+    <string name="record_error">Ses kaydı hatası</string>
+    <string name="too_small_error">Bu kadar küçük bir dosya kaydedilemez, daha uzun yapmayı deneyin.</string>
+    <string name="write_error">Dosya yazma hatası</string>
+    <string name="read_error">Dosya okuma hatası</string>
+
+    <string name="no_space_error">SD kartınız dolu, bu dosyayı kaydetmek için yeterli alan yok.</string>
+
+    <string name="bad_extension_error">Üzgünüz, Ringdroid henüz bu türdeki dosyaları düzenleyemiyor</string>
+    <string name="no_extension_error">Üzgünüz, Ringdroid, .mp3 veya .wav gibi bir uzantısı olmayan bir dosyayı düzenleyemez</string>
+
+    <string name="choose_contact_title">Zil sesini hangi kişiye atayalım?</string>
+    <string name="success_contact_ringtone">Zil sesi başarıyla atandı:</string>
+
+    <string name="about_title">Ringdroid Hakkında</string>
+    <string name="about_text_html">
+        <![CDATA[
+            <b>Ringdroid</b><br><br>
+            MP3, OGG, WAV, AAC ve AMR ses dosyalarını düzenlemek ve zil sesleri, alarmlar ve bildirimler oluşturmak için Ringdroid\'i kullanın.<br><br>
+
+            <b>İpuçları:</b><br>
+            • USB kullanarak ses dosyalarını kopyalayın<br>
+            • Oynatmak için dalga formunun herhangi bir yerine dokunun<br>
+            • İşaretçileri ayarlamak için oynatılırken Başlangıç/Bitiş\'e dokunun<br><br>
+
+            <b>Sürüm: %s</b><br><br>
+
+            <b>Geliştiriciler:</b><br>
+            Dominic Mazzoni<br>
+            Nicolas Faralli<br>
+            althafvly<br><br>
+
+            <b>Grafikler:</b> Joseph Wain<br>
+            <b>Destek:</b> Eugene Koh<br>
+            <b>Geliştirmeler:</b> Dan Klufas<br><br>
+
+            Ringdroid, Apache 2.0 lisansı altında ücretsiz bir yazılımdır.<br>
+            Kaynak kodu: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+        ]]>
+    </string>
+
+    <string name="require_contacts_permission">Bir zil sesi atamak için lütfen kişiler iznini etkinleştirin.</string>
+    <string name="required_mic_permission">Ses kaydetmek için mikrofon izni gereklidir</string>
+    <string name="required_system_modify_permission">Zil sesini ayarlamak için sistem ayarlarını değiştirme izni gereklidir</string>
+    <string name="storage_permission">Depolama İzni</string>
+    <string name="write_system_settings">Sistem Ayarlarını Yaz</string>
+    <string name="mic_permission">Mikrofon İzni</string>
+    <string name="contacts_permission">Kişiler İzni</string>
+    <string name="start">Başlat</string>
+    <string name="storage_permission_summary">Ses dosyalarını kaydetmek ve bunlara erişmek için gereklidir (Önerilir)\n\nUygulamanın okuma ve yazma yapabilmesi için bu veya medya ses izni gereklidir</string>
+    <string name="write_system_settings_summary">Zil seslerini sistem varsayılanı olarak ayarlamak için gereklidir</string>
+    <string name="mic_permission_summary">Kendi ses kliplerinizi kaydetmek için gereklidir</string>
+    <string name="contact_permission_summary">Kişilerinize zil sesi atamak için gereklidir</string>
+    <string name="media_audio_permission">Medya ses izni</string>
+    <string name="media_audio_summary">Akıllı telefonunuzdan zil sesi dosyalarını okumak için gereklidir \n\nUygulamanın okuma ve yazma yapabilmesi için bu veya depolama izni gereklidir</string>
+
+</resources>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_edit_box">بحث</string>
+
+    <string name="button_start_record_activity">تسجيل جديد</string>
+
+    <string name="sdcard_readonly">عذراً، بطاقة SD مثبتة كقراءة فقط ويتطلب Ringdroid أن تكون قابلة للكتابة.</string>
+    <string name="no_sdcard">عذراً، لا يمكن تشغيل Ringdroid إلا إذا قمت بإدخال بطاقة SD.</string>
+    <string name="sdcard_shared">عذراً، لا يمكن تشغيل Ringdroid أثناء تثبيت هاتفك كجهاز USB.</string>
+
+    <string name="button_options">خيارات</string>
+
+    <string name="start_label">البداية:</string>
+    <string name="end_label">النهاية:</string>
+
+    <string name="edit_intent">تعديل</string>
+
+    <string name="time_seconds">ثواني</string>
+
+    <string name="what_to_do_with_ringtone">تم الحفظ! هل تريد تعيين هذا كنغمة رنين افتراضية أو تعيينه لجهة اتصال؟</string>
+    <string name="set_default_notification">تم الحفظ! هل تريد تعيين هذا كإشعار افتراضي؟</string>
+
+    <string name="make_default_ringtone_button">جعله افتراضياً</string>
+    <string name="choose_contact_ringtone_button">تعيين لجهة اتصال</string>
+    <string name="do_nothing_with_ringtone_button">إغلاق</string>
+
+    <string name="progress_dialog_loading">جارٍ التحميل…</string>
+    <string name="progress_dialog_recording">جارٍ التسجيل…</string>
+    <string name="progress_dialog_saving">جارٍ الحفظ…</string>
+    <string name="progress_dialog_cancel">إلغاء</string>
+    <string name="progress_dialog_stop">إيقاف</string>
+
+    <string name="start_marker">علامة البداية</string>
+    <string name="end_marker">علامة النهاية</string>
+    <string name="rewind">ترجيع</string>
+    <string name="play">تشغيل</string>
+    <string name="ffwd">تقديم سريع</string>
+    <string name="zoom_in">تكبير</string>
+    <string name="zoom_out">تصغير</string>
+    <string name="save_button">حفظ</string>
+
+    <string name="menu_reset">إعادة ضبط</string>
+    <string name="menu_about">حول</string>
+    <string name="menu_show_all_audio">عرض كل الملفات الصوتية</string>
+
+    <string name="context_menu_delete">حذف</string>
+    <string name="context_menu_default_ringtone">تعيين كنغمة رنين افتراضية</string>
+    <string name="context_menu_contact">تعيين لجهة اتصال</string>
+    <string name="context_menu_default_notification">تعيين كإشعار افتراضي</string>
+
+    <string name="file_save_title">حفظ باسم:</string>
+
+    <string name="ringtone_type_label">النوع:</string>
+
+    <string name="type_music">موسيقى</string>
+    <string name="type_alarm">منبه</string>
+    <string name="type_notification">إشعار</string>
+    <string name="type_ringtone">نغمة رنين</string>
+
+    <string name="ringtone_name_label">الاسم:</string>
+
+    <string name="delete_ringtone">حذف نغمة الرنين</string>
+    <string name="delete_alarm">حذف المنبه</string>
+    <string name="delete_notification">حذف الإشعار</string>
+    <string name="delete_music">حذف الموسيقى</string>
+    <string name="delete_audio">حذف الملف الصوتي</string>
+
+    <string name="confirm_delete_ringdroid">هل أنت متأكد؟</string>
+    <string name="confirm_delete_non_ringdroid">هل أنت متأكد؟ لم يتم إنشاء هذا الملف باستخدام Ringdroid!</string>
+
+
+    <string name="delete_failed">تعذر حذف الملف</string>
+
+    <string name="alert_title_success">نجاح</string>
+    <string name="alert_title_failure">خطأ</string>
+    <string name="alert_ok_button">موافق</string>
+    <string name="alert_yes_button">نعم، من فضلك!</string>
+    <string name="alert_no_button">لا، شكراً.</string>
+
+    <string name="save_success_message">تم الحفظ!</string>
+    <string name="default_ringtone_success_message">تم تغيير نغمة الرنين الافتراضية</string>
+    <string name="default_notification_success_message">تم تغيير صوت الإشعار الافتراضي</string>
+    <string name="play_error">تعذر تشغيل ملف الوسائط هذا</string>
+    <string name="no_unique_filename">تعذر العثور على اسم ملف فريد</string>
+    <string name="record_error">خطأ في تسجيل الصوت</string>
+    <string name="too_small_error">لا يمكن حفظ ملف بهذا الحجم، حاول جعله أطول.</string>
+    <string name="write_error">خطأ في كتابة الملف</string>
+    <string name="read_error">خطأ في قراءة الملف</string>
+
+    <string name="no_space_error">بطاقة SD الخاصة بك ممتلئة، لا توجد مساحة كافية لحفظ هذا الملف.</string>
+
+    <string name="bad_extension_error">عذراً، Ringdroid غير قادر بعد على تعديل ملفات من نوع</string>
+    <string name="no_extension_error">عذراً، لا يمكن لـ Ringdroid تعديل ملف إذا لم يكن له امتداد مثل .mp3 أو .wav</string>
+
+    <string name="choose_contact_title">تعيين نغمة الرنين لأي جهة اتصال؟</string>
+    <string name="success_contact_ringtone">تم تعيين نغمة الرنين بنجاح لـ:</string>
+
+    <string name="about_title">حول Ringdroid</string>
+    <string name="about_text_html">
+        <![CDATA[
+            <b>Ringdroid</b><br><br>
+            استخدم Ringdroid لتعديل ملفات الصوت MP3 و OGG و WAV و AAC و AMR وإنشاء نغمات رنين ومنبهات وإشعارات.<br><br>
+
+            <b>نصائح:</b><br>
+            • انسخ الملفات الصوتية باستخدام USB<br>
+            • انقر في أي مكان على شكل الموجة للتشغيل<br>
+            • انقر على البداية/النهاية أثناء التشغيل لتعيين العلامات<br><br>
+
+            <b>الإصدار: %s</b><br><br>
+
+            <b>المطورون:</b><br>
+            Dominic Mazzoni<br>
+            Nicolas Faralli<br>
+            althafvly<br><br>
+
+            <b>الرسومات:</b> Joseph Wain<br>
+            <b>الدعم:</b> Eugene Koh<br>
+            <b>التحسينات:</b> Dan Klufas<br><br>
+
+            Ringdroid هو برنامج مجاني تحت ترخيص Apache 2.0.<br>
+            كود المصدر: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+        ]]>
+    </string>
+
+    <string name="require_contacts_permission">الرجاء تمكين إذن جهات الاتصال لتعيين نغمة رنين.</string>
+    <string name="required_mic_permission">إذن الميكروفون مطلوب لتسجيل الصوت</string>
+    <string name="required_system_modify_permission">إذن تعديل إعدادات النظام مطلوب لتعيين نغمة الرنين</string>
+    <string name="storage_permission">إذن التخزين</string>
+    <string name="write_system_settings">كتابة إعدادات النظام</string>
+    <string name="mic_permission">إذن الميكروفون</string>
+    <string name="contacts_permission">إذن جهات الاتصال</string>
+    <string name="start">ابدأ</string>
+    <string name="storage_permission_summary">مطلوب لحفظ ملفات الصوت والوصول إليها (موصى به)\n\nيتطلب هذا الإذن أو إذن الوسائط الصوتية لكي يتمكن التطبيق من القراءة والكتابة</string>
+    <string name="write_system_settings_summary">مطلوب لتعيين نغمات الرنين كإعدادات افتراضية للنظام</string>
+    <string name="mic_permission_summary">مطلوب لتسجيل مقاطع الصوت الخاصة بك</string>
+    <string name="contact_permission_summary">مطلوب لتعيين نغمات رنين لجهات الاتصال الخاصة بك</string>
+    <string name="media_audio_permission">إذن الوسائط الصوتية</string>
+    <string name="media_audio_summary">مطلوب لقراءة ملفات نغمات الرنين من هاتفك الذكي \n\nيتطلب هذا الإذن أو إذن التخزين لكي يتمكن التطبيق من القراءة والكتابة</string>
+
+</resources>

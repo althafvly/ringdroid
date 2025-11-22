@@ -1,80 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    /*
-     * Copyright (C) 2008 Google Inc.
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *      http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
--->
 <resources>
-
-    <string name="ringdroid_app_name">Ringdroid</string>
-
-    <!--      Main / media select activity      -->
-
-    <string name="main_activity_label">Ringdroid</string>
+    <string name="search_edit_box">Szukaj</string>
 
     <string name="button_start_record_activity">Nagraj nowy</string>
 
-    <string name="sdcard_readonly">Niestety, karta SD jest kartą tylko do odczytu, Ringdroid wymaga, by była zapisywalna.</string>
-    <string name="no_sdcard">Przepraszamy, nie można uruchomić Ringdroid bez karty SD.</string>
-    <string name="sdcard_shared">Nie można uruchomić Ringdroid, jeśli słuchawki podpięto jako urządz. USB.</string>
+    <string name="sdcard_readonly">Przepraszamy, karta SD jest zamontowana jako tylko do odczytu, a Ringdroid wymaga, aby była zapisywalna.</string>
+    <string name="no_sdcard">Przepraszamy, Ringdroid nie może działać, jeśli nie masz włożonej karty SD.</string>
+    <string name="sdcard_shared">Przepraszamy, Ringdroid nie może działać, gdy telefon jest zamontowany jako urządzenie USB.</string>
 
-    <!--      Edit activity      -->
+    <string name="button_options">Opcje</string>
 
-    <!-- Labels next to the start and end time edit boxes -->
-    <string name="start_label">Start:</string>
+    <string name="start_label">Początek:</string>
     <string name="end_label">Koniec:</string>
 
     <string name="edit_intent">Edytuj</string>
 
-    <string name="time_seconds">s</string>
+    <string name="time_seconds">sekundy</string>
 
-    <!-- After you save a notification or ringtone and have more options 	 for what to do with them -->
-    <string name="what_to_do_with_ringtone">Zapisano!  Ustawić dzwonek jako domyślny czy przypisać go do kontaktu?</string>
-    <string name="set_default_notification">Zapisano!  Ustawić jako powiadomienie dom.?</string>
+    <string name="what_to_do_with_ringtone">Zapisano! Ustawić jako domyślny dzwonek czy przypisać do kontaktu?</string>
+    <string name="set_default_notification">Zapisano! Ustawić jako domyślne powiadomienie?</string>
 
-    <string name="make_default_ringtone_button">Ustaw jako domyślny</string>
+    <string name="make_default_ringtone_button">Ustaw domyślny</string>
     <string name="choose_contact_ringtone_button">Przypisz do kontaktu</string>
     <string name="do_nothing_with_ringtone_button">Zamknij</string>
 
-    <!-- Progress dialog text for loading, recording, or saving... -->
-    <string name="progress_dialog_loading">Wczytywanie…</string>
-    <string name="progress_dialog_recording">Recording…</string>
+    <string name="progress_dialog_loading">Ładowanie…</string>
+    <string name="progress_dialog_recording">Nagrywanie…</string>
     <string name="progress_dialog_saving">Zapisywanie…</string>
-    <string name="progress_dialog_cancel">Cancel</string>
-    <string name="progress_dialog_stop">Stop</string>
+    <string name="progress_dialog_cancel">Anuluj</string>
+    <string name="progress_dialog_stop">Zatrzymaj</string>
 
-    <!--      Menu items      -->
+    <string name="start_marker">Znacznik początkowy</string>
+    <string name="end_marker">Znacznik końcowy</string>
+    <string name="rewind">Przewiń do tyłu</string>
+    <string name="play">Odtwórz</string>
+    <string name="ffwd">Przewiń do przodu</string>
+    <string name="zoom_in">Powiększ</string>
+    <string name="zoom_out">Pomniejsz</string>
+    <string name="save_button">Zapisz</string>
 
-    <string name="menu_save">Zapisz</string>
     <string name="menu_reset">Resetuj</string>
-    <string name="menu_about">O programie</string>
+    <string name="menu_about">Informacje</string>
     <string name="menu_show_all_audio">Pokaż wszystkie pliki audio</string>
 
-    <!--      Context menu items      -->
-
-    <string name="context_menu_edit">Edytuj</string>
-    <string name="context_menu_delete">Skasuj</string>
+    <string name="context_menu_delete">Usuń</string>
+    <string name="context_menu_default_ringtone">Ustaw jako domyślny dzwonek</string>
     <string name="context_menu_contact">Przypisz do kontaktu</string>
-    <string name="context_menu_default_ringtone">Ustaw jako domyślny</string>
-    <string name="context_menu_default_notification">Ustaw jako domyślny</string>
-
-    <!--      File Save dialog      -->
+    <string name="context_menu_default_notification">Ustaw jako domyślne powiadomienie</string>
 
     <string name="file_save_title">Zapisz jako:</string>
-    <string name="file_save_button_save">Zapisz</string>
-    <string name="file_save_button_cancel">Anuluj</string>
 
     <string name="ringtone_type_label">Typ:</string>
 
@@ -85,78 +59,82 @@
 
     <string name="ringtone_name_label">Nazwa:</string>
 
-    <string name="artist_name">Ringdroid</string>
-
-    <!--      Delete confirmation dialog      -->
-
     <string name="delete_ringtone">Usuń dzwonek</string>
     <string name="delete_alarm">Usuń alarm</string>
     <string name="delete_notification">Usuń powiadomienie</string>
     <string name="delete_music">Usuń muzykę</string>
     <string name="delete_audio">Usuń plik audio</string>
 
-    <string name="confirm_delete_ringdroid">Na pewno?</string>
-    <string name="confirm_delete_non_ringdroid">Na pewno?  Ten plik nie został utworzony przez Ringdroid!</string>
+    <string name="confirm_delete_ringdroid">Jesteś pewien?</string>
+    <string name="confirm_delete_non_ringdroid">Jesteś pewien? Ten plik nie został utworzony za pomocą Ringdroid!</string>
 
-    <string name="delete_ok_button">Skasuj</string>
-    <string name="delete_cancel_button">Anuluj</string>
 
     <string name="delete_failed">Nie można usunąć pliku</string>
 
-    <!--      Success and error messages      -->
-
-    <string name="alert_title_success">Gotowe</string>
+    <string name="alert_title_success">Sukces</string>
     <string name="alert_title_failure">Błąd</string>
     <string name="alert_ok_button">OK</string>
-    <string name="alert_yes_button">Tak</string>
-    <string name="alert_no_button">Nie</string>
+    <string name="alert_yes_button">Tak, poproszę!</string>
+    <string name="alert_no_button">Nie, dziękuję.</string>
 
     <string name="save_success_message">Zapisano!</string>
-    <string name="default_ringtone_success_message">Zmieniono dzwonek dom.</string>
-    <string name="play_error">Nie można odtworzyć tego pliku</string>
-    <string name="no_unique_filename">Nie można znaleźć unikalnej nazwy</string>
-    <string name="record_error">Error recording audio</string>
-    <string name="too_small_error">Nie można zapisać tak małego pliku, nagraj dłuższy plik.</string>
+    <string name="default_ringtone_success_message">Zmieniono domyślny dzwonek</string>
+    <string name="default_notification_success_message">Zmieniono domyślny dźwięk powiadomienia</string>
+    <string name="play_error">Nie można odtworzyć tego pliku multimedialnego</string>
+    <string name="no_unique_filename">Nie można znaleźć unikalnej nazwy pliku</string>
+    <string name="record_error">Błąd nagrywania audio</string>
+    <string name="too_small_error">Nie można zapisać tak małego pliku, spróbuj go wydłużyć.</string>
     <string name="write_error">Błąd zapisu pliku</string>
     <string name="read_error">Błąd odczytu pliku</string>
 
-    <string name="no_space_error">Karta SD pełna, brak miejsca do zapisania tego pliku.</string>
+    <string name="no_space_error">Twoja karta SD jest pełna, nie ma wystarczająco dużo miejsca, aby zapisać ten plik.</string>
 
-    <string name="bad_extension_error">Niestety, Ringdroid nie edytuje plików tego typu</string>
-    <string name="no_extension_error">Niestety, Ringdroid nie może edytować pliku o rozszerzeniu innym niż .mp3 lub .wav</string>
+    <string name="bad_extension_error">Przepraszamy, Ringdroid nie jest jeszcze w stanie edytować plików typu</string>
+    <string name="no_extension_error">Przepraszamy, Ringdroid nie może edytować pliku, jeśli nie ma rozszerzenia, takiego jak .mp3 lub .wav</string>
 
-    <!--      Choose Contact Activity      -->
+    <string name="choose_contact_title">Przypisać dzwonek do którego kontaktu?</string>
+    <string name="success_contact_ringtone">Dzwonek pomyślnie przypisany do:</string>
 
-    <string name="choose_contact_title">Do którego kontaktu przypisać dzwonek?</string>
-    <string name="success_contact_ringtone">Przypisano dzwonek do:</string>
-
-    <!--      About      -->
-
-    <string name="about_title">O Ringdroid</string>
+    <string name="about_title">O Ringdroid</string>
     <string name="about_text_html">
-    <![CDATA[
-        <b>Ringdroid</b><br><br>
-        Użyj Ringdroid do edycji plików audio MP3, OGG, WAV, AAC i AMR oraz tworzenia z nich dzwonków, alarmów i powiadomień.<br><br>
+        <![CDATA[
+            <b>Ringdroid</b><br><br>
+            Użyj Ringdroid do edycji plików audio MP3, OGG, WAV, AAC i AMR oraz tworzenia dzwonków, alarmów i powiadomień.<br><br>
 
-        <b>Wskazówki:</b><br>
-        • Kopiuj pliki audio przez kabel USB<br>
-        • Dotknij dowolnego miejsca na przebiegu, aby odtwarzać od tego punktu<br>
-        • Podczas odtwarzania dotknij „Start” lub „Koniec”, aby ustawić znaczniki<br><br>
+            <b>Wskazówki:</b><br>
+            • Kopiuj pliki audio za pomocą USB<br>
+            • Dotknij w dowolnym miejscu na wykresie fali, aby odtworzyć<br>
+            • Dotknij Start/Koniec podczas odtwarzania, aby ustawić znaczniki<br><br>
 
-        <b>Wersja: %s</b><br><br>
+            <b>Wersja: %s</b><br><br>
 
-        <b>Deweloperzy:</b><br>
-        Dominic Mazzoni<br>
-        Nicolas Faralli<br>
-        althafvly<br><br>
+            <b>Deweloperzy:</b><br>
+            Dominic Mazzoni<br>
+            Nicolas Faralli<br>
+            althafvly<br><br>
 
-        <b>Grafika:</b> Joseph Wain<br>
-        <b>Wsparcie:</b> Eugene Koh<br>
-        <b>Ulepszenia:</b> Dan Klufas<br><br>
+            <b>Grafika:</b> Joseph Wain<br>
+            <b>Wsparcie:</b> Eugene Koh<br>
+            <b>Ulepszenia:</b> Dan Klufas<br><br>
 
-        Ringdroid to wolne oprogramowanie w ramach licencji Apache 2.0.<br>
-        Kod źródłowy: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
-    ]]>
+            Ringdroid to darmowe oprogramowanie na licencji Apache 2.0.<br>
+            Kod źródłowy: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
+        ]]>
     </string>
+
+    <string name="require_contacts_permission">Proszę włączyć uprawnienie do kontaktów, aby przypisać dzwonek.</string>
+    <string name="required_mic_permission">Wymagane uprawnienie mikrofonu do nagrywania dźwięku</string>
+    <string name="required_system_modify_permission">Wymagane jest uprawnienie do modyfikacji ustawień systemowych, aby ustawić dzwonek</string>
+    <string name="storage_permission">Uprawnienie do pamięci</string>
+    <string name="write_system_settings">Zapis ustawień systemowych</string>
+    <string name="mic_permission">Uprawnienie mikrofonu</string>
+    <string name="contacts_permission">Uprawnienie do kontaktów</string>
+    <string name="start">Start</string>
+    <string name="storage_permission_summary">Potrzebne do zapisywania i dostępu do plików audio (Zalecane)\n\nWymaga tego lub uprawnienia do mediów audio, aby aplikacja mogła czytać i pisać</string>
+    <string name="write_system_settings_summary">Potrzebne do ustawienia dzwonków jako domyślne systemowe</string>
+    <string name="mic_permission_summary">Potrzebne do nagrywania własnych klipów audio</string>
+    <string name="contact_permission_summary">Potrzebne do przypisywania dzwonków do kontaktów</string>
+    <string name="media_audio_permission">Uprawnienie do mediów audio</string>
+    <string name="media_audio_summary">Potrzebne do odczytu plików dzwonków ze smartfona \n\nWymaga tego lub uprawnienia do pamięci, aby aplikacja mogła czytać i pisać</string>
 
 </resources>
