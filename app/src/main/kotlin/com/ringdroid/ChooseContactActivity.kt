@@ -15,118 +15,101 @@
  */
 package com.ringdroid
 
-import android.app.ListActivity
-import android.app.LoaderManager.LoaderCallbacks
+import android.content.ContentUris
 import android.content.ContentValues
-import android.content.CursorLoader
-import android.content.Loader
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.View
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.SimpleCursorAdapter
-import android.widget.TextView
+import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ringdroid.PermissionUtils.hasContactPermissions
 import com.ringdroid.PermissionUtils.requestContactPermissions
+import com.ringdroid.adapter.ContactsAdapter
+import com.ringdroid.data.ContactItem
+import com.ringdroid.repo.ContactsRepository
+import com.ringdroid.viewmodel.ChooseContactViewModel
+import com.ringdroid.viewmodel.ChooseContactViewModelFactory
+import kotlinx.coroutines.launch
 
 /**
  * After a ringtone has been saved, this activity lets you pick a contact and
  * assign the ringtone to that contact.
+ *
+ * Modernized:
+ * - AppCompatActivity
+ * - RecyclerView instead of ListActivity/ListView
+ * - ViewModel + StateFlow instead of LoaderManager/CursorLoader
  */
 class ChooseContactActivity :
-    ListActivity(),
-    TextWatcher,
-    LoaderCallbacks<Cursor?> {
-    private var mFilter: TextView? = null
-    private var mAdapter: SimpleCursorAdapter? = null
+    AppCompatActivity(),
+    TextWatcher {
     private var mRingtoneUri: Uri? = null
+    private var mFilter: EditText? = null
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var contactsAdapter: ContactsAdapter
 
-    /** Called when the activity is first created.  */
-    public override fun onCreate(icicle: Bundle?) {
-        super.onCreate(icicle)
+    private val viewModel: ChooseContactViewModel by viewModels {
+        ChooseContactViewModelFactory(ContactsRepository(contentResolver))
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         setTitle(R.string.choose_contact_title)
 
-        val intent = getIntent()
-        mRingtoneUri = intent.data
+        mRingtoneUri = intent?.data
 
-        // Inflate our UI from its XML layout description.
         setContentView(R.layout.choose_contact)
 
+        mFilter = findViewById(R.id.search_filter)
+        recyclerView = findViewById(R.id.contacts_list)
+
+        contactsAdapter =
+            ContactsAdapter { contact ->
+                assignRingtoneToContact(contact)
+            }
+
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@ChooseContactActivity)
+            adapter = contactsAdapter
+            setHasFixedSize(true)
+        }
+
+        mFilter?.addTextChangedListener(this)
+
         if (hasContactPermissions(this)) {
-            loadData()
+            observeContacts()
+            viewModel.loadContacts(filter = null)
         } else {
             requestContactPermissions(this)
         }
-
-        mFilter = findViewById(R.id.search_filter)
-        if (mFilter != null) {
-            mFilter!!.addTextChangedListener(this)
-        }
     }
 
-    private fun loadData() {
-        try {
-            mAdapter =
-                SimpleCursorAdapter(
-                    this, // Use a template that displays a text view
-                    R.layout.contact_row, // Set an empty cursor right now. Will be set in onLoadFinished()
-                    null, // Map from database columns...
-                    arrayOf(
-                        ContactsContract.Contacts.CUSTOM_RINGTONE,
-                        ContactsContract.Contacts.STARRED,
-                        ContactsContract.Contacts.DISPLAY_NAME,
-                    ), // To widget ids in the row layout...
-                    intArrayOf(R.id.row_ringtone, R.id.row_starred, R.id.row_display_name),
-                    0,
-                )
-
-            mAdapter!!.setViewBinder { view: View?, cursor: Cursor?, columnIndex: Int ->
-                val name = cursor!!.getColumnName(columnIndex)
-                val value = cursor.getString(columnIndex)
-                if (name == ContactsContract.Contacts.CUSTOM_RINGTONE) {
-                    if (value != null && !value.isEmpty()) {
-                        view!!.visibility = View.VISIBLE
-                    } else {
-                        view!!.visibility = View.INVISIBLE
-                    }
-                    return@setViewBinder true
+    private fun observeContacts() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.contacts.collect { list ->
+                    Log.v("Ringdroid", "Loaded ${list.size} contacts")
+                    contactsAdapter.submitList(list)
                 }
-                if (name == ContactsContract.Contacts.STARRED) {
-                    if (value != null && value == "1") {
-                        view!!.visibility = View.VISIBLE
-                    } else {
-                        view!!.visibility = View.INVISIBLE
-                    }
-                    return@setViewBinder true
-                }
-                false
             }
-
-            listAdapter = mAdapter
-
-            // On click, assign ringtone to contact
-            listView.onItemClickListener =
-                OnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long -> assignRingtoneToContact() }
-
-            loaderManager.initLoader<Cursor?>(0, null, this)
-        } catch (e: SecurityException) {
-            // No permission to retrieve contacts?
-            Log.e("Ringdroid", e.toString())
         }
     }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<String?>,
+        permissions: Array<out String>,
         grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -142,35 +125,39 @@ class ChooseContactActivity :
         }
 
         if (allPermissionsGranted) {
-            loadData()
+            observeContacts()
+            viewModel.loadContacts(filter = mFilter?.text?.toString())
         } else {
             Toast.makeText(this, R.string.require_contacts_permission, Toast.LENGTH_LONG).show()
             finish()
         }
     }
 
-    private fun assignRingtoneToContact() {
-        val c = mAdapter!!.cursor
-        var dataIndex = c.getColumnIndexOrThrow(ContactsContract.Contacts._ID)
-        val contactId = c.getString(dataIndex)
+    private fun assignRingtoneToContact(contact: ContactItem) {
+        val ringtoneUri = mRingtoneUri
+        if (ringtoneUri == null) {
+            Toast.makeText(this, R.string.choose_contact_title, Toast.LENGTH_SHORT).show()
+            return
+        }
 
-        dataIndex = c.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME)
-        val displayName = c.getString(dataIndex)
+        val contactUri =
+            ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contact.id)
 
-        val uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactId)
+        val values =
+            ContentValues().apply {
+                put(ContactsContract.Contacts.CUSTOM_RINGTONE, ringtoneUri.toString())
+            }
 
-        val values = ContentValues()
-        values.put(ContactsContract.Contacts.CUSTOM_RINGTONE, mRingtoneUri.toString())
-        contentResolver.update(uri, values, null, null)
+        contentResolver.update(contactUri, values, null, null)
 
         val message =
-            "${resources.getText(R.string.success_contact_ringtone)} $displayName"
+            "${resources.getText(R.string.success_contact_ringtone)} ${contact.displayName}"
 
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         finish()
     }
 
-    // Implementation of TextWatcher.beforeTextChanged
+    // TextWatcher.beforeTextChanged
     override fun beforeTextChanged(
         s: CharSequence?,
         start: Int,
@@ -179,7 +166,7 @@ class ChooseContactActivity :
     ) {
     }
 
-    // Implementation of TextWatcher.onTextChanged
+    // TextWatcher.onTextChanged
     override fun onTextChanged(
         s: CharSequence?,
         start: Int,
@@ -188,56 +175,9 @@ class ChooseContactActivity :
     ) {
     }
 
-    // Implementation of TextWatcher.afterTextChanged
+    // TextWatcher.afterTextChanged
     override fun afterTextChanged(s: Editable?) {
-        val args = Bundle()
-        args.putString("filter", mFilter!!.text.toString())
-        loaderManager.restartLoader<Cursor?>(0, args, this)
-    }
-
-    // Implementation of LoaderCallbacks.onCreateLoader
-    override fun onCreateLoader(
-        id: Int,
-        args: Bundle?,
-    ): Loader<Cursor?> {
-        var selection: String? = null
-        val filter = args?.getString("filter")
-        if (filter != null && !filter.isEmpty()) {
-            selection = "(DISPLAY_NAME LIKE \"%$filter%\")"
-        }
-        return CursorLoader(
-            this,
-            ContactsContract.Contacts.CONTENT_URI,
-            arrayOf(
-                ContactsContract.Contacts._ID,
-                ContactsContract.Contacts.CUSTOM_RINGTONE,
-                ContactsContract.Contacts.DISPLAY_NAME,
-                ContactsContract.Contacts.LAST_TIME_CONTACTED,
-                ContactsContract.Contacts.STARRED,
-                ContactsContract.Contacts.TIMES_CONTACTED,
-            ),
-            selection,
-            null,
-            "STARRED DESC, " + "TIMES_CONTACTED DESC, " + "LAST_TIME_CONTACTED DESC, " + "DISPLAY_NAME ASC",
-        )
-    }
-
-    // Implementation of LoaderCallbacks.onLoadFinished
-    @Deprecated("Deprecated in Java")
-    override fun onLoadFinished(
-        loader: Loader<Cursor?>,
-        data: Cursor?,
-    ) {
-        Log.v("Ringdroid", "${data?.count} contacts")
-        mAdapter!!.swapCursor(data)
-    }
-
-    // Implementation of LoaderCallbacks.onLoaderReset
-    @Deprecated("Deprecated in Java")
-    override fun onLoaderReset(loader: Loader<Cursor?>?) {
-        // This is called when the last Cursor provided to onLoadFinished()
-        // above is about to be closed. We need to make sure we are no
-        // longer using it.
-        mAdapter!!.swapCursor(null)
+        val filterText = mFilter?.text?.toString()
+        viewModel.loadContacts(filterText)
     }
 }

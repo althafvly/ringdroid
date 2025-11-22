@@ -100,6 +100,7 @@
         <!-- Activity for choosing a contact to assign a ringtone to. -->
         <activity
             android:name=".ChooseContactActivity"
+            android:theme="@style/App.AppCompat"
             android:configChanges="orientation|keyboardHidden" />
 
     </application>

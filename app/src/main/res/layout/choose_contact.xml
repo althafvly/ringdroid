@@ -16,42 +16,30 @@
      * limitations under the License.
      */
 -->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">
+    android:id="@+id/root"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
 
-    <LinearLayout
-        style="@style/ChooseContactBackground"
-        android:layout_width="fill_parent"
+    <EditText
+        android:id="@+id/search_filter"
+        android:hint="@string/search_edit_box"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:minHeight="56dp"
+        android:imeOptions="actionDone"
+        android:inputType="textPersonName"
+        android:padding="8dp" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dip"
-            android:src="@drawable/baseline_search_24" />
-
-        <EditText
-            android:id="@+id/search_filter"
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dip"
-            android:layout_weight="1"
-            android:inputType="text"
-            android:textSize="18sp" />
-
-    </LinearLayout>
-
-    <ListView
-        android:id="@+id/android:list"
-        android:layout_width="fill_parent"
-        android:layout_height="0px"
-        android:layout_weight="1">
-
-        <requestFocus />
-    </ListView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/contacts_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1" />
 
 </LinearLayout>

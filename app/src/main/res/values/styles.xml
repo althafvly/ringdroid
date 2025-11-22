@@ -18,6 +18,11 @@
 -->
 <resources>
 
+    <style name="App.AppCompat" parent="Theme.AppCompat">
+        <!-- Disable edge-to-edge -->
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
     <style name="AppTheme" parent="@android:style/Theme.Material">
         <!-- Disable edge-to-edge -->
         <item name="android:fitsSystemWindows">true</item>

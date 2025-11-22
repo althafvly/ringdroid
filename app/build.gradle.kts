@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ringdroid"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 36
         versionCode = 20708
         versionName = "2.7.8"
@@ -74,6 +74,11 @@ tasks.named("preBuild") {
 }
 
 dependencies {
+    implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.annotation)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.material)
 }
