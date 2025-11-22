@@ -48,10 +48,10 @@ public class FileSaveDialog extends Dialog {
     public FileSaveDialog(Context context, Resources resources, String originalName, Message response) {
         super(context);
 
+        requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+
         // Inflate our UI from its XML layout description.
         setContentView(R.layout.file_save);
-
-        setTitle(resources.getString(R.string.file_save_title));
 
         mTypeArray = new ArrayList<>();
         mTypeArray.add(resources.getString(R.string.type_music));

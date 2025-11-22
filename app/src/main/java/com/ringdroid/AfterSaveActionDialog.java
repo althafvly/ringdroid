@@ -27,10 +27,10 @@ public class AfterSaveActionDialog extends Dialog {
     public AfterSaveActionDialog(Context context, Message response) {
         super(context);
 
+        requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+
         // Inflate our UI from its XML layout description.
         setContentView(R.layout.after_save_action);
-
-        setTitle(R.string.alert_title_success);
 
         findViewById(R.id.button_make_default).setOnClickListener(view -> closeAndSendResult(R.id.button_make_default));
         findViewById(R.id.button_choose_contact)
