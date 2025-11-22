@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
 
@@ -14,6 +15,7 @@ public class PermissionActivity extends Activity {
     private Switch writeSettingsSwitch;
     private Switch micSwitch;
     private Switch contactSwitch;
+    private Switch mediaAudioSwitch;
     private Button nextButton;
 
     @Override
@@ -26,8 +28,9 @@ public class PermissionActivity extends Activity {
         micSwitch = findViewById(R.id.switch_mic);
         contactSwitch = findViewById(R.id.switch_contacts);
         nextButton = findViewById(R.id.btn_next);
+        mediaAudioSwitch = findViewById(R.id.switch_media_audio);
 
-        if (PermissionUtils.hasStoragePermission(this)) {
+        if (PermissionUtils.hasStoragePermission(this) || PermissionUtils.hasMediaAudioPermission(this)) {
             startMainActivity();
         } else {
             updateUI();
@@ -36,6 +39,7 @@ public class PermissionActivity extends Activity {
 
     private void updateUI() {
         boolean hasStoragePermission = PermissionUtils.hasStoragePermission(this);
+        boolean hasMediaAudioPermission = PermissionUtils.hasMediaAudioPermission(this);
         boolean hasWritePermission;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             hasWritePermission = true;
@@ -44,6 +48,18 @@ public class PermissionActivity extends Activity {
         }
         boolean hasContactPermissions = PermissionUtils.hasContactPermissions(this);
         boolean hasMicPermissions = PermissionUtils.hasMicPermissions(this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            mediaAudioSwitch.setChecked(hasMediaAudioPermission);
+            mediaAudioSwitch.setClickable(!hasMediaAudioPermission);
+            mediaAudioSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    PermissionUtils.requestMediaAudioPermission(this);
+                }
+            });
+        } else {
+            mediaAudioSwitch.setVisibility(View.GONE);
+        }
 
         storageSwitch.setChecked(hasStoragePermission);
         storageSwitch.setClickable(!hasStoragePermission);
@@ -77,7 +93,7 @@ public class PermissionActivity extends Activity {
             }
         });
 
-        nextButton.setEnabled(hasStoragePermission);
+        nextButton.setEnabled(hasStoragePermission || hasMediaAudioPermission);
         nextButton.setOnClickListener(v -> startMainActivity());
     }
 

@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -105,6 +106,7 @@ public class RingdroidEditActivity extends Activity
     private int mFlingVelocity;
     private int mPlayStartMsec;
     private int mPlayEndMsec;
+    private Context mContext;
     private Handler mHandler;
     private boolean mIsPlaying;
     private SamplePlayer mPlayer;
@@ -258,6 +260,7 @@ public class RingdroidEditActivity extends Activity
 
         mPlayer = null;
         mIsPlaying = false;
+        mContext = this.getApplicationContext();
 
         mAlertDialog = null;
         mProgressDialog = null;
@@ -1131,31 +1134,37 @@ public class RingdroidEditActivity extends Activity
         showFinalAlert(e, getResources().getText(messageResourceId));
     }
 
+    private String getSubDir() {
+        String saveDir = PermissionUtils.hasMediaAudioPermission(mContext)
+                ? Environment.DIRECTORY_RINGTONES
+                : "media/audio";
+        StringBuilder subdir = new StringBuilder(saveDir);
+        switch (mNewFileKind) {
+            default :
+            case FileSaveDialog.FILE_KIND_MUSIC :
+                subdir.append("/music/");
+                break;
+            case FileSaveDialog.FILE_KIND_ALARM :
+                subdir.append("/alarms/");
+                break;
+            case FileSaveDialog.FILE_KIND_NOTIFICATION :
+                subdir.append("/notifications/");
+                break;
+            case FileSaveDialog.FILE_KIND_RINGTONE :
+                subdir.append("/ringtones/");
+                break;
+        }
+
+        return subdir.toString();
+    }
+
     private String makeRingtoneFilename(CharSequence title, String extension) {
-        String subdir;
         String externalRootDir = Environment.getExternalStorageDirectory().getPath();
         if (!externalRootDir.endsWith("/")) {
             externalRootDir += "/";
         }
-        switch (mNewFileKind) {
-            default :
-            case FileSaveDialog.FILE_KIND_MUSIC :
-                // TODO(nfaralli): can directly use
-                // Environment.getExternalStoragePublicDirectory(
-                // Environment.DIRECTORY_MUSIC).getPath() instead
-                subdir = "media/audio/music/";
-                break;
-            case FileSaveDialog.FILE_KIND_ALARM :
-                subdir = "media/audio/alarms/";
-                break;
-            case FileSaveDialog.FILE_KIND_NOTIFICATION :
-                subdir = "media/audio/notifications/";
-                break;
-            case FileSaveDialog.FILE_KIND_RINGTONE :
-                subdir = "media/audio/ringtones/";
-                break;
-        }
-        String parentdir = externalRootDir + subdir;
+
+        String parentdir = externalRootDir + getSubDir();
 
         // Create the parent directory
         File parentDirFile = new File(parentdir);
@@ -1168,10 +1177,10 @@ public class RingdroidEditActivity extends Activity
         }
 
         // Turn the title into a filename
-        String filename = "";
+        StringBuilder filename = new StringBuilder();
         for (int i = 0; i < title.length(); i++) {
             if (Character.isLetterOrDigit(title.charAt(i))) {
-                filename += title.charAt(i);
+                filename.append(title.charAt(i));
             }
         }
 
@@ -1212,11 +1221,19 @@ public class RingdroidEditActivity extends Activity
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
 
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Audio.Media.IS_RINGTONE, mNewFileKind == FileSaveDialog.FILE_KIND_RINGTONE);
+        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION);
+        values.put(MediaStore.Audio.Media.IS_ALARM, mNewFileKind == FileSaveDialog.FILE_KIND_ALARM);
+        values.put(MediaStore.Audio.Media.IS_MUSIC, mNewFileKind == FileSaveDialog.FILE_KIND_MUSIC);
+        values.put(MediaStore.Audio.Media.RELATIVE_PATH, getSubDir());
+
         // Save the sound file in a background thread
         mSaveSoundFileThread = new Thread() {
             public void run() {
                 // Try AAC first.
                 String outPath = makeRingtoneFilename(title, ".m4a");
+                Uri outUri = null;
                 if (outPath == null) {
                     Runnable runnable = () -> showFinalAlert(new Exception(), R.string.no_unique_filename);
                     mHandler.post(runnable);
@@ -1226,7 +1243,14 @@ public class RingdroidEditActivity extends Activity
                 boolean fallbackToWAV = false;
                 try {
                     // Write the new file
-                    mSoundFile.WriteFile(outFile, startFrame, endFrame - startFrame);
+                    if (PermissionUtils.hasMediaAudioPermission(mContext)) {
+                        values.put(MediaStore.Audio.Media.DISPLAY_NAME, title + ".m4a");
+                        values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/mp4a-latm");
+                        outUri = getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
+                        mSoundFile.WriteFile(mContext, outUri, startFrame, endFrame - startFrame);
+                    } else {
+                        mSoundFile.WriteFile(outFile, startFrame, endFrame - startFrame);
+                    }
                 } catch (Exception e) {
                     // log the error and try to create a .wav file instead
                     if (outFile.exists()) {
@@ -1250,7 +1274,14 @@ public class RingdroidEditActivity extends Activity
                     outFile = new File(outPath);
                     try {
                         // create the .wav file
-                        mSoundFile.WriteWAVFile(outFile, startFrame, endFrame - startFrame);
+                        if (PermissionUtils.hasMediaAudioPermission(mContext)) {
+                            values.put(MediaStore.Audio.Media.DISPLAY_NAME, title + ".wav");
+                            values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/wav");
+                            outUri = getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
+                            mSoundFile.WriteWAVFile(mContext, outUri, startFrame, endFrame - startFrame);
+                        } else {
+                            mSoundFile.WriteWAVFile(outFile, startFrame, endFrame - startFrame);
+                        }
                     } catch (Exception e) {
                         // Creating the .wav file also failed. Stop the progress dialog, show an
                         // error message and exit.
@@ -1289,7 +1320,11 @@ public class RingdroidEditActivity extends Activity
                             return false; // Keep going
                         }
                     };
-                    SoundFile.create(outPath, listener);
+                    if (PermissionUtils.hasMediaAudioPermission(mContext) && outUri != null) {
+                        SoundFile.uriExists(mContext, outUri);
+                    } else {
+                        SoundFile.create(outPath, listener);
+                    }
                 } catch (final Exception e) {
                     mProgressDialog.dismiss();
                     e.printStackTrace();
@@ -1304,54 +1339,61 @@ public class RingdroidEditActivity extends Activity
                 mProgressDialog.dismiss();
 
                 final String finalOutPath = outPath;
-                Runnable runnable = () -> afterSavingRingtone(title, finalOutPath, duration);
+                final Uri finalOutUri = outUri;
+                Runnable runnable = () -> afterSavingRingtone(title, finalOutPath, finalOutUri, duration);
                 mHandler.post(runnable);
             }
         };
         mSaveSoundFileThread.start();
     }
 
-    private void afterSavingRingtone(CharSequence title, String outPath, int duration) {
-        File outFile = new File(outPath);
-        long fileSize = outFile.length();
-        if (fileSize <= 512) {
-            outFile.delete();
-            new AlertDialog.Builder(this).setTitle(R.string.alert_title_failure).setMessage(R.string.too_small_error)
-                    .setPositiveButton(R.string.alert_ok_button, null).setCancelable(false).show();
-            return;
-        }
+    private void afterSavingRingtone(CharSequence title, String outPath, Uri outUri, int duration) {
+        Uri newUri;
+        if (PermissionUtils.hasMediaAudioPermission(mContext) && outUri == null) {
+            File outFile = new File(outPath);
+            long fileSize = outFile.length();
+            if (fileSize <= 512) {
+                outFile.delete();
+                new AlertDialog.Builder(this).setTitle(R.string.alert_title_failure)
+                        .setMessage(R.string.too_small_error).setPositiveButton(R.string.alert_ok_button, null)
+                        .setCancelable(false).show();
+                return;
+            }
 
-        // Create the database record, pointing to the existing file path
-        String mimeType;
-        if (outPath.endsWith(".m4a")) {
-            mimeType = "audio/mp4a-latm";
-        } else if (outPath.endsWith(".wav")) {
-            mimeType = "audio/wav";
+            // Create the database record, pointing to the existing file path
+            String mimeType;
+            if (outPath.endsWith(".m4a")) {
+                mimeType = "audio/mp4a-latm";
+            } else if (outPath.endsWith(".wav")) {
+                mimeType = "audio/wav";
+            } else {
+                // This should never happen.
+                mimeType = "audio/mpeg";
+            }
+
+            String artist = "" + getResources().getText(R.string.artist_name);
+
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.DATA, outPath);
+            values.put(MediaStore.MediaColumns.TITLE, title.toString());
+            values.put(MediaStore.MediaColumns.SIZE, fileSize);
+            values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
+
+            values.put(MediaStore.Audio.Media.ARTIST, artist);
+            values.put(MediaStore.Audio.Media.DURATION, duration);
+
+            values.put(MediaStore.Audio.Media.IS_RINGTONE, mNewFileKind == FileSaveDialog.FILE_KIND_RINGTONE);
+            values.put(MediaStore.Audio.Media.IS_NOTIFICATION, mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION);
+            values.put(MediaStore.Audio.Media.IS_ALARM, mNewFileKind == FileSaveDialog.FILE_KIND_ALARM);
+            values.put(MediaStore.Audio.Media.IS_MUSIC, mNewFileKind == FileSaveDialog.FILE_KIND_MUSIC);
+
+            // Insert it into the database
+            Uri uri = MediaStore.Audio.Media.getContentUriForPath(outPath);
+            newUri = getContentResolver().insert(uri, values);
+            setResult(RESULT_OK, new Intent().setData(newUri));
         } else {
-            // This should never happen.
-            mimeType = "audio/mpeg";
+            newUri = outUri;
         }
-
-        String artist = "" + getResources().getText(R.string.artist_name);
-
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.MediaColumns.DATA, outPath);
-        values.put(MediaStore.MediaColumns.TITLE, title.toString());
-        values.put(MediaStore.MediaColumns.SIZE, fileSize);
-        values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
-
-        values.put(MediaStore.Audio.Media.ARTIST, artist);
-        values.put(MediaStore.Audio.Media.DURATION, duration);
-
-        values.put(MediaStore.Audio.Media.IS_RINGTONE, mNewFileKind == FileSaveDialog.FILE_KIND_RINGTONE);
-        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION);
-        values.put(MediaStore.Audio.Media.IS_ALARM, mNewFileKind == FileSaveDialog.FILE_KIND_ALARM);
-        values.put(MediaStore.Audio.Media.IS_MUSIC, mNewFileKind == FileSaveDialog.FILE_KIND_MUSIC);
-
-        // Insert it into the database
-        Uri uri = MediaStore.Audio.Media.getContentUriForPath(outPath);
-        final Uri newUri = getContentResolver().insert(uri, values);
-        setResult(RESULT_OK, new Intent().setData(newUri));
 
         // If Ringdroid was launched to get content, just return
         if (mWasGetContentIntent) {

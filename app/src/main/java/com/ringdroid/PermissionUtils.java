@@ -3,6 +3,7 @@ package com.ringdroid;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.provider.Settings;
 
 public class PermissionUtils {
     public static final int CONTACT_PERMISSION_REQUEST = 2;
+    public static final int MEDIA_AUDIO_PERMISSION_REQUEST = 4;
     public static final int MIC_PERMISSION_REQUEST = 3;
     private static final int STORAGE_PERMISSION_REQUEST = 1;
 
@@ -61,6 +63,23 @@ public class PermissionUtils {
         } else {
             return Environment.isExternalStorageManager();
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.TIRAMISU)
+    public static boolean hasMediaAudioPermission(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return false;
+        }
+
+        return context.checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static void requestMediaAudioPermission(Activity activity) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return;
+        }
+
+        activity.requestPermissions(new String[]{Manifest.permission.READ_MEDIA_AUDIO}, MEDIA_AUDIO_PERMISSION_REQUEST);
     }
 
     public static void requestStoragePermission(Activity activity) {

@@ -203,9 +203,11 @@
     <string name="mic_permission">Microphone Permission</string>
     <string name="contacts_permission">Contacts Permission</string>
     <string name="start">Start</string>
-    <string name="storage_permission_summary">Needed to save and access audio files (Required for app to work)</string>
+    <string name="storage_permission_summary">Needed to save and access audio files (Recommended)\n\nRequires this or media audio permission for the app to read and write</string>
     <string name="write_system_settings_summary">Needed to set ringtones as system default</string>
     <string name="mic_permission_summary">Needed to record your own audio clips</string>
     <string name="contact_permission_summary">Needed to assign ringtones to your contacts</string>
+    <string name="media_audio_permission">Media audio permission</string>
+    <string name="media_audio_summary">Needed to read ringtone files from your smart phone \n\nRequires this or storage permission for the app to read and write</string>
 
 </resources>

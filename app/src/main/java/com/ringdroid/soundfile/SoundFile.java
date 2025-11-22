@@ -17,17 +17,23 @@
 package com.ringdroid.soundfile;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.database.Cursor;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.media.MediaRecorder;
+import android.net.Uri;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import com.ringdroid.FilesUtil;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
@@ -78,6 +84,15 @@ public class SoundFile {
             }
         }
         return false;
+    }
+
+    public static boolean uriExists(Context context, Uri uri) {
+        try (Cursor cursor = context.getContentResolver().query(uri, new String[]{OpenableColumns.DISPLAY_NAME}, null,
+                null, null)) {
+            return cursor != null && cursor.moveToFirst();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     // Create and return a SoundFile object using the file fileName.
@@ -459,10 +474,21 @@ public class SoundFile {
     public void WriteFile(File outputFile, int startFrame, int numFrames) throws java.io.IOException {
         float startTime = (float) startFrame * getSamplesPerFrame() / mSampleRate;
         float endTime = (float) (startFrame + numFrames) * getSamplesPerFrame() / mSampleRate;
-        WriteFile(outputFile, startTime, endTime);
+        OutputStream outputStream = new FileOutputStream(outputFile);
+        WriteFile(outputStream, startTime, endTime);
     }
 
-    public void WriteFile(File outputFile, float startTime, float endTime) throws java.io.IOException {
+    public void WriteFile(Context context, Uri outputUri, int startFrame, int numFrames) throws java.io.IOException {
+        float startTime = (float) startFrame * getSamplesPerFrame() / mSampleRate;
+        float endTime = (float) (startFrame + numFrames) * getSamplesPerFrame() / mSampleRate;
+        OutputStream outputStream = context.getContentResolver().openOutputStream(outputUri);
+        if (outputStream == null) {
+            throw new IOException("Cannot open MediaStore output stream");
+        }
+        WriteFile(outputStream, startTime, endTime);
+    }
+
+    public void WriteFile(OutputStream outputStream, float startTime, float endTime) throws IOException {
         int startOffset = (int) (startTime * mSampleRate) * 2 * mChannels;
         int numSamples = (int) ((endTime - startTime) * mSampleRate);
         // Some devices have problems reading mono AAC files (e.g. Samsung S3). Making
@@ -578,7 +604,6 @@ public class SoundFile {
         // Write the encoded stream to the file, 4kB at a time.
         buffer = new byte[4096];
         try {
-            FileOutputStream outputStream = new FileOutputStream(outputFile);
             outputStream.write(MP4Header.getMP4Header(mSampleRate, numChannels, frame_sizes, bitrate));
             while (encoded_size - encodedBytes.position() > buffer.length) {
                 encodedBytes.get(buffer);
@@ -626,15 +651,23 @@ public class SoundFile {
     public void WriteWAVFile(File outputFile, int startFrame, int numFrames) throws java.io.IOException {
         float startTime = (float) startFrame * getSamplesPerFrame() / mSampleRate;
         float endTime = (float) (startFrame + numFrames) * getSamplesPerFrame() / mSampleRate;
-        WriteWAVFile(outputFile, startTime, endTime);
+        OutputStream outputStream = new FileOutputStream(outputFile);
+        WriteWAVFile(outputStream, startTime, endTime);
     }
 
-    public void WriteWAVFile(File outputFile, float startTime, float endTime) throws java.io.IOException {
+    public void WriteWAVFile(Context context, Uri outputUri, int startTime, int endTime) throws java.io.IOException {
+        OutputStream outputStream = context.getContentResolver().openOutputStream(outputUri);
+        if (outputStream == null) {
+            throw new IOException("Cannot open MediaStore output stream");
+        }
+        WriteFile(outputStream, startTime, endTime);
+    }
+
+    public void WriteWAVFile(OutputStream outputStream, float startTime, float endTime) throws java.io.IOException {
         int startOffset = (int) (startTime * mSampleRate) * 2 * mChannels;
         int numSamples = (int) ((endTime - startTime) * mSampleRate);
 
         // Start by writing the RIFF header.
-        FileOutputStream outputStream = new FileOutputStream(outputFile);
         outputStream.write(WAVHeader.getWAVHeader(mSampleRate, mChannels, numSamples));
 
         // Write the samples to the file, 1024 at a time.
