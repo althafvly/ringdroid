@@ -18,7 +18,6 @@ package com.ringdroid;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -46,6 +45,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -75,7 +75,8 @@ public class RingdroidEditActivity extends Activity
     private boolean mFinishActivity;
     private TextView mTimerTextView;
     private AlertDialog mAlertDialog;
-    private ProgressDialog mProgressDialog;
+    private AlertDialog mProgressDialog;
+    private ProgressBar mLoadingProgressBar;
     private SoundFile mSoundFile;
     private File mFile;
     private String mFilename;
@@ -704,20 +705,25 @@ public class RingdroidEditActivity extends Activity
         mLoadingLastUpdateTime = getCurrentTime();
         mLoadingKeepGoing = true;
         mFinishActivity = false;
-        mProgressDialog = new ProgressDialog(RingdroidEditActivity.this);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mProgressDialog.setTitle(R.string.progress_dialog_loading);
-        mProgressDialog.setCancelable(true);
-        mProgressDialog.setOnCancelListener(dialog -> {
-            mLoadingKeepGoing = false;
-            mFinishActivity = true;
-        });
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_progress_horizontal, null);
+        ProgressBar progressBar = dialogView.findViewById(R.id.progress_bar);
+        progressBar.setMax(100);
+        mLoadingProgressBar = progressBar;
+
+        mProgressDialog = new AlertDialog.Builder(this).setTitle(R.string.progress_dialog_loading).setView(dialogView)
+                .setCancelable(true).setOnCancelListener(dialog -> {
+                    mLoadingKeepGoing = false;
+                    mFinishActivity = true;
+                }).create();
         mProgressDialog.show();
 
         final SoundFile.ProgressListener listener = fractionComplete -> {
             long now = getCurrentTime();
             if (now - mLoadingLastUpdateTime > 100) {
-                mProgressDialog.setProgress((int) (mProgressDialog.getMax() * fractionComplete));
+                if (mLoadingProgressBar != null) {
+                    int progress = (int) (fractionComplete * 100);
+                    mLoadingProgressBar.setProgress(progress);
+                }
                 mLoadingLastUpdateTime = now;
             }
             return !mLoadingKeepGoing;
@@ -1214,11 +1220,10 @@ public class RingdroidEditActivity extends Activity
         final int duration = (int) (endTime - startTime + 0.5);
 
         // Create an indeterminate progress dialog
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setTitle(R.string.progress_dialog_saving);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setCancelable(false);
+        View view = getLayoutInflater().inflate(R.layout.dialog_progress, null);
+
+        mProgressDialog = new AlertDialog.Builder(this).setTitle(R.string.progress_dialog_saving).setView(view)
+                .setCancelable(false).create();
         mProgressDialog.show();
 
         ContentValues values = new ContentValues();
