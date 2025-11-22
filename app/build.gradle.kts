@@ -76,6 +76,7 @@ tasks.named("preBuild") {
 dependencies {
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.annotation)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.recyclerview)

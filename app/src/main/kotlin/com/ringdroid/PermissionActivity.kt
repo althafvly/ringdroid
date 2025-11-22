@@ -1,6 +1,5 @@
 package com.ringdroid
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -8,7 +7,8 @@ import android.provider.Settings
 import android.view.View
 import android.widget.Button
 import android.widget.CompoundButton
-import android.widget.Switch
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import com.ringdroid.PermissionUtils.hasContactPermissions
 import com.ringdroid.PermissionUtils.hasMicPermissions
 import com.ringdroid.PermissionUtils.hasStoragePermission
@@ -17,11 +17,11 @@ import com.ringdroid.PermissionUtils.requestContactPermissions
 import com.ringdroid.PermissionUtils.requestMicPermissions
 import com.ringdroid.PermissionUtils.requestStoragePermission
 
-class PermissionActivity : Activity() {
-    private var storageSwitch: Switch? = null
-    private var writeSettingsSwitch: Switch? = null
-    private var micSwitch: Switch? = null
-    private var contactSwitch: Switch? = null
+class PermissionActivity : AppCompatActivity() {
+    private var storageSwitch: SwitchCompat? = null
+    private var writeSettingsSwitch: SwitchCompat? = null
+    private var micSwitch: SwitchCompat? = null
+    private var contactSwitch: SwitchCompat? = null
     private var nextButton: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

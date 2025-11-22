@@ -8,6 +8,7 @@ recyclerview = "1.4.0"
 spotless = "8.1.0"
 kotlin = "2.2.0"
 material = "1.13.0"
+appcompat = "1.7.1"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -22,3 +23,4 @@ androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-view
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
