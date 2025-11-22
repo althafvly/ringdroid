@@ -56,17 +56,10 @@ android {
 }
 
 spotless {
-    java {
-        removeUnusedImports()
-        eclipse()
-        leadingSpacesToTabs(2)
-        leadingTabsToSpaces(4)
-        target("src/*/java/**/*.java")
-    }
     kotlin {
         ktlint()
         leadingTabsToSpaces(2)
-        target("src/*/java/**/*.kt")
+        target("src/*/kotlin/**/*.kt")
     }
     format("xml") {
         target("src/**/*.xml")
@@ -78,4 +71,8 @@ spotless {
 
 tasks.named("preBuild") {
     dependsOn("spotlessCheck")
+}
+
+dependencies {
+    implementation(libs.androidx.annotation)
 }
