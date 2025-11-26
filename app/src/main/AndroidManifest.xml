@@ -70,6 +70,7 @@
 
         <activity
             android:name=".RingdroidSelectActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:exported="true"
             android:label="@string/main_activity_label">
             <intent-filter>
@@ -91,7 +92,7 @@
         file. -->
         <activity
             android:name=".RingdroidEditActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:exported="true"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
@@ -104,7 +105,7 @@
         <!-- Activity for choosing a contact to assign a ringtone to. -->
         <activity
             android:name=".ChooseContactActivity"
-            android:configChanges="orientation|keyboardHidden" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
 
     </application>
 
