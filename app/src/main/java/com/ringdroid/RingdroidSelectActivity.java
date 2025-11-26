@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -30,6 +31,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -84,12 +87,10 @@ public class RingdroidSelectActivity extends Activity implements LoaderManager.L
             // File path — will be non-null since we use MANAGE_EXTERNAL_STORAGE
             MediaStore.Audio.Media.DATA};
 
-    private final String[] blockedDirs = {"espeak-data/scratch", "/product/", "/system/", "/system_ext/", "/vendor/"};
-
     private SearchView mFilter;
     private SimpleCursorAdapter mAdapter;
     private boolean mWasGetContentIntent;
-    private boolean mShowAll;
+    private boolean mShowAll = false;
     private Cursor mInternalCursor;
     private Cursor mExternalCursor;
 
@@ -99,8 +100,6 @@ public class RingdroidSelectActivity extends Activity implements LoaderManager.L
         super.onCreate(icicle);
 
         handleIncoming(getIntent());
-
-        mShowAll = false;
 
         String status = Environment.getExternalStorageState();
         if (status.equals(Environment.MEDIA_MOUNTED_READ_ONLY)) {
@@ -256,17 +255,19 @@ public class RingdroidSelectActivity extends Activity implements LoaderManager.L
         }
     }
 
-    private boolean isSystemFile(String path) {
+    private boolean isProtectedDir(String path) {
         if (path == null)
-            return false;
+            return true;
 
-        for (String dir : blockedDirs) {
-            if (path.contains(dir)) {
-                return true;
-            }
+        // If file does not exist or can't be read → treat as protected
+        File file = new File(path);
+        if (!file.exists() || !file.canRead()) {
+            return true;
         }
 
-        return false;
+        // Check if directory itself is writable
+        File parent = file.getParentFile();
+        return parent == null || !parent.canWrite();
     }
 
     @Override
@@ -282,8 +283,8 @@ public class RingdroidSelectActivity extends Activity implements LoaderManager.L
 
         String filename = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
 
-        // Only show delete if NOT a system-provided tone
-        if (!isSystemFile(filename)) {
+        // Only show delete if we can delete
+        if (!isProtectedDir(filename)) {
             menu.add(0, CMD_DELETE, 0, R.string.context_menu_delete);
         }
 
@@ -543,14 +544,22 @@ public class RingdroidSelectActivity extends Activity implements LoaderManager.L
             }
             selection.append(")");
 
+            // Only scan internal & SD card
+            String internalPath = Environment.getExternalStorageDirectory().getPath();
             selection.append(" AND (");
+            selection.append("_DATA LIKE ?");
+            selectionArgsList.add(internalPath + "/%");
 
-            for (int i = 0; i < blockedDirs.length; i++) {
-                if (i > 0) {
-                    selection.append(" AND ");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                StorageManager sm = (StorageManager) this.getSystemService(Context.STORAGE_SERVICE);
+                for (StorageVolume volume : sm.getStorageVolumes()) {
+                    File dir = volume.getDirectory();
+                    if (dir != null) {
+                        String path = dir.getAbsolutePath();
+                        selection.append(" OR _DATA LIKE ?");
+                        selectionArgsList.add(path + "/%");
+                    }
                 }
-                selection.append("_DATA NOT LIKE ?");
-                selectionArgsList.add("%" + blockedDirs[i] + "%");
             }
 
             selection.append(")");
