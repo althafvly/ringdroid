@@ -21,12 +21,14 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+
 import com.ringdroid.soundfile.SoundFile;
 
 /**
@@ -110,7 +112,7 @@ public class WaveformView extends View {
         mTimecodePaint.setShadowLayer(2, 1, 1, res.getColor(R.color.timecode_shadow));
 
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float vx, float vy) {
+            public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float vx, float vy) {
                 mListener.waveformFling(vx);
                 return true;
             }
@@ -118,13 +120,13 @@ public class WaveformView extends View {
 
         mScaleGestureDetector = new ScaleGestureDetector(context,
                 new ScaleGestureDetector.SimpleOnScaleGestureListener() {
-                    public boolean onScaleBegin(ScaleGestureDetector d) {
+                    public boolean onScaleBegin(@NonNull ScaleGestureDetector d) {
                         Log.v(TAG, "ScaleBegin " + d.getCurrentSpanX());
                         mInitialScaleSpan = Math.abs(d.getCurrentSpanX());
                         return true;
                     }
 
-                    public boolean onScale(ScaleGestureDetector d) {
+                    public boolean onScale(@NonNull ScaleGestureDetector d) {
                         float scale = Math.abs(d.getCurrentSpanX());
                         Log.v(TAG, "Scale " + (scale - mInitialScaleSpan));
                         if (scale - mInitialScaleSpan > 40) {
@@ -138,7 +140,7 @@ public class WaveformView extends View {
                         return true;
                     }
 
-                    public void onScaleEnd(ScaleGestureDetector d) {
+                    public void onScaleEnd(@NonNull ScaleGestureDetector d) {
                         Log.v(TAG, "ScaleEnd " + d.getCurrentSpanX());
                     }
                 });
@@ -171,8 +173,15 @@ public class WaveformView extends View {
                 break;
             case MotionEvent.ACTION_UP :
                 mListener.waveformTouchEnd();
+                performClick();
                 break;
         }
+        return true;
+    }
+
+    @Override
+    public boolean performClick() {
+        super.performClick();
         return true;
     }
 
@@ -310,7 +319,7 @@ public class WaveformView extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
         if (mSoundFile == null)
             return;
@@ -413,7 +422,9 @@ public class WaveformView extends View {
         }
     }
 
-    /** Called once when a new sound file is added */
+    /**
+     * Called once when a new sound file is added
+     */
     private void computeDoublesForAllZoomLevels() {
         int numFrames = mSoundFile.getNumFrames();
         int[] frameGains = mSoundFile.getFrameGains();

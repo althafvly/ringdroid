@@ -366,10 +366,10 @@ public class MP4Header {
                 0, 0, 0, 0x01, // first frame contains no audio
                 0, 0, 0, 0, (byte) ((numAudioFrames >> 24) & 0xFF), (byte) ((numAudioFrames >> 16) & 0xFF),
                 (byte) ((numAudioFrames >> 8) & 0xFF), (byte) (numAudioFrames & 0xFF), 0, 0, 0x04, 0, // delay between
-                                                                                                        // frames = 1024
-                                                                                                        // samples (cf.
-                                                                                                        // timescale =
-                                                                                                        // Fs)
+                // frames = 1024
+                // samples (cf.
+                // timescale =
+                // Fs)
         });
         return atom;
     }
@@ -413,8 +413,8 @@ public class MP4Header {
         Atom atom = new Atom("stco", (byte) 0, 0);
         atom.setData(new byte[]{0, 0, 0, 0x01, // entry count
                 0, 0, 0, 0 // chunk offset. Set to 0 here. Must be set later. Here it should be
-                            // the size of the complete header, as the AAC stream will follow
-                            // immediately.
+                // the size of the complete header, as the AAC stream will follow
+                // immediately.
         });
         return atom;
     }

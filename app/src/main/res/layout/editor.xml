@@ -35,15 +35,15 @@
             android:id="@+id/startmarker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/marker_left"
-            android:contentDescription="@string/start_marker" />
+            android:contentDescription="@string/start_marker"
+            android:src="@drawable/marker_left" />
 
         <com.ringdroid.MarkerView
             android:id="@+id/endmarker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/marker_right"
-            android:contentDescription="@string/end_marker" />
+            android:contentDescription="@string/end_marker"
+            android:src="@drawable/marker_right" />
 
     </RelativeLayout>
 
@@ -52,7 +52,7 @@
         style="@style/AudioFileInfoOverlayText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"/>
+        android:gravity="center" />
 
     <LinearLayout
         style="@style/ToolbarBackground"
@@ -65,21 +65,21 @@
             android:id="@+id/mark_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:text="@string/start_label"
             android:textColor="#ffffffff"
-            android:textStyle="bold"
             android:textSize="14sp"
-            android:layout_marginStart="10dp" />
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/starttext"
             android:layout_width="70dp"
             android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
             android:gravity="center"
             android:inputType="number|numberDecimal"
-            android:textSize="16sp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="20dp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/mark_end"
@@ -87,17 +87,17 @@
             android:layout_height="wrap_content"
             android:text="@string/end_label"
             android:textColor="#ffffffff"
-            android:textStyle="bold"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/endtext"
             android:layout_width="70dp"
             android:layout_height="40dp"
+            android:layout_marginStart="10dp"
             android:gravity="center"
             android:inputType="number|numberDecimal"
-            android:textSize="16sp"
-            android:layout_marginStart="10dp" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -112,24 +112,24 @@
             android:id="@+id/rew"
             android:layout_width="52dp"
             android:layout_height="52dp"
-            android:src="@android:drawable/ic_media_previous"
-            android:contentDescription="@string/rewind" />
+            android:contentDescription="@string/rewind"
+            android:src="@android:drawable/ic_media_previous" />
 
         <ImageButton
             android:id="@+id/play"
             android:layout_width="52dp"
             android:layout_height="52dp"
-            android:src="@android:drawable/ic_media_play"
-            android:contentDescription="@string/play"
             android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp" />
+            android:layout_marginEnd="12dp"
+            android:contentDescription="@string/play"
+            android:src="@android:drawable/ic_media_play" />
 
         <ImageButton
             android:id="@+id/ffwd"
             android:layout_width="52dp"
             android:layout_height="52dp"
-            android:src="@android:drawable/ic_media_next"
-            android:contentDescription="@string/ffwd" />
+            android:contentDescription="@string/ffwd"
+            android:src="@android:drawable/ic_media_next" />
 
     </LinearLayout>
 

@@ -66,3 +66,7 @@ spotless {
 tasks.named("preBuild") {
     dependsOn("spotlessCheck")
 }
+
+dependencies {
+    implementation(libs.support.annotations)
+}

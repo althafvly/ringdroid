@@ -43,7 +43,8 @@
         tools:ignore="AllFilesAccessPolicy,ScopedStorage" />
 
     <!-- Android 33+ audio file access -->
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_AUDIO"
         android:minSdkVersion="33" />
 
     <!-- Audio Recording -->

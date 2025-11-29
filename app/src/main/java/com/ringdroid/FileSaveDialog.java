@@ -27,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+
 import java.util.ArrayList;
 
 public class FileSaveDialog extends Dialog {
@@ -108,7 +109,7 @@ public class FileSaveDialog extends Dialog {
 
         int newSelection = mTypeSpinner.getSelectedItemPosition();
         String newSuffix = mTypeArray.get(newSelection);
-        mFilename.setText(mOriginalName + " " + newSuffix);
+        mFilename.setText(getContext().getString(R.string.filename_with_suffix, mOriginalName, newSuffix));
         mPreviousSelection = mTypeSpinner.getSelectedItemPosition();
     }
 }

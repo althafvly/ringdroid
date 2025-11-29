@@ -29,10 +29,10 @@
         android:id="@+id/empty_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/list_is_empty"
-        android:gravity="center"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
+        android:gravity="center"
+        android:text="@string/list_is_empty"
         android:textSize="18sp"
         android:visibility="gone" />
 

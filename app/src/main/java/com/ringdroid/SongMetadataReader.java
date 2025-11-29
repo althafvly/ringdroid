@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+
 import java.util.HashMap;
 
 public class SongMetadataReader {
@@ -62,10 +63,10 @@ public class SongMetadataReader {
                 break;
             }
             c.close();
-            c = null;
         }
 
         Uri uri = MediaStore.Audio.Media.getContentUriForPath(mFilename);
+        assert uri != null;
         c = mActivity.getContentResolver().query(uri,
                 new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
                         MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DATA},

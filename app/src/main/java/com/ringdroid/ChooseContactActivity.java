@@ -25,6 +25,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract.Contacts;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,17 +42,18 @@ import android.widget.Toast;
  */
 public class ChooseContactActivity extends Activity {
     private final String TAG = this.getClass().getName();
+    private final Handler mUiHandler = new Handler();
     private SearchView mFilter;
     private SimpleCursorAdapter mAdapter;
     private Uri mRingtoneUri;
-
     private Thread mLoaderThread;
-    private final Handler mUiHandler = new Handler();
 
     public ChooseContactActivity() {
     }
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -143,7 +145,7 @@ public class ChooseContactActivity extends Activity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_about) {
             RingdroidEditActivity.onAbout(this);
             return true;
@@ -152,7 +154,8 @@ public class ChooseContactActivity extends Activity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode != PermissionUtils.CONTACT_PERMISSION_REQUEST)

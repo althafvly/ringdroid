@@ -32,6 +32,7 @@ import android.os.Handler;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -46,6 +47,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.ringdroid.soundfile.SoundFile;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -56,8 +58,6 @@ import java.util.Objects;
  * RingdroidEditActivity from here.
  */
 public class RingdroidSelectActivity extends Activity {
-    private final String TAG = this.getClass().getName();
-
     // Result codes
     private static final int REQUEST_CODE_EDIT = 1;
     private static final int REQUEST_CODE_CHOOSE_CONTACT = 2;
@@ -76,16 +76,17 @@ public class RingdroidSelectActivity extends Activity {
 
             // File path — will be non-null since we use MANAGE_EXTERNAL_STORAGE
             MediaStore.Audio.Media.DATA};
-
+    private final String TAG = this.getClass().getName();
+    private final Handler mUiHandler = new Handler();
     private SearchView mFilter;
     private SimpleCursorAdapter mAdapter;
     private boolean mWasGetContentIntent;
     private boolean mShowAll = false;
-
-    private final Handler mUiHandler = new Handler();
     private Thread mLoaderThread;
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -140,7 +141,7 @@ public class RingdroidSelectActivity extends Activity {
             if (view.getId() == R.id.row_options_button) {
                 // Get the arrow ImageView and set the onClickListener to open the context menu.
                 ImageView iv = (ImageView) view;
-                iv.setOnClickListener(v -> openContextMenu(v));
+                iv.setOnClickListener(this::openContextMenu);
                 return true;
             } else if (view.getId() == R.id.row_icon) {
                 setSoundIconFromCursor((ImageView) view, cursor);
@@ -267,19 +268,16 @@ public class RingdroidSelectActivity extends Activity {
         }
     }
 
-    /** Called with an Activity we started with an Intent returns. */
+    /**
+     * Called with an Activity we started with an Intent returns.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
-        if (requestCode != REQUEST_CODE_EDIT) {
-            return;
-        }
-
-        if (resultCode != RESULT_OK) {
+        if (requestCode != REQUEST_CODE_EDIT || resultCode != RESULT_OK) {
             return;
         }
 
         setResult(RESULT_OK, dataIntent);
-        // finish(); // TODO(nfaralli): why would we want to quit the app here?
     }
 
     @Override
@@ -315,23 +313,24 @@ public class RingdroidSelectActivity extends Activity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_about :
-                RingdroidEditActivity.onAbout(this);
-                return true;
-            case R.id.action_record :
-                onRecord();
-                return true;
-            case R.id.action_show_all_audio :
-                boolean newState = !item.isChecked();
-                item.setChecked(newState);
-                mShowAll = newState;
-                refreshListView();
-                return true;
-            default :
-                return false;
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_about) {
+            RingdroidEditActivity.onAbout(this);
+            return true;
+        } else if (id == R.id.action_record) {
+            onRecord();
+            return true;
+        } else if (id == R.id.action_show_all_audio) {
+            boolean newState = !item.isChecked();
+            item.setChecked(newState);
+            mShowAll = newState;
+            refreshListView();
+            return true;
         }
+
+        return false;
     }
 
     private boolean isProtectedDir(String path) {
@@ -377,22 +376,23 @@ public class RingdroidSelectActivity extends Activity {
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case CMD_EDIT :
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        return switch (item.getItemId()) {
+            case CMD_EDIT -> {
                 startRingdroidEditor();
-                return true;
-            case CMD_DELETE :
+                yield true;
+            }
+            case CMD_DELETE -> {
                 confirmDelete();
-                return true;
-            case CMD_SET_AS_DEFAULT :
+                yield true;
+            }
+            case CMD_SET_AS_DEFAULT -> {
                 setAsDefaultRingtoneOrNotification();
-                return true;
-            case CMD_SET_AS_CONTACT :
-                return chooseContactForRingtone(item);
-            default :
-                return super.onContextItemSelected(item);
-        }
+                yield true;
+            }
+            case CMD_SET_AS_CONTACT -> chooseContactForRingtone();
+            default -> super.onContextItemSelected(item);
+        };
     }
 
     private void setAsDefaultRingtoneOrNotification() {
@@ -450,7 +450,7 @@ public class RingdroidSelectActivity extends Activity {
         return Uri.parse(itemUri);
     }
 
-    private boolean chooseContactForRingtone(MenuItem item) {
+    private boolean chooseContactForRingtone() {
         try {
             // Go to the choose contact activity
             Intent intent = new Intent(Intent.ACTION_EDIT, getUri());
@@ -509,7 +509,9 @@ public class RingdroidSelectActivity extends Activity {
             if (dataIndex != -1) {
                 String filePath = c.getString(dataIndex);
                 if (filePath != null) {
-                    new File(filePath).delete();
+                    File file = new File(filePath);
+                    boolean status = file.delete();
+                    Log.d(TAG, "Delete file: " + file + "status:" + status);
                 }
             }
         }

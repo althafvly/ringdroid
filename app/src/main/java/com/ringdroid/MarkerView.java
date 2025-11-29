@@ -70,8 +70,15 @@ public class MarkerView extends ImageView {
                 break;
             case MotionEvent.ACTION_UP :
                 mListener.markerTouchEnd(this);
+                performClick();
                 break;
         }
+        return true;
+    }
+
+    @Override
+    public boolean performClick() {
+        super.performClick();
         return true;
     }
 

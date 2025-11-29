@@ -211,4 +211,6 @@
     <string name="media_audio_summary">Needed to read ringtone files from your smart phone \n\nRequires this or storage permission for the app to read and write</string>
     <string name="list_is_empty">No audio files found. Enable ‘Show all audio’ from the three-dot menu to view system audio files</string>
 
+    <string name="filename_with_suffix" translatable="false">%1$s %2$s</string>
+
 </resources>

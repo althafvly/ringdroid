@@ -28,16 +28,19 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.util.Log;
+
 import com.ringdroid.FilesUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serial;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class SoundFile {
     private final String TAG = this.getClass().getName();
@@ -64,8 +67,6 @@ public class SoundFile {
     // uses the samples).
     private int mNumFrames;
     private int[] mFrameGains;
-    private int[] mFrameLens;
-    private int[] mFrameOffsets;
 
     // A SoundFile object should only be created using the static methods create()
     // and record().
@@ -88,12 +89,13 @@ public class SoundFile {
         return false;
     }
 
-    public static boolean uriExists(Context context, Uri uri) {
+    public static void uriExists(Context context, Uri uri) {
         try (Cursor cursor = context.getContentResolver().query(uri, new String[]{OpenableColumns.DISPLAY_NAME}, null,
                 null, null)) {
-            return cursor != null && cursor.moveToFirst();
-        } catch (Exception e) {
-            return false;
+            if (cursor != null) {
+                cursor.moveToFirst();
+            }
+        } catch (Exception ignored) {
         }
     }
 
@@ -195,7 +197,7 @@ public class SoundFile {
         // find and select the first audio track present in the file.
         for (i = 0; i < numTracks; i++) {
             format = extractor.getTrackFormat(i);
-            if (format.getString(MediaFormat.KEY_MIME).startsWith("audio/")) {
+            if (Objects.requireNonNull(format.getString(MediaFormat.KEY_MIME)).startsWith("audio/")) {
                 extractor.selectTrack(i);
                 break;
             }
@@ -209,7 +211,8 @@ public class SoundFile {
         // Expected total number of samples per channel.
         int expectedNumSamples = (int) ((format.getLong(MediaFormat.KEY_DURATION) / 1000000.f) * mSampleRate + 0.5f);
 
-        MediaCodec codec = MediaCodec.createDecoderByType(format.getString(MediaFormat.KEY_MIME));
+        MediaCodec codec = MediaCodec
+                .createDecoderByType(Objects.requireNonNull(format.getString(MediaFormat.KEY_MIME)));
         codec.configure(format, null, null, 0);
         codec.start();
 
@@ -237,7 +240,7 @@ public class SoundFile {
             int inputBufferIndex = codec.dequeueInputBuffer(100);
             if (!done_reading && inputBufferIndex >= 0) {
                 sample_size = extractor.readSampleData(inputBuffers[inputBufferIndex], 0);
-                if (firstSampleData && format.getString(MediaFormat.KEY_MIME).equals("audio/mp4a-latm")
+                if (firstSampleData && Objects.equals(format.getString(MediaFormat.KEY_MIME), "audio/mp4a-latm")
                         && sample_size == 2) {
                     // For some reasons on some devices (e.g. the Samsung S3) you should not
                     // provide the first two bytes of an AAC stream, otherwise the MediaCodec will
@@ -351,11 +354,8 @@ public class SoundFile {
             mNumFrames++;
         }
         mFrameGains = new int[mNumFrames];
-        mFrameLens = new int[mNumFrames];
-        mFrameOffsets = new int[mNumFrames];
         int j;
         int gain, value;
-        int frameLens = (int) (((float) (1000 * mAvgBitRate) / 8) * ((float) getSamplesPerFrame() / mSampleRate));
         for (i = 0; i < mNumFrames; i++) {
             gain = -1;
             for (j = 0; j < getSamplesPerFrame(); j++) {
@@ -371,12 +371,8 @@ public class SoundFile {
                 }
             }
             mFrameGains[i] = (int) Math.sqrt(gain); // here gain = sqrt(max value of 1st channel)...
-            mFrameLens[i] = frameLens; // totally not accurate...
-            mFrameOffsets[i] = (int) (i * ((float) (1000 * mAvgBitRate) / 8) * // = i * frameLens
-                    ((float) getSamplesPerFrame() / mSampleRate));
         }
         mDecodedSamples.rewind();
-        // DumpSamples(); // Uncomment this line to dump the samples in a TSV file.
     }
 
     @SuppressLint("MissingPermission")
@@ -450,8 +446,6 @@ public class SoundFile {
             mNumFrames++;
         }
         mFrameGains = new int[mNumFrames];
-        mFrameLens = null; // not needed for recorded audio
-        mFrameOffsets = null; // not needed for recorded audio
         int i, j;
         int gain, value;
         for (i = 0; i < mNumFrames; i++) {
@@ -512,7 +506,7 @@ public class SoundFile {
         ByteBuffer[] outputBuffers = codec.getOutputBuffers();
         MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
         boolean done_reading = false;
-        long presentation_time = 0;
+        long presentation_time;
 
         int frame_size = 1024; // number of samples per frame per channel for an mp4 (AAC) stream.
         byte[] buffer = new byte[frame_size * numChannels * 2]; // a sample is coded with a short.
@@ -723,6 +717,7 @@ public class SoundFile {
     // Custom exception for invalid inputs.
     public static class InvalidInputException extends Exception {
         // Serial version ID generated by Eclipse.
+        @Serial
         private static final long serialVersionUID = -2505698991597837165L;
 
         public InvalidInputException(String message) {

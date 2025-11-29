@@ -20,9 +20,9 @@
 
     <item
         android:id="@+id/action_show_all_audio"
-        android:showAsAction="never"
-        android:title="@string/menu_show_all_audio"
         android:checkable="true"
-        android:checked="false" />
+        android:checked="false"
+        android:showAsAction="never"
+        android:title="@string/menu_show_all_audio" />
 
 </menu>

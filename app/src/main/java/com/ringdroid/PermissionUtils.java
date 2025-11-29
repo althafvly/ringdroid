@@ -1,7 +1,6 @@
 package com.ringdroid;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -65,7 +64,6 @@ public class PermissionUtils {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.TIRAMISU)
     public static boolean hasMediaAudioPermission(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             return false;
@@ -95,17 +93,19 @@ public class PermissionUtils {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.R)
     private static void openManageAllFilesScreen(Activity activity) {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                .setData(Uri.parse("package:" + activity.getPackageName()));
-        activity.startActivity(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                    .setData(Uri.parse("package:" + activity.getPackageName()));
+            activity.startActivity(intent);
+        }
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     public static void openWriteSettingsScreen(Activity activity) {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-                .setData(Uri.parse("package:" + activity.getPackageName()));
-        activity.startActivity(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+                    .setData(Uri.parse("package:" + activity.getPackageName()));
+            activity.startActivity(intent);
+        }
     }
 }
