@@ -45,6 +45,8 @@ import com.ringdroid.soundfile.SoundFile;
  * selected part of the waveform in a different color.
  */
 public class WaveformView extends View {
+    private final String TAG = this.getClass().getName();
+
     // Colors
     private final Paint mGridPaint;
 
@@ -117,14 +119,14 @@ public class WaveformView extends View {
         mScaleGestureDetector = new ScaleGestureDetector(context,
                 new ScaleGestureDetector.SimpleOnScaleGestureListener() {
                     public boolean onScaleBegin(ScaleGestureDetector d) {
-                        Log.v("Ringdroid", "ScaleBegin " + d.getCurrentSpanX());
+                        Log.v(TAG, "ScaleBegin " + d.getCurrentSpanX());
                         mInitialScaleSpan = Math.abs(d.getCurrentSpanX());
                         return true;
                     }
 
                     public boolean onScale(ScaleGestureDetector d) {
                         float scale = Math.abs(d.getCurrentSpanX());
-                        Log.v("Ringdroid", "Scale " + (scale - mInitialScaleSpan));
+                        Log.v(TAG, "Scale " + (scale - mInitialScaleSpan));
                         if (scale - mInitialScaleSpan > 40) {
                             mListener.waveformZoomIn();
                             mInitialScaleSpan = scale;
@@ -137,7 +139,7 @@ public class WaveformView extends View {
                     }
 
                     public void onScaleEnd(ScaleGestureDetector d) {
-                        Log.v("Ringdroid", "ScaleEnd " + d.getCurrentSpanX());
+                        Log.v(TAG, "ScaleEnd " + d.getCurrentSpanX());
                     }
                 });
 

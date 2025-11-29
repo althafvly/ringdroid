@@ -65,6 +65,8 @@ public class RingdroidEditActivity extends Activity
         implements
             MarkerView.MarkerListener,
             WaveformView.WaveformListener {
+    private final String TAG = this.getClass().getName();
+
     // Result codes
     private static final int REQUEST_CODE_CHOOSE_CONTACT = 1;
     private long mLoadingLastUpdateTime;
@@ -256,7 +258,7 @@ public class RingdroidEditActivity extends Activity
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle icicle) {
-        Log.v("Ringdroid", "EditActivity OnCreate");
+        Log.v(TAG, "EditActivity OnCreate");
         super.onCreate(icicle);
 
         mPlayer = null;
@@ -316,7 +318,7 @@ public class RingdroidEditActivity extends Activity
     /** Called when the activity is finally destroyed. */
     @Override
     protected void onDestroy() {
-        Log.v("Ringdroid", "EditActivity OnDestroy");
+        Log.v(TAG, "EditActivity OnDestroy");
 
         mLoadingKeepGoing = false;
         mRecordingKeepGoing = false;
@@ -349,7 +351,7 @@ public class RingdroidEditActivity extends Activity
     /** Called with an Activity we started with an Intent returns. */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
-        Log.v("Ringdroid", "EditActivity onActivityResult");
+        Log.v(TAG, "EditActivity onActivityResult");
         if (requestCode == REQUEST_CODE_CHOOSE_CONTACT) {
             // The user finished saving their ringtone and they're
             // just applying it to a contact. When they return here,
@@ -365,7 +367,7 @@ public class RingdroidEditActivity extends Activity
      */
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        Log.v("Ringdroid", "EditActivity onConfigurationChanged");
+        Log.v(TAG, "EditActivity onConfigurationChanged");
         final int saveZoomLevel = mWaveformView.getZoomLevel();
         super.onConfigurationChanged(newConfig);
 
@@ -1122,12 +1124,12 @@ public class RingdroidEditActivity extends Activity
     private void showFinalAlert(Exception e, CharSequence message) {
         CharSequence title;
         if (e != null) {
-            Log.e("Ringdroid", "Error: " + message);
-            Log.e("Ringdroid", FilesUtil.getStackTrace(e));
+            Log.e(TAG, "Error: " + message);
+            Log.e(TAG, FilesUtil.getStackTrace(e));
             title = getResources().getText(R.string.alert_title_failure);
             setResult(RESULT_CANCELED, new Intent());
         } else {
-            Log.v("Ringdroid", "Success: " + message);
+            Log.v(TAG, "Success: " + message);
             title = getResources().getText(R.string.alert_title_success);
         }
 
@@ -1263,8 +1265,8 @@ public class RingdroidEditActivity extends Activity
                     }
                     StringWriter writer = new StringWriter();
                     e.printStackTrace(new PrintWriter(writer));
-                    Log.e("Ringdroid", "Error: Failed to create " + outPath);
-                    Log.e("Ringdroid", writer.toString());
+                    Log.e(TAG, "Error: Failed to create " + outPath);
+                    Log.e(TAG, writer.toString());
                     fallbackToWAV = true;
                 }
 
@@ -1460,7 +1462,7 @@ public class RingdroidEditActivity extends Activity
             intent.setClass(this, ChooseContactActivity.class);
             startActivityForResult(intent, REQUEST_CODE_CHOOSE_CONTACT);
         } catch (Exception e) {
-            Log.e("Ringdroid", "Couldn't open Choose Contact window");
+            Log.e(TAG, "Couldn't open Choose Contact window");
         }
     }
 

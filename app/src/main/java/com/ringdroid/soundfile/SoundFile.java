@@ -40,6 +40,8 @@ import java.nio.ShortBuffer;
 import java.util.Arrays;
 
 public class SoundFile {
+    private final String TAG = this.getClass().getName();
+
     private ProgressListener mProgressListener = null;
     private File mInputFile = null;
 
@@ -616,8 +618,8 @@ public class SoundFile {
             }
             outputStream.close();
         } catch (IOException e) {
-            Log.e("Ringdroid", "Failed to create the .m4a file.");
-            Log.e("Ringdroid", FilesUtil.getStackTrace(e));
+            Log.e(TAG, "Failed to create the .m4a file.");
+            Log.e(TAG, FilesUtil.getStackTrace(e));
         }
     }
 

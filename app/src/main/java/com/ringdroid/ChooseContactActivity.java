@@ -40,6 +40,7 @@ import android.widget.Toast;
  * assign the ringtone to that contact.
  */
 public class ChooseContactActivity extends Activity {
+    private final String TAG = this.getClass().getName();
     private SearchView mFilter;
     private SimpleCursorAdapter mAdapter;
     private Uri mRingtoneUri;
@@ -114,7 +115,7 @@ public class ChooseContactActivity extends Activity {
             loadContactsAsync(null);
         } catch (SecurityException e) {
             // No permission to retrieve contacts?
-            Log.e("Ringdroid", e.toString());
+            Log.e(TAG, e.toString());
         }
     }
 
@@ -221,7 +222,7 @@ public class ChooseContactActivity extends Activity {
                 mUiHandler.post(() -> updateContactList(cursor));
 
             } catch (Exception e) {
-                Log.e("Ringdroid", "Contacts loader failed", e);
+                Log.e(TAG, "Contacts loader failed", e);
             }
         });
 
@@ -231,7 +232,7 @@ public class ChooseContactActivity extends Activity {
     private void updateContactList(Cursor data) {
         if (data == null)
             return;
-        Log.v("Ringdroid", data.getCount() + " contacts");
+        Log.v(TAG, data.getCount() + " contacts");
         mAdapter.swapCursor(data);
     }
 

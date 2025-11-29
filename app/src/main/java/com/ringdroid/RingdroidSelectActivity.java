@@ -56,6 +56,8 @@ import java.util.Objects;
  * RingdroidEditActivity from here.
  */
 public class RingdroidSelectActivity extends Activity {
+    private final String TAG = this.getClass().getName();
+
     // Result codes
     private static final int REQUEST_CODE_EDIT = 1;
     private static final int REQUEST_CODE_CHOOSE_CONTACT = 2;
@@ -131,7 +133,7 @@ public class RingdroidSelectActivity extends Activity {
 
             loadAudioAsync(null);
         } catch (SecurityException | IllegalArgumentException e) {
-            Log.e("Ringdroid", e.toString());
+            Log.e(TAG, e.toString());
         }
 
         mAdapter.setViewBinder((view, cursor, columnIndex) -> {
@@ -168,7 +170,7 @@ public class RingdroidSelectActivity extends Activity {
 
                 mUiHandler.post(() -> updateUiWithCursors(internal, external));
             } catch (Exception e) {
-                Log.e("Ringdroid", "Loader error: " + e);
+                Log.e(TAG, "Loader error: " + e);
             }
         });
 
@@ -455,7 +457,7 @@ public class RingdroidSelectActivity extends Activity {
             intent.setClass(this, ChooseContactActivity.class);
             startActivityForResult(intent, REQUEST_CODE_CHOOSE_CONTACT);
         } catch (Exception e) {
-            Log.e("Ringdroid", "Couldn't open Choose Contact window");
+            Log.e(TAG, "Couldn't open Choose Contact window");
         }
         return true;
     }
@@ -535,7 +537,7 @@ public class RingdroidSelectActivity extends Activity {
             intent.setClass(this, RingdroidEditActivity.class);
             startActivityForResult(intent, REQUEST_CODE_EDIT);
         } catch (Exception e) {
-            Log.e("Ringdroid", "Couldn't start editor");
+            Log.e(TAG, "Couldn't start editor");
         }
     }
 
@@ -554,7 +556,7 @@ public class RingdroidSelectActivity extends Activity {
             if (file != null) {
                 startRingdroidEditor(Uri.fromFile(file));
             } else {
-                Log.e("Ringdroid", "Could not resolve file: " + audioUri);
+                Log.e(TAG, "Could not resolve file: " + audioUri);
             }
         }
     }
@@ -573,7 +575,7 @@ public class RingdroidSelectActivity extends Activity {
             intent.setClass(this, RingdroidEditActivity.class);
             startActivityForResult(intent, REQUEST_CODE_EDIT);
         } catch (Exception e) {
-            Log.e("Ringdroid", "Couldn't start editor");
+            Log.e(TAG, "Couldn't start editor");
         }
     }
 
