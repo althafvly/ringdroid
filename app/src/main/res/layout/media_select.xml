@@ -16,19 +16,24 @@
      * limitations under the License.
      */
 -->
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ListView
         android:id="@android:id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="0px"
-        android:layout_weight="1">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-        <requestFocus />
-    </ListView>
+    <TextView
+        android:id="@+id/empty_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/list_is_empty"
+        android:gravity="center"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:textSize="18sp"
+        android:visibility="gone" />
 
-</LinearLayout>
+</FrameLayout>

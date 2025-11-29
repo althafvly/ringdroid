@@ -136,5 +136,6 @@
     <string name="contact_permission_summary">Potrzebne do przypisywania dzwonków do kontaktów</string>
     <string name="media_audio_permission">Uprawnienie do mediów audio</string>
     <string name="media_audio_summary">Potrzebne do odczytu plików dzwonków ze smartfona \n\nWymaga tego lub uprawnienia do pamięci, aby aplikacja mogła czytać i pisać</string>
+    <string name="list_is_empty">Nie znaleziono plików audio. Włącz „Pokaż wszystkie pliki audio” z menu trzech kropek, aby wyświetlić systemowe pliki audio.</string>
 
 </resources>

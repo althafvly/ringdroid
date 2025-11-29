@@ -136,5 +136,6 @@
     <string name="contact_permission_summary">Wird benötigt, um Ihren Kontakten Klingeltöne zuzuweisen</string>
     <string name="media_audio_permission">Medien-Audioberechtigung</string>
     <string name="media_audio_summary">Wird benötigt, um Klingelton-Dateien von Ihrem Smartphone zu lesen \n\nErfordert diese oder die Speicherberechtigung, damit die App lesen und schreiben kann</string>
+    <string name="list_is_empty">Keine Audiodateien gefunden. Aktivieren Sie „Alle Audiodateien anzeigen“ über das Drei-Punkte-Menü, um Systemaudiodateien anzuzeigen.</string>
 
 </resources>

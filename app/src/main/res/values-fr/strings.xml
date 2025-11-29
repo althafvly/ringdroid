@@ -136,5 +136,6 @@
     <string name="contact_permission_summary">Nécessaire pour attribuer des sonneries à vos contacts</string>
     <string name="media_audio_permission">Autorisation audio multimédia</string>
     <string name="media_audio_summary">Nécessaire pour lire les fichiers de sonnerie depuis votre smartphone \n\nNécessite cette autorisation ou l\'autorisation de stockage pour que l\'application puisse lire et écrire</string>
+    <string name="list_is_empty">Aucun fichier audio trouvé. Activez « Afficher tous les fichiers audio » depuis le menu à trois points pour voir les fichiers audio du système.</string>
 
 </resources>

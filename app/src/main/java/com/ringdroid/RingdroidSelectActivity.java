@@ -45,6 +45,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+
 import com.ringdroid.soundfile.SoundFile;
 import java.io.File;
 import java.util.ArrayList;
@@ -600,6 +602,13 @@ public class RingdroidSelectActivity extends Activity implements LoaderManager.L
         }
         // TODO: should I use a mutex/synchronized block here?
         if (mInternalCursor != null && mExternalCursor != null) {
+            TextView emptyView = findViewById(R.id.empty_text);
+            if (mInternalCursor.getCount() == 0 && mExternalCursor.getCount() == 0 && !mShowAll) {
+                emptyView.setVisibility(View.VISIBLE);
+            } else {
+                emptyView.setVisibility(View.GONE);
+            }
+
             Cursor mergeCursor = new MergeCursor(new Cursor[]{mInternalCursor, mExternalCursor});
             mAdapter.swapCursor(mergeCursor);
         }
