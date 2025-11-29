@@ -17,15 +17,13 @@
 package com.ringdroid;
 
 import android.app.Activity;
-import android.app.LoaderManager;
 import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract.Contacts;
 import android.util.Log;
 import android.view.Menu;
@@ -41,10 +39,13 @@ import android.widget.Toast;
  * After a ringtone has been saved, this activity lets you pick a contact and
  * assign the ringtone to that contact.
  */
-public class ChooseContactActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ChooseContactActivity extends Activity {
     private SearchView mFilter;
     private SimpleCursorAdapter mAdapter;
     private Uri mRingtoneUri;
+
+    private Thread mLoaderThread;
+    private final Handler mUiHandler = new Handler();
 
     public ChooseContactActivity() {
     }
@@ -110,7 +111,7 @@ public class ChooseContactActivity extends Activity implements LoaderManager.Loa
             // On click, assign ringtone to contact
             listView.setOnItemClickListener((parent, view, position, id) -> assignRingtoneToContact());
 
-            getLoaderManager().initLoader(0, null, this);
+            loadContactsAsync(null);
         } catch (SecurityException e) {
             // No permission to retrieve contacts?
             Log.e("Ringdroid", e.toString());
@@ -192,40 +193,51 @@ public class ChooseContactActivity extends Activity implements LoaderManager.Loa
         finish();
     }
 
-    public void refreshListView() {
-        Bundle args = new Bundle();
-        args.putString("filter", mFilter.getQuery().toString());
-        getLoaderManager().restartLoader(0, args, this);
-    }
-
-    /* Implementation of LoaderCallbacks.onCreateLoader */
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String selection = null;
-        String filter = args != null ? args.getString("filter") : null;
-        if (filter != null && !filter.isEmpty()) {
-            selection = "(DISPLAY_NAME LIKE \"%" + filter + "%\")";
+    private void loadContactsAsync(String filter) {
+        // Cancel previous load
+        if (mLoaderThread != null && mLoaderThread.isAlive()) {
+            mLoaderThread.interrupt();
         }
-        return new CursorLoader(this, Contacts.CONTENT_URI,
-                new String[]{Contacts._ID, Contacts.CUSTOM_RINGTONE, Contacts.DISPLAY_NAME,
-                        Contacts.LAST_TIME_CONTACTED, Contacts.STARRED, Contacts.TIMES_CONTACTED},
-                selection, null,
-                "STARRED DESC, " + "TIMES_CONTACTED DESC, " + "LAST_TIME_CONTACTED DESC, " + "DISPLAY_NAME ASC");
+
+        mLoaderThread = new Thread(() -> {
+            try {
+                String selection = null;
+                String[] selectionArgs = null;
+
+                if (filter != null && !filter.isEmpty()) {
+                    selection = "DISPLAY_NAME LIKE ?";
+                    selectionArgs = new String[]{"%" + filter + "%"};
+                }
+
+                Cursor cursor = getContentResolver().query(Contacts.CONTENT_URI,
+                        new String[]{Contacts._ID, Contacts.CUSTOM_RINGTONE, Contacts.DISPLAY_NAME,
+                                Contacts.LAST_TIME_CONTACTED, Contacts.STARRED, Contacts.TIMES_CONTACTED},
+                        selection, selectionArgs,
+                        "STARRED DESC, TIMES_CONTACTED DESC, LAST_TIME_CONTACTED DESC, DISPLAY_NAME ASC");
+
+                if (Thread.interrupted())
+                    return;
+
+                mUiHandler.post(() -> updateContactList(cursor));
+
+            } catch (Exception e) {
+                Log.e("Ringdroid", "Contacts loader failed", e);
+            }
+        });
+
+        mLoaderThread.start();
     }
 
-    /* Implementation of LoaderCallbacks.onLoadFinished */
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    private void updateContactList(Cursor data) {
+        if (data == null)
+            return;
         Log.v("Ringdroid", data.getCount() + " contacts");
         mAdapter.swapCursor(data);
     }
 
-    /* Implementation of LoaderCallbacks.onLoaderReset */
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        // This is called when the last Cursor provided to onLoadFinished()
-        // above is about to be closed. We need to make sure we are no
-        // longer using it.
-        mAdapter.swapCursor(null);
+    public void refreshListView() {
+        Bundle args = new Bundle();
+        args.putString("filter", mFilter.getQuery().toString());
+        loadContactsAsync(mFilter.getQuery().toString());
     }
 }
