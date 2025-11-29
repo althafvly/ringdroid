@@ -1,50 +1,5 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="96dp"
-    android:height="44dp"
-    android:viewportWidth="60"
-    android:viewportHeight="28">
-
-    <!-- Golden Border -->
-    <path
-        android:fillColor="@android:color/transparent"
-        android:pathData="M6,4h48a4,4 0 0 1 4,4v10a4,4 0 0 1 -4,4H6a4,4 0 0 1 -4,-4V8a4,4 0 0 1 4,-4z"
-        android:strokeWidth="1.5"
-        android:strokeColor="#CBD2D9" />
-
-    <!-- Background Fill -->
-    <path
-        android:fillColor="#7A8791"
-        android:pathData="M6,4h48a4,4 0 0 1 4,4v10a4,4 0 0 1 -4,4H6a4,4 0 0 1 -4,-4V8a4,4 0 0 1 4,-4z" />
-
-    <!-- Left arrow -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M12,13l4,-4v8z" />
-
-    <!-- Grip lines -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M26,9h1v8h-1z" />
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M28,9h1v8h-1z" />
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M30,9h1v8h-1z" />
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M32,9h1v8h-1z" />
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M34,9h1v8h-1z" />
-
-    <!-- Right arrow -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M48,13l-4,-4v8z" />
-
-    <!-- Bottom arrow -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M30,26l4,-4h-8z" />
-</vector>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_marker_base" />
+    <item android:drawable="@drawable/ic_marker_arrow_bottom" />
+    <item android:drawable="@drawable/ic_marker_border_grey" />
+</layer-list>
