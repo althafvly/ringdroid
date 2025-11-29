@@ -35,8 +35,6 @@
     <string name="rewind">Rebobinar</string>
     <string name="play">Reproduzir</string>
     <string name="ffwd">Avanço rápido</string>
-    <string name="zoom_in">Aumentar Zoom</string>
-    <string name="zoom_out">Diminuir Zoom</string>
     <string name="save_button">Salvar</string>
 
     <string name="menu_reset">Redefinir</string>

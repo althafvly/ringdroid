@@ -35,8 +35,6 @@
     <string name="rewind">Перемотать назад</string>
     <string name="play">Воспроизвести</string>
     <string name="ffwd">Перемотать вперед</string>
-    <string name="zoom_in">Увеличить</string>
-    <string name="zoom_out">Уменьшить</string>
     <string name="save_button">Сохранить</string>
 
     <string name="menu_reset">Сбросить</string>

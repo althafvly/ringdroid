@@ -38,7 +38,6 @@
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/summary_media_audio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -75,7 +74,6 @@
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/summary_storage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -112,7 +110,6 @@
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/summary_write_settings"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -149,7 +146,6 @@
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/summary_mic"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
@@ -186,7 +182,6 @@
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/summary_contacts"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"

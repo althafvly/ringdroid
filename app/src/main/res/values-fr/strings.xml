@@ -35,8 +35,6 @@
     <string name="rewind">Rembobiner</string>
     <string name="play">Jouer</string>
     <string name="ffwd">Avance rapide</string>
-    <string name="zoom_in">Zoomer</string>
-    <string name="zoom_out">Dézoomer</string>
     <string name="save_button">Enregistrer</string>
 
     <string name="menu_reset">Réinitialiser</string>

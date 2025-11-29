@@ -35,8 +35,6 @@
     <string name="rewind">Zurückspulen</string>
     <string name="play">Wiedergabe</string>
     <string name="ffwd">Vorspulen</string>
-    <string name="zoom_in">Vergrößern</string>
-    <string name="zoom_out">Verkleinern</string>
     <string name="save_button">Speichern</string>
 
     <string name="menu_reset">Zurücksetzen</string>

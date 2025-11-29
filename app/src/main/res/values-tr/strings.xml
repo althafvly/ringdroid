@@ -35,8 +35,6 @@
     <string name="rewind">Geri sar</string>
     <string name="play">Oynat</string>
     <string name="ffwd">Hızlı ileri sar</string>
-    <string name="zoom_in">Yakınlaştır</string>
-    <string name="zoom_out">Uzaklaştır</string>
     <string name="save_button">Kaydet</string>
 
     <string name="menu_reset">Sıfırla</string>

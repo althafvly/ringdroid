@@ -35,8 +35,6 @@
     <string name="rewind">Rebobinar</string>
     <string name="play">Reproducir</string>
     <string name="ffwd">Avance rápido</string>
-    <string name="zoom_in">Acercar</string>
-    <string name="zoom_out">Alejar</string>
     <string name="save_button">Guardar</string>
 
     <string name="menu_reset">Restablecer</string>

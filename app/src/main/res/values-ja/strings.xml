@@ -35,8 +35,6 @@
     <string name="rewind">巻き戻し</string>
     <string name="play">再生</string>
     <string name="ffwd">早送り</string>
-    <string name="zoom_in">ズームイン</string>
-    <string name="zoom_out">ズームアウト</string>
     <string name="save_button">保存</string>
 
     <string name="menu_reset">リセット</string>

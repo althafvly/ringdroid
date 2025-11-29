@@ -39,37 +39,4 @@
         <item name="android:background">#222233</item>
     </style>
 
-    <style name="VerticalDividerForList">
-        <item name="android:layout_width">1px</item>
-        <item name="android:layout_height">fill_parent</item>
-        <item name="android:layout_marginLeft">4px</item>
-        <item name="android:background">#444444</item>
-    </style>
-
-    <style name="VerticalDividerLeft">
-        <item name="android:layout_width">1px</item>
-        <item name="android:layout_height">fill_parent</item>
-        <item name="android:layout_marginLeft">4px</item>
-        <item name="android:background">#666677</item>
-    </style>
-
-    <style name="VerticalDividerRight">
-        <item name="android:layout_width">1px</item>
-        <item name="android:layout_height">fill_parent</item>
-        <item name="android:layout_marginRight">4px</item>
-        <item name="android:background">#000022</item>
-    </style>
-
-    <style name="HorizontalDividerTop">
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">1px</item>
-        <item name="android:background">#666677</item>
-    </style>
-
-    <style name="HorizontalDividerBottom">
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">1px</item>
-        <item name="android:background">#000022</item>
-    </style>
-
 </resources>

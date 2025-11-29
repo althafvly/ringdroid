@@ -35,8 +35,6 @@
     <string name="rewind">पीछे करें</string>
     <string name="play">चलाएं</string>
     <string name="ffwd">तेज आगे बढ़ाएँ</string>
-    <string name="zoom_in">ज़ूम इन करें</string>
-    <string name="zoom_out">ज़ूम आउट करें</string>
     <string name="save_button">सहेजें</string>
 
     <string name="menu_reset">रीसेट करें</string>

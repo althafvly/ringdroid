@@ -35,8 +35,6 @@
     <string name="rewind">Terugspoelen</string>
     <string name="play">Afspelen</string>
     <string name="ffwd">Snel vooruitspoelen</string>
-    <string name="zoom_in">Inzoomen</string>
-    <string name="zoom_out">Uitzoomen</string>
     <string name="save_button">Opslaan</string>
 
     <string name="menu_reset">Herstellen</string>

@@ -72,8 +72,6 @@
     <string name="play">Play</string>
     <string name="stop" translatable="false">@string/progress_dialog_stop</string>
     <string name="ffwd">Fast forward</string>
-    <string name="zoom_in">Zoom In</string>
-    <string name="zoom_out">Zoom Out</string>
     <string name="save_button">Save</string>
 
     <!--

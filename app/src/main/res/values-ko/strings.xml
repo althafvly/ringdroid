@@ -35,8 +35,6 @@
     <string name="rewind">되감기</string>
     <string name="play">재생</string>
     <string name="ffwd">빨리 감기</string>
-    <string name="zoom_in">확대</string>
-    <string name="zoom_out">축소</string>
     <string name="save_button">저장</string>
 
     <string name="menu_reset">재설정</string>

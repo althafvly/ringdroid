@@ -35,8 +35,6 @@
     <string name="rewind">倒帶</string>
     <string name="play">播放</string>
     <string name="ffwd">快轉</string>
-    <string name="zoom_in">放大</string>
-    <string name="zoom_out">縮小</string>
     <string name="save_button">儲存</string>
 
     <string name="menu_reset">重設</string>

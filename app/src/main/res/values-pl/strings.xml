@@ -35,8 +35,6 @@
     <string name="rewind">Przewiń do tyłu</string>
     <string name="play">Odtwórz</string>
     <string name="ffwd">Przewiń do przodu</string>
-    <string name="zoom_in">Powiększ</string>
-    <string name="zoom_out">Pomniejsz</string>
     <string name="save_button">Zapisz</string>
 
     <string name="menu_reset">Resetuj</string>

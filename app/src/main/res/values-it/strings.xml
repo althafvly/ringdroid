@@ -35,8 +35,6 @@
     <string name="rewind">Riavvolgi</string>
     <string name="play">Riproduci</string>
     <string name="ffwd">Avanti veloce</string>
-    <string name="zoom_in">Ingrandisci</string>
-    <string name="zoom_out">Rimpicciolisci</string>
     <string name="save_button">Salva</string>
 
     <string name="menu_reset">Ripristina</string>

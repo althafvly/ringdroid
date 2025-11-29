@@ -35,8 +35,6 @@
     <string name="rewind">പുറകിലേക്ക്</string>
     <string name="play">പ്ലേ ചെയ്യുക</string>
     <string name="ffwd">വേഗത്തിൽ മുന്നോട്ട്</string>
-    <string name="zoom_in">സൂം ഇൻ</string>
-    <string name="zoom_out">സൂം ഔട്ട്</string>
     <string name="save_button">സേവ് ചെയ്യുക</string>
 
     <string name="menu_reset">പുനഃസജ്ജമാക്കുക</string>

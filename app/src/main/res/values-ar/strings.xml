@@ -35,8 +35,6 @@
     <string name="rewind">ترجيع</string>
     <string name="play">تشغيل</string>
     <string name="ffwd">تقديم سريع</string>
-    <string name="zoom_in">تكبير</string>
-    <string name="zoom_out">تصغير</string>
     <string name="save_button">حفظ</string>
 
     <string name="menu_reset">إعادة ضبط</string>
