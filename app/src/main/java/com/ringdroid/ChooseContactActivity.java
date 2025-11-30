@@ -24,6 +24,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.ContactsContract.Contacts;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -42,7 +43,7 @@ import android.widget.Toast;
  */
 public class ChooseContactActivity extends Activity {
     private final String TAG = this.getClass().getName();
-    private final Handler mUiHandler = new Handler();
+    private final Handler mUiHandler = new Handler(Looper.getMainLooper());
     private SearchView mFilter;
     private SimpleCursorAdapter mAdapter;
     private Uri mRingtoneUri;

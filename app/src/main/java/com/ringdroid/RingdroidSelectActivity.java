@@ -29,6 +29,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.provider.MediaStore;
@@ -77,7 +78,7 @@ public class RingdroidSelectActivity extends Activity {
             // File path — will be non-null since we use MANAGE_EXTERNAL_STORAGE
             MediaStore.Audio.Media.DATA};
     private final String TAG = this.getClass().getName();
-    private final Handler mUiHandler = new Handler();
+    private final Handler mUiHandler = new Handler(Looper.getMainLooper());
     private SearchView mFilter;
     private SimpleCursorAdapter mAdapter;
     private boolean mWasGetContentIntent;
