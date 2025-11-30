@@ -551,7 +551,13 @@ public class RingdroidSelectActivity extends Activity {
         if (Intent.ACTION_VIEW.equals(action)) {
             audioUri = intent.getData();
         } else if (Intent.ACTION_SEND.equals(action)) {
-            audioUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                audioUri = intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri.class);
+            } else {
+                @SuppressWarnings("deprecation")
+                Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                audioUri = uri;
+            }
         }
 
         if (audioUri != null) {
