@@ -21,102 +21,118 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.util.Log;
 
-import java.util.HashMap;
+import java.io.File;
 
 public class SongMetadataReader {
-    public Uri GENRES_URI = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
+    private final String TAG = this.getClass().getName();
     public Activity mActivity;
     public String mFilename;
     public String mTitle = "";
     public String mArtist = "";
     public String mAlbum = "";
-    public String mGenre = "";
     public int mYear = -1;
 
     SongMetadataReader(Activity activity, String filename) {
         mActivity = activity;
         mFilename = filename;
         mTitle = getBasename(filename);
+
         try {
-            ReadMetadata();
-        } catch (Exception ignored) {
+            readMetadata();
+        } catch (Exception e) {
+            Log.e(TAG, "Metadata read failed", e);
         }
     }
 
-    private void ReadMetadata() {
-        // Get a map from genre ids to names
-        HashMap<String, String> genreIdMap = new HashMap<>();
-        Cursor c = mActivity.getContentResolver().query(GENRES_URI,
-                new String[]{MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME}, null, null, null);
-        assert c != null;
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            genreIdMap.put(c.getString(0), c.getString(1));
-        }
-        c.close();
-        mGenre = "";
-        for (String genreId : genreIdMap.keySet()) {
-            c = mActivity.getContentResolver().query(makeGenreUri(genreId), new String[]{MediaStore.Audio.Media.DATA},
-                    MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"", null, null);
-            assert c != null;
-            if (c.getCount() != 0) {
-                mGenre = genreIdMap.get(genreId);
-                break;
-            }
-            c.close();
-        }
+    private void readMetadata() {
+        Uri audioUri = getAudioContentUri();
+        if (audioUri == null)
+            return;
 
-        Uri uri;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            uri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
-        } else {
-            uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        }
-        assert uri != null;
-        c = mActivity.getContentResolver().query(uri,
+        String displayName = new File(mFilename).getName();
+
+        Cursor c = mActivity.getContentResolver().query(audioUri,
                 new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
-                        MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DATA},
-                MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"", null, null);
-        assert c != null;
-        if (c.getCount() == 0) {
-            mTitle = getBasename(mFilename);
-            mArtist = "";
-            mAlbum = "";
-            mYear = -1;
+                        MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DISPLAY_NAME,
+                        MediaStore.Audio.Media.RELATIVE_PATH},
+                MediaStore.Audio.Media.DISPLAY_NAME + "=?", new String[]{displayName}, null);
+
+        if (c == null)
+            return;
+
+        if (!c.moveToFirst()) {
+            c.close();
+            fallbackPathQuery(audioUri);
             return;
         }
-        c.moveToFirst();
-        mTitle = getStringFromColumn(c, MediaStore.Audio.Media.TITLE);
-        if (mTitle == null || mTitle.isEmpty()) {
-            mTitle = getBasename(mFilename);
-        }
-        mArtist = getStringFromColumn(c, MediaStore.Audio.Media.ARTIST);
-        mAlbum = getStringFromColumn(c, MediaStore.Audio.Media.ALBUM);
-        mYear = getIntegerFromColumn(c);
+
+        extractMetadata(c);
         c.close();
     }
 
-    private Uri makeGenreUri(String genreId) {
-        String CONTENTDIR = MediaStore.Audio.Genres.Members.CONTENT_DIRECTORY;
-        return Uri.parse(GENRES_URI.toString() + "/" + genreId + "/" + CONTENTDIR);
+    private void fallbackPathQuery(Uri audioUri) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return;
+        }
+
+        Cursor c = mActivity.getContentResolver().query(audioUri,
+                new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
+                        MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DATA},
+                MediaStore.Audio.Media.DATA + "=?", new String[]{mFilename}, null);
+
+        if (c == null)
+            return;
+        if (!c.moveToFirst()) {
+            c.close();
+            return;
+        }
+
+        extractMetadata(c);
+        c.close();
     }
 
-    private String getStringFromColumn(Cursor c, String columnName) {
-        int index = c.getColumnIndexOrThrow(columnName);
-        String value = c.getString(index);
-        if (value != null && !value.isEmpty()) {
-            return value;
+    private void extractMetadata(Cursor c) {
+        mTitle = getString(c, MediaStore.Audio.Media.TITLE, getBasename(mFilename));
+        mArtist = getString(c, MediaStore.Audio.Media.ARTIST, "");
+        mAlbum = getString(c, MediaStore.Audio.Media.ALBUM, "");
+        mYear = getInt(c);
+    }
+
+    private Uri getAudioContentUri() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
         } else {
-            return null;
+            return MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         }
     }
 
-    private int getIntegerFromColumn(Cursor c) {
-        int index = c.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.YEAR);
-        return c.getInt(index);
+    private String getString(Cursor c, String column, String defaultValue) {
+        int idx = c.getColumnIndex(column);
+        if (idx == -1)
+            return defaultValue;
+
+        String s = c.getString(idx);
+        if (s == null || s.trim().isEmpty())
+            return defaultValue;
+
+        return s;
+    }
+
+    private int getInt(Cursor c) {
+        int idx = c.getColumnIndex(MediaStore.Audio.AudioColumns.YEAR);
+        if (idx == -1)
+            return -1;
+
+        return c.getInt(idx);
     }
 
     private String getBasename(String filename) {
-        return filename.substring(filename.lastIndexOf('/') + 1, filename.lastIndexOf('.'));
+        try {
+            return filename.substring(filename.lastIndexOf('/') + 1, filename.lastIndexOf('.'));
+        } catch (Exception e) {
+            return filename;
+        }
     }
 }
