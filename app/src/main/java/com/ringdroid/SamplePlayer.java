@@ -16,9 +16,11 @@
 
 package com.ringdroid;
 
+import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.os.Build;
 
 import com.ringdroid.soundfile.SoundFile;
 
@@ -53,9 +55,23 @@ class SamplePlayer {
             bufferSize = mChannels * mSampleRate * 2;
         }
         mBuffer = new short[bufferSize / 2]; // bufferSize is in Bytes.
-        mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, mSampleRate,
-                mChannels == 1 ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO,
-                AudioFormat.ENCODING_PCM_16BIT, mBuffer.length * 2, AudioTrack.MODE_STREAM);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mAudioTrack = new AudioTrack.Builder()
+                    .setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build())
+                    .setAudioFormat(new AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                            .setSampleRate(mSampleRate)
+                            .setChannelMask(
+                                    mChannels == 1 ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO)
+                            .build())
+                    .setBufferSizeInBytes(mBuffer.length * 2).setTransferMode(AudioTrack.MODE_STREAM).build();
+        } else {
+            @SuppressWarnings("deprecation")
+            AudioTrack oldTrack = new AudioTrack(AudioManager.STREAM_MUSIC, mSampleRate,
+                    mChannels == 1 ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO,
+                    AudioFormat.ENCODING_PCM_16BIT, mBuffer.length * 2, AudioTrack.MODE_STREAM);
+            mAudioTrack = oldTrack;
+        }
         // Check when player played all the given data and notify user if mListener is
         // set.
         mAudioTrack.setNotificationMarkerPosition(mNumSamples - 1); // Set the marker to the end.
