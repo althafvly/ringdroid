@@ -40,6 +40,7 @@ import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -644,9 +645,7 @@ public class RingdroidEditActivity extends Activity
         // Inflate our UI from its XML layout description.
         setContentView(R.layout.editor);
 
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        mDensity = metrics.density;
+        mDensity = getDisplayDensity();
 
         mMarkerLeftInset = (int) (46 * mDensity);
         mMarkerRightInset = (int) (48 * mDensity);
@@ -703,6 +702,19 @@ public class RingdroidEditActivity extends Activity
         mEndVisible = true;
 
         updateDisplay();
+    }
+
+    @SuppressWarnings("deprecation")
+    private float getDisplayDensity() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // WindowMetrics does not provide density, so use Resources
+            return getResources().getDisplayMetrics().density;
+        } else {
+            Display display = getWindowManager().getDefaultDisplay();
+            DisplayMetrics tmp = new DisplayMetrics();
+            display.getMetrics(tmp);
+            return tmp.density;
+        }
     }
 
     private void loadFromFile() {
