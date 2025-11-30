@@ -19,6 +19,7 @@ package com.ringdroid;
 import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 
 import java.util.HashMap;
@@ -65,7 +66,12 @@ public class SongMetadataReader {
             c.close();
         }
 
-        Uri uri = MediaStore.Audio.Media.getContentUriForPath(mFilename);
+        Uri uri;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            uri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+        } else {
+            uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        }
         assert uri != null;
         c = mActivity.getContentResolver().query(uri,
                 new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
