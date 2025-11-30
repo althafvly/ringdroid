@@ -1429,7 +1429,12 @@ public class RingdroidEditActivity extends Activity
             values.put(MediaStore.Audio.Media.IS_MUSIC, mNewFileKind == FileSaveDialog.FILE_KIND_MUSIC);
 
             // Insert it into the database
-            Uri uri = MediaStore.Audio.Media.getContentUriForPath(outPath);
+            Uri uri;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                uri = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+            } else {
+                uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+            }
             assert uri != null;
             newUri = getContentResolver().insert(uri, values);
             setResult(RESULT_OK, new Intent().setData(newUri));
