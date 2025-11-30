@@ -35,6 +35,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.Html;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
@@ -223,7 +224,9 @@ public class RingdroidEditActivity extends Activity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             builder.setMessage(Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY));
         } else {
-            builder.setMessage(Html.fromHtml(html)); // deprecated but works on < 24
+            @SuppressWarnings("deprecation")
+            Spanned sp = Html.fromHtml(html);
+            builder.setMessage(sp);
         }
 
         AlertDialog dialog = builder.show();
