@@ -218,8 +218,6 @@ public class SoundFile {
 
         int decodedSamplesSize = 0; // size of the output buffer containing decoded samples.
         byte[] decodedSamples = null;
-        ByteBuffer[] inputBuffers = codec.getInputBuffers();
-        ByteBuffer[] outputBuffers = codec.getOutputBuffers();
         int sample_size;
         MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
         long presentation_time;
@@ -239,7 +237,8 @@ public class SoundFile {
             // read data from file and feed it to the decoder input buffers.
             int inputBufferIndex = codec.dequeueInputBuffer(100);
             if (!done_reading && inputBufferIndex >= 0) {
-                sample_size = extractor.readSampleData(inputBuffers[inputBufferIndex], 0);
+                ByteBuffer inputBuffer = codec.getInputBuffer(inputBufferIndex);
+                sample_size = extractor.readSampleData(Objects.requireNonNull(inputBuffer), 0);
                 if (firstSampleData && Objects.equals(format.getString(MediaFormat.KEY_MIME), "audio/mp4a-latm")
                         && sample_size == 2) {
                     // For some reasons on some devices (e.g. the Samsung S3) you should not
@@ -280,8 +279,9 @@ public class SoundFile {
                     decodedSamplesSize = info.size;
                     decodedSamples = new byte[decodedSamplesSize];
                 }
-                outputBuffers[outputBufferIndex].get(decodedSamples, 0, info.size);
-                outputBuffers[outputBufferIndex].clear();
+                ByteBuffer outputBuffer = codec.getOutputBuffer(outputBufferIndex);
+                Objects.requireNonNull(outputBuffer).get(decodedSamples, 0, info.size);
+                outputBuffer.clear();
                 // Check if buffer is big enough. Resize it if it's too small.
                 if (mDecodedBytes.remaining() < info.size) {
                     // Getting a rough estimate of the total size, allocate 20% more, and
@@ -318,8 +318,6 @@ public class SoundFile {
                 }
                 mDecodedBytes.put(decodedSamples, 0, info.size);
                 codec.releaseOutputBuffer(outputBufferIndex, false);
-            } else if (outputBufferIndex == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
-                outputBuffers = codec.getOutputBuffers();
             }
             if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0
                     || (mDecodedBytes.position() / (2 * mChannels)) >= expectedNumSamples) {
@@ -502,8 +500,6 @@ public class SoundFile {
         // Get an estimation of the encoded data based on the bitrate. Add 10% to it.
         int estimatedEncodedSize = (int) ((endTime - startTime) * ((double) bitrate / 8) * 1.1);
         ByteBuffer encodedBytes = ByteBuffer.allocate(estimatedEncodedSize);
-        ByteBuffer[] inputBuffers = codec.getInputBuffers();
-        ByteBuffer[] outputBuffers = codec.getOutputBuffers();
         MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
         boolean done_reading = false;
         long presentation_time;
@@ -531,8 +527,8 @@ public class SoundFile {
                     codec.queueInputBuffer(inputBufferIndex, 0, 0, -1, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
                     done_reading = true;
                 } else {
-                    inputBuffers[inputBufferIndex].clear();
-                    if (buffer.length > inputBuffers[inputBufferIndex].remaining()) {
+                    Objects.requireNonNull(codec.getInputBuffer(inputBufferIndex)).clear();
+                    if (buffer.length > Objects.requireNonNull(codec.getInputBuffer(inputBufferIndex)).remaining()) {
                         // Input buffer is smaller than one frame. This should never happen.
                         continue;
                     }
@@ -555,7 +551,7 @@ public class SoundFile {
                         }
                     }
                     num_samples_left -= frame_size;
-                    inputBuffers[inputBufferIndex].put(buffer);
+                    Objects.requireNonNull(codec.getInputBuffer(inputBufferIndex)).put(buffer);
                     presentation_time = (long) (((num_frames++) * frame_size * 1e6) / mSampleRate);
                     codec.queueInputBuffer(inputBufferIndex, 0, buffer.length, presentation_time, 0);
                 }
@@ -571,8 +567,9 @@ public class SoundFile {
                     encodedSamplesSize = info.size;
                     encodedSamples = new byte[encodedSamplesSize];
                 }
-                outputBuffers[outputBufferIndex].get(encodedSamples, 0, info.size);
-                outputBuffers[outputBufferIndex].clear();
+
+                Objects.requireNonNull(codec.getOutputBuffer(outputBufferIndex)).get(encodedSamples, 0, info.size);
+                Objects.requireNonNull(codec.getOutputBuffer(outputBufferIndex)).clear();
                 codec.releaseOutputBuffer(outputBufferIndex, false);
                 if (encodedBytes.remaining() < info.size) { // Hopefully this should not happen.
                     estimatedEncodedSize = (int) (estimatedEncodedSize * 1.2); // Add 20%.
@@ -584,8 +581,6 @@ public class SoundFile {
                     encodedBytes.position(position);
                 }
                 encodedBytes.put(encodedSamples, 0, info.size);
-            } else if (outputBufferIndex == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
-                outputBuffers = codec.getOutputBuffers();
             }
             if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
                 // We got all the encoded data from the encoder.
