@@ -5,6 +5,7 @@ supportAnnotations = "28.0.0"
 
 [libraries]
 support-annotations = { module = "com.android.support:support-annotations", version.ref = "supportAnnotations" }
+support-v4 = { module = "com.android.support:support-v4", version.ref = "supportAnnotations" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

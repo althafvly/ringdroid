@@ -69,4 +69,5 @@ tasks.named("preBuild") {
 
 dependencies {
     implementation(libs.support.annotations)
+    implementation(libs.support.v4)
 }
