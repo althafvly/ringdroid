@@ -55,7 +55,6 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/ringdroid_app_name"
         android:largeHeap="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme">
 
         <!-- Main activity that's launched when the user opens Ringdroid. -->
