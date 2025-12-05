@@ -451,18 +451,6 @@ public class RingdroidSelectActivity extends Activity {
         return Uri.parse(itemUri);
     }
 
-    private boolean chooseContactForRingtone() {
-        try {
-            // Go to the choose contact activity
-            Intent intent = new Intent(Intent.ACTION_EDIT, getUri());
-            intent.setClass(this, ChooseContactActivity.class);
-            startActivityForResult(intent, REQUEST_CODE_CHOOSE_CONTACT);
-        } catch (Exception e) {
-            Log.e(TAG, "Couldn't open Choose Contact window");
-        }
-        return true;
-    }
-
     private void confirmDelete() {
         // See if the selected list item was created by Ringdroid to
         // determine which alert message to show
@@ -533,17 +521,6 @@ public class RingdroidSelectActivity extends Activity {
                 .show();
     }
 
-    private void onRecord() {
-        try {
-            Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse("record"));
-            intent.putExtra("was_get_content_intent", mWasGetContentIntent);
-            intent.setClass(this, RingdroidEditActivity.class);
-            startActivityForResult(intent, REQUEST_CODE_EDIT);
-        } catch (Exception e) {
-            Log.e(TAG, "Couldn't start editor");
-        }
-    }
-
     private void handleIncoming(Intent intent) {
         Uri audioUri = null;
         String action = intent.getAction();
@@ -577,14 +554,33 @@ public class RingdroidSelectActivity extends Activity {
         startRingdroidEditor(Uri.parse(filename));
     }
 
-    private void startRingdroidEditor(Uri filename) {
+    private boolean chooseContactForRingtone() {
         try {
-            Intent intent = new Intent(Intent.ACTION_EDIT, filename);
-            intent.putExtra("was_get_content_intent", mWasGetContentIntent);
+            Intent intent = new Intent(Intent.ACTION_EDIT, getUri());
+            intent.setClass(this, ChooseContactActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_CHOOSE_CONTACT);
+        } catch (Exception e) {
+            Log.e(TAG, "Couldn't open Choose Contact window", e);
+        }
+        return true;
+    }
+
+    private void onRecord() {
+        launchEditor(Uri.parse(Constants.IS_RECORD));
+    }
+
+    private void startRingdroidEditor(Uri filename) {
+        launchEditor(filename);
+    }
+
+    private void launchEditor(Uri uri) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_EDIT, uri);
+            intent.putExtra(Constants.GET_CONTENT_INTENT, mWasGetContentIntent);
             intent.setClass(this, RingdroidEditActivity.class);
             startActivityForResult(intent, REQUEST_CODE_EDIT);
         } catch (Exception e) {
-            Log.e(TAG, "Couldn't start editor");
+            Log.e(TAG, "Couldn't start editor", e);
         }
     }
 

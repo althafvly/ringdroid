@@ -288,7 +288,7 @@ public class RingdroidEditActivity extends Activity
         // GET_CONTENT intent, then we shouldn't display a "saved"
         // message when the user saves, we should just return whatever
         // they create.
-        mWasGetContentIntent = intent.getBooleanExtra("was_get_content_intent", false);
+        mWasGetContentIntent = intent.getBooleanExtra(Constants.GET_CONTENT_INTENT, false);
 
         mFilename = Objects.requireNonNull(intent.getData()).toString().replaceFirst("file://", "").replaceAll("%20",
                 " ");

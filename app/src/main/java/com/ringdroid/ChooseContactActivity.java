@@ -240,7 +240,8 @@ public class ChooseContactActivity extends Activity {
 
     public void refreshListView() {
         Bundle args = new Bundle();
-        args.putString("filter", mFilter.getQuery().toString());
+        String FILTER_KEY = "filter";
+        args.putString(FILTER_KEY, mFilter.getQuery().toString());
         loadContactsAsync(mFilter.getQuery().toString());
     }
 }
