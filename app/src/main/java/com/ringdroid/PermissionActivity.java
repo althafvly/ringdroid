@@ -58,7 +58,7 @@ public class PermissionActivity extends Activity {
                 }
             });
         } else {
-            mediaAudioSwitch.setVisibility(View.GONE);
+            findViewById(R.id.switch_media_audio_entry).setVisibility(View.GONE);
         }
 
         storageSwitch.setChecked(hasStoragePermission);
