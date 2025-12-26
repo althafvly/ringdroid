@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.provider.Settings;
 
 public class PermissionUtils {
@@ -51,19 +50,6 @@ public class PermissionUtils {
         activity.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, MIC_PERMISSION_REQUEST);
     }
 
-    public static boolean hasStoragePermission(Activity activity) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            return activity.checkSelfPermission(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-        } else {
-            return Environment.isExternalStorageManager();
-        }
-    }
-
     public static boolean hasMediaAudioPermission(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             return false;
@@ -85,20 +71,23 @@ public class PermissionUtils {
             return;
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
             activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     STORAGE_PERMISSION_REQUEST);
-        } else {
-            openManageAllFilesScreen(activity);
         }
     }
 
-    private static void openManageAllFilesScreen(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                    .setData(Uri.parse("package:" + activity.getPackageName()));
-            activity.startActivity(intent);
+    public static boolean hasStoragePermission(Activity activity) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
         }
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+            return activity.checkSelfPermission(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        }
+
+        return false;
     }
 
     public static void openWriteSettingsScreen(Activity activity) {

@@ -37,11 +37,6 @@
         android:maxSdkVersion="32"
         tools:ignore="ScopedStorage" />
 
-    <!-- Android 30+ full file access -->
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="AllFilesAccessPolicy,ScopedStorage" />
-
     <!-- Android 33+ audio file access -->
     <uses-permission
         android:name="android.permission.READ_MEDIA_AUDIO"
