@@ -58,7 +58,7 @@ public class PermissionActivity extends Activity {
                 }
             });
         } else {
-            mediaAudioSwitch.setVisibility(View.GONE);
+            findViewById(R.id.switch_media_audio_entry).setVisibility(View.GONE);
         }
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
@@ -70,7 +70,7 @@ public class PermissionActivity extends Activity {
                 }
             });
         } else {
-            storageSwitch.setVisibility(View.GONE);
+            findViewById(R.id.switch_storage_entry).setVisibility(View.GONE);
         }
 
         writeSettingsSwitch.setChecked(hasWritePermission);
