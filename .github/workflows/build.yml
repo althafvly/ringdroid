@@ -17,7 +17,7 @@ jobs:
           java-version: '21'
 
       - name: Build with Gradle
-        run: ./gradlew assembleGithubDebug lint
+        run: ./gradlew assembleFdroidDebug lint
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4

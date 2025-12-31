@@ -8,12 +8,6 @@ Download from F-Droid:
   <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" width="200" />
 </a>
 
-Download from Github:
-
-<a href="https://github.com/althafvly/ringdroid/releases/latest">
-  <img src="https://img.shields.io/github/v/release/althafvly/ringdroid?label=GitHub%20Releases&logo=github" alt="GitHub Releases"  width="200" />
-</a>
-
 &nbsp;
 
 **9 November 2025: Ringdroid 2.7.5 adds full support for scoped storage and Upto Android 16 devices, including improved handling of permissions. This release also introduces interface polish, WebP optimizations.**
