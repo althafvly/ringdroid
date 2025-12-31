@@ -50,7 +50,13 @@
                 <Switch
                     android:id="@+id/switch_media_audio"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track"
+                    android:splitTrack="false"
+                    android:switchMinWidth="48dp"
+                    android:thumbOffset="2dp"
+                    android:padding="0dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -87,7 +93,13 @@
                 <Switch
                     android:id="@+id/switch_storage"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track"
+                    android:splitTrack="false"
+                    android:switchMinWidth="48dp"
+                    android:thumbOffset="2dp"
+                    android:padding="0dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -124,7 +136,13 @@
                 <Switch
                     android:id="@+id/switch_write_settings"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track"
+                    android:splitTrack="false"
+                    android:switchMinWidth="48dp"
+                    android:thumbOffset="2dp"
+                    android:padding="0dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -160,7 +178,13 @@
                 <Switch
                     android:id="@+id/switch_mic"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track"
+                    android:splitTrack="false"
+                    android:switchMinWidth="48dp"
+                    android:thumbOffset="2dp"
+                    android:padding="0dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -196,7 +220,13 @@
                 <Switch
                     android:id="@+id/switch_contacts"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track"
+                    android:splitTrack="false"
+                    android:switchMinWidth="48dp"
+                    android:thumbOffset="2dp"
+                    android:padding="0dp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -205,14 +235,15 @@
             android:id="@+id/btn_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="32dp"
             android:enabled="false"
-            android:paddingLeft="36dp"
-            android:paddingTop="12dp"
-            android:paddingRight="36dp"
-            android:paddingBottom="12dp"
+            android:background="@drawable/btn_primary"
+            android:minHeight="44dp"
             android:text="@string/start"
-            android:textSize="18sp" />
+            android:textColor="#FFFFFF"
+            android:textAllCaps="false"
+            android:textSize="17sp"
+            android:gravity="center" />
 
     </LinearLayout>
 

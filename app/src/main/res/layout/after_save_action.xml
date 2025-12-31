@@ -43,21 +43,39 @@
         android:id="@+id/button_make_default"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/make_default_ringtone_button" />
+        android:layout_marginTop="12dp"
+        android:background="@drawable/btn_primary"
+        android:minHeight="44dp"
+        android:text="@string/make_default_ringtone_button"
+        android:textColor="#FFFFFF"
+        android:textAllCaps="false"
+        android:textSize="17sp"
+        android:gravity="center" />
 
     <Button
         android:id="@+id/button_choose_contact"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/choose_contact_ringtone_button" />
+        android:background="@drawable/btn_secondary"
+        android:minHeight="44dp"
+        android:text="@string/choose_contact_ringtone_button"
+        android:textColor="?android:attr/colorAccent"
+        android:textAllCaps="false"
+        android:textSize="17sp"
+        android:gravity="center" />
 
     <Button
         android:id="@+id/button_do_nothing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/do_nothing_with_ringtone_button" />
+        android:background="@drawable/btn_secondary"
+        android:minHeight="44dp"
+        android:text="@string/do_nothing_with_ringtone_button"
+        android:textColor="?android:attr/colorAccent"
+        android:textAllCaps="false"
+        android:textSize="17sp"
+        android:gravity="center" />
 
 </LinearLayout>
