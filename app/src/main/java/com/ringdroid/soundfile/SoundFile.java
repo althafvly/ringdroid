@@ -235,6 +235,7 @@ public class SoundFile {
         // only once.
         mDecodedBytes = ByteBuffer.allocate(1 << 20);
         boolean firstSampleData = true;
+        boolean outputFormatUpdated = false;
         while (true) {
             // read data from file and feed it to the decoder input buffers.
             int inputBufferIndex = codec.dequeueInputBuffer(100);
@@ -275,6 +276,18 @@ public class SoundFile {
 
             // Get decoded stream from the decoder output buffers.
             int outputBufferIndex = codec.dequeueOutputBuffer(info, 100);
+            if (outputBufferIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED && !outputFormatUpdated) {
+                MediaFormat outputFormat = codec.getOutputFormat();
+
+                mSampleRate = outputFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE);
+                mChannels = outputFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
+
+                Log.d(TAG, "Decoder output format: " + mSampleRate + " Hz, " + mChannels + " channels");
+
+                outputFormatUpdated = true;
+                continue;
+            }
+
             if (outputBufferIndex >= 0 && info.size > 0) {
                 if (decodedSamplesSize < info.size) {
                     decodedSamplesSize = info.size;
