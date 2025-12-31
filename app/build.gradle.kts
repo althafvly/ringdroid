@@ -35,6 +35,16 @@ android {
             // F-Droid package name
             applicationId = "org.thayyil.ringdroid"
         }
+
+        create("play") {
+            dimension = "distribution"
+            // PlayStore package name
+            applicationId = "org.thayyil.ringdroid"
+        }
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     compileOptions {

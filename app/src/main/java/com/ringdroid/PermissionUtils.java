@@ -7,14 +7,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.provider.Settings;
 
-public class PermissionUtils {
-    public static final int CONTACT_PERMISSION_REQUEST = 2;
-    public static final int MEDIA_AUDIO_PERMISSION_REQUEST = 4;
+public class PermissionUtils extends StoragePermissionUtils {
+    public static final int CONTACT_PERMISSION_REQUEST = 1;
+    public static final int MEDIA_AUDIO_PERMISSION_REQUEST = 2;
     public static final int MIC_PERMISSION_REQUEST = 3;
-    private static final int STORAGE_PERMISSION_REQUEST = 1;
+    private static final int STORAGE_PERMISSION_REQUEST = 4;
 
     public static boolean hasContactPermissions(Activity activity) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -60,7 +59,20 @@ public class PermissionUtils {
             return activity.checkSelfPermission(
                     Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         } else {
-            return Environment.isExternalStorageManager();
+            return hasExternalStoragePermission();
+        }
+    }
+
+    public static void requestStoragePermission(Activity activity) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+            activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    STORAGE_PERMISSION_REQUEST);
+        } else {
+            requestExternalStoragePermission(activity);
         }
     }
 
@@ -80,31 +92,18 @@ public class PermissionUtils {
         activity.requestPermissions(new String[]{Manifest.permission.READ_MEDIA_AUDIO}, MEDIA_AUDIO_PERMISSION_REQUEST);
     }
 
-    public static void requestStoragePermission(Activity activity) {
+    public static boolean hasWriteSettingsPermission(Activity activity) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return;
+            return true;
         }
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-            activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    STORAGE_PERMISSION_REQUEST);
-        } else {
-            openManageAllFilesScreen(activity);
-        }
+        return Settings.System.canWrite(activity);
     }
 
-    private static void openManageAllFilesScreen(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                    .setData(Uri.parse("package:" + activity.getPackageName()));
-            activity.startActivity(intent);
-        }
-    }
-
-    public static void openWriteSettingsScreen(Activity activity) {
+    public static void requestWriteSettingsPermission(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-                    .setData(Uri.parse("package:" + activity.getPackageName()));
+            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+            intent.setData(Uri.parse("package:" + activity.getPackageName()));
             activity.startActivity(intent);
         }
     }

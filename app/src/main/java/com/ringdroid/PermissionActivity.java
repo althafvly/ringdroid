@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
@@ -40,12 +39,7 @@ public class PermissionActivity extends Activity {
     private void updateUI() {
         boolean hasStoragePermission = PermissionUtils.hasStoragePermission(this);
         boolean hasMediaAudioPermission = PermissionUtils.hasMediaAudioPermission(this);
-        boolean hasWritePermission;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            hasWritePermission = true;
-        } else {
-            hasWritePermission = Settings.System.canWrite(this);
-        }
+        boolean hasWritePermission = PermissionUtils.hasWriteSettingsPermission(this);
         boolean hasContactPermissions = PermissionUtils.hasContactPermissions(this);
         boolean hasMicPermissions = PermissionUtils.hasMicPermissions(this);
 
@@ -61,21 +55,29 @@ public class PermissionActivity extends Activity {
             findViewById(R.id.switch_media_audio_entry).setVisibility(View.GONE);
         }
 
-        storageSwitch.setChecked(hasStoragePermission);
-        storageSwitch.setClickable(!hasStoragePermission);
-        storageSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                PermissionUtils.requestStoragePermission(this);
-            }
-        });
+        if (BuildConfig.FLAVOR != "play") {
+            storageSwitch.setChecked(hasStoragePermission);
+            storageSwitch.setClickable(!hasStoragePermission);
+            storageSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    PermissionUtils.requestStoragePermission(this);
+                }
+            });
+        } else {
+            findViewById(R.id.switch_storage_entry).setVisibility(View.GONE);
+        }
 
-        writeSettingsSwitch.setChecked(hasWritePermission);
-        writeSettingsSwitch.setClickable(!hasWritePermission);
-        writeSettingsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                PermissionUtils.openWriteSettingsScreen(this);
-            }
-        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            writeSettingsSwitch.setChecked(hasWritePermission);
+            writeSettingsSwitch.setClickable(!hasWritePermission);
+            writeSettingsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    PermissionUtils.requestWriteSettingsPermission(this);
+                }
+            });
+        } else {
+            findViewById(R.id.switch_system_settings_entry).setVisibility(View.GONE);
+        }
 
         contactSwitch.setChecked(hasContactPermissions);
         contactSwitch.setClickable(!hasContactPermissions);
