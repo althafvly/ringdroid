@@ -9,7 +9,7 @@ android {
     compileSdkMinor = 1
 
     defaultConfig {
-        applicationId = "com.ringdroid"
+        applicationId = "org.thayyil.ringdroid"
         minSdk = 21
         targetSdk = 36
         versionCode = 20802
@@ -32,14 +32,10 @@ android {
     productFlavors {
         create("fdroid") {
             dimension = "distribution"
-            // F-Droid package name
-            applicationId = "org.thayyil.ringdroid"
         }
 
         create("play") {
             dimension = "distribution"
-            // PlayStore package name
-            applicationId = "org.thayyil.ringdroid"
         }
     }
 
