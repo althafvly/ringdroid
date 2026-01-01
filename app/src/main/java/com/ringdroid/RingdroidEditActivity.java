@@ -662,6 +662,17 @@ public class RingdroidEditActivity extends Activity
         ImageButton mFfwdButton = findViewById(R.id.ffwd);
         mFfwdButton.setOnClickListener(mFfwdListener);
 
+        ImageButton zoomInButton = findViewById(R.id.zoom_in);
+        ImageButton zoomOutButton = findViewById(R.id.zoom_out);
+        zoomInButton.setOnClickListener(v -> {
+            waveformZoomIn();
+            waveformFling(1);
+        });
+        zoomOutButton.setOnClickListener(v -> {
+            waveformZoomOut();
+            waveformFling(1);
+        });
+
         TextView markStartButton = findViewById(R.id.mark_start);
         markStartButton.setOnClickListener(mMarkStartListener);
         TextView markEndButton = findViewById(R.id.mark_end);

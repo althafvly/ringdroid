@@ -136,4 +136,7 @@
     <string name="media_audio_summary">Nodig om beltoonbestanden van uw smartphone te lezen \n\nVereist dit of opslagtoestemming voor de app om te lezen en schrijven</string>
     <string name="list_is_empty">Geen audiobestanden gevonden. Schakel ‘Alle audio tonen’ in via het menu met drie puntjes om systeemaudiobestanden te bekijken.</string>
 
+    <string name="zoom_in">Inzoomen</string>
+    <string name="zoom_out">Uitzoomen</string>
+
 </resources>

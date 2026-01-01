@@ -136,4 +136,7 @@
     <string name="media_audio_summary">從您的智慧型手機讀取鈴聲檔案所需 \n\n應用程式讀取和寫入需要此權限或儲存權限</string>
     <string name="list_is_empty">找不到音訊檔案。請在右上角的三點選單中啟用「顯示所有音訊」以查看系統音訊檔案。</string>
 
+    <string name="zoom_in">放大</string>
+    <string name="zoom_out">縮小</string>
+
 </resources>

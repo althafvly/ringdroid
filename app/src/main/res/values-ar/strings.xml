@@ -136,4 +136,7 @@
     <string name="media_audio_summary">مطلوب لقراءة ملفات نغمات الرنين من هاتفك الذكي \n\nيتطلب هذا الإذن أو إذن التخزين لكي يتمكن التطبيق من القراءة والكتابة</string>
     <string name="list_is_empty">لا توجد ملفات صوتية. فعّل خيار "إظهار كل الصوتيات" من قائمة النقاط الثلاث لعرض ملفات النظام الصوتية.</string>
 
+    <string name="zoom_in">تكبير</string>
+    <string name="zoom_out">تصغير</string>
+
 </resources>

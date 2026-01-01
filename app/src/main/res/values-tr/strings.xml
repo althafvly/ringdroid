@@ -136,4 +136,7 @@
     <string name="media_audio_summary">Akıllı telefonunuzdan zil sesi dosyalarını okumak için gereklidir \n\nUygulamanın okuma ve yazma yapabilmesi için bu veya depolama izni gereklidir</string>
     <string name="list_is_empty">Ses dosyası bulunamadı. Sistem ses dosyalarını görmek için üç nokta menüsünden “Tüm sesleri göster” seçeneğini etkinleştirin.</string>
 
+    <string name="zoom_in">Yakınlaştır</string>
+    <string name="zoom_out">Uzaklaştır</string>
+
 </resources>

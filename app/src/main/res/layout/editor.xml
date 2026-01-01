@@ -109,6 +109,14 @@
         android:orientation="horizontal">
 
         <ImageButton
+            android:id="@+id/zoom_out"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/zoom_out"
+            android:src="@drawable/baseline_zoom_out_24" />
+
+        <ImageButton
             android:id="@+id/rew"
             android:layout_width="52dp"
             android:layout_height="52dp"
@@ -130,6 +138,14 @@
             android:layout_height="52dp"
             android:contentDescription="@string/ffwd"
             android:src="@android:drawable/ic_media_next" />
+
+        <ImageButton
+            android:id="@+id/zoom_in"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/zoom_in"
+            android:src="@drawable/baseline_zoom_in_24" />
 
     </LinearLayout>
 

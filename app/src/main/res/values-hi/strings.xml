@@ -136,4 +136,7 @@
     <string name="media_audio_summary">आपके स्मार्टफोन से रिंगटोन फ़ाइलें पढ़ने के लिए आवश्यक है \n\nऐप को पढ़ने और लिखने के लिए यह या भंडारण अनुमति आवश्यक है</string>
     <string name="list_is_empty">कोई ऑडियो फ़ाइल नहीं मिली। सिस्टम की ऑडियो फ़ाइलें देखने के लिए तीन-डॉट मेनू से “सभी ऑडियो दिखाएँ” सक्षम करें।</string>
 
+    <string name="zoom_in">ज़ूम इन</string>
+    <string name="zoom_out">ज़ूम आउट</string>
+
 </resources>

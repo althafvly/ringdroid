@@ -136,4 +136,7 @@
     <string name="media_audio_summary">Necessario per leggere i file di suoneria dal tuo smartphone \n\nRichiede questo o il permesso di archiviazione affinché l\'app possa leggere e scrivere</string>
     <string name="list_is_empty">Nessun file audio trovato. Abilita “Mostra tutti gli audio” dal menu con i tre punti per visualizzare i file audio di sistema.</string>
 
+    <string name="zoom_in">Ingrandisci</string>
+    <string name="zoom_out">Riduci</string>
+
 </resources>

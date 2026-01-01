@@ -136,4 +136,7 @@
     <string name="media_audio_summary">Necessária para ler arquivos de toque do seu smartphone \n\nExige esta ou a permissão de armazenamento para o aplicativo ler e gravar</string>
     <string name="list_is_empty">Nenhum arquivo de áudio encontrado. Ative “Mostrar todos os áudios” no menu de três pontos para visualizar os arquivos de áudio do sistema.</string>
 
+    <string name="zoom_in">Ampliar</string>
+    <string name="zoom_out">Reduzir</string>
+
 </resources>

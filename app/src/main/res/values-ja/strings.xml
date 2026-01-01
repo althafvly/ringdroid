@@ -136,4 +136,7 @@
     <string name="media_audio_summary">スマートフォンから着信音ファイルを読み取るために必要です \n\nアプリが読み書きできるように、これまたはストレージ権限が必要です</string>
     <string name="list_is_empty">オーディオファイルが見つかりません。システムのオーディオファイルを表示するには、三点メニューから「すべてのオーディオを表示」を有効にしてください。</string>
 
+    <string name="zoom_in">拡大</string>
+    <string name="zoom_out">縮小</string>
+
 </resources>

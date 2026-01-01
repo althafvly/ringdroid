@@ -136,4 +136,7 @@
     <string name="media_audio_summary">Necesario para leer archivos de tono de llamada desde su teléfono inteligente \n\nRequiere este o el permiso de almacenamiento para que la aplicación lea y escriba</string>
     <string name="list_is_empty">No se encontraron archivos de audio. Habilita “Mostrar todo el audio” desde el menú de tres puntos para ver los archivos de audio del sistema.</string>
 
+    <string name="zoom_in">Acercar</string>
+    <string name="zoom_out">Alejar</string>
+
 </resources>

@@ -210,5 +210,7 @@
     <string name="list_is_empty">No audio files found. Enable ‘Show all audio’ from the three-dot menu to view system audio files</string>
 
     <string name="filename_with_suffix" translatable="false">%1$s %2$s</string>
+    <string name="zoom_in">Zoom in</string>
+    <string name="zoom_out">Zoom out</string>
 
 </resources>
