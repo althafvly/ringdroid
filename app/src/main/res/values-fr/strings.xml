@@ -1,14 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="search_edit_box">Rechercher</string>
-
-    <string name="button_start_record_activity">Enregistrer Nouveau</string>
-
-    <string name="sdcard_readonly">Désolé, la carte SD est montée en lecture seule et Ringdroid nécessite qu\'elle soit inscriptible.</string>
-    <string name="no_sdcard">Désolé, Ringdroid ne peut pas fonctionner sans une carte SD insérée.</string>
-    <string name="sdcard_shared">Désolé, Ringdroid ne peut pas fonctionner tant que votre téléphone est monté comme périphérique USB.</string>
-
-    <string name="button_options">Options</string>
 
     <string name="start_label">Début:</string>
     <string name="end_label">Fin:</string>
@@ -38,15 +30,11 @@
     <string name="save_button">Enregistrer</string>
 
     <string name="menu_reset">Réinitialiser</string>
-    <string name="menu_about">À propos</string>
-    <string name="menu_show_all_audio">Afficher tous les fichiers audio</string>
 
     <string name="context_menu_delete">Supprimer</string>
     <string name="context_menu_default_ringtone">Définir comme Sonnerie par Défaut</string>
     <string name="context_menu_contact">Attribuer à un Contact</string>
     <string name="context_menu_default_notification">Définir comme Notification par Défaut</string>
-
-    <string name="file_save_title">Enregistrer sous:</string>
 
     <string name="ringtone_type_label">Type:</string>
 
@@ -57,17 +45,9 @@
 
     <string name="ringtone_name_label">Nom:</string>
 
-    <string name="delete_ringtone">Supprimer la Sonnerie</string>
-    <string name="delete_alarm">Supprimer l\'Alarme</string>
-    <string name="delete_notification">Supprimer la Notification</string>
-    <string name="delete_music">Supprimer la Musique</string>
-    <string name="delete_audio">Supprimer l\'Audio</string>
-
     <string name="confirm_delete_ringdroid">Êtes-vous sûr?</string>
     <string name="confirm_delete_non_ringdroid">Êtes-vous sûr? Ce fichier n\'a pas été créé avec Ringdroid!</string>
 
-
-    <string name="delete_failed">Impossible de supprimer le fichier</string>
 
     <string name="alert_title_success">Succès</string>
     <string name="alert_title_failure">Erreur</string>
@@ -75,7 +55,6 @@
     <string name="alert_yes_button">Oui, s\'il vous plaît!</string>
     <string name="alert_no_button">Non, merci.</string>
 
-    <string name="save_success_message">Enregistré!</string>
     <string name="default_ringtone_success_message">Sonnerie par défaut changée</string>
     <string name="default_notification_success_message">Son de notification par défaut changé</string>
     <string name="play_error">Impossible de lire ce fichier multimédia</string>
@@ -95,29 +74,29 @@
 
     <string name="about_title">À propos de Ringdroid</string>
     <string name="about_text_html">
-        <![CDATA[
-            <b>Ringdroid</b><br><br>
-            Utilisez Ringdroid pour éditer des fichiers audio MP3, OGG, WAV, AAC et AMR et créer des sonneries, des alarmes et des notifications.<br><br>
 
-            <b>Conseils:</b><br>
-            • Copiez des fichiers audio par USB<br>
-            • Appuyez n\'importe où sur la forme d\'onde pour lire<br>
-            • Appuyez sur Début/Fin pendant la lecture pour définir des marqueurs<br><br>
+            &lt;b&gt;Ringdroid&lt;/b&gt;&lt;br&gt;&lt;br&gt;
+            Utilisez Ringdroid pour éditer des fichiers audio MP3, OGG, WAV, AAC et AMR et créer des sonneries, des alarmes et des notifications.&lt;br&gt;&lt;br&gt;
 
-            <b>Version: %s</b><br><br>
+            &lt;b&gt;Conseils:&lt;/b&gt;&lt;br&gt;
+            • Copiez des fichiers audio par USB&lt;br&gt;
+            • Appuyez n\'importe où sur la forme d\'onde pour lire&lt;br&gt;
+            • Appuyez sur Début/Fin pendant la lecture pour définir des marqueurs&lt;br&gt;&lt;br&gt;
 
-            <b>Développeurs:</b><br>
-            Dominic Mazzoni<br>
-            Nicolas Faralli<br>
-            althafvly<br><br>
+            &lt;b&gt;Version: %s&lt;/b&gt;&lt;br&gt;&lt;br&gt;
 
-            <b>Graphismes:</b> Joseph Wain<br>
-            <b>Support:</b> Eugene Koh<br>
-            <b>Améliorations:</b> Dan Klufas<br><br>
+            &lt;b&gt;Développeurs:&lt;/b&gt;&lt;br&gt;
+            Dominic Mazzoni&lt;br&gt;
+            Nicolas Faralli&lt;br&gt;
+            althafvly&lt;br&gt;&lt;br&gt;
 
-            Ringdroid est un logiciel libre sous Apache 2.0.<br>
-            Code source: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
-        ]]>
+            &lt;b&gt;Graphismes:&lt;/b&gt; Joseph Wain&lt;br&gt;
+            &lt;b&gt;Support:&lt;/b&gt; Eugene Koh&lt;br&gt;
+            &lt;b&gt;Améliorations:&lt;/b&gt; Dan Klufas&lt;br&gt;&lt;br&gt;
+
+            Ringdroid est un logiciel libre sous Apache 2.0.&lt;br&gt;
+            Code source: &lt;a href="https://github.com/althafvly/ringdroid"&gt;github.com/althafvly/ringdroid&lt;/a&gt;
+
     </string>
 
     <string name="require_contacts_permission">Veuillez activer l\'autorisation des contacts pour attribuer une sonnerie.</string>
@@ -134,9 +113,11 @@
     <string name="contact_permission_summary">Nécessaire pour attribuer des sonneries à vos contacts</string>
     <string name="media_audio_permission">Autorisation audio multimédia</string>
     <string name="media_audio_summary">Nécessaire pour lire les fichiers de sonnerie depuis votre smartphone \n\nNécessite cette autorisation ou l\'autorisation de stockage pour que l\'application puisse lire et écrire</string>
-    <string name="list_is_empty">Aucun fichier audio trouvé. Activez « Afficher tous les fichiers audio » depuis le menu à trois points pour voir les fichiers audio du système.</string>
 
     <string name="zoom_in">Zoom avant</string>
     <string name="zoom_out">Zoom arrière</string>
 
+    <string name="more_options">Plus d’options</string>
+    <string name="show_system_sounds">Afficher les sons système</string>
+    <string name="version_unknown">inconnue</string>
 </resources>

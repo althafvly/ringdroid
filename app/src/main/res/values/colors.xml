@@ -33,6 +33,9 @@
     <color name="type_bkgnd_music">#88000000</color>
     <color name="type_bkgnd_unsupported">#88cccccc</color>
 
+    <color name="row_artist_color">#ff99ff</color>
+    <color name="row_album_color">#ffff99</color>
+
     <color name="ic_launcher_background">#FFFFFF</color>
 
 </resources>

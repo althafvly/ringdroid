@@ -1,14 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="search_edit_box">Ara</string>
-
-    <string name="button_start_record_activity">Yeni Kaydet</string>
-
-    <string name="sdcard_readonly">Üzgünüz, SD Kart salt okunur olarak bağlanmış ve Ringdroid yazılabilir olmasını gerektiriyor.</string>
-    <string name="no_sdcard">Üzgünüz, bir SD Kart takılı olmadıkça Ringdroid çalışamaz.</string>
-    <string name="sdcard_shared">Üzgünüz, cep telefonunuz bir USB cihazı olarak bağlıyken Ringdroid çalışamaz.</string>
-
-    <string name="button_options">Seçenekler</string>
 
     <string name="start_label">Başlangıç:</string>
     <string name="end_label">Bitiş:</string>
@@ -38,15 +30,11 @@
     <string name="save_button">Kaydet</string>
 
     <string name="menu_reset">Sıfırla</string>
-    <string name="menu_about">Hakkında</string>
-    <string name="menu_show_all_audio">Tüm Sesleri Göster</string>
 
     <string name="context_menu_delete">Sil</string>
     <string name="context_menu_default_ringtone">Varsayılan Zil Sesi Olarak Ayarla</string>
     <string name="context_menu_contact">Kişiye Ata</string>
     <string name="context_menu_default_notification">Varsayılan Bildirim Olarak Ayarla</string>
-
-    <string name="file_save_title">Farklı Kaydet:</string>
 
     <string name="ringtone_type_label">Tür:</string>
 
@@ -57,17 +45,9 @@
 
     <string name="ringtone_name_label">Ad:</string>
 
-    <string name="delete_ringtone">Zil Sesini Sil</string>
-    <string name="delete_alarm">Alarmı Sil</string>
-    <string name="delete_notification">Bildirimi Sil</string>
-    <string name="delete_music">Müziği Sil</string>
-    <string name="delete_audio">Sesi Sil</string>
-
     <string name="confirm_delete_ringdroid">Emin misiniz?</string>
     <string name="confirm_delete_non_ringdroid">Emin misiniz? Bu dosya Ringdroid kullanılarak oluşturulmadı!</string>
 
-
-    <string name="delete_failed">Dosya silinemedi</string>
 
     <string name="alert_title_success">Başarılı</string>
     <string name="alert_title_failure">Hata</string>
@@ -75,7 +55,6 @@
     <string name="alert_yes_button">Evet, lütfen!</string>
     <string name="alert_no_button">Hayır, teşekkürler.</string>
 
-    <string name="save_success_message">Kaydedildi!</string>
     <string name="default_ringtone_success_message">Varsayılan zil sesi değiştirildi</string>
     <string name="default_notification_success_message">Varsayılan bildirim sesi değiştirildi</string>
     <string name="play_error">Bu medya dosyası oynatılamıyor</string>
@@ -95,29 +74,29 @@
 
     <string name="about_title">Ringdroid Hakkında</string>
     <string name="about_text_html">
-        <![CDATA[
-            <b>Ringdroid</b><br><br>
-            MP3, OGG, WAV, AAC ve AMR ses dosyalarını düzenlemek ve zil sesleri, alarmlar ve bildirimler oluşturmak için Ringdroid\'i kullanın.<br><br>
 
-            <b>İpuçları:</b><br>
-            • USB kullanarak ses dosyalarını kopyalayın<br>
-            • Oynatmak için dalga formunun herhangi bir yerine dokunun<br>
-            • İşaretçileri ayarlamak için oynatılırken Başlangıç/Bitiş\'e dokunun<br><br>
+            &lt;b&gt;Ringdroid&lt;/b&gt;&lt;br&gt;&lt;br&gt;
+            MP3, OGG, WAV, AAC ve AMR ses dosyalarını düzenlemek ve zil sesleri, alarmlar ve bildirimler oluşturmak için Ringdroid\'i kullanın.&lt;br&gt;&lt;br&gt;
 
-            <b>Sürüm: %s</b><br><br>
+            &lt;b&gt;İpuçları:&lt;/b&gt;&lt;br&gt;
+            • USB kullanarak ses dosyalarını kopyalayın&lt;br&gt;
+            • Oynatmak için dalga formunun herhangi bir yerine dokunun&lt;br&gt;
+            • İşaretçileri ayarlamak için oynatılırken Başlangıç/Bitiş\'e dokunun&lt;br&gt;&lt;br&gt;
 
-            <b>Geliştiriciler:</b><br>
-            Dominic Mazzoni<br>
-            Nicolas Faralli<br>
-            althafvly<br><br>
+            &lt;b&gt;Sürüm: %s&lt;/b&gt;&lt;br&gt;&lt;br&gt;
 
-            <b>Grafikler:</b> Joseph Wain<br>
-            <b>Destek:</b> Eugene Koh<br>
-            <b>Geliştirmeler:</b> Dan Klufas<br><br>
+            &lt;b&gt;Geliştiriciler:&lt;/b&gt;&lt;br&gt;
+            Dominic Mazzoni&lt;br&gt;
+            Nicolas Faralli&lt;br&gt;
+            althafvly&lt;br&gt;&lt;br&gt;
 
-            Ringdroid, Apache 2.0 lisansı altında ücretsiz bir yazılımdır.<br>
-            Kaynak kodu: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
-        ]]>
+            &lt;b&gt;Grafikler:&lt;/b&gt; Joseph Wain&lt;br&gt;
+            &lt;b&gt;Destek:&lt;/b&gt; Eugene Koh&lt;br&gt;
+            &lt;b&gt;Geliştirmeler:&lt;/b&gt; Dan Klufas&lt;br&gt;&lt;br&gt;
+
+            Ringdroid, Apache 2.0 lisansı altında ücretsiz bir yazılımdır.&lt;br&gt;
+            Kaynak kodu: &lt;a href="https://github.com/althafvly/ringdroid"&gt;github.com/althafvly/ringdroid&lt;/a&gt;
+
     </string>
 
     <string name="require_contacts_permission">Bir zil sesi atamak için lütfen kişiler iznini etkinleştirin.</string>
@@ -134,9 +113,11 @@
     <string name="contact_permission_summary">Kişilerinize zil sesi atamak için gereklidir</string>
     <string name="media_audio_permission">Medya ses izni</string>
     <string name="media_audio_summary">Akıllı telefonunuzdan zil sesi dosyalarını okumak için gereklidir \n\nUygulamanın okuma ve yazma yapabilmesi için bu veya depolama izni gereklidir</string>
-    <string name="list_is_empty">Ses dosyası bulunamadı. Sistem ses dosyalarını görmek için üç nokta menüsünden “Tüm sesleri göster” seçeneğini etkinleştirin.</string>
 
     <string name="zoom_in">Yakınlaştır</string>
     <string name="zoom_out">Uzaklaştır</string>
 
+    <string name="more_options">Daha fazla seçenek</string>
+    <string name="show_system_sounds">Sistem seslerini göster</string>
+    <string name="version_unknown">bilinmiyor</string>
 </resources>

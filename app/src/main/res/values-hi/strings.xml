@@ -1,14 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="search_edit_box">खोजें</string>
-
-    <string name="button_start_record_activity">नया रिकॉर्ड करें</string>
-
-    <string name="sdcard_readonly">क्षमा करें, SD कार्ड केवल पढ़ने के लिए माउंट किया गया है और Ringdroid को लिखने योग्य होना आवश्यक है।</string>
-    <string name="no_sdcard">क्षमा करें, जब तक आपने SD कार्ड नहीं डाला है, Ringdroid नहीं चल सकता।</string>
-    <string name="sdcard_shared">क्षमा करें, जब तक आपका हैंडसेट एक USB डिवाइस के रूप में माउंट है, Ringdroid नहीं चल सकता।</string>
-
-    <string name="button_options">विकल्प</string>
 
     <string name="start_label">शुरुआत:</string>
     <string name="end_label">समाप्ति:</string>
@@ -38,15 +30,11 @@
     <string name="save_button">सहेजें</string>
 
     <string name="menu_reset">रीसेट करें</string>
-    <string name="menu_about">के बारे में</string>
-    <string name="menu_show_all_audio">सभी ऑडियो दिखाएँ</string>
 
     <string name="context_menu_delete">हटाएँ</string>
     <string name="context_menu_default_ringtone">डिफ़ॉल्ट रिंगटोन के रूप में सेट करें</string>
     <string name="context_menu_contact">संपर्क को असाइन करें</string>
     <string name="context_menu_default_notification">डिफ़ॉल्ट अधिसूचना के रूप में सेट करें</string>
-
-    <string name="file_save_title">इस रूप में सहेजें:</string>
 
     <string name="ringtone_type_label">प्रकार:</string>
 
@@ -57,17 +45,9 @@
 
     <string name="ringtone_name_label">नाम:</string>
 
-    <string name="delete_ringtone">रिंगटोन हटाएँ</string>
-    <string name="delete_alarm">अलार्म हटाएँ</string>
-    <string name="delete_notification">अधिसूचना हटाएँ</string>
-    <string name="delete_music">संगीत हटाएँ</string>
-    <string name="delete_audio">ऑडियो हटाएँ</string>
-
     <string name="confirm_delete_ringdroid">क्या आप सुनिश्चित हैं?</string>
     <string name="confirm_delete_non_ringdroid">क्या आप सुनिश्चित हैं? यह फ़ाइल Ringdroid का उपयोग करके नहीं बनाई गई थी!</string>
 
-
-    <string name="delete_failed">फ़ाइल हटाने में असमर्थ</string>
 
     <string name="alert_title_success">सफलता</string>
     <string name="alert_title_failure">त्रुटि</string>
@@ -75,7 +55,6 @@
     <string name="alert_yes_button">हाँ, कृपया!</string>
     <string name="alert_no_button">नहीं, धन्यवाद।</string>
 
-    <string name="save_success_message">सहेज लिया गया!</string>
     <string name="default_ringtone_success_message">डिफ़ॉल्ट रिंगटोन बदल दिया गया</string>
     <string name="default_notification_success_message">डिफ़ॉल्ट अधिसूचना ध्वनि बदल दी गई</string>
     <string name="play_error">इस मीडिया फ़ाइल को चलाने में असमर्थ</string>
@@ -95,29 +74,29 @@
 
     <string name="about_title">Ringdroid के बारे में</string>
     <string name="about_text_html">
-        <![CDATA[
-            <b>Ringdroid</b><br><br>
-            MP3, OGG, WAV, AAC, और AMR ऑडियो फ़ाइलों को संपादित करने और रिंगटोन, अलार्म और सूचनाएं बनाने के लिए Ringdroid का उपयोग करें।<br><br>
 
-            <b>टिप्स:</b><br>
-            • USB का उपयोग करके ऑडियो फ़ाइलें कॉपी करें<br>
-            • चलाने के लिए वेवफॉर्म पर कहीं भी टैप करें<br>
-            • मार्कर सेट करने के लिए चलाने के दौरान शुरुआत/समाप्ति पर टैप करें<br><br>
+            &lt;b&gt;Ringdroid&lt;/b&gt;&lt;br&gt;&lt;br&gt;
+            MP3, OGG, WAV, AAC, और AMR ऑडियो फ़ाइलों को संपादित करने और रिंगटोन, अलार्म और सूचनाएं बनाने के लिए Ringdroid का उपयोग करें।&lt;br&gt;&lt;br&gt;
 
-            <b>संस्करण: %s</b><br><br>
+            &lt;b&gt;टिप्स:&lt;/b&gt;&lt;br&gt;
+            • USB का उपयोग करके ऑडियो फ़ाइलें कॉपी करें&lt;br&gt;
+            • चलाने के लिए वेवफॉर्म पर कहीं भी टैप करें&lt;br&gt;
+            • मार्कर सेट करने के लिए चलाने के दौरान शुरुआत/समाप्ति पर टैप करें&lt;br&gt;&lt;br&gt;
 
-            <b>डेवलपर्स:</b><br>
-            Dominic Mazzoni<br>
-            Nicolas Faralli<br>
-            althafvly<br><br>
+            &lt;b&gt;संस्करण: %s&lt;/b&gt;&lt;br&gt;&lt;br&gt;
 
-            <b>ग्राफिक्स:</b> Joseph Wain<br>
-            <b>समर्थन:</b> Eugene Koh<br>
-            <b>सुधार:</b> Dan Klufas<br><br>
+            &lt;b&gt;डेवलपर्स:&lt;/b&gt;&lt;br&gt;
+            Dominic Mazzoni&lt;br&gt;
+            Nicolas Faralli&lt;br&gt;
+            althafvly&lt;br&gt;&lt;br&gt;
 
-            Ringdroid Apache 2.0 के तहत एक मुफ्त सॉफ्टवेयर है।<br>
-            स्रोत कोड: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
-        ]]>
+            &lt;b&gt;ग्राफिक्स:&lt;/b&gt; Joseph Wain&lt;br&gt;
+            &lt;b&gt;समर्थन:&lt;/b&gt; Eugene Koh&lt;br&gt;
+            &lt;b&gt;सुधार:&lt;/b&gt; Dan Klufas&lt;br&gt;&lt;br&gt;
+
+            Ringdroid Apache 2.0 के तहत एक मुफ्त सॉफ्टवेयर है।&lt;br&gt;
+            स्रोत कोड: &lt;a href="https://github.com/althafvly/ringdroid"&gt;github.com/althafvly/ringdroid&lt;/a&gt;
+
     </string>
 
     <string name="require_contacts_permission">रिंगटोन असाइन करने के लिए कृपया संपर्क अनुमति सक्षम करें।</string>
@@ -134,9 +113,11 @@
     <string name="contact_permission_summary">अपने संपर्कों को रिंगटोन असाइन करने के लिए आवश्यक है</string>
     <string name="media_audio_permission">मीडिया ऑडियो अनुमति</string>
     <string name="media_audio_summary">आपके स्मार्टफोन से रिंगटोन फ़ाइलें पढ़ने के लिए आवश्यक है \n\nऐप को पढ़ने और लिखने के लिए यह या भंडारण अनुमति आवश्यक है</string>
-    <string name="list_is_empty">कोई ऑडियो फ़ाइल नहीं मिली। सिस्टम की ऑडियो फ़ाइलें देखने के लिए तीन-डॉट मेनू से “सभी ऑडियो दिखाएँ” सक्षम करें।</string>
 
     <string name="zoom_in">ज़ूम इन</string>
     <string name="zoom_out">ज़ूम आउट</string>
 
+    <string name="more_options">अधिक विकल्प</string>
+    <string name="show_system_sounds">सिस्टम ध्वनियाँ दिखाएं</string>
+    <string name="version_unknown">अज्ञात</string>
 </resources>

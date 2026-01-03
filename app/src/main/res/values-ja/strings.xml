@@ -1,14 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="search_edit_box">検索</string>
-
-    <string name="button_start_record_activity">新しく録音</string>
-
-    <string name="sdcard_readonly">申し訳ありませんが、SDカードが読み取り専用でマウントされており、Ringdroidは書き込み可能である必要があります。</string>
-    <string name="no_sdcard">申し訳ありませんが、SDカードが挿入されていないとRingdroidは実行できません。</string>
-    <string name="sdcard_shared">申し訳ありませんが、ハンドセットがUSBデバイスとしてマウントされている間、Ringdroidは実行できません。</string>
-
-    <string name="button_options">オプション</string>
 
     <string name="start_label">開始:</string>
     <string name="end_label">終了:</string>
@@ -38,15 +30,11 @@
     <string name="save_button">保存</string>
 
     <string name="menu_reset">リセット</string>
-    <string name="menu_about">情報</string>
-    <string name="menu_show_all_audio">すべてのオーディオを表示</string>
 
     <string name="context_menu_delete">削除</string>
     <string name="context_menu_default_ringtone">デフォルトの着信音に設定</string>
     <string name="context_menu_contact">連絡先に割り当てる</string>
     <string name="context_menu_default_notification">デフォルトの通知に設定</string>
-
-    <string name="file_save_title">名前を付けて保存:</string>
 
     <string name="ringtone_type_label">タイプ:</string>
 
@@ -57,17 +45,9 @@
 
     <string name="ringtone_name_label">名前:</string>
 
-    <string name="delete_ringtone">着信音を削除</string>
-    <string name="delete_alarm">アラームを削除</string>
-    <string name="delete_notification">通知を削除</string>
-    <string name="delete_music">音楽を削除</string>
-    <string name="delete_audio">オーディオを削除</string>
-
     <string name="confirm_delete_ringdroid">よろしいですか？</string>
     <string name="confirm_delete_non_ringdroid">よろしいですか？このファイルはRingdroidを使用して作成されていません！</string>
 
-
-    <string name="delete_failed">ファイルを削除できません</string>
 
     <string name="alert_title_success">成功</string>
     <string name="alert_title_failure">エラー</string>
@@ -75,7 +55,6 @@
     <string name="alert_yes_button">はい、お願いします！</string>
     <string name="alert_no_button">いいえ、結構です。</string>
 
-    <string name="save_success_message">保存しました！</string>
     <string name="default_ringtone_success_message">デフォルトの着信音が変更されました</string>
     <string name="default_notification_success_message">デフォルトの通知音が変更されました</string>
     <string name="play_error">このメディアファイルを再生できません</string>
@@ -95,29 +74,29 @@
 
     <string name="about_title">Ringdroidについて</string>
     <string name="about_text_html">
-        <![CDATA[
-            <b>Ringdroid</b><br><br>
-            Ringdroidを使用して、MP3、OGG、WAV、AAC、AMRオーディオファイルを編集し、着信音、アラーム、通知を作成します。<br><br>
 
-            <b>ヒント:</b><br>
-            • USBを使用してオーディオファイルをコピーします<br>
-            • 波形の任意の場所をタップして再生します<br>
-            • 再生中に開始/終了をタップしてマーカーを設定します<br><br>
+            &lt;b&gt;Ringdroid&lt;/b&gt;&lt;br&gt;&lt;br&gt;
+            Ringdroidを使用して、MP3、OGG、WAV、AAC、AMRオーディオファイルを編集し、着信音、アラーム、通知を作成します。&lt;br&gt;&lt;br&gt;
 
-            <b>バージョン: %s</b><br><br>
+            &lt;b&gt;ヒント:&lt;/b&gt;&lt;br&gt;
+            • USBを使用してオーディオファイルをコピーします&lt;br&gt;
+            • 波形の任意の場所をタップして再生します&lt;br&gt;
+            • 再生中に開始/終了をタップしてマーカーを設定します&lt;br&gt;&lt;br&gt;
 
-            <b>開発者:</b><br>
-            Dominic Mazzoni<br>
-            Nicolas Faralli<br>
-            althafvly<br><br>
+            &lt;b&gt;バージョン: %s&lt;/b&gt;&lt;br&gt;&lt;br&gt;
 
-            <b>グラフィック:</b> Joseph Wain<br>
-            <b>サポート:</b> Eugene Koh<br>
-            <b>機能強化:</b> Dan Klufas<br><br>
+            &lt;b&gt;開発者:&lt;/b&gt;&lt;br&gt;
+            Dominic Mazzoni&lt;br&gt;
+            Nicolas Faralli&lt;br&gt;
+            althafvly&lt;br&gt;&lt;br&gt;
 
-            RingdroidはApache 2.0に基づくフリーソフトウェアです。<br>
-            ソースコード: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
-        ]]>
+            &lt;b&gt;グラフィック:&lt;/b&gt; Joseph Wain&lt;br&gt;
+            &lt;b&gt;サポート:&lt;/b&gt; Eugene Koh&lt;br&gt;
+            &lt;b&gt;機能強化:&lt;/b&gt; Dan Klufas&lt;br&gt;&lt;br&gt;
+
+            RingdroidはApache 2.0に基づくフリーソフトウェアです。&lt;br&gt;
+            ソースコード: &lt;a href="https://github.com/althafvly/ringdroid"&gt;github.com/althafvly/ringdroid&lt;/a&gt;
+
     </string>
 
     <string name="require_contacts_permission">着信音を割り当てるには、連絡先権限を有効にしてください。</string>
@@ -134,9 +113,11 @@
     <string name="contact_permission_summary">連絡先に着信音を割り当てるために必要です</string>
     <string name="media_audio_permission">メディアオーディオ権限</string>
     <string name="media_audio_summary">スマートフォンから着信音ファイルを読み取るために必要です \n\nアプリが読み書きできるように、これまたはストレージ権限が必要です</string>
-    <string name="list_is_empty">オーディオファイルが見つかりません。システムのオーディオファイルを表示するには、三点メニューから「すべてのオーディオを表示」を有効にしてください。</string>
 
     <string name="zoom_in">拡大</string>
     <string name="zoom_out">縮小</string>
 
+    <string name="more_options">その他のオプション</string>
+    <string name="show_system_sounds">システム音を表示</string>
+    <string name="version_unknown">不明</string>
 </resources>

@@ -1,14 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="search_edit_box">搜尋</string>
-
-    <string name="button_start_record_activity">錄製新內容</string>
-
-    <string name="sdcard_readonly">抱歉，SD卡已掛載為唯讀，而Ringdroid要求它是可寫入的。</string>
-    <string name="no_sdcard">抱歉，除非您插入了SD卡，否則Ringdroid無法執行。</string>
-    <string name="sdcard_shared">抱歉，當您的手機作為USB設備掛載時，Ringdroid無法執行。</string>
-
-    <string name="button_options">選項</string>
 
     <string name="start_label">開始:</string>
     <string name="end_label">結束:</string>
@@ -38,15 +30,11 @@
     <string name="save_button">儲存</string>
 
     <string name="menu_reset">重設</string>
-    <string name="menu_about">關於</string>
-    <string name="menu_show_all_audio">顯示所有音訊</string>
 
     <string name="context_menu_delete">刪除</string>
     <string name="context_menu_default_ringtone">設為預設鈴聲</string>
     <string name="context_menu_contact">分配給聯絡人</string>
     <string name="context_menu_default_notification">設為預設通知</string>
-
-    <string name="file_save_title">另存為:</string>
 
     <string name="ringtone_type_label">類型:</string>
 
@@ -57,17 +45,9 @@
 
     <string name="ringtone_name_label">名稱:</string>
 
-    <string name="delete_ringtone">刪除鈴聲</string>
-    <string name="delete_alarm">刪除鬧鐘</string>
-    <string name="delete_notification">刪除通知</string>
-    <string name="delete_music">刪除音樂</string>
-    <string name="delete_audio">刪除音訊</string>
-
     <string name="confirm_delete_ringdroid">您確定嗎?</string>
     <string name="confirm_delete_non_ringdroid">您確定嗎? 此檔案不是使用 Ringdroid 建立的!</string>
 
-
-    <string name="delete_failed">無法刪除檔案</string>
 
     <string name="alert_title_success">成功</string>
     <string name="alert_title_failure">錯誤</string>
@@ -75,7 +55,6 @@
     <string name="alert_yes_button">是的，請！</string>
     <string name="alert_no_button">不，謝謝。</string>
 
-    <string name="save_success_message">已儲存!</string>
     <string name="default_ringtone_success_message">預設鈴聲已變更</string>
     <string name="default_notification_success_message">預設通知聲音已變更</string>
     <string name="play_error">無法播放此媒體檔案</string>
@@ -95,29 +74,29 @@
 
     <string name="about_title">關於 Ringdroid</string>
     <string name="about_text_html">
-        <![CDATA[
-            <b>Ringdroid</b><br><br>
-            使用 Ringdroid 編輯 MP3、OGG、WAV、AAC 和 AMR 音訊檔案，並建立鈴聲、鬧鐘和通知。<br><br>
 
-            <b>提示:</b><br>
-            • 使用 USB 複製音訊檔案<br>
-            • 輕觸波形圖上的任意位置即可播放<br>
-            • 播放時輕觸「開始/結束」設定標記<br><br>
+            &lt;b&gt;Ringdroid&lt;/b&gt;&lt;br&gt;&lt;br&gt;
+            使用 Ringdroid 編輯 MP3、OGG、WAV、AAC 和 AMR 音訊檔案，並建立鈴聲、鬧鐘和通知。&lt;br&gt;&lt;br&gt;
 
-            <b>版本: %s</b><br><br>
+            &lt;b&gt;提示:&lt;/b&gt;&lt;br&gt;
+            • 使用 USB 複製音訊檔案&lt;br&gt;
+            • 輕觸波形圖上的任意位置即可播放&lt;br&gt;
+            • 播放時輕觸「開始/結束」設定標記&lt;br&gt;&lt;br&gt;
 
-            <b>開發者:</b><br>
-            Dominic Mazzoni<br>
-            Nicolas Faralli<br>
-            althafvly<br><br>
+            &lt;b&gt;版本: %s&lt;/b&gt;&lt;br&gt;&lt;br&gt;
 
-            <b>圖形:</b> Joseph Wain<br>
-            <b>支援:</b> Eugene Koh<br>
-            <b>增強功能:</b> Dan Klufas<br><br>
+            &lt;b&gt;開發者:&lt;/b&gt;&lt;br&gt;
+            Dominic Mazzoni&lt;br&gt;
+            Nicolas Faralli&lt;br&gt;
+            althafvly&lt;br&gt;&lt;br&gt;
 
-            Ringdroid 是基於 Apache 2.0 的免費軟體。<br>
-            原始碼: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
-        ]]>
+            &lt;b&gt;圖形:&lt;/b&gt; Joseph Wain&lt;br&gt;
+            &lt;b&gt;支援:&lt;/b&gt; Eugene Koh&lt;br&gt;
+            &lt;b&gt;增強功能:&lt;/b&gt; Dan Klufas&lt;br&gt;&lt;br&gt;
+
+            Ringdroid 是基於 Apache 2.0 的免費軟體。&lt;br&gt;
+            原始碼: &lt;a href="https://github.com/althafvly/ringdroid"&gt;github.com/althafvly/ringdroid&lt;/a&gt;
+
     </string>
 
     <string name="require_contacts_permission">請啟用聯絡人權限以分配鈴聲。</string>
@@ -134,9 +113,11 @@
     <string name="contact_permission_summary">將鈴聲分配給您的聯絡人所需</string>
     <string name="media_audio_permission">媒體音訊權限</string>
     <string name="media_audio_summary">從您的智慧型手機讀取鈴聲檔案所需 \n\n應用程式讀取和寫入需要此權限或儲存權限</string>
-    <string name="list_is_empty">找不到音訊檔案。請在右上角的三點選單中啟用「顯示所有音訊」以查看系統音訊檔案。</string>
 
     <string name="zoom_in">放大</string>
     <string name="zoom_out">縮小</string>
 
+    <string name="more_options">更多選項</string>
+    <string name="show_system_sounds">顯示系統聲音</string>
+    <string name="version_unknown">未知</string>
 </resources>

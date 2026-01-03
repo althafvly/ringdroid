@@ -29,8 +29,6 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
-import com.ringdroid.FilesUtil;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -77,16 +75,6 @@ public class SoundFile {
     // dependent?
     public static String[] getSupportedExtensions() {
         return new String[]{"mp3", "wav", "3gpp", "3gp", "amr", "aac", "m4a", "ogg"};
-    }
-
-    public static boolean isFilenameSupported(String filename) {
-        String[] extensions = getSupportedExtensions();
-        for (String extension : extensions) {
-            if (filename.endsWith("." + extension)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public static void uriExists(Context context, Uri uri) {
@@ -151,6 +139,10 @@ public class SoundFile {
 
     public int getNumSamples() {
         return mNumSamples; // Number of samples per channel.
+    }
+
+    public File getInputFile() {
+        return mInputFile;
     }
 
     // Should be removed when the app will use directly the samples instead of the
@@ -625,8 +617,7 @@ public class SoundFile {
             }
             outputStream.close();
         } catch (IOException e) {
-            Log.e(TAG, "Failed to create the .m4a file.");
-            Log.e(TAG, FilesUtil.getStackTrace(e));
+            Log.e(TAG, "Failed to create the .m4a file.", e);
         }
     }
 
