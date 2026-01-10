@@ -21,6 +21,7 @@ import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.MergeCursor;
 import android.media.RingtoneManager;
@@ -251,21 +252,30 @@ public class RingdroidSelectActivity extends Activity {
     private void setSoundIconFromCursor(ImageView view, Cursor cursor) {
         if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE))) {
             view.setImageResource(R.drawable.baseline_call_24);
-            ((View) view.getParent()).setBackgroundColor(getResources().getColor(R.color.type_bkgnd_ringtone));
+            ((View) view.getParent()).setBackgroundColor(getColorRes(R.color.type_bkgnd_ringtone));
         } else if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_ALARM))) {
             view.setImageResource(R.drawable.baseline_access_alarm_24);
-            ((View) view.getParent()).setBackgroundColor(getResources().getColor(R.color.type_bkgnd_alarm));
+            ((View) view.getParent()).setBackgroundColor(getColorRes(R.color.type_bkgnd_alarm));
         } else if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_NOTIFICATION))) {
             view.setImageResource(R.drawable.baseline_notifications_24);
-            ((View) view.getParent()).setBackgroundColor(getResources().getColor(R.color.type_bkgnd_notification));
+            ((View) view.getParent()).setBackgroundColor(getColorRes(R.color.type_bkgnd_notification));
         } else if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_MUSIC))) {
             view.setImageResource(R.drawable.baseline_music_note_24);
-            ((View) view.getParent()).setBackgroundColor(getResources().getColor(R.color.type_bkgnd_music));
+            ((View) view.getParent()).setBackgroundColor(getColorRes(R.color.type_bkgnd_music));
         }
 
         String filename = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
         if (!SoundFile.isFilenameSupported(filename)) {
-            ((View) view.getParent()).setBackgroundColor(getResources().getColor(R.color.type_bkgnd_unsupported));
+            ((View) view.getParent()).setBackgroundColor(getColorRes(R.color.type_bkgnd_unsupported));
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private int getColorRes(int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return getResources().getColor(color, null);
+        } else {
+            return getResources().getColor(color);
         }
     }
 
@@ -549,6 +559,7 @@ public class RingdroidSelectActivity extends Activity {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void handleIncoming(Intent intent) {
         Uri audioUri = null;
         String action = intent.getAction();
@@ -556,7 +567,11 @@ public class RingdroidSelectActivity extends Activity {
         if (Intent.ACTION_VIEW.equals(action)) {
             audioUri = intent.getData();
         } else if (Intent.ACTION_SEND.equals(action)) {
-            audioUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                audioUri = intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri.class);
+            } else {
+                audioUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            }
         }
 
         if (audioUri != null) {

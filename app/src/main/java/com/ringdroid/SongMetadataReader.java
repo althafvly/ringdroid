@@ -55,24 +55,36 @@ public class SongMetadataReader {
         c.close();
         mGenre = "";
         for (String genreId : genreIdMap.keySet()) {
-            c = mActivity.getContentResolver().query(makeGenreUri(genreId), new String[]{MediaStore.Audio.Media.DATA},
-                    MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"", null, null);
-            assert c != null;
-            if (c.getCount() != 0) {
-                mGenre = genreIdMap.get(genreId);
-                break;
+            try (Cursor genreCursor = mActivity.getContentResolver().query(makeGenreUri(genreId),
+                    new String[]{MediaStore.Audio.Media.DATA}, MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"",
+                    null, null)) {
+                if (genreCursor != null && genreCursor.getCount() != 0) {
+                    mGenre = genreIdMap.get(genreId);
+                    break;
+                }
             }
-            c.close();
         }
 
-        Uri uri = MediaStore.Audio.Media.getContentUriForPath(mFilename);
-        assert uri != null;
+        Uri uri = RingdroidUtils.getExternalAudioCollectionUri();
         c = mActivity.getContentResolver().query(uri,
                 new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
                         MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DATA},
                 MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"", null, null);
-        assert c != null;
-        if (c.getCount() == 0) {
+        if (c == null || c.getCount() == 0) {
+            if (c != null) {
+                c.close();
+            }
+            uri = RingdroidUtils.getInternalAudioCollectionUri();
+            c = mActivity.getContentResolver().query(uri,
+                    new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,
+                            MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
+                            MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DATA},
+                    MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"", null, null);
+        }
+        if (c == null || c.getCount() == 0) {
+            if (c != null) {
+                c.close();
+            }
             mTitle = getBasename(mFilename);
             mArtist = "";
             mAlbum = "";
