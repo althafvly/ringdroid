@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.spotless)
 }
 
 android {
@@ -47,26 +46,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-}
-
-spotless {
-    java {
-        removeUnusedImports()
-        eclipse()
-        leadingSpacesToTabs(2)
-        leadingTabsToSpaces(4)
-        target("src/*/java/**/*.java")
-    }
-    format("xml") {
-        target("src/**/*.xml")
-        targetExclude("**/build/", ".idea/")
-        trimTrailingWhitespace()
-        leadingTabsToSpaces()
-    }
-}
-
-tasks.named("preBuild") {
-    dependsOn("spotlessCheck")
 }
 
 dependencies {
