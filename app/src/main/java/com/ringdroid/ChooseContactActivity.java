@@ -216,9 +216,9 @@ public class ChooseContactActivity extends Activity {
 
                 Cursor cursor = getContentResolver().query(Contacts.CONTENT_URI,
                         new String[]{Contacts._ID, Contacts.CUSTOM_RINGTONE, Contacts.DISPLAY_NAME,
-                                Contacts.LAST_TIME_CONTACTED, Contacts.STARRED, Contacts.TIMES_CONTACTED},
+                                Contacts.STARRED},
                         selection, selectionArgs,
-                        "STARRED DESC, TIMES_CONTACTED DESC, LAST_TIME_CONTACTED DESC, DISPLAY_NAME ASC");
+                        "STARRED DESC, DISPLAY_NAME ASC");
 
                 if (Thread.interrupted())
                     return;

@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -45,6 +46,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowMetrics;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -216,6 +218,17 @@ public class RingdroidEditActivity extends Activity
             versionName = "unknown";
         }
 
+        AlertDialog dialog = getAlertDialog(activity, versionName).show();
+
+        // Make links clickable
+        TextView messageView = dialog.findViewById(android.R.id.message);
+        if (messageView != null) {
+            messageView.setMovementMethod(LinkMovementMethod.getInstance());
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private static AlertDialog.Builder getAlertDialog(Activity activity, String versionName) {
         String html = activity.getString(R.string.about_text_html, versionName);
         AlertDialog.Builder builder = new AlertDialog.Builder(activity).setTitle(R.string.about_title)
                 .setPositiveButton(R.string.alert_ok_button, null);
@@ -226,13 +239,7 @@ public class RingdroidEditActivity extends Activity
             builder.setMessage(Html.fromHtml(html)); // deprecated but works on < 24
         }
 
-        AlertDialog dialog = builder.show();
-
-        // Make links clickable
-        TextView messageView = dialog.findViewById(android.R.id.message);
-        if (messageView != null) {
-            messageView.setMovementMethod(LinkMovementMethod.getInstance());
-        }
+        return builder;
     }
 
     @Override
@@ -637,12 +644,22 @@ public class RingdroidEditActivity extends Activity
      * Called from both onCreate and onConfigurationChanged (if the user switched
      * layouts)
      */
+    @SuppressWarnings("deprecation")
     private void loadGui() {
         // Inflate our UI from its XML layout description.
         setContentView(R.layout.editor);
 
         DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowMetrics windowMetrics = getWindowManager().getCurrentWindowMetrics();
+            Rect bounds = windowMetrics.getBounds();
+
+            metrics.widthPixels = bounds.width();
+            metrics.heightPixels = bounds.height();
+        } else {
+            getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+        }
+
         mDensity = metrics.density;
 
         mMarkerLeftInset = (int) (46 * mDensity);
@@ -1411,11 +1428,11 @@ public class RingdroidEditActivity extends Activity
             String artist = "" + getResources().getText(R.string.artist_name);
 
             ContentValues values = new ContentValues();
-            values.put(MediaStore.MediaColumns.DATA, outPath);
-            values.put(MediaStore.MediaColumns.TITLE, title.toString());
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, title.toString());
             values.put(MediaStore.MediaColumns.SIZE, fileSize);
             values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
 
+            values.put(MediaStore.Audio.Media.TITLE, title.toString());
             values.put(MediaStore.Audio.Media.ARTIST, artist);
             values.put(MediaStore.Audio.Media.DURATION, duration);
 
@@ -1423,10 +1440,10 @@ public class RingdroidEditActivity extends Activity
             values.put(MediaStore.Audio.Media.IS_NOTIFICATION, mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION);
             values.put(MediaStore.Audio.Media.IS_ALARM, mNewFileKind == FileSaveDialog.FILE_KIND_ALARM);
             values.put(MediaStore.Audio.Media.IS_MUSIC, mNewFileKind == FileSaveDialog.FILE_KIND_MUSIC);
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_RINGTONES);
 
             // Insert it into the database
-            Uri uri = MediaStore.Audio.Media.getContentUriForPath(outPath);
-            assert uri != null;
+            Uri uri = RingdroidUtils.getExternalAudioCollectionUri();
             newUri = getContentResolver().insert(uri, values);
             setResult(RESULT_OK, new Intent().setData(newUri));
         } else {

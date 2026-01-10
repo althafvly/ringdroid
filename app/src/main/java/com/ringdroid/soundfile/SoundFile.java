@@ -218,8 +218,6 @@ public class SoundFile {
 
         int decodedSamplesSize = 0; // size of the output buffer containing decoded samples.
         byte[] decodedSamples = null;
-        ByteBuffer[] inputBuffers = codec.getInputBuffers();
-        ByteBuffer[] outputBuffers = codec.getOutputBuffers();
         int sample_size;
         MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
         long presentation_time;
@@ -240,38 +238,42 @@ public class SoundFile {
             // read data from file and feed it to the decoder input buffers.
             int inputBufferIndex = codec.dequeueInputBuffer(100);
             if (!done_reading && inputBufferIndex >= 0) {
-                sample_size = extractor.readSampleData(inputBuffers[inputBufferIndex], 0);
-                if (firstSampleData && Objects.equals(format.getString(MediaFormat.KEY_MIME), "audio/mp4a-latm")
-                        && sample_size == 2) {
-                    // For some reasons on some devices (e.g. the Samsung S3) you should not
-                    // provide the first two bytes of an AAC stream, otherwise the MediaCodec will
-                    // crash. These two bytes do not contain music data but basic info on the
-                    // stream (e.g. channel configuration and sampling frequency), and skipping them
-                    // seems OK with other devices (MediaCodec has already been configured and
-                    // already knows these parameters).
-                    extractor.advance();
-                    tot_size_read += sample_size;
-                } else if (sample_size < 0) {
-                    // All samples have been read.
-                    codec.queueInputBuffer(inputBufferIndex, 0, 0, -1, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
-                    done_reading = true;
-                } else {
-                    presentation_time = extractor.getSampleTime();
-                    codec.queueInputBuffer(inputBufferIndex, 0, sample_size, presentation_time, 0);
-                    extractor.advance();
-                    tot_size_read += sample_size;
-                    if (mProgressListener != null) {
-                        if (mProgressListener.reportProgress((float) (tot_size_read) / mFileSize)) {
-                            // We are asked to stop reading the file. Returning immediately. The
-                            // SoundFile object is invalid and should NOT be used afterward!
-                            extractor.release();
-                            codec.stop();
-                            codec.release();
-                            return;
+                ByteBuffer inputBuffer = codec.getInputBuffer(inputBufferIndex);
+                if (inputBuffer != null) {
+                    inputBuffer.clear();
+                    sample_size = extractor.readSampleData(inputBuffer, 0);
+                    if (firstSampleData && Objects.equals(format.getString(MediaFormat.KEY_MIME), "audio/mp4a-latm")
+                            && sample_size == 2) {
+                        // For some reasons on some devices (e.g. the Samsung S3) you should not
+                        // provide the first two bytes of an AAC stream, otherwise the MediaCodec will
+                        // crash. These two bytes do not contain music data but basic info on the
+                        // stream (e.g. channel configuration and sampling frequency), and skipping them
+                        // seems OK with other devices (MediaCodec has already been configured and
+                        // already knows these parameters).
+                        extractor.advance();
+                        tot_size_read += sample_size;
+                    } else if (sample_size < 0) {
+                        // All samples have been read.
+                        codec.queueInputBuffer(inputBufferIndex, 0, 0, -1, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
+                        done_reading = true;
+                    } else {
+                        presentation_time = extractor.getSampleTime();
+                        codec.queueInputBuffer(inputBufferIndex, 0, sample_size, presentation_time, 0);
+                        extractor.advance();
+                        tot_size_read += sample_size;
+                        if (mProgressListener != null) {
+                            if (mProgressListener.reportProgress((float) (tot_size_read) / mFileSize)) {
+                                // We are asked to stop reading the file. Returning immediately. The
+                                // SoundFile object is invalid and should NOT be used afterward!
+                                extractor.release();
+                                codec.stop();
+                                codec.release();
+                                return;
+                            }
                         }
                     }
+                    firstSampleData = false;
                 }
-                firstSampleData = false;
             }
 
             // Get decoded stream from the decoder output buffers.
@@ -289,50 +291,51 @@ public class SoundFile {
             }
 
             if (outputBufferIndex >= 0 && info.size > 0) {
-                if (decodedSamplesSize < info.size) {
-                    decodedSamplesSize = info.size;
-                    decodedSamples = new byte[decodedSamplesSize];
-                }
-                outputBuffers[outputBufferIndex].get(decodedSamples, 0, info.size);
-                outputBuffers[outputBufferIndex].clear();
-                // Check if buffer is big enough. Resize it if it's too small.
-                if (mDecodedBytes.remaining() < info.size) {
-                    // Getting a rough estimate of the total size, allocate 20% more, and
-                    // make sure to allocate at least 5MB more than the initial size.
-                    int position = mDecodedBytes.position();
-                    int newSize = (int) ((position * (1.0 * mFileSize / tot_size_read)) * 1.2);
-                    if (newSize - position < info.size + 5 * (1 << 20)) {
-                        newSize = position + info.size + 5 * (1 << 20);
+                ByteBuffer outputBuffer = codec.getOutputBuffer(outputBufferIndex);
+                if (outputBuffer != null) {
+                    if (decodedSamplesSize < info.size) {
+                        decodedSamplesSize = info.size;
+                        decodedSamples = new byte[decodedSamplesSize];
                     }
-                    ByteBuffer newDecodedBytes = null;
-                    // Try to allocate memory. If we are OOM, try to run the garbage collector.
-                    int retry = 10;
-                    while (retry > 0) {
-                        try {
-                            newDecodedBytes = ByteBuffer.allocate(newSize);
-                            break;
-                        } catch (OutOfMemoryError oome) {
-                            // setting android:largeHeap="true" in <application> seem to help not
-                            // reaching this section.
-                            retry--;
+                    outputBuffer.get(decodedSamples, 0, info.size);
+                    outputBuffer.clear();
+                    // Check if buffer is big enough. Resize it if it's too small.
+                    if (mDecodedBytes.remaining() < info.size) {
+                        // Getting a rough estimate of the total size, allocate 20% more, and
+                        // make sure to allocate at least 5MB more than the initial size.
+                        int position = mDecodedBytes.position();
+                        int newSize = (int) ((position * (1.0 * mFileSize / tot_size_read)) * 1.2);
+                        if (newSize - position < info.size + 5 * (1 << 20)) {
+                            newSize = position + info.size + 5 * (1 << 20);
                         }
+                        ByteBuffer newDecodedBytes = null;
+                        // Try to allocate memory. If we are OOM, try to run the garbage collector.
+                        int retry = 10;
+                        while (retry > 0) {
+                            try {
+                                newDecodedBytes = ByteBuffer.allocate(newSize);
+                                break;
+                            } catch (OutOfMemoryError oome) {
+                                // setting android:largeHeap="true" in <application> seem to help not
+                                // reaching this section.
+                                retry--;
+                            }
+                        }
+                        if (retry == 0) {
+                            // Failed to allocate memory... Stop reading more data and finalize the
+                            // instance with the data decoded so far.
+                            break;
+                        }
+                        // ByteBuffer newDecodedBytes = ByteBuffer.allocate(newSize);
+                        mDecodedBytes.rewind();
+                        assert newDecodedBytes != null;
+                        newDecodedBytes.put(mDecodedBytes);
+                        mDecodedBytes = newDecodedBytes;
+                        mDecodedBytes.position(position);
                     }
-                    if (retry == 0) {
-                        // Failed to allocate memory... Stop reading more data and finalize the
-                        // instance with the data decoded so far.
-                        break;
-                    }
-                    // ByteBuffer newDecodedBytes = ByteBuffer.allocate(newSize);
-                    mDecodedBytes.rewind();
-                    assert newDecodedBytes != null;
-                    newDecodedBytes.put(mDecodedBytes);
-                    mDecodedBytes = newDecodedBytes;
-                    mDecodedBytes.position(position);
+                    mDecodedBytes.put(decodedSamples, 0, info.size);
                 }
-                mDecodedBytes.put(decodedSamples, 0, info.size);
                 codec.releaseOutputBuffer(outputBufferIndex, false);
-            } else if (outputBufferIndex == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
-                outputBuffers = codec.getOutputBuffers();
             }
             if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0
                     || (mDecodedBytes.position() / (2 * mChannels)) >= expectedNumSamples) {
@@ -515,8 +518,6 @@ public class SoundFile {
         // Get an estimation of the encoded data based on the bitrate. Add 10% to it.
         int estimatedEncodedSize = (int) ((endTime - startTime) * ((double) bitrate / 8) * 1.1);
         ByteBuffer encodedBytes = ByteBuffer.allocate(estimatedEncodedSize);
-        ByteBuffer[] inputBuffers = codec.getInputBuffers();
-        ByteBuffer[] outputBuffers = codec.getOutputBuffers();
         MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
         boolean done_reading = false;
         long presentation_time;
@@ -544,8 +545,12 @@ public class SoundFile {
                     codec.queueInputBuffer(inputBufferIndex, 0, 0, -1, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
                     done_reading = true;
                 } else {
-                    inputBuffers[inputBufferIndex].clear();
-                    if (buffer.length > inputBuffers[inputBufferIndex].remaining()) {
+                    ByteBuffer inputBuffer = codec.getInputBuffer(inputBufferIndex);
+                    if (inputBuffer == null) {
+                        continue;
+                    }
+                    inputBuffer.clear();
+                    if (buffer.length > inputBuffer.remaining()) {
                         // Input buffer is smaller than one frame. This should never happen.
                         continue;
                     }
@@ -568,7 +573,7 @@ public class SoundFile {
                         }
                     }
                     num_samples_left -= frame_size;
-                    inputBuffers[inputBufferIndex].put(buffer);
+                    inputBuffer.put(buffer);
                     presentation_time = (long) (((num_frames++) * frame_size * 1e6) / mSampleRate);
                     codec.queueInputBuffer(inputBufferIndex, 0, buffer.length, presentation_time, 0);
                 }
@@ -577,6 +582,11 @@ public class SoundFile {
             // Get the encoded samples from the encoder.
             int outputBufferIndex = codec.dequeueOutputBuffer(info, 100);
             if (outputBufferIndex >= 0 && info.size > 0 && info.presentationTimeUs >= 0) {
+                ByteBuffer outputBuffer = codec.getOutputBuffer(outputBufferIndex);
+                if (outputBuffer == null) {
+                    codec.releaseOutputBuffer(outputBufferIndex, false);
+                    continue;
+                }
                 if (num_out_frames < frame_sizes.length) {
                     frame_sizes[num_out_frames++] = info.size;
                 }
@@ -584,8 +594,8 @@ public class SoundFile {
                     encodedSamplesSize = info.size;
                     encodedSamples = new byte[encodedSamplesSize];
                 }
-                outputBuffers[outputBufferIndex].get(encodedSamples, 0, info.size);
-                outputBuffers[outputBufferIndex].clear();
+                outputBuffer.get(encodedSamples, 0, info.size);
+                outputBuffer.clear();
                 codec.releaseOutputBuffer(outputBufferIndex, false);
                 if (encodedBytes.remaining() < info.size) { // Hopefully this should not happen.
                     estimatedEncodedSize = (int) (estimatedEncodedSize * 1.2); // Add 20%.
@@ -597,8 +607,6 @@ public class SoundFile {
                     encodedBytes.position(position);
                 }
                 encodedBytes.put(encodedSamples, 0, info.size);
-            } else if (outputBufferIndex == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
-                outputBuffers = codec.getOutputBuffers();
             }
             if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
                 // We got all the encoded data from the encoder.
