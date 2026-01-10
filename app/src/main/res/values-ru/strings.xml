@@ -132,12 +132,12 @@
     <string name="mic_permission">Разрешение микрофона</string>
     <string name="contacts_permission">Разрешение контактов</string>
     <string name="start">Начать</string>
-    <string name="storage_permission_summary">Требуется для сохранения и доступа к аудиофайлам (Рекомендуется)\n\nТребуется это или разрешение на медиа-аудио для чтения и записи приложением</string>
+    <string name="storage_permission_summary">Требуется для сохранения и доступа к аудиофайлам</string>
     <string name="write_system_settings_summary">Требуется для установки рингтонов в качестве системных по умолчанию</string>
     <string name="mic_permission_summary">Требуется для записи ваших собственных аудиоклипов</string>
     <string name="contact_permission_summary">Требуется для назначения рингтонов вашим контактам</string>
     <string name="media_audio_permission">Разрешение на медиа-аудио</string>
-    <string name="media_audio_summary">Требуется для чтения файлов рингтонов с вашего смартфона \n\nТребуется это или разрешение на хранение для чтения и записи приложением</string>
+    <string name="media_audio_summary">Требуется для чтения файлов рингтонов с вашего смартфона</string>
     <string name="list_is_empty">Аудиофайлы не найдены. Включите «Показать все аудио» в меню с тремя точками, чтобы просмотреть системные аудиофайлы.</string>
 
     <string name="zoom_in">Увеличить</string>

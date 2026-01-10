@@ -132,12 +132,12 @@
     <string name="mic_permission">마이크 권한</string>
     <string name="contacts_permission">연락처 권한</string>
     <string name="start">시작</string>
-    <string name="storage_permission_summary">오디오 파일을 저장하고 액세스하는 데 필요합니다 (권장)\n\n앱이 읽고 쓸 수 있도록 이 권한 또는 미디어 오디오 권한이 필요합니다</string>
+    <string name="storage_permission_summary">오디오 파일을 저장하고 액세스하는 데 필요합니다</string>
     <string name="write_system_settings_summary">벨소리를 시스템 기본값으로 설정하는 데 필요합니다</string>
     <string name="mic_permission_summary">자신의 오디오 클립을 녹음하는 데 필요합니다</string>
     <string name="contact_permission_summary">연락처에 벨소리를 할당하는 데 필요합니다</string>
     <string name="media_audio_permission">미디어 오디오 권한</string>
-    <string name="media_audio_summary">스마트폰에서 벨소리 파일을 읽는 데 필요합니다 \n\n앱이 읽고 쓸 수 있도록 이 권한 또는 저장소 권한이 필요합니다</string>
+    <string name="media_audio_summary">스마트폰에서 벨소리 파일을 읽는 데 필요합니다</string>
     <string name="list_is_empty">오디오 파일이 없습니다. 시스템 오디오 파일을 보려면 오른쪽 상단의 점 세 개 메뉴에서 ‘모든 오디오 표시’를 활성화하세요.</string>
 
     <string name="zoom_in">확대</string>

@@ -132,12 +132,12 @@
     <string name="mic_permission">Uprawnienie mikrofonu</string>
     <string name="contacts_permission">Uprawnienie do kontaktów</string>
     <string name="start">Start</string>
-    <string name="storage_permission_summary">Potrzebne do zapisywania i dostępu do plików audio (Zalecane)\n\nWymaga tego lub uprawnienia do mediów audio, aby aplikacja mogła czytać i pisać</string>
+    <string name="storage_permission_summary">Potrzebne do zapisywania i dostępu do plików audio</string>
     <string name="write_system_settings_summary">Potrzebne do ustawienia dzwonków jako domyślne systemowe</string>
     <string name="mic_permission_summary">Potrzebne do nagrywania własnych klipów audio</string>
     <string name="contact_permission_summary">Potrzebne do przypisywania dzwonków do kontaktów</string>
     <string name="media_audio_permission">Uprawnienie do mediów audio</string>
-    <string name="media_audio_summary">Potrzebne do odczytu plików dzwonków ze smartfona \n\nWymaga tego lub uprawnienia do pamięci, aby aplikacja mogła czytać i pisać</string>
+    <string name="media_audio_summary">Potrzebne do odczytu plików dzwonków ze smartfona</string>
     <string name="list_is_empty">Nie znaleziono plików audio. Włącz „Pokaż wszystkie pliki audio” z menu trzech kropek, aby wyświetlić systemowe pliki audio.</string>
 
     <string name="zoom_in">Powiększ</string>

@@ -132,12 +132,12 @@
     <string name="mic_permission">マイク権限</string>
     <string name="contacts_permission">連絡先権限</string>
     <string name="start">開始</string>
-    <string name="storage_permission_summary">オーディオファイルを保存およびアクセスするために必要です (推奨)\n\nアプリが読み書きできるように、これまたはメディアオーディオ権限が必要です</string>
+    <string name="storage_permission_summary">オーディオファイルの保存とアクセスに必要です</string>
     <string name="write_system_settings_summary">着信音をシステムのデフォルトとして設定するために必要です</string>
     <string name="mic_permission_summary">独自のオーディオクリップを録音するために必要です</string>
     <string name="contact_permission_summary">連絡先に着信音を割り当てるために必要です</string>
     <string name="media_audio_permission">メディアオーディオ権限</string>
-    <string name="media_audio_summary">スマートフォンから着信音ファイルを読み取るために必要です \n\nアプリが読み書きできるように、これまたはストレージ権限が必要です</string>
+    <string name="media_audio_summary">スマートフォンから着信音ファイルを読み取るために必要です</string>
     <string name="list_is_empty">オーディオファイルが見つかりません。システムのオーディオファイルを表示するには、三点メニューから「すべてのオーディオを表示」を有効にしてください。</string>
 
     <string name="zoom_in">拡大</string>

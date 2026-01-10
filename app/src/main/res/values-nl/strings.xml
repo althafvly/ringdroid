@@ -132,12 +132,12 @@
     <string name="mic_permission">Microfoontoestemming</string>
     <string name="contacts_permission">Contactentoestemming</string>
     <string name="start">Start</string>
-    <string name="storage_permission_summary">Nodig om audiobestanden op te slaan en te openen (Aanbevolen)\n\nVereist dit of media-audiotoestemming voor de app om te lezen en schrijven</string>
+    <string name="storage_permission_summary">Nodig om audiobestanden op te slaan en te openen</string>
     <string name="write_system_settings_summary">Nodig om beltonen als systeemstandaard in te stellen</string>
     <string name="mic_permission_summary">Nodig om uw eigen audioclips op te nemen</string>
     <string name="contact_permission_summary">Nodig om beltonen aan uw contacten toe te wijzen</string>
     <string name="media_audio_permission">Media-audiotoestemming</string>
-    <string name="media_audio_summary">Nodig om beltoonbestanden van uw smartphone te lezen \n\nVereist dit of opslagtoestemming voor de app om te lezen en schrijven</string>
+    <string name="media_audio_summary">Nodig om beltoonbestanden van uw smartphone te lezen</string>
     <string name="list_is_empty">Geen audiobestanden gevonden. Schakel ‘Alle audio tonen’ in via het menu met drie puntjes om systeemaudiobestanden te bekijken.</string>
 
     <string name="zoom_in">Inzoomen</string>

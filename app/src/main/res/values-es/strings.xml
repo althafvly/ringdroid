@@ -127,13 +127,14 @@
     <string name="write_system_settings">Escribir Configuración del Sistema</string>
     <string name="mic_permission">Permiso de Micrófono</string>
     <string name="contacts_permission">Permiso de Contactos</string>
+
     <string name="start">Inicio</string>
-    <string name="storage_permission_summary">Necesario para guardar y acceder a archivos de audio (Recomendado)\n\nRequiere este o el permiso de audio multimedia para que la aplicación lea y escriba</string>
+    <string name="storage_permission_summary">Necesario para guardar y acceder a archivos de audio</string>
     <string name="write_system_settings_summary">Necesario para establecer tonos de llamada como predeterminados del sistema</string>
     <string name="mic_permission_summary">Necesario para grabar sus propios clips de audio</string>
     <string name="contact_permission_summary">Necesario para asignar tonos de llamada a sus contactos</string>
     <string name="media_audio_permission">Permiso de audio multimedia</string>
-    <string name="media_audio_summary">Necesario para leer archivos de tono de llamada desde su teléfono inteligente \n\nRequiere este o el permiso de almacenamiento para que la aplicación lea y escriba</string>
+    <string name="media_audio_summary">Necesario para leer archivos de tono de llamada desde su teléfono inteligente</string>
     <string name="list_is_empty">No se encontraron archivos de audio. Habilita “Mostrar todo el audio” desde el menú de tres puntos para ver los archivos de audio del sistema.</string>
 
     <!-- Permission requirement dialog -->

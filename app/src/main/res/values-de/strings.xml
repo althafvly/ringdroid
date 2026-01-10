@@ -132,12 +132,12 @@
     <string name="mic_permission">Mikrofonberechtigung</string>
     <string name="contacts_permission">Kontaktberechtigung</string>
     <string name="start">Start</string>
-    <string name="storage_permission_summary">Wird zum Speichern und Zugreifen auf Audiodateien benötigt (Empfohlen)\n\nErfordert diese oder die Medien-Audioberechtigung, damit die App lesen und schreiben kann</string>
+    <string name="storage_permission_summary">Wird zum Speichern und Zugreifen auf Audiodateien benötigt</string>
     <string name="write_system_settings_summary">Wird benötigt, um Klingeltöne als Systemstandard festzulegen</string>
     <string name="mic_permission_summary">Wird benötigt, um eigene Audioclips aufzunehmen</string>
     <string name="contact_permission_summary">Wird benötigt, um Ihren Kontakten Klingeltöne zuzuweisen</string>
     <string name="media_audio_permission">Medien-Audioberechtigung</string>
-    <string name="media_audio_summary">Wird benötigt, um Klingelton-Dateien von Ihrem Smartphone zu lesen \n\nErfordert diese oder die Speicherberechtigung, damit die App lesen und schreiben kann</string>
+    <string name="media_audio_summary">Wird benötigt, um Klingelton-Dateien von Ihrem Smartphone zu lesen</string>
     <string name="list_is_empty">Keine Audiodateien gefunden. Aktivieren Sie „Alle Audiodateien anzeigen“ über das Drei-Punkte-Menü, um Systemaudiodateien anzuzeigen.</string>
 
     <string name="zoom_in">Vergrößern</string>

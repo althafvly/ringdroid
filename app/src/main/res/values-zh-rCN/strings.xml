@@ -132,12 +132,12 @@
     <string name="mic_permission">麦克风权限</string>
     <string name="contacts_permission">联系人权限</string>
     <string name="start">开始</string>
-    <string name="storage_permission_summary">保存和访问音频文件所需 (推荐)\n\n应用读取和写入需要此权限或媒体音频权限</string>
+    <string name="storage_permission_summary">保存和访问音频文件所需</string>
     <string name="write_system_settings_summary">将铃声设为系统默认所需</string>
     <string name="mic_permission_summary">录制您自己的音频片段所需</string>
     <string name="contact_permission_summary">将铃声分配给您的联系人所需</string>
     <string name="media_audio_permission">媒体音频权限</string>
-    <string name="media_audio_summary">从您的智能手机读取铃声文件所需 \n\n应用读取和写入需要此权限或存储权限</string>
+    <string name="media_audio_summary">从您的智能手机读取铃声文件所需</string>
     <string name="list_is_empty">未找到音频文件。请在右上角三点菜单中启用“显示所有音频”以查看系统音频文件。</string>
 
     <string name="zoom_in">放大</string>

@@ -132,12 +132,12 @@
     <string name="mic_permission">Autorisation du Microphone</string>
     <string name="contacts_permission">Autorisation des Contacts</string>
     <string name="start">Démarrer</string>
-    <string name="storage_permission_summary">Nécessaire pour enregistrer et accéder aux fichiers audio (Recommandé)\n\nNécessite cette autorisation ou l\'autorisation audio multimédia pour que l\'application puisse lire et écrire</string>
+    <string name="storage_permission_summary">Nécessaire pour enregistrer et accéder aux fichiers audio</string>
     <string name="write_system_settings_summary">Nécessaire pour définir les sonneries comme valeurs par défaut du système</string>
     <string name="mic_permission_summary">Nécessaire pour enregistrer vos propres clips audio</string>
     <string name="contact_permission_summary">Nécessaire pour attribuer des sonneries à vos contacts</string>
     <string name="media_audio_permission">Autorisation audio multimédia</string>
-    <string name="media_audio_summary">Nécessaire pour lire les fichiers de sonnerie depuis votre smartphone \n\nNécessite cette autorisation ou l\'autorisation de stockage pour que l\'application puisse lire et écrire</string>
+    <string name="media_audio_summary">Nécessaire pour lire les fichiers de sonnerie depuis votre smartphone</string>
     <string name="list_is_empty">Aucun fichier audio trouvé. Activez « Afficher tous les fichiers audio » depuis le menu à trois points pour voir les fichiers audio du système.</string>
 
     <string name="zoom_in">Zoom avant</string>
