@@ -12,8 +12,8 @@ android {
         applicationId = "org.thayyil.ringdroid"
         minSdk = 21
         targetSdk = 36
-        versionCode = 20803
-        versionName = "2.8.3"
+        versionCode = 20804
+        versionName = "2.8.4"
     }
 
     buildTypes {
