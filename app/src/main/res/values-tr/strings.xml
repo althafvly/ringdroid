@@ -143,4 +143,6 @@
     <string name="zoom_in">Yakınlaştır</string>
     <string name="zoom_out">Uzaklaştır</string>
 
+    <string name="menu_permissions">İzinler</string>
+
 </resources>

@@ -143,4 +143,6 @@
     <string name="zoom_in">വലുതാക്കുക</string>
     <string name="zoom_out">ചെറുതാക്കുക</string>
 
+    <string name="menu_permissions">അനുമതികൾ</string>
+
 </resources>

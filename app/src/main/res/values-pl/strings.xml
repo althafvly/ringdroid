@@ -143,4 +143,6 @@
     <string name="zoom_in">Powiększ</string>
     <string name="zoom_out">Pomniejsz</string>
 
+    <string name="menu_permissions">Uprawnienia</string>
+
 </resources>

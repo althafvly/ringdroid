@@ -143,4 +143,6 @@
     <string name="zoom_in">تكبير</string>
     <string name="zoom_out">تصغير</string>
 
+    <string name="menu_permissions">الأذونات</string>
+
 </resources>

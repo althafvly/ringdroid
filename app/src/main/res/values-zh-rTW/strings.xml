@@ -143,4 +143,6 @@
     <string name="zoom_in">放大</string>
     <string name="zoom_out">縮小</string>
 
+    <string name="menu_permissions">權限</string>
+
 </resources>

@@ -143,4 +143,6 @@
     <string name="zoom_in">Увеличить</string>
     <string name="zoom_out">Уменьшить</string>
 
+    <string name="menu_permissions">Разрешения</string>
+
 </resources>

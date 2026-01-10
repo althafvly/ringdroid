@@ -329,6 +329,11 @@ public class RingdroidSelectActivity extends Activity {
             mShowAll = newState;
             refreshListView();
             return true;
+        } else if (id == R.id.action_permissions) {
+            Intent intent = new Intent(this, PermissionActivity.class);
+            intent.putExtra(PermissionActivity.EXTRA_FORCE_SHOW, true);
+            startActivity(intent);
+            return true;
         }
 
         return false;

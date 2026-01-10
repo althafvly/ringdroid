@@ -143,4 +143,6 @@
     <string name="zoom_in">ज़ूम इन</string>
     <string name="zoom_out">ज़ूम आउट</string>
 
+    <string name="menu_permissions">अनुमतियाँ</string>
+
 </resources>

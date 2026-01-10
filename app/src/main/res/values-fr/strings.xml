@@ -143,4 +143,6 @@
     <string name="zoom_in">Zoom avant</string>
     <string name="zoom_out">Zoom arrière</string>
 
+    <string name="menu_permissions">Autorisations</string>
+
 </resources>

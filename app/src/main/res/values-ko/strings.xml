@@ -143,4 +143,6 @@
     <string name="zoom_in">확대</string>
     <string name="zoom_out">축소</string>
 
+    <string name="menu_permissions">권한</string>
+
 </resources>

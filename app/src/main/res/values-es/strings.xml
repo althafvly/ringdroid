@@ -144,4 +144,6 @@
     <string name="zoom_in">Acercar</string>
     <string name="zoom_out">Alejar</string>
 
+    <string name="menu_permissions">Permisos</string>
+
 </resources>

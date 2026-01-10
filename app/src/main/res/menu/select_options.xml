@@ -25,4 +25,9 @@
         android:showAsAction="never"
         android:title="@string/menu_show_all_audio" />
 
+    <item
+        android:id="@+id/action_permissions"
+        android:showAsAction="never"
+        android:title="@string/menu_permissions" />
+
 </menu>

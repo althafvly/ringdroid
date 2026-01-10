@@ -13,6 +13,8 @@ import java.util.Objects;
 
 public class PermissionActivity extends Activity {
 
+    public static final String EXTRA_FORCE_SHOW = BuildConfig.APPLICATION_ID + ".extra.FORCE_SHOW_PERMISSIONS";
+
     private Switch storageSwitch;
     private Switch writeSettingsSwitch;
     private Switch micSwitch;
@@ -27,6 +29,8 @@ public class PermissionActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.permission_screen);
 
+        boolean forceShow = getIntent().getBooleanExtra(EXTRA_FORCE_SHOW, false);
+
         storageSwitch = findViewById(R.id.switch_storage);
         writeSettingsSwitch = findViewById(R.id.switch_write_settings);
         micSwitch = findViewById(R.id.switch_mic);
@@ -34,11 +38,16 @@ public class PermissionActivity extends Activity {
         nextButton = findViewById(R.id.btn_next);
         mediaAudioSwitch = findViewById(R.id.switch_media_audio);
 
-        if (PermissionUtils.hasStoragePermission(this) || PermissionUtils.hasMediaAudioPermission(this)) {
+        boolean hasStoragePermission = PermissionUtils.hasStoragePermission(this);
+        boolean hasMediaAudioPermission = PermissionUtils.hasMediaAudioPermission(this);
+
+        if (!forceShow && (hasStoragePermission || hasMediaAudioPermission)) {
             startMainActivity();
         } else {
-            showPermissionInfoDialog();
-            updateUI();
+            if (!hasStoragePermission && !hasMediaAudioPermission) {
+                showPermissionInfoDialog();
+            }
+            updateUI(forceShow);
         }
     }
 
@@ -51,7 +60,7 @@ public class PermissionActivity extends Activity {
                 .setPositiveButton(android.R.string.ok, null).show();
     }
 
-    private void updateUI() {
+    private void updateUI(boolean forceShow) {
         boolean hasStoragePermission = PermissionUtils.hasStoragePermission(this);
         boolean hasMediaAudioPermission = PermissionUtils.hasMediaAudioPermission(this);
         boolean hasWritePermission = PermissionUtils.hasWriteSettingsPermission(this);
@@ -112,6 +121,7 @@ public class PermissionActivity extends Activity {
 
         nextButton.setEnabled(hasStoragePermission || hasMediaAudioPermission);
         nextButton.setOnClickListener(v -> startMainActivity());
+        nextButton.setVisibility(forceShow ? View.GONE : View.VISIBLE);
     }
 
     private void startMainActivity() {
@@ -122,6 +132,7 @@ public class PermissionActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        updateUI();
+        boolean forceShow = getIntent().getBooleanExtra(EXTRA_FORCE_SHOW, false);
+        updateUI(forceShow);
     }
 }
