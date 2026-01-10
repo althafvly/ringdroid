@@ -22,8 +22,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-
-import androidx.appcompat.widget.AppCompatImageView;
+import android.widget.ImageView;
 
 /**
  * Represents a draggable start or end marker.
@@ -35,7 +34,7 @@ import androidx.appcompat.widget.AppCompatImageView;
  * This class directly keeps track of its own velocity, though, accelerating as
  * the user holds down the left or right arrows while this control is focused.
  */
-public class MarkerView extends AppCompatImageView {
+public class MarkerView extends ImageView {
 
     private int mVelocity;
 

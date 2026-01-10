@@ -86,6 +86,5 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material.icons.extended)
-    implementation(libs.material)
     implementation(libs.lifecycle.runtime)
 }
