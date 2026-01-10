@@ -48,6 +48,10 @@
 
     <string name="file_save_title">Opslaan als:</string>
 
+    <!-- Permission requirement dialog -->
+    <string name="storage_permission_required_for_editor_fdroid">Opslag- of media-audiotoesteming is vereist voor deze app om te werken. Alle overige machtigingen zijn optioneel.</string>
+    <string name="storage_permission_required_for_editor_play">Media-audiotoesteming is vereist voor deze app om te werken. Alle overige machtigingen zijn optioneel.</string>
+
     <string name="ringtone_type_label">Type:</string>
 
     <string name="type_music">Muziek</string>

@@ -209,6 +209,10 @@
     <string name="media_audio_summary">Needed to read ringtone files from your smart phone \n\nRequires this or storage permission for the app to read and write</string>
     <string name="list_is_empty">No audio files found. Enable ‘Show all audio’ from the three-dot menu to view system audio files</string>
 
+    <!-- Permission requirement dialog -->
+    <string name="storage_permission_required_for_editor_fdroid">Storage or media audio permission is required for this app to work. All other permissions are optional.</string>
+    <string name="storage_permission_required_for_editor_play">Media audio permission is required for this app to work. All other permissions are optional.</string>
+
     <string name="filename_with_suffix" translatable="false">%1$s %2$s</string>
     <string name="zoom_in">Zoom in</string>
     <string name="zoom_out">Zoom out</string>

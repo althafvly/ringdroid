@@ -48,6 +48,10 @@
 
     <string name="file_save_title">Farklı Kaydet:</string>
 
+    <!-- Permission requirement dialog -->
+    <string name="storage_permission_required_for_editor_fdroid">Depolama veya medya ses izni bu uygulamanın çalışması için gereklidir. Diğer tüm izinler isteğe bağlıdır.</string>
+    <string name="storage_permission_required_for_editor_play">Medya ses izni bu uygulamanın çalışması için gereklidir. Diğer tüm izinler isteğe bağlıdır.</string>
+
     <string name="ringtone_type_label">Tür:</string>
 
     <string name="type_music">Müzik</string>

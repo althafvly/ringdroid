@@ -1,12 +1,15 @@
 package com.ringdroid;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
+
+import java.util.Objects;
 
 public class PermissionActivity extends Activity {
 
@@ -16,6 +19,8 @@ public class PermissionActivity extends Activity {
     private Switch contactSwitch;
     private Switch mediaAudioSwitch;
     private Button nextButton;
+
+    private final String buildType = BuildConfig.FLAVOR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +37,18 @@ public class PermissionActivity extends Activity {
         if (PermissionUtils.hasStoragePermission(this) || PermissionUtils.hasMediaAudioPermission(this)) {
             startMainActivity();
         } else {
+            showPermissionInfoDialog();
             updateUI();
         }
+    }
+
+    private void showPermissionInfoDialog() {
+        int message = R.string.storage_permission_required_for_editor_play;
+        if (!Objects.equals(buildType, "play")) {
+            message = R.string.storage_permission_required_for_editor_fdroid;
+        }
+        new AlertDialog.Builder(this).setTitle(R.string.storage_permission).setMessage(message)
+                .setPositiveButton(android.R.string.ok, null).show();
     }
 
     private void updateUI() {
@@ -55,7 +70,7 @@ public class PermissionActivity extends Activity {
             findViewById(R.id.switch_media_audio_entry).setVisibility(View.GONE);
         }
 
-        if (BuildConfig.FLAVOR != "play") {
+        if (!Objects.equals(buildType, "play")) {
             storageSwitch.setChecked(hasStoragePermission);
             storageSwitch.setClickable(!hasStoragePermission);
             storageSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {

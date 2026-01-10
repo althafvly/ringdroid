@@ -48,6 +48,10 @@
 
     <string name="file_save_title">Zapisz jako:</string>
 
+    <!-- Permission requirement dialog -->
+    <string name="storage_permission_required_for_editor_fdroid">Uprawnienie do przechowywania lub mediów audio jest wymagane, aby ta aplikacja działała. Wszystkie inne uprawnienia są opcjonalne.</string>
+    <string name="storage_permission_required_for_editor_play">Uprawnienie do mediów audio jest wymagane, aby ta aplikacja działała. Wszystkie inne uprawnienia są opcjonalne.</string>
+
     <string name="ringtone_type_label">Typ:</string>
 
     <string name="type_music">Muzyka</string>

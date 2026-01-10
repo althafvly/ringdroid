@@ -48,6 +48,10 @@
 
     <string name="file_save_title">Speichern als:</string>
 
+    <!-- Permission requirement dialog -->
+    <string name="storage_permission_required_for_editor_fdroid">Speicher- oder Medienaudioberechtigung ist erforderlich, damit diese App funktioniert. Alle anderen Berechtigungen sind optional.</string>
+    <string name="storage_permission_required_for_editor_play">Medienaudioberechtigung ist erforderlich, damit diese App funktioniert. Alle anderen Berechtigungen sind optional.</string>
+
     <string name="ringtone_type_label">Typ:</string>
 
     <string name="type_music">Musik</string>

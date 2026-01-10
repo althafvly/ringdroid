@@ -48,6 +48,10 @@
 
     <string name="file_save_title">حفظ باسم:</string>
 
+    <!-- Permission requirement dialog -->
+    <string name="storage_permission_required_for_editor_fdroid">إذن التخزين أو الوسائط الصوتية مطلوب لكي يعمل هذا التطبيق. جميع الأذونات الأخرى اختيارية.</string>
+    <string name="storage_permission_required_for_editor_play">إذن الوسائط الصوتية مطلوب لكي يعمل هذا التطبيق. جميع الأذونات الأخرى اختيارية.</string>
+
     <string name="ringtone_type_label">النوع:</string>
 
     <string name="type_music">موسيقى</string>

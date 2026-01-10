@@ -48,6 +48,10 @@
 
     <string name="file_save_title">Сохранить как:</string>
 
+    <!-- Permission requirement dialog -->
+    <string name="storage_permission_required_for_editor_fdroid">Разрешение на хранилище или медиа-аудио необходимо для работы этого приложения. Все остальные разрешения являются необязательными.</string>
+    <string name="storage_permission_required_for_editor_play">Разрешение на медиа-аудио необходимо для работы этого приложения. Все остальные разрешения являются необязательными.</string>
+
     <string name="ringtone_type_label">Тип:</string>
 
     <string name="type_music">Музыка</string>

@@ -48,6 +48,10 @@
 
     <string name="file_save_title">名前を付けて保存:</string>
 
+    <!-- Permission requirement dialog -->
+    <string name="storage_permission_required_for_editor_fdroid">このアプリが動作するにはストレージまたはメディアオーディオ権限が必要です。その他すべての権限はオプションです。</string>
+    <string name="storage_permission_required_for_editor_play">このアプリが動作するにはメディアオーディオ権限が必要です。その他すべての権限はオプションです。</string>
+
     <string name="ringtone_type_label">タイプ:</string>
 
     <string name="type_music">音楽</string>
