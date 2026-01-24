@@ -650,15 +650,7 @@ public class RingdroidEditActivity extends Activity
         setContentView(R.layout.editor);
 
         DisplayMetrics metrics = new DisplayMetrics();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            WindowMetrics windowMetrics = getWindowManager().getCurrentWindowMetrics();
-            Rect bounds = windowMetrics.getBounds();
-
-            metrics.widthPixels = bounds.width();
-            metrics.heightPixels = bounds.height();
-        } else {
-            getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
-        }
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         mDensity = metrics.density;
 
