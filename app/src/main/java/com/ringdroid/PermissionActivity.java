@@ -79,13 +79,17 @@ public class PermissionActivity extends Activity {
             findViewById(R.id.switch_media_audio_entry).setVisibility(View.GONE);
         }
 
-        storageSwitch.setChecked(hasStoragePermission);
-        storageSwitch.setClickable(!hasStoragePermission);
-        storageSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                PermissionUtils.requestStoragePermission(this);
-            }
-        });
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 || Objects.equals(buildType, "fdroid")) {
+            storageSwitch.setChecked(hasStoragePermission);
+            storageSwitch.setClickable(!hasStoragePermission);
+            storageSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    PermissionUtils.requestStoragePermission(this);
+                }
+            });
+        } else {
+            findViewById(R.id.switch_storage_entry).setVisibility(View.GONE);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             writeSettingsSwitch.setChecked(hasWritePermission);
