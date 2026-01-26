@@ -10,6 +10,13 @@ Download from F-Droid:
 
 &nbsp;
 
+Download from Google Play:
+
+<a href="https://play.google.com/store/apps/details?id=org.thayyil.ringdroid">
+  <img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" width="200" />
+</a>
+
+
 **9 November 2025: Ringdroid 2.7.5 adds full support for scoped storage and Upto Android 16 devices, including improved handling of permissions. This release also introduces interface polish, WebP optimizations.**
 
 **2 December 2016: Ringdroid 2.7.4 contains a fix for an [audio bug](https://github.com/google/ringdroid/issues/20) reported by users using 'Nougat' (Android 7.x).**
