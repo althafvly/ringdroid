@@ -188,6 +188,9 @@ public class RingdroidEditActivity extends Activity
         }
 
         public void afterTextChanged(Editable s) {
+            if (!mWaveformView.isInitialized()) {
+                return;
+            }
             if (mStartText.hasFocus()) {
                 try {
                     mStartPos = mWaveformView.secondsToPixels(Double.parseDouble(mStartText.getText().toString()));
