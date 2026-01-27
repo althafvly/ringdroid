@@ -320,10 +320,7 @@ public class RingdroidEditActivity extends Activity
 
     private void closeThread(Thread thread) {
         if (thread != null && thread.isAlive()) {
-            try {
-                thread.join();
-            } catch (InterruptedException ignored) {
-            }
+            thread.interrupt();
         }
     }
 
