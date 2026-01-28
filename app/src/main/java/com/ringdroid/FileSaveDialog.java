@@ -20,6 +20,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Message;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -27,6 +28,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import com.ringdroid.databinding.FileSaveBinding;
 
 import java.util.ArrayList;
 
@@ -52,7 +55,8 @@ public class FileSaveDialog extends Dialog {
         requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 
         // Inflate our UI from its XML layout description.
-        setContentView(R.layout.file_save);
+        FileSaveBinding binding = FileSaveBinding.inflate(LayoutInflater.from(context));
+        setContentView(binding.getRoot());
 
         mTypeArray = new ArrayList<>();
         mTypeArray.add(resources.getString(R.string.type_music));
@@ -60,12 +64,12 @@ public class FileSaveDialog extends Dialog {
         mTypeArray.add(resources.getString(R.string.type_notification));
         mTypeArray.add(resources.getString(R.string.type_ringtone));
 
-        mFilename = findViewById(R.id.filename);
+        mFilename = binding.filename;
         mOriginalName = originalName;
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, mTypeArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mTypeSpinner = findViewById(R.id.ringtone_type);
+        mTypeSpinner = binding.ringtoneType;
         mTypeSpinner.setAdapter(adapter);
         mTypeSpinner.setSelection(FILE_KIND_RINGTONE);
         mPreviousSelection = FILE_KIND_RINGTONE;
@@ -81,7 +85,7 @@ public class FileSaveDialog extends Dialog {
             }
         });
 
-        Button save = findViewById(R.id.save);
+        Button save = binding.save;
         View.OnClickListener saveListener = new View.OnClickListener() {
             public void onClick(View view) {
                 mResponse.obj = mFilename.getText();
@@ -91,7 +95,7 @@ public class FileSaveDialog extends Dialog {
             }
         };
         save.setOnClickListener(saveListener);
-        Button cancel = findViewById(R.id.cancel);
+        Button cancel = binding.cancel;
         View.OnClickListener cancelListener = view -> dismiss();
         cancel.setOnClickListener(cancelListener);
         mResponse = response;

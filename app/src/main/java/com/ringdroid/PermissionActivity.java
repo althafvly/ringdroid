@@ -3,6 +3,7 @@ package com.ringdroid;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import com.ringdroid.databinding.PermissionScreenBinding;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -21,22 +22,24 @@ public class PermissionActivity extends Activity {
     private Switch contactSwitch;
     private Switch mediaAudioSwitch;
     private Button nextButton;
+    private PermissionScreenBinding binding;
 
     private final String buildType = BuildConfig.FLAVOR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.permission_screen);
+        binding = PermissionScreenBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         boolean forceShow = getIntent().getBooleanExtra(EXTRA_FORCE_SHOW, false);
 
-        storageSwitch = findViewById(R.id.switch_storage);
-        writeSettingsSwitch = findViewById(R.id.switch_write_settings);
-        micSwitch = findViewById(R.id.switch_mic);
-        contactSwitch = findViewById(R.id.switch_contacts);
-        nextButton = findViewById(R.id.btn_next);
-        mediaAudioSwitch = findViewById(R.id.switch_media_audio);
+        storageSwitch = binding.switchStorage;
+        writeSettingsSwitch = binding.switchWriteSettings;
+        micSwitch = binding.switchMic;
+        contactSwitch = binding.switchContacts;
+        nextButton = binding.btnNext;
+        mediaAudioSwitch = binding.switchMediaAudio;
 
         boolean hasStoragePermission = PermissionUtils.hasStoragePermission(this);
         boolean hasMediaAudioPermission = PermissionUtils.hasMediaAudioPermission(this);
@@ -76,7 +79,7 @@ public class PermissionActivity extends Activity {
                 }
             });
         } else {
-            findViewById(R.id.switch_media_audio_entry).setVisibility(View.GONE);
+            binding.switchMediaAudioEntry.setVisibility(View.GONE);
         }
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 || Objects.equals(buildType, "fdroid")) {
@@ -88,7 +91,7 @@ public class PermissionActivity extends Activity {
                 }
             });
         } else {
-            findViewById(R.id.switch_storage_entry).setVisibility(View.GONE);
+            binding.switchStorageEntry.setVisibility(View.GONE);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -100,7 +103,7 @@ public class PermissionActivity extends Activity {
                 }
             });
         } else {
-            findViewById(R.id.switch_system_settings_entry).setVisibility(View.GONE);
+            binding.switchSystemSettingsEntry.setVisibility(View.GONE);
         }
 
         contactSwitch.setChecked(hasContactPermissions);

@@ -48,6 +48,7 @@ import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.ringdroid.databinding.MediaSelectBinding;
 import com.ringdroid.soundfile.SoundFile;
 
 import java.io.File;
@@ -85,6 +86,7 @@ public class RingdroidSelectActivity extends Activity {
     private boolean mWasGetContentIntent;
     private boolean mShowAll = false;
     private Thread mLoaderThread;
+    private MediaSelectBinding binding;
 
     /**
      * Called when the activity is first created.
@@ -113,9 +115,10 @@ public class RingdroidSelectActivity extends Activity {
         mWasGetContentIntent = Objects.equals(intent.getAction(), Intent.ACTION_GET_CONTENT);
 
         // Inflate our UI from its XML layout description.
-        setContentView(R.layout.media_select);
+        binding = MediaSelectBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        ListView listView = findViewById(android.R.id.list);
+        ListView listView = binding.list;
 
         try {
             mAdapter = new SimpleCursorAdapter(this,
@@ -235,7 +238,7 @@ public class RingdroidSelectActivity extends Activity {
     }
 
     private void updateUiWithCursors(Cursor internal, Cursor external) {
-        TextView emptyView = findViewById(R.id.empty_text);
+        TextView emptyView = binding.emptyText;
 
         if (internal.getCount() == 0 && external.getCount() == 0 && !mShowAll) {
             emptyView.setVisibility(View.VISIBLE);

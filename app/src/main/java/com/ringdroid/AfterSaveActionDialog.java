@@ -19,6 +19,9 @@ package com.ringdroid;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Message;
+import android.view.LayoutInflater;
+
+import com.ringdroid.databinding.AfterSaveActionBinding;
 
 public class AfterSaveActionDialog extends Dialog {
 
@@ -30,12 +33,13 @@ public class AfterSaveActionDialog extends Dialog {
         requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 
         // Inflate our UI from its XML layout description.
-        setContentView(R.layout.after_save_action);
+        AfterSaveActionBinding binding = AfterSaveActionBinding.inflate(LayoutInflater.from(context));
+        setContentView(binding.getRoot());
 
-        findViewById(R.id.button_make_default).setOnClickListener(view -> closeAndSendResult(R.id.button_make_default));
-        findViewById(R.id.button_choose_contact)
+        binding.buttonMakeDefault.setOnClickListener(view -> closeAndSendResult(R.id.button_make_default));
+        binding.buttonChooseContact
                 .setOnClickListener(view -> closeAndSendResult(R.id.button_choose_contact));
-        findViewById(R.id.button_do_nothing).setOnClickListener(view -> closeAndSendResult(R.id.button_do_nothing));
+        binding.buttonDoNothing.setOnClickListener(view -> closeAndSendResult(R.id.button_do_nothing));
 
         mResponse = response;
     }

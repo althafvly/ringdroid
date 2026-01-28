@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Rect;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -44,9 +43,10 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import com.ringdroid.databinding.EditorBinding;
+
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowMetrics;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -129,6 +129,8 @@ public class RingdroidEditActivity extends Activity
     private int mMarkerRightInset;
     private int mMarkerTopOffset;
     private int mMarkerBottomOffset;
+    private EditorBinding binding;
+
     //
     // Public methods and protected overrides
     //
@@ -647,7 +649,8 @@ public class RingdroidEditActivity extends Activity
     @SuppressWarnings("deprecation")
     private void loadGui() {
         // Inflate our UI from its XML layout description.
-        setContentView(R.layout.editor);
+        binding = EditorBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -659,20 +662,20 @@ public class RingdroidEditActivity extends Activity
         mMarkerTopOffset = (int) (10 * mDensity);
         mMarkerBottomOffset = (int) (10 * mDensity);
 
-        mStartText = findViewById(R.id.starttext);
+        mStartText = binding.starttext;
         mStartText.addTextChangedListener(mTextWatcher);
-        mEndText = findViewById(R.id.endtext);
+        mEndText = binding.endtext;
         mEndText.addTextChangedListener(mTextWatcher);
 
-        mPlayButton = findViewById(R.id.play);
+        mPlayButton = binding.play;
         mPlayButton.setOnClickListener(mPlayListener);
-        ImageButton mRewindButton = findViewById(R.id.rew);
+        ImageButton mRewindButton = binding.rew;
         mRewindButton.setOnClickListener(mRewindListener);
-        ImageButton mFfwdButton = findViewById(R.id.ffwd);
+        ImageButton mFfwdButton = binding.ffwd;
         mFfwdButton.setOnClickListener(mFfwdListener);
 
-        ImageButton zoomInButton = findViewById(R.id.zoom_in);
-        ImageButton zoomOutButton = findViewById(R.id.zoom_out);
+        ImageButton zoomInButton = binding.zoomIn;
+        ImageButton zoomOutButton = binding.zoomOut;
         zoomInButton.setOnClickListener(v -> {
             waveformZoomIn();
             waveformFling(1);
@@ -682,17 +685,17 @@ public class RingdroidEditActivity extends Activity
             waveformFling(1);
         });
 
-        TextView markStartButton = findViewById(R.id.mark_start);
+        TextView markStartButton = binding.markStart;
         markStartButton.setOnClickListener(mMarkStartListener);
-        TextView markEndButton = findViewById(R.id.mark_end);
+        TextView markEndButton = binding.markEnd;
         markEndButton.setOnClickListener(mMarkEndListener);
 
         enableDisableButtons();
 
-        mWaveformView = findViewById(R.id.waveform);
+        mWaveformView = binding.waveform;
         mWaveformView.setListener(this);
 
-        mInfo = findViewById(R.id.info);
+        mInfo = binding.info;
         mInfo.setText(mCaption);
 
         mMaxPos = 0;
@@ -705,14 +708,14 @@ public class RingdroidEditActivity extends Activity
             mMaxPos = mWaveformView.maxPos();
         }
 
-        mStartMarker = findViewById(R.id.startmarker);
+        mStartMarker = binding.startmarker;
         mStartMarker.setListener(this);
         mStartMarker.setAlpha(1f);
         mStartMarker.setFocusable(true);
         mStartMarker.setFocusableInTouchMode(true);
         mStartVisible = true;
 
-        mEndMarker = findViewById(R.id.endmarker);
+        mEndMarker = binding.endmarker;
         mEndMarker.setListener(this);
         mEndMarker.setAlpha(1f);
         mEndMarker.setFocusable(true);

@@ -16,6 +16,8 @@
 
 package com.ringdroid;
 
+import com.ringdroid.databinding.ChooseContactBinding;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -48,6 +50,7 @@ public class ChooseContactActivity extends Activity {
     private SimpleCursorAdapter mAdapter;
     private Uri mRingtoneUri;
     private Thread mLoaderThread;
+    private ChooseContactBinding binding;
 
     public ChooseContactActivity() {
     }
@@ -65,7 +68,8 @@ public class ChooseContactActivity extends Activity {
         mRingtoneUri = intent.getData();
 
         // Inflate our UI from its XML layout description.
-        setContentView(R.layout.choose_contact);
+        binding = ChooseContactBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         if (PermissionUtils.hasContactPermissions(this)) {
             loadData();
@@ -76,7 +80,7 @@ public class ChooseContactActivity extends Activity {
 
     private void loadData() {
         try {
-            ListView listView = findViewById(android.R.id.list);
+            ListView listView = binding.list;
             mAdapter = new SimpleCursorAdapter(this,
                     // Use a template that displays a text view
                     R.layout.contact_row,
