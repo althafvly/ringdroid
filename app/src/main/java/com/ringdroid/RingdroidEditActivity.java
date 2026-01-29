@@ -771,7 +771,9 @@ public class RingdroidEditActivity extends Activity
                 mSoundFile = SoundFile.create(mFile.getAbsolutePath(), listener);
 
                 if (mSoundFile == null) {
-                    mProgressDialog.dismiss();
+                    if (mProgressDialog != null) {
+                        mProgressDialog.dismiss();
+                    }
                     String name = mFile.getName().toLowerCase();
                     String[] components = name.split("\\.");
                     String err;
@@ -788,7 +790,9 @@ public class RingdroidEditActivity extends Activity
                 }
                 mPlayer = new SamplePlayer(mSoundFile);
             } catch (final Exception e) {
-                mProgressDialog.dismiss();
+                if (mProgressDialog != null) {
+                    mProgressDialog.dismiss();
+                }
                 Log.e(TAG, "Unexpected error: " + e.getMessage(), e);
                 mInfoContent = e.toString();
                 runOnUiThread(() -> mInfo.setText(mInfoContent));
@@ -797,7 +801,9 @@ public class RingdroidEditActivity extends Activity
                 mHandler.post(runnable);
                 return;
             }
-            mProgressDialog.dismiss();
+            if (mProgressDialog != null) {
+                mProgressDialog.dismiss();
+            }
             if (mLoadingKeepGoing) {
                 Runnable runnable = this::finishOpeningSoundFile;
                 mHandler.post(runnable);
@@ -854,7 +860,9 @@ public class RingdroidEditActivity extends Activity
             try {
                 mSoundFile = SoundFile.record(listener);
                 if (mSoundFile == null) {
-                    mAlertDialog.dismiss();
+                    if (mAlertDialog != null) {
+                        mAlertDialog.dismiss();
+                    }
                     Runnable runnable = () -> showFinalAlert(new Exception(),
                             getResources().getText(R.string.record_error));
                     mHandler.post(runnable);
@@ -862,7 +870,9 @@ public class RingdroidEditActivity extends Activity
                 }
                 mPlayer = new SamplePlayer(mSoundFile);
             } catch (final Exception e) {
-                mAlertDialog.dismiss();
+                if (mAlertDialog != null) {
+                    mAlertDialog.dismiss();
+                }
                 Log.e(TAG, "Unexpected error: " + e.getMessage(), e);
                 mInfoContent = e.toString();
                 runOnUiThread(() -> mInfo.setText(mInfoContent));
@@ -871,7 +881,9 @@ public class RingdroidEditActivity extends Activity
                 mHandler.post(runnable);
                 return;
             }
-            mAlertDialog.dismiss();
+            if (mAlertDialog != null) {
+                mAlertDialog.dismiss();
+            }
             if (mFinishActivity) {
                 RingdroidEditActivity.this.finish();
             } else {
