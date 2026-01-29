@@ -262,6 +262,9 @@ public class WaveformView extends View {
     }
 
     public int maxPos() {
+        if (mLenByZoomLevel == null) {
+            return 0;
+        }
         return mLenByZoomLevel[mZoomLevel];
     }
 
@@ -270,21 +273,33 @@ public class WaveformView extends View {
     }
 
     public int secondsToPixels(double seconds) {
+        if (mZoomFactorByZoomLevel == null) {
+            return 0;
+        }
         double z = mZoomFactorByZoomLevel[mZoomLevel];
         return (int) (z * seconds * mSampleRate / mSamplesPerFrame + 0.5);
     }
 
     public double pixelsToSeconds(int pixels) {
+        if (mZoomFactorByZoomLevel == null) {
+            return 0.0;
+        }
         double z = mZoomFactorByZoomLevel[mZoomLevel];
         return (pixels * (double) mSamplesPerFrame / (mSampleRate * z));
     }
 
     public int millisecsToPixels(int msecs) {
+        if (mZoomFactorByZoomLevel == null) {
+            return 0;
+        }
         double z = mZoomFactorByZoomLevel[mZoomLevel];
         return (int) ((msecs * 1.0 * mSampleRate * z) / (1000.0 * mSamplesPerFrame) + 0.5);
     }
 
     public int pixelsToMillisecs(int pixels) {
+        if (mZoomFactorByZoomLevel == null) {
+            return 0;
+        }
         double z = mZoomFactorByZoomLevel[mZoomLevel];
         return (int) (pixels * (1000.0 * mSamplesPerFrame) / (mSampleRate * z) + 0.5);
     }

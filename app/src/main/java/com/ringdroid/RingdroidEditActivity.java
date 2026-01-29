@@ -509,6 +509,9 @@ public class RingdroidEditActivity extends Activity
     }
 
     public void waveformZoomIn() {
+        if (!mWaveformView.isInitialized()) {
+            return;
+        }
         mWaveformView.zoomIn();
         mStartPos = mWaveformView.getStart();
         mEndPos = mWaveformView.getEnd();
@@ -519,6 +522,9 @@ public class RingdroidEditActivity extends Activity
     }
 
     public void waveformZoomOut() {
+        if (!mWaveformView.isInitialized()) {
+            return;
+        }
         mWaveformView.zoomOut();
         mStartPos = mWaveformView.getStart();
         mEndPos = mWaveformView.getEnd();
