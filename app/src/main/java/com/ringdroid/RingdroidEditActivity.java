@@ -337,6 +337,12 @@ public class RingdroidEditActivity extends Activity
     protected void onDestroy() {
         Log.v(TAG, "EditActivity OnDestroy");
 
+        // CRITICAL: Remove all handler callbacks to prevent memory leak
+        // The mTimerRunnable keeps reposting itself every 100ms, so we must stop it
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+        }
+
         mLoadingKeepGoing = false;
         mRecordingKeepGoing = false;
         closeThread(mLoadSoundFileThread);
@@ -360,6 +366,27 @@ public class RingdroidEditActivity extends Activity
             }
             mPlayer.release();
             mPlayer = null;
+        }
+
+        // Clear all listeners to prevent memory leaks
+        if (mWaveformView != null) {
+            mWaveformView.setListener(null);
+        }
+        if (mStartMarker != null) {
+            mStartMarker.setListener(null);
+        }
+        if (mEndMarker != null) {
+            mEndMarker.setListener(null);
+        }
+
+        // Release the SoundFile's large audio buffers to prevent memory leaks
+        // Note: WaveformView also holds a reference, so we need to clear it there first
+        if (mWaveformView != null) {
+            mWaveformView.setSoundFile(null);
+        }
+        if (mSoundFile != null) {
+            mSoundFile.release();
+            mSoundFile = null;
         }
 
         super.onDestroy();
@@ -801,7 +828,7 @@ public class RingdroidEditActivity extends Activity
                 }
                 Log.e(TAG, "Unexpected error: " + e.getMessage(), e);
                 mInfoContent = e.toString();
-                runOnUiThread(() -> mInfo.setText(mInfoContent));
+                runOnUiThread(() -> setSafeText(mInfo, mInfoContent));
 
                 Runnable runnable = () -> showFinalAlert(e, getResources().getText(R.string.read_error));
                 mHandler.post(runnable);
@@ -996,8 +1023,31 @@ public class RingdroidEditActivity extends Activity
         mWaveformView.setParameters(mStartPos, mEndPos, mOffset);
         mWaveformView.invalidate();
 
-        mStartMarker.setContentDescription(getResources().getText(R.string.start_marker) + " " + formatTime(mStartPos));
-        mEndMarker.setContentDescription(getResources().getText(R.string.end_marker) + " " + formatTime(mEndPos));
+        // Only update content descriptions when positions actually change to avoid excessive string allocations
+        if (mStartPos != mLastDisplayedStartPos) {
+            try {
+                String desc = getResources().getText(R.string.start_marker) + " " + formatTime(mStartPos);
+                if (desc.length() > 200) { // Sanity check
+                    desc = desc.substring(0, 200);
+                }
+                mStartMarker.setContentDescription(desc);
+            } catch (OutOfMemoryError e) {
+                // If we can't allocate the string, just skip it
+                Log.e(TAG, "OOM setting start marker content description");
+            }
+        }
+        if (mEndPos != mLastDisplayedEndPos) {
+            try {
+                String desc = getResources().getText(R.string.end_marker) + " " + formatTime(mEndPos);
+                if (desc.length() > 200) { // Sanity check
+                    desc = desc.substring(0, 200);
+                }
+                mEndMarker.setContentDescription(desc);
+            } catch (OutOfMemoryError e) {
+                // If we can't allocate the string, just skip it
+                Log.e(TAG, "OOM setting end marker content description");
+            }
+        }
 
         int startX = mStartPos - mOffset - mMarkerLeftInset;
         if (startX + mStartMarker.getWidth() >= 0) {
@@ -1541,6 +1591,28 @@ public class RingdroidEditActivity extends Activity
 
     private long getCurrentTime() {
         return System.nanoTime() / 1000000;
+    }
+
+    /**
+     * Safely set text to a TextView with length limiting to prevent OutOfMemoryError.
+     * This is especially important for error messages and stack traces which can be very large.
+     *
+     * @param textView The TextView to set text on
+     * @param text The text to set (can be null)
+     */
+    private void setSafeText(TextView textView, String text) {
+        if (text == null) {
+            textView.setText("");
+            return;
+        }
+
+        // Limit text to 5000 characters to prevent OutOfMemoryError during text layout
+        final int MAX_TEXT_LENGTH = 5000;
+        if (text.length() > MAX_TEXT_LENGTH) {
+            text = text.substring(0, MAX_TEXT_LENGTH) + "\n\n[Text truncated due to length]";
+        }
+
+        textView.setText(text);
     }
 
 }

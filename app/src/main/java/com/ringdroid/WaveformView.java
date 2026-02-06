@@ -200,9 +200,11 @@ public class WaveformView extends View {
 
     public void setSoundFile(SoundFile soundFile) {
         mSoundFile = soundFile;
-        mSampleRate = mSoundFile.getSampleRate();
-        mSamplesPerFrame = mSoundFile.getSamplesPerFrame();
-        computeDoublesForAllZoomLevels();
+        if (soundFile != null) {
+            mSampleRate = mSoundFile.getSampleRate();
+            mSamplesPerFrame = mSoundFile.getSamplesPerFrame();
+            computeDoublesForAllZoomLevels();
+        }
         mHeightsAtThisZoomLevel = null;
     }
 

@@ -183,6 +183,16 @@ public class SoundFile {
         mProgressListener = progressListener;
     }
 
+    /**
+     * Release the decoded audio data to free up memory.
+     * Should be called when the SoundFile is no longer needed.
+     */
+    public void release() {
+        mDecodedBytes = null;
+        mDecodedSamples = null;
+        mFrameGains = null;
+    }
+
     private void ReadFile(File inputFile) throws java.io.IOException, InvalidInputException {
         MediaExtractor extractor = new MediaExtractor();
         MediaFormat format = null;
@@ -326,6 +336,14 @@ public class SoundFile {
                                     // setting android:largeHeap="true" in <application> seem to help not
                                     // reaching this section.
                                     retry--;
+                                    if (retry > 0) {
+                                        // Explicitly request garbage collection to free up memory
+                                        System.gc();
+                                        try {
+                                            Thread.sleep(100);
+                                        } catch (InterruptedException ignored) {
+                                        }
+                                    }
                                 }
                             }
                             if (retry == 0) {
