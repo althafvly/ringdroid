@@ -15,12 +15,21 @@ public class RingdroidUtils {
             return;
         }
 
-        RingtoneManager.setActualDefaultRingtoneUri(activity, type, ringtoneUri);
-        if (type == RingtoneManager.TYPE_NOTIFICATION) {
-            Toast.makeText(activity, R.string.default_notification_success_message, Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(activity, R.string.default_ringtone_success_message, Toast.LENGTH_SHORT).show();
+
+        try {
+            RingtoneManager.setActualDefaultRingtoneUri(activity, type, ringtoneUri);
+            if (type == RingtoneManager.TYPE_NOTIFICATION) {
+                Toast.makeText(activity, R.string.default_notification_success_message, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(activity, R.string.default_ringtone_success_message, Toast.LENGTH_SHORT).show();
+            }
+        } catch (IllegalArgumentException e) {
+            // On some Android versions/devices, setting ringtones may be restricted
+            Toast.makeText(activity, "Unable to set as default ringtone. Your device may not allow this.", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(activity, "Error setting ringtone: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
+
 
         if (shouldFinish) {
             activity.finish();
