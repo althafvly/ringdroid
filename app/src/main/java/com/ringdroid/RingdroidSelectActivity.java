@@ -160,6 +160,13 @@ public class RingdroidSelectActivity extends Activity {
         registerForContextMenu(listView);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh the list to show any newly saved files
+        refreshListView();
+    }
+
     private void loadAudioAsync(String filter) {
         // Cancel previous load
         if (mLoaderThread != null && mLoaderThread.isAlive()) {
