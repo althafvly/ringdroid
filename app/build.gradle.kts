@@ -1,5 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.spotless)
 }
 
 android {
@@ -9,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "org.thayyil.ringdroid"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 36
         versionCode = 20903
         versionName = "2.9.3"
@@ -29,18 +32,15 @@ android {
     flavorDimensions += "distribution"
 
     productFlavors {
-        create("fdroid") {
-            dimension = "distribution"
-        }
+        create("fdroid") { dimension = "distribution" }
 
-        create("play") {
-            dimension = "distribution"
-        }
+        create("play") { dimension = "distribution" }
     }
 
     buildFeatures {
         buildConfig = true
         viewBinding = true
+        compose = true
     }
 
     compileOptions {
@@ -49,6 +49,43 @@ android {
     }
 }
 
+spotless {
+    java {
+        removeUnusedImports()
+        eclipse()
+        leadingSpacesToTabs(2)
+        leadingTabsToSpaces(4)
+        target("src/*/java/**/*.java")
+    }
+
+    kotlin {
+        target("src/**/*.kt")
+        ktfmt().kotlinlangStyle()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+
+    kotlinGradle {
+        target("*.kts", "**/*.kts")
+        ktfmt().kotlinlangStyle()
+    }
+
+    format("xml") {
+        target("src/**/*.xml")
+        targetExclude("**/build/", ".idea/")
+        trimTrailingWhitespace()
+        leadingTabsToSpaces()
+    }
+}
+
+tasks.named("preBuild") { dependsOn("spotlessCheck") }
+
 dependencies {
-    implementation(libs.support.annotations)
+    implementation(libs.activity.compose)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.ui)
+    implementation(libs.material3)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.material.icons.extended)
+    implementation(libs.lifecycle.runtime)
 }

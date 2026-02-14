@@ -1,11 +1,22 @@
 [versions]
+activityCompose = "1.12.2"
 agp = "8.13.2"
+composeBom = "2025.12.01"
+kotlin = "2.3.0"
 spotless = "8.1.0"
-supportAnnotations = "28.0.0"
+lifecycle = "2.10.0"
 
 [libraries]
-support-annotations = { module = "com.android.support:support-annotations", version.ref = "supportAnnotations" }
+activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+material3 = { module = "androidx.compose.material3:material3" }
+ui = { module = "androidx.compose.ui:ui" }
+ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
