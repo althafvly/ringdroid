@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ringdroid;
+package com.ringdroid.core.media;
 
 import android.app.Activity;
 import android.database.Cursor;
