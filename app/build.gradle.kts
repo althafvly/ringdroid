@@ -99,6 +99,7 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.material.icons.extended)
     implementation(libs.lifecycle.runtime)
+    implementation(libs.google.material)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit)

@@ -18,14 +18,18 @@
 -->
 <resources>
 
-    <color name="waveform_selected">#33b5e5</color>
-    <color name="waveform_unselected">#195a72</color>
-    <color name="waveform_unselected_bkgnd_overlay">#0a242d</color>
-    <color name="selection_border">#ffffff</color>
-    <color name="playback_indicator">#ffff66</color>
-    <color name="grid_line">#66ffffff</color>
-    <color name="timecode">#ddffffdd</color>
-    <color name="timecode_shadow">#aa000000</color>
+    <color name="primary">#00E5FF</color>
+    <color name="secondary">#D500F9</color>
+    <color name="background">#121212</color>
+
+    <color name="waveform_selected">#00E5FF</color>
+    <color name="waveform_unselected">#006064</color>
+    <color name="waveform_unselected_bkgnd_overlay">#0A181A</color>
+    <color name="selection_border">#FFFFFF</color>
+    <color name="playback_indicator">#D500F9</color>
+    <color name="grid_line">#3300E5FF</color>
+    <color name="timecode">#EEEEEE</color>
+    <color name="timecode_shadow">#AA000000</color>
 
     <color name="type_bkgnd_alarm">#88880000</color>
     <color name="type_bkgnd_ringtone">#88008888</color>

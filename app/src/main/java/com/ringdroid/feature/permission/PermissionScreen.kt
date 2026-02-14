@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.ringdroid.BuildConfig
 import com.ringdroid.R
 import com.ringdroid.core.permissions.PermissionUtils
+import java.util.Objects
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -95,7 +96,10 @@ fun PermissionScreen(onNext: () -> Unit) {
                     }
                 }
 
-                if (BuildConfig.FLAVOR != "play") {
+                if (
+                    Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 ||
+                        Objects.equals(BuildConfig.FLAVOR, "fdroid")
+                ) {
                     PermissionRowWithSummary(
                         title = stringResource(R.string.storage_permission),
                         summary = stringResource(R.string.storage_permission_summary),

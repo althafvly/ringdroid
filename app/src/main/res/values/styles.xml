@@ -17,5 +17,8 @@
      */
 -->
 <resources>
-    <style name="Theme.Ringdroid" parent="android:Theme.DeviceDefault.NoActionBar"/>
+    <style name="Theme.Ringdroid" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:statusBarColor">@color/background</item>
+    </style>
 </resources>

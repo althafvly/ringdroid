@@ -1,22 +1,31 @@
 package com.ringdroid.theme
 
-import android.os.Build
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun AppTheme(content: @Composable () -> Unit) {
-    val context = LocalContext.current
+    val darkColors =
+        darkColorScheme(
+            primary = Cyan80,
+            onPrimary = Color.Black,
+            primaryContainer = Cyan40,
+            onPrimaryContainer = Color.White,
+            secondary = Purple80,
+            onSecondary = Color.White,
+            secondaryContainer = Purple40,
+            onSecondaryContainer = Color.White,
+            background = DarkBackground,
+            onBackground = LightOnDark,
+            surface = DarkSurface,
+            onSurface = LightOnDark,
+            surfaceVariant = DarkSurfaceVariant,
+            onSurfaceVariant = GreyOnDark,
+            error = ErrorRed,
+            onError = Color.White,
+        )
 
-    val colors =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            dynamicDarkColorScheme(context)
-        } else {
-            darkColorScheme()
-        }
-
-    MaterialTheme(colorScheme = colors, content = content)
+    MaterialTheme(colorScheme = darkColors, content = content)
 }
