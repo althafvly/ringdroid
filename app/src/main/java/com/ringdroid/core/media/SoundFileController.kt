@@ -57,7 +57,7 @@ internal class SoundFileController(
         finishActivity = false
         dialogController.showProgressDialog(
             titleRes = R.string.progress_dialog_loading,
-            cancelable = true,
+            cancelable = false,
         ) {
             loadingKeepGoing = false
             finishActivity = true
