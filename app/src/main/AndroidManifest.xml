@@ -50,11 +50,11 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/ringdroid_app_name"
         android:largeHeap="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/Theme.Ringdroid">
 
         <!-- Main activity that's launched when the user opens Ringdroid. -->
         <activity
-            android:name=".PermissionActivity"
+            android:name=".feature.permission.PermissionActivity"
             android:exported="true"
             android:label="@string/main_activity_label">
             <intent-filter>
@@ -64,7 +64,7 @@
         </activity>
 
         <activity
-            android:name=".RingdroidSelectActivity"
+            android:name=".feature.select.RingdroidSelectActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:exported="true"
             android:label="@string/main_activity_label">
@@ -86,7 +86,7 @@
         positions, playback, and triggering saving of the output
         file. -->
         <activity
-            android:name=".RingdroidEditActivity"
+            android:name=".feature.editor.RingdroidEditActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:exported="true"
             android:hardwareAccelerated="true"
@@ -99,7 +99,7 @@
 
         <!-- Activity for choosing a contact to assign a ringtone to. -->
         <activity
-            android:name=".ChooseContactActivity"
+            android:name=".feature.contact.ChooseContactActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
 
     </application>

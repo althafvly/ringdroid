@@ -28,14 +28,6 @@
 
     <string name="search_edit_box">Search</string>
 
-    <string name="button_start_record_activity">Record New</string>
-
-    <string name="sdcard_readonly">Sorry, the SD Card is mounted as read-only and Ringdroid requires it to be writable.</string>
-    <string name="no_sdcard">Sorry, Ringdroid can\'t run unless you have an SD Card inserted.</string>
-    <string name="sdcard_shared">Sorry, Ringdroid can\'t run while your handset is mounted as a USB device.</string>
-
-    <string name="button_options">Options</string>
-
     <!--
      Edit activity
      -->
@@ -80,8 +72,7 @@
 
     <string name="menu_save" translatable="false">@string/save_button</string>
     <string name="menu_reset">Reset</string>
-    <string name="menu_about">About</string>
-    <string name="menu_show_all_audio">Show All Audio</string>
+    <string name="more_options">More options</string>
 
     <!--
      Context menu items
@@ -97,7 +88,6 @@
      File Save dialog
      -->
 
-    <string name="file_save_title">Save As:</string>
     <string name="file_save_button_save" translatable="false">@string/save_button</string>
     <string name="file_save_button_cancel" translatable="false">@string/progress_dialog_cancel</string>
 
@@ -107,6 +97,7 @@
     <string name="type_alarm">Alarm</string>
     <string name="type_notification">Notification</string>
     <string name="type_ringtone">Ringtone</string>
+    <string name="show_system_sounds">Show system sounds</string>
 
     <string name="ringtone_name_label">Name:</string>
 
@@ -116,19 +107,11 @@
      Delete confirmation dialog
      -->
 
-    <string name="delete_ringtone">Delete Ringtone</string>
-    <string name="delete_alarm">Delete Alarm</string>
-    <string name="delete_notification">Delete Notification</string>
-    <string name="delete_music">Delete Music</string>
-    <string name="delete_audio">Delete Audio</string>
-
     <string name="confirm_delete_ringdroid">Are you sure?</string>
     <string name="confirm_delete_non_ringdroid">Are you sure?  This file was not created using Ringdroid!</string>
 
     <string name="delete_ok_button" translatable="false">@string/context_menu_delete</string>
     <string name="delete_cancel_button" translatable="false">@string/progress_dialog_cancel</string>
-
-    <string name="delete_failed">Unable to delete file</string>
 
     <!--
      Success and error messages
@@ -140,7 +123,6 @@
     <string name="alert_yes_button">Yes, please!</string>
     <string name="alert_no_button">No, thanks.</string>
 
-    <string name="save_success_message">Saved!</string>
     <string name="default_ringtone_success_message">Changed default ringtone</string>
     <string name="default_notification_success_message">Changed default notification sound</string>
     <string name="play_error">Unable to play this media file</string>
@@ -192,6 +174,7 @@
             Source code: <a href="https://github.com/althafvly/ringdroid">github.com/althafvly/ringdroid</a>
         ]]>
     </string>
+    <string name="version_unknown">unknown</string>
 
     <string name="require_contacts_permission">Please enable contacts permission to assign a ringtone.</string>
     <string name="required_mic_permission">Microphone permission required to record audio</string>
