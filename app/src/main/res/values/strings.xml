@@ -119,6 +119,7 @@
     <string name="delete_audio">Delete Audio</string>
 
     <string name="confirm_delete_ringdroid">Are you sure?</string>
+    <string name="confirm_delete_non_ringdroid">Are you sure?  This file was not created using Ringdroid!</string>
 
     <string name="delete_ok_button" translatable="false">@string/context_menu_delete</string>
     <string name="delete_cancel_button" translatable="false">@string/progress_dialog_cancel</string>
