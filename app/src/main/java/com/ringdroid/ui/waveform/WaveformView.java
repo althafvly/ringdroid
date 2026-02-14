@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package com.ringdroid;
+package com.ringdroid.ui.waveform;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.os.Build;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -30,6 +29,9 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
+import com.ringdroid.R;
 import com.ringdroid.soundfile.SoundFile;
 
 /**
@@ -59,6 +61,7 @@ public class WaveformView extends View {
     private final Paint mBorderLinePaint;
     private final Paint mPlaybackLinePaint;
     private final Paint mTimecodePaint;
+    private final Paint mTimecodeBgPaint;
     private final GestureDetector mGestureDetector;
     private final ScaleGestureDetector mScaleGestureDetector;
     private SoundFile mSoundFile;
@@ -85,31 +88,37 @@ public class WaveformView extends View {
         // We don't want keys, the markers get these
         setFocusable(false);
 
+        Resources res = getResources();
+
         mGridPaint = new Paint();
         mGridPaint.setAntiAlias(false);
-        mGridPaint.setColor(getColorRes(R.color.grid_line));
+        mGridPaint.setColor(res.getColor(R.color.grid_line, getContext().getTheme()));
         mSelectedLinePaint = new Paint();
         mSelectedLinePaint.setAntiAlias(false);
-        mSelectedLinePaint.setColor(getColorRes(R.color.waveform_selected));
+        mSelectedLinePaint.setColor(res.getColor(R.color.waveform_selected, getContext().getTheme()));
         mUnselectedLinePaint = new Paint();
         mUnselectedLinePaint.setAntiAlias(false);
-        mUnselectedLinePaint.setColor(getColorRes(R.color.waveform_unselected));
+        mUnselectedLinePaint.setColor(res.getColor(R.color.waveform_unselected, getContext().getTheme()));
         mUnselectedBkgndLinePaint = new Paint();
         mUnselectedBkgndLinePaint.setAntiAlias(false);
-        mUnselectedBkgndLinePaint.setColor(getColorRes(R.color.waveform_unselected_bkgnd_overlay));
+        mUnselectedBkgndLinePaint
+                .setColor(res.getColor(R.color.waveform_unselected_bkgnd_overlay, getContext().getTheme()));
         mBorderLinePaint = new Paint();
         mBorderLinePaint.setAntiAlias(true);
         mBorderLinePaint.setStrokeWidth(1.5f);
         mBorderLinePaint.setPathEffect(new DashPathEffect(new float[]{3.0f, 2.0f}, 0.0f));
-        mBorderLinePaint.setColor(getColorRes(R.color.selection_border));
+        mBorderLinePaint.setColor(res.getColor(R.color.selection_border, getContext().getTheme()));
         mPlaybackLinePaint = new Paint();
         mPlaybackLinePaint.setAntiAlias(false);
-        mPlaybackLinePaint.setColor(getColorRes(R.color.playback_indicator));
+        mPlaybackLinePaint.setColor(res.getColor(R.color.playback_indicator, getContext().getTheme()));
         mTimecodePaint = new Paint();
         mTimecodePaint.setTextSize(12);
         mTimecodePaint.setAntiAlias(true);
-        mTimecodePaint.setColor(getColorRes(R.color.timecode));
-        mTimecodePaint.setShadowLayer(2, 1, 1, getColorRes(R.color.timecode_shadow));
+        mTimecodePaint.setColor(res.getColor(R.color.timecode, getContext().getTheme()));
+        mTimecodePaint.setShadowLayer(2, 1, 1, res.getColor(R.color.timecode_shadow, getContext().getTheme()));
+        mTimecodeBgPaint = new Paint();
+        mTimecodeBgPaint.setStyle(Paint.Style.FILL);
+        mTimecodeBgPaint.setColor(Color.BLACK);
 
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float vx, float vy) {
@@ -155,15 +164,6 @@ public class WaveformView extends View {
         mSelectionEnd = 0;
         mDensity = 1.0f;
         mInitialized = false;
-    }
-
-    @SuppressWarnings("deprecation")
-    private int getColorRes(int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getResources().getColor(color, null);
-        } else {
-            return getResources().getColor(color);
-        }
     }
 
     @Override
@@ -439,7 +439,23 @@ public class WaveformView extends View {
                 }
                 String timecodeStr = timecodeMinutes + ":" + timecodeSeconds;
                 float offset = (float) (0.5 * mTimecodePaint.measureText(timecodeStr));
-                canvas.drawText(timecodeStr, i - offset, (int) (12 * mDensity), mTimecodePaint);
+                float textX = i - offset;
+                float textY = (int) (12 * mDensity);
+
+                float padding = 4 * mDensity;
+                float textWidth = mTimecodePaint.measureText(timecodeStr);
+                Paint.FontMetrics fm = mTimecodePaint.getFontMetrics();
+
+                float bgLeft = textX - padding;
+                float bgRight = textX + textWidth + padding;
+                float bgTop = textY + fm.ascent - padding;
+                float bgBottom = textY + fm.descent + padding;
+
+                // draw background rectangle
+                canvas.drawRoundRect(bgLeft, bgTop, bgRight, bgBottom, 4 * mDensity, 4 * mDensity, mTimecodeBgPaint);
+
+                // draw text on top
+                canvas.drawText(timecodeStr, textX, textY, mTimecodePaint);
             }
         }
 
