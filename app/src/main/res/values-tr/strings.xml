@@ -2,14 +2,6 @@
 <resources>
     <string name="search_edit_box">Ara</string>
 
-    <string name="button_start_record_activity">Yeni Kaydet</string>
-
-    <string name="sdcard_readonly">Üzgünüz, SD Kart salt okunur olarak bağlanmış ve Ringdroid yazılabilir olmasını gerektiriyor.</string>
-    <string name="no_sdcard">Üzgünüz, bir SD Kart takılı olmadıkça Ringdroid çalışamaz.</string>
-    <string name="sdcard_shared">Üzgünüz, cep telefonunuz bir USB cihazı olarak bağlıyken Ringdroid çalışamaz.</string>
-
-    <string name="button_options">Seçenekler</string>
-
     <string name="start_label">Başlangıç:</string>
     <string name="end_label">Bitiş:</string>
 
@@ -38,19 +30,13 @@
     <string name="save_button">Kaydet</string>
 
     <string name="menu_reset">Sıfırla</string>
-    <string name="menu_about">Hakkında</string>
-    <string name="menu_show_all_audio">Tüm Sesleri Göster</string>
 
     <string name="context_menu_delete">Sil</string>
     <string name="context_menu_default_ringtone">Varsayılan Zil Sesi Olarak Ayarla</string>
     <string name="context_menu_contact">Kişiye Ata</string>
     <string name="context_menu_default_notification">Varsayılan Bildirim Olarak Ayarla</string>
 
-    <string name="file_save_title">Farklı Kaydet:</string>
-
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Depolama veya medya ses izni bu uygulamanın çalışması için gereklidir. Diğer tüm izinler isteğe bağlıdır.</string>
-    <string name="storage_permission_required_for_editor_play">Medya ses izni bu uygulamanın çalışması için gereklidir. Diğer tüm izinler isteğe bağlıdır.</string>
 
     <string name="ringtone_type_label">Tür:</string>
 
@@ -61,17 +47,9 @@
 
     <string name="ringtone_name_label">Ad:</string>
 
-    <string name="delete_ringtone">Zil Sesini Sil</string>
-    <string name="delete_alarm">Alarmı Sil</string>
-    <string name="delete_notification">Bildirimi Sil</string>
-    <string name="delete_music">Müziği Sil</string>
-    <string name="delete_audio">Sesi Sil</string>
-
     <string name="confirm_delete_ringdroid">Emin misiniz?</string>
     <string name="confirm_delete_non_ringdroid">Emin misiniz? Bu dosya Ringdroid kullanılarak oluşturulmadı!</string>
 
-
-    <string name="delete_failed">Dosya silinemedi</string>
 
     <string name="alert_title_success">Başarılı</string>
     <string name="alert_title_failure">Hata</string>
@@ -79,7 +57,6 @@
     <string name="alert_yes_button">Evet, lütfen!</string>
     <string name="alert_no_button">Hayır, teşekkürler.</string>
 
-    <string name="save_success_message">Kaydedildi!</string>
     <string name="default_ringtone_success_message">Varsayılan zil sesi değiştirildi</string>
     <string name="default_notification_success_message">Varsayılan bildirim sesi değiştirildi</string>
     <string name="play_error">Bu medya dosyası oynatılamıyor</string>
@@ -138,11 +115,11 @@
     <string name="contact_permission_summary">Kişilerinize zil sesi atamak için gereklidir</string>
     <string name="media_audio_permission">Medya ses izni</string>
     <string name="media_audio_summary">Akıllı telefonunuzdan zil sesi dosyalarını okumak için gereklidir</string>
-    <string name="list_is_empty">Ses dosyası bulunamadı. Sistem ses dosyalarını görmek için üç nokta menüsünden “Tüm sesleri göster” seçeneğini etkinleştirin.</string>
 
     <string name="zoom_in">Yakınlaştır</string>
     <string name="zoom_out">Uzaklaştır</string>
 
-    <string name="menu_permissions">İzinler</string>
-
+    <string name="more_options">Daha fazla seçenek</string>
+    <string name="show_system_sounds">Sistem seslerini göster</string>
+    <string name="version_unknown">bilinmiyor</string>
 </resources>

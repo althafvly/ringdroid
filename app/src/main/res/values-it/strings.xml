@@ -2,14 +2,6 @@
 <resources>
     <string name="search_edit_box">Cerca</string>
 
-    <string name="button_start_record_activity">Registra Nuovo</string>
-
-    <string name="sdcard_readonly">Spiacenti, la scheda SD è montata in sola lettura e Ringdroid richiede che sia scrivibile.</string>
-    <string name="no_sdcard">Spiacenti, Ringdroid non può essere eseguito senza una scheda SD inserita.</string>
-    <string name="sdcard_shared">Spiacenti, Ringdroid non può essere eseguito mentre il dispositivo è montato come dispositivo USB.</string>
-
-    <string name="button_options">Opzioni</string>
-
     <string name="start_label">Inizio:</string>
     <string name="end_label">Fine:</string>
 
@@ -38,19 +30,13 @@
     <string name="save_button">Salva</string>
 
     <string name="menu_reset">Ripristina</string>
-    <string name="menu_about">Informazioni</string>
-    <string name="menu_show_all_audio">Mostra tutti gli audio</string>
 
     <string name="context_menu_delete">Elimina</string>
     <string name="context_menu_default_ringtone">Imposta come suoneria predefinita</string>
     <string name="context_menu_contact">Assegna a contatto</string>
     <string name="context_menu_default_notification">Imposta come notifica predefinita</string>
 
-    <string name="file_save_title">Salva come:</string>
-
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Il permesso di archiviazione o audio multimediale è obbligatorio per il funzionamento di questa app. Tutti gli altri permessi sono facoltativi.</string>
-    <string name="storage_permission_required_for_editor_play">L\'autorizzazione audio multimediale è obbligatoria per il funzionamento di questa app. Tutti gli altri permessi sono facoltativi.</string>
 
     <string name="ringtone_type_label">Tipo:</string>
 
@@ -61,17 +47,9 @@
 
     <string name="ringtone_name_label">Nome:</string>
 
-    <string name="delete_ringtone">Elimina Suoneria</string>
-    <string name="delete_alarm">Elimina Sveglia</string>
-    <string name="delete_notification">Elimina Notifica</string>
-    <string name="delete_music">Elimina Musica</string>
-    <string name="delete_audio">Elimina Audio</string>
-
     <string name="confirm_delete_ringdroid">Sei sicuro?</string>
     <string name="confirm_delete_non_ringdroid">Sei sicuro? Questo file non è stato creato utilizzando Ringdroid!</string>
 
-
-    <string name="delete_failed">Impossibile eliminare il file</string>
 
     <string name="alert_title_success">Successo</string>
     <string name="alert_title_failure">Errore</string>
@@ -79,7 +57,6 @@
     <string name="alert_yes_button">Sì, per favore!</string>
     <string name="alert_no_button">No, grazie.</string>
 
-    <string name="save_success_message">Salvato!</string>
     <string name="default_ringtone_success_message">Suoneria predefinita cambiata</string>
     <string name="default_notification_success_message">Suono di notifica predefinito cambiato</string>
     <string name="play_error">Impossibile riprodurre questo file multimediale</string>
@@ -138,11 +115,11 @@
     <string name="contact_permission_summary">Necessario per assegnare suonerie ai tuoi contatti</string>
     <string name="media_audio_permission">Permesso audio multimediale</string>
     <string name="media_audio_summary">Necessario per leggere i file di suoneria dal tuo smartphone</string>
-    <string name="list_is_empty">Nessun file audio trovato. Abilita “Mostra tutti gli audio” dal menu con i tre punti per visualizzare i file audio di sistema.</string>
 
     <string name="zoom_in">Ingrandisci</string>
     <string name="zoom_out">Riduci</string>
 
-    <string name="menu_permissions">Autorizzazioni</string>
-
+    <string name="more_options">Altre opzioni</string>
+    <string name="show_system_sounds">Mostra suoni di sistema</string>
+    <string name="version_unknown">sconosciuto</string>
 </resources>

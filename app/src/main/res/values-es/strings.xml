@@ -2,14 +2,6 @@
 <resources>
     <string name="search_edit_box">Buscar</string>
 
-    <string name="button_start_record_activity">Grabar Nuevo</string>
-
-    <string name="sdcard_readonly">Lo sentimos, la tarjeta SD está montada como de solo lectura y Ringdroid requiere que sea editable.</string>
-    <string name="no_sdcard">Lo sentimos, Ringdroid no puede ejecutarse a menos que haya insertado una tarjeta SD.</string>
-    <string name="sdcard_shared">Lo sentimos, Ringdroid no puede ejecutarse mientras su teléfono está montado como un dispositivo USB.</string>
-
-    <string name="button_options">Opciones</string>
-
     <string name="start_label">Inicio:</string>
     <string name="end_label">Fin:</string>
 
@@ -38,15 +30,11 @@
     <string name="save_button">Guardar</string>
 
     <string name="menu_reset">Restablecer</string>
-    <string name="menu_about">Acerca de</string>
-    <string name="menu_show_all_audio">Mostrar todo el audio</string>
 
     <string name="context_menu_delete">Eliminar</string>
     <string name="context_menu_default_ringtone">Establecer como Tono de Llamada Predeterminado</string>
     <string name="context_menu_contact">Asignar a Contacto</string>
     <string name="context_menu_default_notification">Establecer como Notificación Predeterminada</string>
-
-    <string name="file_save_title">Guardar como:</string>
 
     <string name="ringtone_type_label">Tipo:</string>
 
@@ -57,17 +45,9 @@
 
     <string name="ringtone_name_label">Nombre:</string>
 
-    <string name="delete_ringtone">Eliminar Tono de Llamada</string>
-    <string name="delete_alarm">Eliminar Alarma</string>
-    <string name="delete_notification">Eliminar Notificación</string>
-    <string name="delete_music">Eliminar Música</string>
-    <string name="delete_audio">Eliminar Audio</string>
-
     <string name="confirm_delete_ringdroid">¿Está seguro?</string>
     <string name="confirm_delete_non_ringdroid">¿Está seguro? ¡Este archivo no fue creado usando Ringdroid!</string>
 
-
-    <string name="delete_failed">No se puede eliminar el archivo</string>
 
     <string name="alert_title_success">Éxito</string>
     <string name="alert_title_failure">Error</string>
@@ -75,7 +55,6 @@
     <string name="alert_yes_button">Sí, por favor!</string>
     <string name="alert_no_button">No, gracias.</string>
 
-    <string name="save_success_message">¡Guardado!</string>
     <string name="default_ringtone_success_message">Tono de llamada predeterminado cambiado</string>
     <string name="default_notification_success_message">Sonido de notificación predeterminado cambiado</string>
     <string name="play_error">No se puede reproducir este archivo multimedia</string>
@@ -135,15 +114,13 @@
     <string name="contact_permission_summary">Necesario para asignar tonos de llamada a sus contactos</string>
     <string name="media_audio_permission">Permiso de audio multimedia</string>
     <string name="media_audio_summary">Necesario para leer archivos de tono de llamada desde su teléfono inteligente</string>
-    <string name="list_is_empty">No se encontraron archivos de audio. Habilita “Mostrar todo el audio” desde el menú de tres puntos para ver los archivos de audio del sistema.</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Se requiere permiso de almacenamiento o audio multimedia para que esta aplicación funcione. Todos los demás permisos son opcionales.</string>
-    <string name="storage_permission_required_for_editor_play">Se requiere permiso de audio multimedia para que esta aplicación funcione. Todos los demás permisos son opcionales.</string>
 
     <string name="zoom_in">Acercar</string>
     <string name="zoom_out">Alejar</string>
 
-    <string name="menu_permissions">Permisos</string>
-
+    <string name="more_options">Más opciones</string>
+    <string name="show_system_sounds">Mostrar sonidos del sistema</string>
+    <string name="version_unknown">desconocido</string>
 </resources>

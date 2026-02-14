@@ -2,14 +2,6 @@
 <resources>
     <string name="search_edit_box">തിരയുക</string>
 
-    <string name="button_start_record_activity">പുതിയത് റെക്കോർഡ് ചെയ്യുക</string>
-
-    <string name="sdcard_readonly">ക്ഷമിക്കണം, SD കാർഡ് റീഡ്-ഓൺലിയായി മൗണ്ട് ചെയ്‌തിരിക്കുന്നു. Ringdroid-ന് എഴുതാനാകണം.</string>
-    <string name="no_sdcard">ക്ഷമിക്കണം, SD കാർഡ് ഇട്ടിട്ടില്ലെങ്കിൽ Ringdroid പ്രവർത്തിപ്പിക്കാൻ കഴിയില്ല.</string>
-    <string name="sdcard_shared">ക്ഷമിക്കണം, നിങ്ങളുടെ ഹാൻഡ്‌സെറ്റ് ഒരു USB ഉപകരണമായി മൗണ്ട് ചെയ്‌തിരിക്കുമ്പോൾ Ringdroid-ന് പ്രവർത്തിക്കാൻ കഴിയില്ല.</string>
-
-    <string name="button_options">ഓപ്ഷനുകൾ</string>
-
     <string name="start_label">തുടക്കം:</string>
     <string name="end_label">അവസാനം:</string>
 
@@ -38,19 +30,13 @@
     <string name="save_button">സേവ് ചെയ്യുക</string>
 
     <string name="menu_reset">പുനഃസജ്ജമാക്കുക</string>
-    <string name="menu_about">വിവരം</string>
-    <string name="menu_show_all_audio">എല്ലാ ഓഡിയോയും കാണിക്കുക</string>
 
     <string name="context_menu_delete">ഡിലീറ്റ് ചെയ്യുക</string>
     <string name="context_menu_default_ringtone">ഡിഫോൾട്ട് റിംഗ്‌ടോൺ ആയി സജ്ജമാക്കുക</string>
     <string name="context_menu_contact">കോൺടാക്റ്റിന് നൽകുക</string>
     <string name="context_menu_default_notification">ഡിഫോൾട്ട് നോട്ടിഫിക്കേഷനായി സജ്ജമാക്കുക</string>
 
-    <string name="file_save_title">ഇതുപോലെ സേവ് ചെയ്യുക:</string>
-
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">ഈ അപ്ലിക്കേഷൻ പ്രവർത്തിക്കുന്നതിന് സ്റ്റോറേജ് അല്ലെങ്കിൽ മീഡിയ ഓഡിയോ അനുമതി ആവശ്യമാണ്. മറ്റെല്ലാ അനുമതികളും ഐച്ഛികമാണ്.</string>
-    <string name="storage_permission_required_for_editor_play">ഈ അപ്ലിക്കേഷൻ പ്രവർത്തിക്കുന്നതിന് മീഡിയ ഓഡിയോ അനുമതി ആവശ്യമാണ്. മറ്റെല്ലാ അനുമതികളും ഐച്ഛികമാണ്.</string>
 
     <string name="ringtone_type_label">തരം:</string>
 
@@ -61,17 +47,9 @@
 
     <string name="ringtone_name_label">പേര്:</string>
 
-    <string name="delete_ringtone">റിംഗ്‌ടോൺ ഡിലീറ്റ് ചെയ്യുക</string>
-    <string name="delete_alarm">അലാറം ഡിലീറ്റ് ചെയ്യുക</string>
-    <string name="delete_notification">നോട്ടിഫിക്കേഷൻ ഡിലീറ്റ് ചെയ്യുക</string>
-    <string name="delete_music">സംഗീതം ഡിലീറ്റ് ചെയ്യുക</string>
-    <string name="delete_audio">ഓഡിയോ ഡിലീറ്റ് ചെയ്യുക</string>
-
     <string name="confirm_delete_ringdroid">നിങ്ങൾ ഉറപ്പാണോ?</string>
     <string name="confirm_delete_non_ringdroid">നിങ്ങൾ ഉറപ്പാണോ? ഈ ഫയൽ Ringdroid ഉപയോഗിച്ച് ഉണ്ടാക്കിയതല്ല!</string>
 
-
-    <string name="delete_failed">ഫയൽ ഡിലീറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല</string>
 
     <string name="alert_title_success">വിജയം</string>
     <string name="alert_title_failure">പിശക്</string>
@@ -79,7 +57,6 @@
     <string name="alert_yes_button">അതെ, ദയവായി!</string>
     <string name="alert_no_button">വേണ്ട, നന്ദി.</string>
 
-    <string name="save_success_message">സേവ് ചെയ്തു!</string>
     <string name="default_ringtone_success_message">ഡിഫോൾട്ട് റിംഗ്‌ടോൺ മാറ്റി</string>
     <string name="default_notification_success_message">ഡിഫോൾട്ട് നോട്ടിഫിക്കേഷൻ ശബ്ദം മാറ്റി</string>
     <string name="play_error">ഈ മീഡിയ ഫയൽ പ്ലേ ചെയ്യാൻ കഴിയുന്നില്ല</string>
@@ -138,11 +115,11 @@
     <string name="contact_permission_summary">നിങ്ങളുടെ കോൺടാക്റ്റുകൾക്ക് റിംഗ്‌ടോണുകൾ നൽകാൻ ആവശ്യമാണ്</string>
     <string name="media_audio_permission">മീഡിയ ഓഡിയോ പെർമിഷൻ</string>
     <string name="media_audio_summary">നിങ്ങളുടെ സ്മാർട്ട്‌ഫോണിൽ നിന്ന് റിംഗ്‌ടോൺ ഫയലുകൾ വായിക്കാൻ ആവശ്യമാണ്</string>
-    <string name="list_is_empty">ഓഡിയോ ഫയലുകളൊന്നും കണ്ടെത്താനായില്ല. സിസ്റ്റം ഓഡിയോ ഫയലുകൾ കാണുന്നതിന് മൂന്ന്-ഡോട്ട് മെനുവിൽ നിന്ന് “എല്ലാ ഓഡിയോയും കാണിക്കുക” സജ്ജമാക്കുക.</string>
 
     <string name="zoom_in">വലുതാക്കുക</string>
     <string name="zoom_out">ചെറുതാക്കുക</string>
 
-    <string name="menu_permissions">അനുമതികൾ</string>
-
+    <string name="more_options">കൂടുതൽ ഓപ്ഷനുകൾ</string>
+    <string name="show_system_sounds">സിസ്റ്റം ശബ്ദങ്ങൾ കാണിക്കുക</string>
+    <string name="version_unknown">അജ്ഞാതം</string>
 </resources>

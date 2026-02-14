@@ -2,14 +2,6 @@
 <resources>
     <string name="search_edit_box">Szukaj</string>
 
-    <string name="button_start_record_activity">Nagraj nowy</string>
-
-    <string name="sdcard_readonly">Przepraszamy, karta SD jest zamontowana jako tylko do odczytu, a Ringdroid wymaga, aby była zapisywalna.</string>
-    <string name="no_sdcard">Przepraszamy, Ringdroid nie może działać, jeśli nie masz włożonej karty SD.</string>
-    <string name="sdcard_shared">Przepraszamy, Ringdroid nie może działać, gdy telefon jest zamontowany jako urządzenie USB.</string>
-
-    <string name="button_options">Opcje</string>
-
     <string name="start_label">Początek:</string>
     <string name="end_label">Koniec:</string>
 
@@ -38,19 +30,13 @@
     <string name="save_button">Zapisz</string>
 
     <string name="menu_reset">Resetuj</string>
-    <string name="menu_about">Informacje</string>
-    <string name="menu_show_all_audio">Pokaż wszystkie pliki audio</string>
 
     <string name="context_menu_delete">Usuń</string>
     <string name="context_menu_default_ringtone">Ustaw jako domyślny dzwonek</string>
     <string name="context_menu_contact">Przypisz do kontaktu</string>
     <string name="context_menu_default_notification">Ustaw jako domyślne powiadomienie</string>
 
-    <string name="file_save_title">Zapisz jako:</string>
-
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Uprawnienie do przechowywania lub mediów audio jest wymagane, aby ta aplikacja działała. Wszystkie inne uprawnienia są opcjonalne.</string>
-    <string name="storage_permission_required_for_editor_play">Uprawnienie do mediów audio jest wymagane, aby ta aplikacja działała. Wszystkie inne uprawnienia są opcjonalne.</string>
 
     <string name="ringtone_type_label">Typ:</string>
 
@@ -61,17 +47,9 @@
 
     <string name="ringtone_name_label">Nazwa:</string>
 
-    <string name="delete_ringtone">Usuń dzwonek</string>
-    <string name="delete_alarm">Usuń alarm</string>
-    <string name="delete_notification">Usuń powiadomienie</string>
-    <string name="delete_music">Usuń muzykę</string>
-    <string name="delete_audio">Usuń plik audio</string>
-
     <string name="confirm_delete_ringdroid">Jesteś pewien?</string>
     <string name="confirm_delete_non_ringdroid">Jesteś pewien? Ten plik nie został utworzony za pomocą Ringdroid!</string>
 
-
-    <string name="delete_failed">Nie można usunąć pliku</string>
 
     <string name="alert_title_success">Sukces</string>
     <string name="alert_title_failure">Błąd</string>
@@ -79,7 +57,6 @@
     <string name="alert_yes_button">Tak, poproszę!</string>
     <string name="alert_no_button">Nie, dziękuję.</string>
 
-    <string name="save_success_message">Zapisano!</string>
     <string name="default_ringtone_success_message">Zmieniono domyślny dzwonek</string>
     <string name="default_notification_success_message">Zmieniono domyślny dźwięk powiadomienia</string>
     <string name="play_error">Nie można odtworzyć tego pliku multimedialnego</string>
@@ -138,11 +115,11 @@
     <string name="contact_permission_summary">Potrzebne do przypisywania dzwonków do kontaktów</string>
     <string name="media_audio_permission">Uprawnienie do mediów audio</string>
     <string name="media_audio_summary">Potrzebne do odczytu plików dzwonków ze smartfona</string>
-    <string name="list_is_empty">Nie znaleziono plików audio. Włącz „Pokaż wszystkie pliki audio” z menu trzech kropek, aby wyświetlić systemowe pliki audio.</string>
 
     <string name="zoom_in">Powiększ</string>
     <string name="zoom_out">Pomniejsz</string>
 
-    <string name="menu_permissions">Uprawnienia</string>
-
+    <string name="more_options">Więcej opcji</string>
+    <string name="show_system_sounds">Pokaż dźwięki systemowe</string>
+    <string name="version_unknown">nieznany</string>
 </resources>

@@ -2,14 +2,6 @@
 <resources>
     <string name="search_edit_box">Поиск</string>
 
-    <string name="button_start_record_activity">Записать новый</string>
-
-    <string name="sdcard_readonly">К сожалению, SD-карта смонтирована только для чтения, а Ringdroid требует, чтобы она была доступна для записи.</string>
-    <string name="no_sdcard">К сожалению, Ringdroid не может работать, если не вставлена SD-карта.</string>
-    <string name="sdcard_shared">К сожалению, Ringdroid не может работать, пока ваш телефон смонтирован как USB-устройство.</string>
-
-    <string name="button_options">Настройки</string>
-
     <string name="start_label">Начало:</string>
     <string name="end_label">Конец:</string>
 
@@ -38,19 +30,13 @@
     <string name="save_button">Сохранить</string>
 
     <string name="menu_reset">Сбросить</string>
-    <string name="menu_about">О программе</string>
-    <string name="menu_show_all_audio">Показать все аудио</string>
 
     <string name="context_menu_delete">Удалить</string>
     <string name="context_menu_default_ringtone">Установить как рингтон по умолчанию</string>
     <string name="context_menu_contact">Назначить контакту</string>
     <string name="context_menu_default_notification">Установить как уведомление по умолчанию</string>
 
-    <string name="file_save_title">Сохранить как:</string>
-
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Разрешение на хранилище или медиа-аудио необходимо для работы этого приложения. Все остальные разрешения являются необязательными.</string>
-    <string name="storage_permission_required_for_editor_play">Разрешение на медиа-аудио необходимо для работы этого приложения. Все остальные разрешения являются необязательными.</string>
 
     <string name="ringtone_type_label">Тип:</string>
 
@@ -61,17 +47,9 @@
 
     <string name="ringtone_name_label">Имя:</string>
 
-    <string name="delete_ringtone">Удалить рингтон</string>
-    <string name="delete_alarm">Удалить будильник</string>
-    <string name="delete_notification">Удалить уведомление</string>
-    <string name="delete_music">Удалить музыку</string>
-    <string name="delete_audio">Удалить аудио</string>
-
     <string name="confirm_delete_ringdroid">Вы уверены?</string>
     <string name="confirm_delete_non_ringdroid">Вы уверены? Этот файл не был создан с помощью Ringdroid!</string>
 
-
-    <string name="delete_failed">Не удалось удалить файл</string>
 
     <string name="alert_title_success">Успех</string>
     <string name="alert_title_failure">Ошибка</string>
@@ -79,7 +57,6 @@
     <string name="alert_yes_button">Да, пожалуйста!</string>
     <string name="alert_no_button">Нет, спасибо.</string>
 
-    <string name="save_success_message">Сохранено!</string>
     <string name="default_ringtone_success_message">Стандартный рингтон изменен</string>
     <string name="default_notification_success_message">Стандартный звук уведомления изменен</string>
     <string name="play_error">Не удалось воспроизвести этот медиафайл</string>
@@ -138,11 +115,11 @@
     <string name="contact_permission_summary">Требуется для назначения рингтонов вашим контактам</string>
     <string name="media_audio_permission">Разрешение на медиа-аудио</string>
     <string name="media_audio_summary">Требуется для чтения файлов рингтонов с вашего смартфона</string>
-    <string name="list_is_empty">Аудиофайлы не найдены. Включите «Показать все аудио» в меню с тремя точками, чтобы просмотреть системные аудиофайлы.</string>
 
     <string name="zoom_in">Увеличить</string>
     <string name="zoom_out">Уменьшить</string>
 
-    <string name="menu_permissions">Разрешения</string>
-
+    <string name="more_options">Дополнительно</string>
+    <string name="show_system_sounds">Показать системные звуки</string>
+    <string name="version_unknown">неизвестно</string>
 </resources>

@@ -2,14 +2,6 @@
 <resources>
     <string name="search_edit_box">Zoeken</string>
 
-    <string name="button_start_record_activity">Nieuwe opname</string>
-
-    <string name="sdcard_readonly">Sorry, de SD-kaart is alleen-lezen gemount en Ringdroid vereist dat deze beschrijfbaar is.</string>
-    <string name="no_sdcard">Sorry, Ringdroid kan niet worden uitgevoerd tenzij u een SD-kaart hebt geplaatst.</string>
-    <string name="sdcard_shared">Sorry, Ringdroid kan niet worden uitgevoerd terwijl uw toestel is gemount als een USB-apparaat.</string>
-
-    <string name="button_options">Opties</string>
-
     <string name="start_label">Start:</string>
     <string name="end_label">Einde:</string>
 
@@ -38,19 +30,13 @@
     <string name="save_button">Opslaan</string>
 
     <string name="menu_reset">Herstellen</string>
-    <string name="menu_about">Over</string>
-    <string name="menu_show_all_audio">Toon alle audio</string>
 
     <string name="context_menu_delete">Verwijderen</string>
     <string name="context_menu_default_ringtone">Instellen als Standaardbeltoon</string>
     <string name="context_menu_contact">Toewijzen aan contact</string>
     <string name="context_menu_default_notification">Instellen als Standaardmelding</string>
 
-    <string name="file_save_title">Opslaan als:</string>
-
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Opslag- of media-audiotoesteming is vereist voor deze app om te werken. Alle overige machtigingen zijn optioneel.</string>
-    <string name="storage_permission_required_for_editor_play">Media-audiotoesteming is vereist voor deze app om te werken. Alle overige machtigingen zijn optioneel.</string>
 
     <string name="ringtone_type_label">Type:</string>
 
@@ -61,17 +47,9 @@
 
     <string name="ringtone_name_label">Naam:</string>
 
-    <string name="delete_ringtone">Beltoon verwijderen</string>
-    <string name="delete_alarm">Alarm verwijderen</string>
-    <string name="delete_notification">Melding verwijderen</string>
-    <string name="delete_music">Muziek verwijderen</string>
-    <string name="delete_audio">Audio verwijderen</string>
-
     <string name="confirm_delete_ringdroid">Weet u het zeker?</string>
     <string name="confirm_delete_non_ringdroid">Weet u het zeker? Dit bestand is niet gemaakt met Ringdroid!</string>
 
-
-    <string name="delete_failed">Kan bestand niet verwijderen</string>
 
     <string name="alert_title_success">Succes</string>
     <string name="alert_title_failure">Fout</string>
@@ -79,7 +57,6 @@
     <string name="alert_yes_button">Ja, graag!</string>
     <string name="alert_no_button">Nee, bedankt.</string>
 
-    <string name="save_success_message">Opgeslagen!</string>
     <string name="default_ringtone_success_message">Standaardbeltoon gewijzigd</string>
     <string name="default_notification_success_message">Standaardmeldingsgeluid gewijzigd</string>
     <string name="play_error">Kan dit mediabestand niet afspelen</string>
@@ -138,11 +115,11 @@
     <string name="contact_permission_summary">Nodig om beltonen aan uw contacten toe te wijzen</string>
     <string name="media_audio_permission">Media-audiotoestemming</string>
     <string name="media_audio_summary">Nodig om beltoonbestanden van uw smartphone te lezen</string>
-    <string name="list_is_empty">Geen audiobestanden gevonden. Schakel ‘Alle audio tonen’ in via het menu met drie puntjes om systeemaudiobestanden te bekijken.</string>
 
     <string name="zoom_in">Inzoomen</string>
     <string name="zoom_out">Uitzoomen</string>
 
-    <string name="menu_permissions">Machtigingen</string>
-
+    <string name="more_options">Meer opties</string>
+    <string name="show_system_sounds">Systeemgeluiden tonen</string>
+    <string name="version_unknown">onbekend</string>
 </resources>

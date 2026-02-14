@@ -2,14 +2,6 @@
 <resources>
     <string name="search_edit_box">検索</string>
 
-    <string name="button_start_record_activity">新しく録音</string>
-
-    <string name="sdcard_readonly">申し訳ありませんが、SDカードが読み取り専用でマウントされており、Ringdroidは書き込み可能である必要があります。</string>
-    <string name="no_sdcard">申し訳ありませんが、SDカードが挿入されていないとRingdroidは実行できません。</string>
-    <string name="sdcard_shared">申し訳ありませんが、ハンドセットがUSBデバイスとしてマウントされている間、Ringdroidは実行できません。</string>
-
-    <string name="button_options">オプション</string>
-
     <string name="start_label">開始:</string>
     <string name="end_label">終了:</string>
 
@@ -38,19 +30,13 @@
     <string name="save_button">保存</string>
 
     <string name="menu_reset">リセット</string>
-    <string name="menu_about">情報</string>
-    <string name="menu_show_all_audio">すべてのオーディオを表示</string>
 
     <string name="context_menu_delete">削除</string>
     <string name="context_menu_default_ringtone">デフォルトの着信音に設定</string>
     <string name="context_menu_contact">連絡先に割り当てる</string>
     <string name="context_menu_default_notification">デフォルトの通知に設定</string>
 
-    <string name="file_save_title">名前を付けて保存:</string>
-
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">このアプリが動作するにはストレージまたはメディアオーディオ権限が必要です。その他すべての権限はオプションです。</string>
-    <string name="storage_permission_required_for_editor_play">このアプリが動作するにはメディアオーディオ権限が必要です。その他すべての権限はオプションです。</string>
 
     <string name="ringtone_type_label">タイプ:</string>
 
@@ -61,17 +47,9 @@
 
     <string name="ringtone_name_label">名前:</string>
 
-    <string name="delete_ringtone">着信音を削除</string>
-    <string name="delete_alarm">アラームを削除</string>
-    <string name="delete_notification">通知を削除</string>
-    <string name="delete_music">音楽を削除</string>
-    <string name="delete_audio">オーディオを削除</string>
-
     <string name="confirm_delete_ringdroid">よろしいですか？</string>
     <string name="confirm_delete_non_ringdroid">よろしいですか？このファイルはRingdroidを使用して作成されていません！</string>
 
-
-    <string name="delete_failed">ファイルを削除できません</string>
 
     <string name="alert_title_success">成功</string>
     <string name="alert_title_failure">エラー</string>
@@ -79,7 +57,6 @@
     <string name="alert_yes_button">はい、お願いします！</string>
     <string name="alert_no_button">いいえ、結構です。</string>
 
-    <string name="save_success_message">保存しました！</string>
     <string name="default_ringtone_success_message">デフォルトの着信音が変更されました</string>
     <string name="default_notification_success_message">デフォルトの通知音が変更されました</string>
     <string name="play_error">このメディアファイルを再生できません</string>
@@ -138,11 +115,11 @@
     <string name="contact_permission_summary">連絡先に着信音を割り当てるために必要です</string>
     <string name="media_audio_permission">メディアオーディオ権限</string>
     <string name="media_audio_summary">スマートフォンから着信音ファイルを読み取るために必要です</string>
-    <string name="list_is_empty">オーディオファイルが見つかりません。システムのオーディオファイルを表示するには、三点メニューから「すべてのオーディオを表示」を有効にしてください。</string>
 
     <string name="zoom_in">拡大</string>
     <string name="zoom_out">縮小</string>
 
-    <string name="menu_permissions">権限</string>
-
+    <string name="more_options">その他のオプション</string>
+    <string name="show_system_sounds">システム音を表示</string>
+    <string name="version_unknown">不明</string>
 </resources>

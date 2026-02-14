@@ -2,14 +2,6 @@
 <resources>
     <string name="search_edit_box">Suchen</string>
 
-    <string name="button_start_record_activity">Neu aufnehmen</string>
-
-    <string name="sdcard_readonly">Entschuldigung, die SD-Karte ist schreibgeschützt eingebunden und Ringdroid benötigt Schreibzugriff.</string>
-    <string name="no_sdcard">Entschuldigung, Ringdroid kann nur ausgeführt werden, wenn eine SD-Karte eingelegt ist.</string>
-    <string name="sdcard_shared">Entschuldigung, Ringdroid kann nicht ausgeführt werden, solange Ihr Gerät als USB-Gerät eingebunden ist.</string>
-
-    <string name="button_options">Optionen</string>
-
     <string name="start_label">Start:</string>
     <string name="end_label">Ende:</string>
 
@@ -38,19 +30,13 @@
     <string name="save_button">Speichern</string>
 
     <string name="menu_reset">Zurücksetzen</string>
-    <string name="menu_about">Über</string>
-    <string name="menu_show_all_audio">Alle Audiodateien anzeigen</string>
 
     <string name="context_menu_delete">Löschen</string>
     <string name="context_menu_default_ringtone">Als Standard-Klingelton festlegen</string>
     <string name="context_menu_contact">Kontakt zuweisen</string>
     <string name="context_menu_default_notification">Als Standard-Benachrichtigung festlegen</string>
 
-    <string name="file_save_title">Speichern als:</string>
-
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Speicher- oder Medienaudioberechtigung ist erforderlich, damit diese App funktioniert. Alle anderen Berechtigungen sind optional.</string>
-    <string name="storage_permission_required_for_editor_play">Medienaudioberechtigung ist erforderlich, damit diese App funktioniert. Alle anderen Berechtigungen sind optional.</string>
 
     <string name="ringtone_type_label">Typ:</string>
 
@@ -61,17 +47,9 @@
 
     <string name="ringtone_name_label">Name:</string>
 
-    <string name="delete_ringtone">Klingelton löschen</string>
-    <string name="delete_alarm">Alarm löschen</string>
-    <string name="delete_notification">Benachrichtigung löschen</string>
-    <string name="delete_music">Musik löschen</string>
-    <string name="delete_audio">Audio löschen</string>
-
     <string name="confirm_delete_ringdroid">Sind Sie sicher?</string>
     <string name="confirm_delete_non_ringdroid">Sind Sie sicher? Diese Datei wurde nicht mit Ringdroid erstellt!</string>
 
-
-    <string name="delete_failed">Datei konnte nicht gelöscht werden</string>
 
     <string name="alert_title_success">Erfolg</string>
     <string name="alert_title_failure">Fehler</string>
@@ -79,7 +57,6 @@
     <string name="alert_yes_button">Ja, bitte!</string>
     <string name="alert_no_button">Nein, danke.</string>
 
-    <string name="save_success_message">Gespeichert!</string>
     <string name="default_ringtone_success_message">Standard-Klingelton geändert</string>
     <string name="default_notification_success_message">Standard-Benachrichtigungston geändert</string>
     <string name="play_error">Diese Mediendatei kann nicht abgespielt werden</string>
@@ -138,11 +115,11 @@
     <string name="contact_permission_summary">Wird benötigt, um Ihren Kontakten Klingeltöne zuzuweisen</string>
     <string name="media_audio_permission">Medien-Audioberechtigung</string>
     <string name="media_audio_summary">Wird benötigt, um Klingelton-Dateien von Ihrem Smartphone zu lesen</string>
-    <string name="list_is_empty">Keine Audiodateien gefunden. Aktivieren Sie „Alle Audiodateien anzeigen“ über das Drei-Punkte-Menü, um Systemaudiodateien anzuzeigen.</string>
 
     <string name="zoom_in">Vergrößern</string>
     <string name="zoom_out">Verkleinern</string>
 
-    <string name="menu_permissions">Berechtigungen</string>
-
+    <string name="more_options">Weitere Optionen</string>
+    <string name="show_system_sounds">Systemtöne anzeigen</string>
+    <string name="version_unknown">unbekannt</string>
 </resources>

@@ -2,14 +2,6 @@
 <resources>
     <string name="search_edit_box">بحث</string>
 
-    <string name="button_start_record_activity">تسجيل جديد</string>
-
-    <string name="sdcard_readonly">عذراً، بطاقة SD مثبتة كقراءة فقط ويتطلب Ringdroid أن تكون قابلة للكتابة.</string>
-    <string name="no_sdcard">عذراً، لا يمكن تشغيل Ringdroid إلا إذا قمت بإدخال بطاقة SD.</string>
-    <string name="sdcard_shared">عذراً، لا يمكن تشغيل Ringdroid أثناء تثبيت هاتفك كجهاز USB.</string>
-
-    <string name="button_options">خيارات</string>
-
     <string name="start_label">البداية:</string>
     <string name="end_label">النهاية:</string>
 
@@ -38,19 +30,13 @@
     <string name="save_button">حفظ</string>
 
     <string name="menu_reset">إعادة ضبط</string>
-    <string name="menu_about">حول</string>
-    <string name="menu_show_all_audio">عرض كل الملفات الصوتية</string>
 
     <string name="context_menu_delete">حذف</string>
     <string name="context_menu_default_ringtone">تعيين كنغمة رنين افتراضية</string>
     <string name="context_menu_contact">تعيين لجهة اتصال</string>
     <string name="context_menu_default_notification">تعيين كإشعار افتراضي</string>
 
-    <string name="file_save_title">حفظ باسم:</string>
-
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">إذن التخزين أو الوسائط الصوتية مطلوب لكي يعمل هذا التطبيق. جميع الأذونات الأخرى اختيارية.</string>
-    <string name="storage_permission_required_for_editor_play">إذن الوسائط الصوتية مطلوب لكي يعمل هذا التطبيق. جميع الأذونات الأخرى اختيارية.</string>
 
     <string name="ringtone_type_label">النوع:</string>
 
@@ -61,17 +47,9 @@
 
     <string name="ringtone_name_label">الاسم:</string>
 
-    <string name="delete_ringtone">حذف نغمة الرنين</string>
-    <string name="delete_alarm">حذف المنبه</string>
-    <string name="delete_notification">حذف الإشعار</string>
-    <string name="delete_music">حذف الموسيقى</string>
-    <string name="delete_audio">حذف الملف الصوتي</string>
-
     <string name="confirm_delete_ringdroid">هل أنت متأكد؟</string>
     <string name="confirm_delete_non_ringdroid">هل أنت متأكد؟ لم يتم إنشاء هذا الملف باستخدام Ringdroid!</string>
 
-
-    <string name="delete_failed">تعذر حذف الملف</string>
 
     <string name="alert_title_success">نجاح</string>
     <string name="alert_title_failure">خطأ</string>
@@ -79,7 +57,6 @@
     <string name="alert_yes_button">نعم، من فضلك!</string>
     <string name="alert_no_button">لا، شكراً.</string>
 
-    <string name="save_success_message">تم الحفظ!</string>
     <string name="default_ringtone_success_message">تم تغيير نغمة الرنين الافتراضية</string>
     <string name="default_notification_success_message">تم تغيير صوت الإشعار الافتراضي</string>
     <string name="play_error">تعذر تشغيل ملف الوسائط هذا</string>
@@ -138,11 +115,11 @@
     <string name="contact_permission_summary">مطلوب لتعيين نغمات رنين لجهات الاتصال الخاصة بك</string>
     <string name="media_audio_permission">إذن الوسائط الصوتية</string>
     <string name="media_audio_summary">مطلوب لقراءة ملفات نغمات الرنين من هاتفك الذكي</string>
-    <string name="list_is_empty">لا توجد ملفات صوتية. فعّل خيار "إظهار كل الصوتيات" من قائمة النقاط الثلاث لعرض ملفات النظام الصوتية.</string>
 
     <string name="zoom_in">تكبير</string>
     <string name="zoom_out">تصغير</string>
 
-    <string name="menu_permissions">الأذونات</string>
-
+    <string name="more_options">مزيد من الخيارات</string>
+    <string name="show_system_sounds">عرض أصوات النظام</string>
+    <string name="version_unknown">مجهول</string>
 </resources>

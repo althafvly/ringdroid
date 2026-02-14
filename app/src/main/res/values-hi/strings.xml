@@ -2,14 +2,6 @@
 <resources>
     <string name="search_edit_box">खोजें</string>
 
-    <string name="button_start_record_activity">नया रिकॉर्ड करें</string>
-
-    <string name="sdcard_readonly">क्षमा करें, SD कार्ड केवल पढ़ने के लिए माउंट किया गया है और Ringdroid को लिखने योग्य होना आवश्यक है।</string>
-    <string name="no_sdcard">क्षमा करें, जब तक आपने SD कार्ड नहीं डाला है, Ringdroid नहीं चल सकता।</string>
-    <string name="sdcard_shared">क्षमा करें, जब तक आपका हैंडसेट एक USB डिवाइस के रूप में माउंट है, Ringdroid नहीं चल सकता।</string>
-
-    <string name="button_options">विकल्प</string>
-
     <string name="start_label">शुरुआत:</string>
     <string name="end_label">समाप्ति:</string>
 
@@ -38,19 +30,13 @@
     <string name="save_button">सहेजें</string>
 
     <string name="menu_reset">रीसेट करें</string>
-    <string name="menu_about">के बारे में</string>
-    <string name="menu_show_all_audio">सभी ऑडियो दिखाएँ</string>
 
     <string name="context_menu_delete">हटाएँ</string>
     <string name="context_menu_default_ringtone">डिफ़ॉल्ट रिंगटोन के रूप में सेट करें</string>
     <string name="context_menu_contact">संपर्क को असाइन करें</string>
     <string name="context_menu_default_notification">डिफ़ॉल्ट अधिसूचना के रूप में सेट करें</string>
 
-    <string name="file_save_title">इस रूप में सहेजें:</string>
-
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">इस ऐप के काम करने के लिए स्टोरेज या मीडिया ऑडियो अनुमति आवश्यक है। अन्य सभी अनुमतियां वैकल्पिक हैं।</string>
-    <string name="storage_permission_required_for_editor_play">इस ऐप के काम करने के लिए मीडिया ऑडियो अनुमति आवश्यक है। अन्य सभी अनुमतियां वैकल्पिक हैं।</string>
 
     <string name="ringtone_type_label">प्रकार:</string>
 
@@ -61,17 +47,9 @@
 
     <string name="ringtone_name_label">नाम:</string>
 
-    <string name="delete_ringtone">रिंगटोन हटाएँ</string>
-    <string name="delete_alarm">अलार्म हटाएँ</string>
-    <string name="delete_notification">अधिसूचना हटाएँ</string>
-    <string name="delete_music">संगीत हटाएँ</string>
-    <string name="delete_audio">ऑडियो हटाएँ</string>
-
     <string name="confirm_delete_ringdroid">क्या आप सुनिश्चित हैं?</string>
     <string name="confirm_delete_non_ringdroid">क्या आप सुनिश्चित हैं? यह फ़ाइल Ringdroid का उपयोग करके नहीं बनाई गई थी!</string>
 
-
-    <string name="delete_failed">फ़ाइल हटाने में असमर्थ</string>
 
     <string name="alert_title_success">सफलता</string>
     <string name="alert_title_failure">त्रुटि</string>
@@ -79,7 +57,6 @@
     <string name="alert_yes_button">हाँ, कृपया!</string>
     <string name="alert_no_button">नहीं, धन्यवाद।</string>
 
-    <string name="save_success_message">सहेज लिया गया!</string>
     <string name="default_ringtone_success_message">डिफ़ॉल्ट रिंगटोन बदल दिया गया</string>
     <string name="default_notification_success_message">डिफ़ॉल्ट अधिसूचना ध्वनि बदल दी गई</string>
     <string name="play_error">इस मीडिया फ़ाइल को चलाने में असमर्थ</string>
@@ -138,11 +115,11 @@
     <string name="contact_permission_summary">अपने संपर्कों को रिंगटोन असाइन करने के लिए आवश्यक है</string>
     <string name="media_audio_permission">मीडिया ऑडियो अनुमति</string>
     <string name="media_audio_summary">आपके स्मार्टफोन से रिंगटोन फ़ाइलें पढ़ने के लिए आवश्यक है</string>
-    <string name="list_is_empty">कोई ऑडियो फ़ाइल नहीं मिली। सिस्टम की ऑडियो फ़ाइलें देखने के लिए तीन-डॉट मेनू से “सभी ऑडियो दिखाएँ” सक्षम करें।</string>
 
     <string name="zoom_in">ज़ूम इन</string>
     <string name="zoom_out">ज़ूम आउट</string>
 
-    <string name="menu_permissions">अनुमतियाँ</string>
-
+    <string name="more_options">अधिक विकल्प</string>
+    <string name="show_system_sounds">सिस्टम ध्वनियाँ दिखाएं</string>
+    <string name="version_unknown">अज्ञात</string>
 </resources>

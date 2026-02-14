@@ -2,14 +2,6 @@
 <resources>
     <string name="search_edit_box">搜索</string>
 
-    <string name="button_start_record_activity">录制新内容</string>
-
-    <string name="sdcard_readonly">抱歉，SD卡已挂载为只读，而Ringdroid要求它是可写入的。</string>
-    <string name="no_sdcard">抱歉，除非您插入了SD卡，否则Ringdroid无法运行。</string>
-    <string name="sdcard_shared">抱歉，当您的手机作为USB设备挂载时，Ringdroid无法运行。</string>
-
-    <string name="button_options">选项</string>
-
     <string name="start_label">开始:</string>
     <string name="end_label">结束:</string>
 
@@ -38,19 +30,13 @@
     <string name="save_button">保存</string>
 
     <string name="menu_reset">重置</string>
-    <string name="menu_about">关于</string>
-    <string name="menu_show_all_audio">显示所有音频</string>
 
     <string name="context_menu_delete">删除</string>
     <string name="context_menu_default_ringtone">设为默认铃声</string>
     <string name="context_menu_contact">分配给联系人</string>
     <string name="context_menu_default_notification">设为默认通知</string>
 
-    <string name="file_save_title">另存为:</string>
-
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">此应用需要存储或媒体音频权限才能运行。所有其他权限都是可选的。</string>
-    <string name="storage_permission_required_for_editor_play">此应用需要媒体音频权限才能运行。所有其他权限都是可选的。</string>
 
     <string name="ringtone_type_label">类型:</string>
 
@@ -61,17 +47,9 @@
 
     <string name="ringtone_name_label">名称:</string>
 
-    <string name="delete_ringtone">删除铃声</string>
-    <string name="delete_alarm">删除闹钟</string>
-    <string name="delete_notification">删除通知</string>
-    <string name="delete_music">删除音乐</string>
-    <string name="delete_audio">删除音频</string>
-
     <string name="confirm_delete_ringdroid">您确定吗?</string>
     <string name="confirm_delete_non_ringdroid">您确定吗? 此文件不是使用 Ringdroid 创建的!</string>
 
-
-    <string name="delete_failed">无法删除文件</string>
 
     <string name="alert_title_success">成功</string>
     <string name="alert_title_failure">错误</string>
@@ -79,7 +57,6 @@
     <string name="alert_yes_button">是的，请！</string>
     <string name="alert_no_button">不，谢谢。</string>
 
-    <string name="save_success_message">已保存!</string>
     <string name="default_ringtone_success_message">默认铃声已更改</string>
     <string name="default_notification_success_message">默认通知声音已更改</string>
     <string name="play_error">无法播放此媒体文件</string>
@@ -138,11 +115,11 @@
     <string name="contact_permission_summary">将铃声分配给您的联系人所需</string>
     <string name="media_audio_permission">媒体音频权限</string>
     <string name="media_audio_summary">从您的智能手机读取铃声文件所需</string>
-    <string name="list_is_empty">未找到音频文件。请在右上角三点菜单中启用“显示所有音频”以查看系统音频文件。</string>
 
     <string name="zoom_in">放大</string>
     <string name="zoom_out">缩小</string>
 
-    <string name="menu_permissions">权限</string>
-
+    <string name="more_options">更多选项</string>
+    <string name="show_system_sounds">显示系统声音</string>
+    <string name="version_unknown">未知</string>
 </resources>
