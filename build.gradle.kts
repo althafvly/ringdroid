@@ -1,5 +1,3 @@
-import com.android.build.gradle.internal.crash.afterEvaluate
-
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     alias(libs.plugins.android.application) apply false
@@ -14,6 +12,19 @@ spotless {
         leadingTabsToSpaces(4)
         target("src/*/java/**/*.java")
     }
+
+    kotlin {
+        target("src/**/*.kt")
+        ktfmt().kotlinlangStyle()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+
+    kotlinGradle {
+        target("*.kts", "**/*.kts")
+        ktfmt().kotlinlangStyle()
+    }
+
     format("xml") {
         target("src/**/*.xml")
         targetExclude("**/build/", ".idea/")
@@ -36,21 +47,14 @@ subprojects {
             if (preCommitFile.exists()) return@doLast
             val content =
                 """
-                    #!/usr/bin/env bash
+                #!/usr/bin/env bash
 
-                    [ -f ./hooks/pre-commit.sh ] && ./hooks/pre-commit.sh
-                     """
+                [ -f ./hooks/pre-commit.sh ] && ./hooks/pre-commit.sh
+                """
                     .trimIndent()
 
             preCommitFile.writeText(content)
             preCommitFile.setExecutable(true)
-        }
-    }
-
-    afterEvaluate { project ->
-        project.tasks.named("preBuild") {
-            dependsOn("spotlessCheck")
-            dependsOn("createPreCommitHook")
         }
     }
 }

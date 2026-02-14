@@ -48,36 +48,10 @@ android {
     }
 }
 
-spotless {
-    java {
-        removeUnusedImports()
-        eclipse()
-        leadingSpacesToTabs(2)
-        leadingTabsToSpaces(4)
-        target("src/*/java/**/*.java")
-    }
-
-    kotlin {
-        target("src/**/*.kt")
-        ktfmt().kotlinlangStyle()
-        trimTrailingWhitespace()
-        endWithNewline()
-    }
-
-    kotlinGradle {
-        target("*.kts", "**/*.kts")
-        ktfmt().kotlinlangStyle()
-    }
-
-    format("xml") {
-        target("src/**/*.xml")
-        targetExclude("**/build/", ".idea/")
-        trimTrailingWhitespace()
-        leadingTabsToSpaces()
-    }
+tasks.named("preBuild") {
+    dependsOn("createPreCommitHook")
+    dependsOn("spotlessCheck")
 }
-
-tasks.named("preBuild") { dependsOn("spotlessCheck") }
 
 dependencies {
     implementation(libs.activity.compose)
