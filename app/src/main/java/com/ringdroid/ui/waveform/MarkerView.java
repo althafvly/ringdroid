@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ringdroid;
+package com.ringdroid.ui.waveform;
 
 import android.content.Context;
 import android.graphics.Canvas;
