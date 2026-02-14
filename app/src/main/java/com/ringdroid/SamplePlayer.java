@@ -58,30 +58,18 @@ class SamplePlayer {
             bufferSize = mChannels * mSampleRate * 2;
         }
         mBuffer = new short[bufferSize / 2]; // bufferSize is in Bytes.
-        AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .build();
-        AudioFormat audioFormat = new AudioFormat.Builder()
-                .setSampleRate(mSampleRate)
+        AudioAttributes audioAttributes = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build();
+        AudioFormat audioFormat = new AudioFormat.Builder().setSampleRate(mSampleRate)
                 .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                .setChannelMask(mChannels == 1 ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO)
-                .build();
+                .setChannelMask(mChannels == 1 ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO).build();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            mAudioTrack = new AudioTrack.Builder()
-                    .setAudioAttributes(audioAttributes)
-                    .setAudioFormat(audioFormat)
-                    .setTransferMode(AudioTrack.MODE_STREAM)
-                    .setBufferSizeInBytes(mBuffer.length * 2)
-                    .build();
+            mAudioTrack = new AudioTrack.Builder().setAudioAttributes(audioAttributes).setAudioFormat(audioFormat)
+                    .setTransferMode(AudioTrack.MODE_STREAM).setBufferSizeInBytes(mBuffer.length * 2).build();
         } else {
             // Fallback for API 21-22 where AudioTrack.Builder is not available.
-            mAudioTrack = new AudioTrack(
-                    audioAttributes,
-                    audioFormat,
-                    mBuffer.length * 2,
-                    AudioTrack.MODE_STREAM,
+            mAudioTrack = new AudioTrack(audioAttributes, audioFormat, mBuffer.length * 2, AudioTrack.MODE_STREAM,
                     AudioManager.AUDIO_SESSION_ID_GENERATE);
         }
         // Check when player played all the given data and notify user if mListener is

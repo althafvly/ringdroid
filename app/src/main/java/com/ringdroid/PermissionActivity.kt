@@ -64,8 +64,11 @@ class PermissionActivity : Activity() {
         if (buildType != "play") {
             message = R.string.storage_permission_required_for_editor_fdroid
         }
-        AlertDialog.Builder(this).setTitle(R.string.storage_permission).setMessage(message)
-            .setPositiveButton(android.R.string.ok, null).show()
+        AlertDialog.Builder(this)
+            .setTitle(R.string.storage_permission)
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok, null)
+            .show()
     }
 
     private fun updateUI(forceShow: Boolean) {
@@ -78,7 +81,8 @@ class PermissionActivity : Activity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             mediaAudioSwitch!!.isChecked = hasMediaAudioPermission
             mediaAudioSwitch!!.isClickable = !hasMediaAudioPermission
-            mediaAudioSwitch!!.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            mediaAudioSwitch!!.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean
+                ->
                 if (isChecked) {
                     requestMediaAudioPermission(this)
                 }
@@ -102,7 +106,9 @@ class PermissionActivity : Activity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             writeSettingsSwitch!!.isChecked = hasWritePermission
             writeSettingsSwitch!!.isClickable = !hasWritePermission
-            writeSettingsSwitch!!.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            writeSettingsSwitch!!.setOnCheckedChangeListener {
+                _: CompoundButton?,
+                isChecked: Boolean ->
                 if (isChecked) {
                     requestWriteSettingsPermission(this)
                 }

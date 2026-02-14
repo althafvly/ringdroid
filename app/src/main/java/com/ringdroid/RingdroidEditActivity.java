@@ -246,8 +246,7 @@ public class RingdroidEditActivity extends Activity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == PermissionUtils.MIC_PERMISSION_REQUEST) {
@@ -777,19 +776,14 @@ public class RingdroidEditActivity extends Activity
         progressBar.setMax(100);
         mLoadingProgressBar = progressBar;
 
-        mProgressDialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.progress_dialog_loading)
-                .setView(dialogView)
-                .setCancelable(true)
-                .setNegativeButton(R.string.progress_dialog_cancel, (dialog, id) -> {
+        mProgressDialog = new AlertDialog.Builder(this).setTitle(R.string.progress_dialog_loading).setView(dialogView)
+                .setCancelable(true).setNegativeButton(R.string.progress_dialog_cancel, (dialog, id) -> {
                     mLoadingKeepGoing = false;
                     mFinishActivity = true;
-                })
-                .setOnCancelListener(dialog -> {
+                }).setOnCancelListener(dialog -> {
                     mLoadingKeepGoing = false;
                     mFinishActivity = true;
-                })
-                .create();
+                }).create();
         mProgressDialog.setCanceledOnTouchOutside(false);
         if (!isFinishing() && !isDestroyed()) {
             mProgressDialog.show();
@@ -1046,7 +1040,8 @@ public class RingdroidEditActivity extends Activity
         mWaveformView.setParameters(mStartPos, mEndPos, mOffset);
         mWaveformView.invalidate();
 
-        // Only update content descriptions when positions actually change to avoid excessive string allocations
+        // Only update content descriptions when positions actually change to avoid
+        // excessive string allocations
         if (mStartPos != mLastDisplayedStartPos) {
             try {
                 String desc = getResources().getText(R.string.start_marker) + " " + formatTime(mStartPos);
@@ -1623,11 +1618,14 @@ public class RingdroidEditActivity extends Activity
     }
 
     /**
-     * Safely set text to a TextView with length limiting to prevent OutOfMemoryError.
-     * This is especially important for error messages and stack traces which can be very large.
+     * Safely set text to a TextView with length limiting to prevent
+     * OutOfMemoryError. This is especially important for error messages and stack
+     * traces which can be very large.
      *
-     * @param textView The TextView to set text on
-     * @param text The text to set (can be null)
+     * @param textView
+     *            The TextView to set text on
+     * @param text
+     *            The text to set (can be null)
      */
     private void setSafeText(TextView textView, String text) {
         if (text == null) {

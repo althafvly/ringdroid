@@ -385,7 +385,8 @@ public class RingdroidSelectActivity extends Activity {
         super.onCreateContextMenu(menu, v, menuInfo);
 
         Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed()) return;
+        if (c == null || c.isClosed())
+            return;
 
         if (menuInfo instanceof AdapterView.AdapterContextMenuInfo) {
             c.moveToPosition(((AdapterView.AdapterContextMenuInfo) menuInfo).position);
@@ -416,29 +417,30 @@ public class RingdroidSelectActivity extends Activity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case CMD_EDIT:
+            case CMD_EDIT :
                 startRingdroidEditor();
                 return true;
 
-            case CMD_DELETE:
+            case CMD_DELETE :
                 confirmDelete();
                 return true;
 
-            case CMD_SET_AS_DEFAULT:
+            case CMD_SET_AS_DEFAULT :
                 setAsDefaultRingtoneOrNotification();
                 return true;
 
-            case CMD_SET_AS_CONTACT:
+            case CMD_SET_AS_CONTACT :
                 return chooseContactForRingtone();
 
-            default:
+            default :
                 return super.onContextItemSelected(item);
         }
     }
 
     private void setAsDefaultRingtoneOrNotification() {
         Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed()) return;
+        if (c == null || c.isClosed())
+            return;
 
         // If the item is a ringtone then set the default ringtone,
         // otherwise it has to be a notification so set the default notification sound
@@ -474,7 +476,8 @@ public class RingdroidSelectActivity extends Activity {
     private Uri getUri() {
         // Get the uri of the item that is in the row
         Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed()) return null;
+        if (c == null || c.isClosed())
+            return null;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             int idCol = c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID);
@@ -496,7 +499,8 @@ public class RingdroidSelectActivity extends Activity {
     private boolean chooseContactForRingtone() {
         try {
             Uri uri = getUri();
-            if (uri == null) return false;
+            if (uri == null)
+                return false;
             // Go to the choose contact activity
             Intent intent = new Intent(Intent.ACTION_EDIT, uri);
             intent.setClass(this, ChooseContactActivity.class);
@@ -511,19 +515,18 @@ public class RingdroidSelectActivity extends Activity {
         // See if the selected list item was created by Ringdroid to
         // determine which alert message to show
         Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed()) return;
+        if (c == null || c.isClosed())
+            return;
 
         if (isFinishing() || isDestroyed()) {
             return;
         }
 
-        new AlertDialog.Builder(RingdroidSelectActivity.this)
-                .setTitle(getResources().getText(R.string.delete_audio))
+        new AlertDialog.Builder(RingdroidSelectActivity.this).setTitle(getResources().getText(R.string.delete_audio))
                 .setMessage(getResources().getText(R.string.confirm_delete_ringdroid))
                 .setPositiveButton(R.string.delete_ok_button, (dialog, whichButton) -> onDelete())
-                .setNegativeButton(R.string.delete_cancel_button, (dialog, whichButton) -> {})
-                .setCancelable(true)
-                .show();
+                .setNegativeButton(R.string.delete_cancel_button, (dialog, whichButton) -> {
+                }).setCancelable(true).show();
     }
 
     private void onDelete() {
@@ -606,7 +609,8 @@ public class RingdroidSelectActivity extends Activity {
 
     private void startRingdroidEditor() {
         Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed()) return;
+        if (c == null || c.isClosed())
+            return;
         int dataIndex = c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
         String filename = c.getString(dataIndex);
         if (filename != null) {
@@ -616,7 +620,8 @@ public class RingdroidSelectActivity extends Activity {
 
     private void startRingdroidEditor(int position) {
         Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed()) return;
+        if (c == null || c.isClosed())
+            return;
         c.moveToPosition(position);
         int dataIndex = c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
         String filename = c.getString(dataIndex);

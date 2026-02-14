@@ -163,8 +163,7 @@ public class ChooseContactActivity extends Activity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode != PermissionUtils.CONTACT_PERMISSION_REQUEST)
@@ -228,10 +227,8 @@ public class ChooseContactActivity extends Activity {
                 }
 
                 Cursor cursor = getContentResolver().query(Contacts.CONTENT_URI,
-                        new String[]{Contacts._ID, Contacts.CUSTOM_RINGTONE, Contacts.DISPLAY_NAME,
-                                Contacts.STARRED},
-                        selection, selectionArgs,
-                        "STARRED DESC, DISPLAY_NAME ASC");
+                        new String[]{Contacts._ID, Contacts.CUSTOM_RINGTONE, Contacts.DISPLAY_NAME, Contacts.STARRED},
+                        selection, selectionArgs, "STARRED DESC, DISPLAY_NAME ASC");
 
                 if (Thread.interrupted())
                     return;

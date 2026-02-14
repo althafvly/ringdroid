@@ -209,20 +209,26 @@ public class SoundFile {
     }
 
     /**
-     * Release the decoded audio data to free up memory.
-     * Closes and deletes any temporary PCM file used for disk-backed decoding.
-     * Should be called when the SoundFile is no longer needed.
+     * Release the decoded audio data to free up memory. Closes and deletes any
+     * temporary PCM file used for disk-backed decoding. Should be called when the
+     * SoundFile is no longer needed.
      */
     public void release() {
         mDecodedBytes = null;
         mDecodedSamples = null;
         mFrameGains = null;
         if (mPcmChannel != null) {
-            try { mPcmChannel.close(); } catch (IOException ignored) {}
+            try {
+                mPcmChannel.close();
+            } catch (IOException ignored) {
+            }
             mPcmChannel = null;
         }
         if (mPcmRaf != null) {
-            try { mPcmRaf.close(); } catch (IOException ignored) {}
+            try {
+                mPcmRaf.close();
+            } catch (IOException ignored) {
+            }
             mPcmRaf = null;
         }
         if (mPcmTempFile != null) {
@@ -266,9 +272,7 @@ public class SoundFile {
 
         MediaCodec codec = null;
         try {
-            codec = MediaCodec.createDecoderByType(
-                    Objects.requireNonNull(format.getString(MediaFormat.KEY_MIME))
-            );
+            codec = MediaCodec.createDecoderByType(Objects.requireNonNull(format.getString(MediaFormat.KEY_MIME)));
             codec.configure(format, null, null, 0);
             codec.start();
 
@@ -426,7 +430,10 @@ public class SoundFile {
             mDecodedSamples.rewind();
         } finally {
             if (codec != null) {
-                try { codec.stop(); } catch (Exception ignored) {}
+                try {
+                    codec.stop();
+                } catch (Exception ignored) {
+                }
                 codec.release();
             }
             extractor.release();

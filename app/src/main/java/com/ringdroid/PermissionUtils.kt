@@ -21,9 +21,10 @@ object PermissionUtils : StoragePermissionUtils() {
             return true
         }
 
-        return activity.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
-                && activity
-            .checkSelfPermission(Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED
+        return activity.checkSelfPermission(Manifest.permission.READ_CONTACTS) ==
+            PackageManager.PERMISSION_GRANTED &&
+            activity.checkSelfPermission(Manifest.permission.WRITE_CONTACTS) ==
+                PackageManager.PERMISSION_GRANTED
     }
 
     @JvmStatic
@@ -34,7 +35,7 @@ object PermissionUtils : StoragePermissionUtils() {
 
         activity.requestPermissions(
             arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS),
-            CONTACT_PERMISSION_REQUEST
+            CONTACT_PERMISSION_REQUEST,
         )
     }
 
@@ -44,7 +45,8 @@ object PermissionUtils : StoragePermissionUtils() {
             return true
         }
 
-        return activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        return activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO) ==
+            PackageManager.PERMISSION_GRANTED
     }
 
     @JvmStatic
@@ -55,7 +57,7 @@ object PermissionUtils : StoragePermissionUtils() {
 
         activity.requestPermissions(
             arrayOf(Manifest.permission.RECORD_AUDIO),
-            MIC_PERMISSION_REQUEST
+            MIC_PERMISSION_REQUEST,
         )
     }
 
@@ -66,9 +68,8 @@ object PermissionUtils : StoragePermissionUtils() {
         }
 
         return if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-            activity.checkSelfPermission(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
+            activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED
         } else {
             hasExternalStoragePermission()
         }
@@ -83,7 +84,7 @@ object PermissionUtils : StoragePermissionUtils() {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
             activity.requestPermissions(
                 arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                STORAGE_PERMISSION_REQUEST
+                STORAGE_PERMISSION_REQUEST,
             )
         } else {
             requestExternalStoragePermission(activity)
@@ -96,7 +97,8 @@ object PermissionUtils : StoragePermissionUtils() {
             return false
         }
 
-        return context.checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED
+        return context.checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO) ==
+            PackageManager.PERMISSION_GRANTED
     }
 
     @JvmStatic
@@ -107,7 +109,7 @@ object PermissionUtils : StoragePermissionUtils() {
 
         activity.requestPermissions(
             arrayOf(Manifest.permission.READ_MEDIA_AUDIO),
-            MEDIA_AUDIO_PERMISSION_REQUEST
+            MEDIA_AUDIO_PERMISSION_REQUEST,
         )
     }
 

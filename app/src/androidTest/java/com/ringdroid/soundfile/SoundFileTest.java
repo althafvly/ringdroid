@@ -18,7 +18,6 @@ import java.nio.ShortBuffer;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -44,10 +43,11 @@ public class SoundFileTest {
 
         // Setup valid dummy WAV
         try (java.io.InputStream in = testContext.getAssets().open("test_audio.wav");
-             FileOutputStream out = new FileOutputStream(testWavFile)) {
+                FileOutputStream out = new FileOutputStream(testWavFile)) {
             byte[] buf = new byte[1024];
             int len;
-            while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+            while ((len = in.read(buf)) > 0)
+                out.write(buf, 0, len);
         }
 
         // Setup corrupt file
@@ -58,8 +58,10 @@ public class SoundFileTest {
 
     @After
     public void tearDown() {
-        if (testWavFile.exists()) testWavFile.delete();
-        if (corruptFile.exists()) corruptFile.delete();
+        if (testWavFile.exists())
+            testWavFile.delete();
+        if (corruptFile.exists())
+            corruptFile.delete();
     }
 
     // --- 1. Static and Utility Methods ---
@@ -140,7 +142,7 @@ public class SoundFileTest {
         SoundFile.ProgressListener listener = fractionComplete -> false;
 
         // This will likely stop parsing midway.
-        // It might still return a SoundFile object but with partially decoded data, 
+        // It might still return a SoundFile object but with partially decoded data,
         // or return early. We just verify it doesn't crash.
         SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(), listener);
         assertNotNull(soundFile);
@@ -162,11 +164,13 @@ public class SoundFileTest {
     @Test
     public void testFileTooLongForMemory() throws Exception {
         File oggFile = new File(context.getCacheDir(), "test_audio.ogg");
-        try (java.io.InputStream in = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getContext().getAssets().open("test_audio.ogg");
-             FileOutputStream out = new FileOutputStream(oggFile)) {
+        try (java.io.InputStream in = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+                .getContext().getAssets().open("test_audio.ogg");
+                FileOutputStream out = new FileOutputStream(oggFile)) {
             byte[] buf = new byte[1024];
             int len;
-            while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+            while ((len = in.read(buf)) > 0)
+                out.write(buf, 0, len);
         }
 
         try {
@@ -278,7 +282,7 @@ public class SoundFileTest {
         buf.order(ByteOrder.LITTLE_ENDIAN);
 
         // Fill some non-zero data
-        for (int i=0; i < 44100 * channels; i++) {
+        for (int i = 0; i < 44100 * channels; i++) {
             buf.putShort((short) i);
         }
 

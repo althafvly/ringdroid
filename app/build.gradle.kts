@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     id("jacoco")
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.spotless)
 }
 
 android {
@@ -10,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "org.thayyil.ringdroid"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 36
         versionCode = 30000
         versionName = "3.0.0"
@@ -41,18 +43,15 @@ android {
     flavorDimensions += "distribution"
 
     productFlavors {
-        create("fdroid") {
-            dimension = "distribution"
-        }
+        create("fdroid") { dimension = "distribution" }
 
-        create("play") {
-            dimension = "distribution"
-        }
+        create("play") { dimension = "distribution" }
     }
 
     buildFeatures {
         buildConfig = true
         viewBinding = true
+        compose = true
     }
 
     dependenciesInfo {
@@ -61,7 +60,46 @@ android {
     }
 }
 
+spotless {
+    java {
+        removeUnusedImports()
+        eclipse()
+        leadingSpacesToTabs(2)
+        leadingTabsToSpaces(4)
+        target("src/*/java/**/*.java")
+    }
+
+    kotlin {
+        target("src/**/*.kt")
+        ktfmt().kotlinlangStyle()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+
+    kotlinGradle {
+        target("*.kts", "**/*.kts")
+        ktfmt().kotlinlangStyle()
+    }
+
+    format("xml") {
+        target("src/**/*.xml")
+        targetExclude("**/build/", ".idea/")
+        trimTrailingWhitespace()
+        leadingTabsToSpaces()
+    }
+}
+
+tasks.named("preBuild") { dependsOn("spotlessCheck") }
+
 dependencies {
+    implementation(libs.activity.compose)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.ui)
+    implementation(libs.material3)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.material.icons.extended)
+    implementation(libs.lifecycle.runtime)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
@@ -76,19 +114,26 @@ tasks.register("jacocoTestReport", JacocoReport::class) {
         html.required.set(true)
     }
 
-    val fileFilter = listOf(
-        "**/R.class", "**/R$*.class", "**/BuildConfig.*", "**/Manifest*.*", "**/*Test*.*", "android/**/*.*"
-    )
-    val debugTree = fileTree("${project.layout.buildDirectory}/tmp/kotlin-classes/fdroidDebug") {
-        exclude(fileFilter)
-    }
+    val fileFilter =
+        listOf(
+            "**/R.class",
+            "**/R$*.class",
+            "**/BuildConfig.*",
+            "**/Manifest*.*",
+            "**/*Test*.*",
+            "android/**/*.*",
+        )
+    val debugTree =
+        fileTree("${project.layout.buildDirectory}/tmp/kotlin-classes/fdroidDebug") {
+            exclude(fileFilter)
+        }
     val mainSrc = "${project.projectDir}/src/main/java"
 
     sourceDirectories.setFrom(files(mainSrc))
     classDirectories.setFrom(files(debugTree))
-    executionData.setFrom(fileTree(project.layout.buildDirectory) {
-        include(
-            "outputs/code_coverage/fdroidDebugAndroidTest/connected/*coverage.ec"
-        )
-    })
+    executionData.setFrom(
+        fileTree(project.layout.buildDirectory) {
+            include("outputs/code_coverage/fdroidDebugAndroidTest/connected/*coverage.ec")
+        }
+    )
 }
