@@ -411,13 +411,7 @@ public class WaveformView extends View {
                 mBorderLinePaint);
 
         // Draw timecode
-        double timecodeIntervalSecs = 1.0;
-        if (timecodeIntervalSecs / onePixelInSecs < 50) {
-            timecodeIntervalSecs = 5.0;
-        }
-        if (timecodeIntervalSecs / onePixelInSecs < 50) {
-            timecodeIntervalSecs = 15.0;
-        }
+        double timecodeIntervalSecs = getTimecodeIntervalSecs(onePixelInSecs);
 
         // Draw grid
         fractionalSecs = mOffset * onePixelInSecs;
@@ -462,6 +456,35 @@ public class WaveformView extends View {
         if (mListener != null) {
             mListener.waveformDraw();
         }
+    }
+
+    private double getTimecodeIntervalSecs(double onePixelInSecs) {
+        double timecodeIntervalSecs = 1.0;
+        // Use a threshold that scales with density and text size
+        double threshold = 30.0 * mDensity;
+
+        if (timecodeIntervalSecs / onePixelInSecs < threshold) {
+            timecodeIntervalSecs = 5.0;
+        }
+        if (timecodeIntervalSecs / onePixelInSecs < threshold) {
+            timecodeIntervalSecs = 15.0;
+        }
+        if (timecodeIntervalSecs / onePixelInSecs < threshold) {
+            timecodeIntervalSecs = 30.0;
+        }
+        if (timecodeIntervalSecs / onePixelInSecs < threshold) {
+            timecodeIntervalSecs = 60.0;
+        }
+        if (timecodeIntervalSecs / onePixelInSecs < threshold) {
+            timecodeIntervalSecs = 300.0;
+        }
+        if (timecodeIntervalSecs / onePixelInSecs < threshold) {
+            timecodeIntervalSecs = 600.0;
+        }
+        if (timecodeIntervalSecs / onePixelInSecs < threshold) {
+            timecodeIntervalSecs = 3600.0;
+        }
+        return timecodeIntervalSecs;
     }
 
     /**
