@@ -29,8 +29,6 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
-import com.ringdroid.FilesUtil;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -77,16 +75,6 @@ public class SoundFile {
     // dependent?
     public static String[] getSupportedExtensions() {
         return new String[]{"mp3", "wav", "3gpp", "3gp", "amr", "aac", "m4a", "ogg"};
-    }
-
-    public static boolean isFilenameSupported(String filename) {
-        String[] extensions = getSupportedExtensions();
-        for (String extension : extensions) {
-            if (filename.endsWith("." + extension)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public static void uriExists(Context context, Uri uri) {
@@ -153,6 +141,10 @@ public class SoundFile {
         return mNumSamples; // Number of samples per channel.
     }
 
+    public File getInputFile() {
+        return mInputFile;
+    }
+
     // Should be removed when the app will use directly the samples instead of the
     // frames.
     public int getNumFrames() {
@@ -184,8 +176,8 @@ public class SoundFile {
     }
 
     /**
-     * Release the decoded audio data to free up memory.
-     * Should be called when the SoundFile is no longer needed.
+     * Release the decoded audio data to free up memory. Should be called when the
+     * SoundFile is no longer needed.
      */
     public void release() {
         mDecodedBytes = null;
@@ -232,9 +224,7 @@ public class SoundFile {
 
         MediaCodec codec = null;
         try {
-            codec = MediaCodec.createDecoderByType(
-                    Objects.requireNonNull(format.getString(MediaFormat.KEY_MIME))
-            );
+            codec = MediaCodec.createDecoderByType(Objects.requireNonNull(format.getString(MediaFormat.KEY_MIME)));
             codec.configure(format, null, null, 0);
             codec.start();
 
@@ -412,7 +402,10 @@ public class SoundFile {
             mDecodedSamples.rewind();
         } finally {
             if (codec != null) {
-                try { codec.stop(); } catch (Exception ignored) {}
+                try {
+                    codec.stop();
+                } catch (Exception ignored) {
+                }
                 codec.release();
             }
             extractor.release();
@@ -661,8 +654,7 @@ public class SoundFile {
             }
             outputStream.close();
         } catch (IOException e) {
-            Log.e(TAG, "Failed to create the .m4a file.");
-            Log.e(TAG, FilesUtil.getStackTrace(e));
+            Log.e(TAG, "Failed to create the .m4a file.", e);
         }
     }
 
