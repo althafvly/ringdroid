@@ -40,6 +40,9 @@ class SamplePlayer {
     private OnCompletionListener mListener;
 
     public SamplePlayer(ShortBuffer samples, int sampleRate, int channels, int numSamples) {
+        if (samples == null) {
+            throw new IllegalArgumentException("samples cannot be null");
+        }
         mSamples = samples;
         mSampleRate = sampleRate;
         mChannels = channels;
