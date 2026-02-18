@@ -23,7 +23,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
-          path: app/build/outputs/apk/github/debug/app-github-debug.apk
+          path: app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk
 
       - name: Android Lint Report
         uses: yutailang0119/action-android-lint@v4
@@ -38,7 +38,7 @@ jobs:
           tag: "latest"
           name: "latest"
           prerelease: true
-          artifacts: app/build/outputs/apk/github/debug/app-github-debug.apk
+          artifacts: app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk
           token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: true
           replacesArtifacts: true
