@@ -67,6 +67,11 @@ public class ChooseContactActivity extends Activity {
         Intent intent = getIntent();
         mRingtoneUri = intent.getData();
 
+        if (mRingtoneUri == null) {
+            finish();
+            return;
+        }
+
         // Inflate our UI from its XML layout description.
         binding = ChooseContactBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -183,6 +188,11 @@ public class ChooseContactActivity extends Activity {
     }
 
     private void assignRingtoneToContact() {
+        if (mRingtoneUri == null) {
+            finish();
+            return;
+        }
+
         Cursor c = mAdapter.getCursor();
         int dataIndex = c.getColumnIndexOrThrow(Contacts._ID);
         String contactId = c.getString(dataIndex);
