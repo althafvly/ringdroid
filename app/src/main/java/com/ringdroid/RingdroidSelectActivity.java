@@ -403,22 +403,25 @@ public class RingdroidSelectActivity extends Activity {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        return switch (item.getItemId()) {
-            case CMD_EDIT -> {
+        switch (item.getItemId()) {
+            case CMD_EDIT:
                 startRingdroidEditor();
-                yield true;
-            }
-            case CMD_DELETE -> {
+                return true;
+
+            case CMD_DELETE:
                 confirmDelete();
-                yield true;
-            }
-            case CMD_SET_AS_DEFAULT -> {
+                return true;
+
+            case CMD_SET_AS_DEFAULT:
                 setAsDefaultRingtoneOrNotification();
-                yield true;
-            }
-            case CMD_SET_AS_CONTACT -> chooseContactForRingtone();
-            default -> super.onContextItemSelected(item);
-        };
+                return true;
+
+            case CMD_SET_AS_CONTACT:
+                return chooseContactForRingtone();
+
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     private void setAsDefaultRingtoneOrNotification() {

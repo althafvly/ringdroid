@@ -20,6 +20,10 @@ spotless {
         trimTrailingWhitespace()
         leadingTabsToSpaces()
     }
+    kotlin {
+        target("src/**/*.kt")
+        ktlint()
+    }
 }
 
 subprojects {

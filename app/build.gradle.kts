@@ -23,6 +23,14 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            isDebuggable = false
+            isJniDebuggable = false
+        }
+
+        getByName("debug") {
+            isDebuggable = true
+            isJniDebuggable = true
+            isMinifyEnabled = false
         }
     }
 
@@ -43,9 +51,9 @@ android {
         viewBinding = true
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+    dependenciesInfo {
+        includeInApk = true
+        includeInBundle = true
     }
 }
 
