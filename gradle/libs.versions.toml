@@ -1,6 +1,6 @@
 [versions]
 agp = "8.13.2"
-spotless = "8.1.0"
+spotless = "8.2.1"
 supportAnnotations = "28.0.0"
 
 [libraries]
