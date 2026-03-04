@@ -18,6 +18,7 @@ package com.ringdroid;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -234,7 +235,7 @@ public class RingdroidEditActivity extends AppCompatActivity
     @SuppressWarnings("deprecation")
     private static AlertDialog.Builder getAlertDialog(Activity activity, String versionName) {
         String html = activity.getString(R.string.about_text_html, versionName);
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity).setTitle(R.string.about_title)
+        AlertDialog.Builder builder = new MaterialAlertDialogBuilder(activity).setTitle(R.string.about_title)
                 .setPositiveButton(R.string.alert_ok_button, null);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -778,7 +779,7 @@ public class RingdroidEditActivity extends AppCompatActivity
         progressBar.setMax(100);
         mLoadingProgressBar = progressBar;
 
-        mProgressDialog = new AlertDialog.Builder(this).setTitle(R.string.progress_dialog_loading).setView(dialogView)
+        mProgressDialog = new MaterialAlertDialogBuilder(this).setTitle(R.string.progress_dialog_loading).setView(dialogView)
                 .setCancelable(true).setOnCancelListener(dialog -> {
                     mLoadingKeepGoing = false;
                     mFinishActivity = true;
@@ -790,7 +791,7 @@ public class RingdroidEditActivity extends AppCompatActivity
             if (now - mLoadingLastUpdateTime > 100) {
                 if (mLoadingProgressBar != null) {
                     int progress = (int) (fractionComplete * 100);
-                    mLoadingProgressBar.setProgress(progress);
+                    runOnUiThread(() -> mLoadingProgressBar.setProgress(progress));
                 }
                 mLoadingLastUpdateTime = now;
             }
@@ -854,7 +855,7 @@ public class RingdroidEditActivity extends AppCompatActivity
         mRecordingLastUpdateTime = getCurrentTime();
         mRecordingKeepGoing = true;
         mFinishActivity = false;
-        AlertDialog.Builder adBuilder = new AlertDialog.Builder(RingdroidEditActivity.this);
+        AlertDialog.Builder adBuilder = new MaterialAlertDialogBuilder(RingdroidEditActivity.this);
         adBuilder.setTitle(getResources().getText(R.string.progress_dialog_recording));
         adBuilder.setCancelable(true);
         adBuilder.setNegativeButton(getResources().getText(R.string.progress_dialog_cancel), (dialog, id) -> {
@@ -1233,7 +1234,7 @@ public class RingdroidEditActivity extends AppCompatActivity
             title = getResources().getText(R.string.alert_title_success);
         }
 
-        new AlertDialog.Builder(RingdroidEditActivity.this).setTitle(title).setMessage(message)
+        new MaterialAlertDialogBuilder(RingdroidEditActivity.this).setTitle(title).setMessage(message)
                 .setPositiveButton(R.string.alert_ok_button, (dialog, whichButton) -> finish()).setCancelable(false)
                 .show();
     }
@@ -1331,7 +1332,7 @@ public class RingdroidEditActivity extends AppCompatActivity
         // Create an indeterminate progress dialog
         View view = getLayoutInflater().inflate(R.layout.dialog_progress, null);
 
-        mProgressDialog = new AlertDialog.Builder(this).setTitle(R.string.progress_dialog_saving).setView(view)
+        mProgressDialog = new MaterialAlertDialogBuilder(this).setTitle(R.string.progress_dialog_saving).setView(view)
                 .setCancelable(false).create();
         mProgressDialog.show();
 
@@ -1469,7 +1470,7 @@ public class RingdroidEditActivity extends AppCompatActivity
             if (fileSize <= 512) {
                 boolean status = outFile.delete();
                 if (status) {
-                    new AlertDialog.Builder(this).setTitle(R.string.alert_title_failure)
+                    new MaterialAlertDialogBuilder(this).setTitle(R.string.alert_title_failure)
                             .setMessage(R.string.too_small_error).setPositiveButton(R.string.alert_ok_button, null)
                             .setCancelable(false).show();
                 }
@@ -1529,7 +1530,7 @@ public class RingdroidEditActivity extends AppCompatActivity
         // If it's a notification, give the user the option of making
         // this their default notification. If they say no, we're finished.
         if (mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION) {
-            new AlertDialog.Builder(RingdroidEditActivity.this).setTitle(R.string.alert_title_success)
+            new MaterialAlertDialogBuilder(RingdroidEditActivity.this).setTitle(R.string.alert_title_success)
                     .setMessage(R.string.set_default_notification)
                     .setPositiveButton(R.string.alert_yes_button, (dialog, whichButton) -> {
                         RingdroidUtils.setDefaultRingTone(RingdroidEditActivity.this, RingtoneManager.TYPE_NOTIFICATION,

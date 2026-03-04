@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.CompoundButton
-import androidx.appcompat.widget.SwitchCompat
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.ringdroid.PermissionUtils.hasContactPermissions
 import com.ringdroid.PermissionUtils.hasMediaAudioPermission
 import com.ringdroid.PermissionUtils.hasMicPermissions
@@ -21,12 +21,14 @@ import com.ringdroid.PermissionUtils.requestStoragePermission
 import com.ringdroid.PermissionUtils.requestWriteSettingsPermission
 import com.ringdroid.databinding.PermissionScreenBinding
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+
 class PermissionActivity : AppCompatActivity() {
-    private var storageSwitch: SwitchCompat? = null
-    private var writeSettingsSwitch: SwitchCompat? = null
-    private var micSwitch: SwitchCompat? = null
-    private var contactSwitch: SwitchCompat? = null
-    private var mediaAudioSwitch: SwitchCompat? = null
+    private var storageSwitch: MaterialSwitch? = null
+    private var writeSettingsSwitch: MaterialSwitch? = null
+    private var micSwitch: MaterialSwitch? = null
+    private var contactSwitch: MaterialSwitch? = null
+    private var mediaAudioSwitch: MaterialSwitch? = null
     private var nextButton: Button? = null
     private var binding: PermissionScreenBinding? = null
 
@@ -64,7 +66,7 @@ class PermissionActivity : AppCompatActivity() {
         if (buildType != "play") {
             message = R.string.storage_permission_required_for_editor_fdroid
         }
-        AlertDialog.Builder(this).setTitle(R.string.storage_permission).setMessage(message)
+        MaterialAlertDialogBuilder(this).setTitle(R.string.storage_permission).setMessage(message)
             .setPositiveButton(android.R.string.ok, null).show()
     }
 

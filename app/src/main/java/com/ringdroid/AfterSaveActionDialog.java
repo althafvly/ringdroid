@@ -16,25 +16,29 @@
 
 package com.ringdroid;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Message;
 import android.view.LayoutInflater;
+import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import com.ringdroid.databinding.AfterSaveActionBinding;
 
-public class AfterSaveActionDialog extends Dialog {
+public class AfterSaveActionDialog {
 
     private final Message mResponse;
+    private final AlertDialog mDialog;
 
     public AfterSaveActionDialog(Context context, Message response) {
-        super(context);
-
-        requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 
         // Inflate our UI from its XML layout description.
         AfterSaveActionBinding binding = AfterSaveActionBinding.inflate(LayoutInflater.from(context));
-        setContentView(binding.getRoot());
+        
+        mDialog = new MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.alert_title_success)
+                .setMessage(R.string.what_to_do_with_ringtone)
+                .setView(binding.getRoot())
+                .create();
 
         binding.buttonMakeDefault.setOnClickListener(view -> closeAndSendResult(R.id.button_make_default));
         binding.buttonChooseContact
@@ -47,6 +51,10 @@ public class AfterSaveActionDialog extends Dialog {
     private void closeAndSendResult(int clickedButtonId) {
         mResponse.arg1 = clickedButtonId;
         mResponse.sendToTarget();
-        dismiss();
+        mDialog.dismiss();
+    }
+    
+    public void show() {
+        mDialog.show();
     }
 }

@@ -16,7 +16,8 @@
 
 package com.ringdroid;
 
-import android.app.Dialog;
+import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Message;
@@ -25,15 +26,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-
 import com.ringdroid.databinding.FileSaveBinding;
 
 import java.util.ArrayList;
 
-public class FileSaveDialog extends Dialog {
+public class FileSaveDialog {
 
     // File kinds - these should correspond to the order in which
     // they're presented in the spinner control
@@ -49,14 +48,13 @@ public class FileSaveDialog extends Dialog {
     private final ArrayList<String> mTypeArray;
     private int mPreviousSelection;
 
+    private final AlertDialog mDialog;
+
     public FileSaveDialog(Context context, Resources resources, String originalName, Message response) {
-        super(context);
 
-        requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-
+        mResponse = response;
         // Inflate our UI from its XML layout description.
         FileSaveBinding binding = FileSaveBinding.inflate(LayoutInflater.from(context));
-        setContentView(binding.getRoot());
 
         mTypeArray = new ArrayList<>();
         mTypeArray.add(resources.getString(R.string.type_music));
@@ -85,20 +83,20 @@ public class FileSaveDialog extends Dialog {
             }
         });
 
-        Button save = binding.save;
-        View.OnClickListener saveListener = new View.OnClickListener() {
-            public void onClick(View view) {
-                mResponse.obj = mFilename.getText();
-                mResponse.arg1 = mTypeSpinner.getSelectedItemPosition();
-                mResponse.sendToTarget();
-                dismiss();
-            }
-        };
-        save.setOnClickListener(saveListener);
-        Button cancel = binding.cancel;
-        View.OnClickListener cancelListener = view -> dismiss();
-        cancel.setOnClickListener(cancelListener);
-        mResponse = response;
+        mDialog = new MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.file_save_title)
+                .setView(binding.getRoot())
+                .setPositiveButton(R.string.file_save_button_save, (dialog, which) -> {
+                    mResponse.obj = mFilename.getText();
+                    mResponse.arg1 = mTypeSpinner.getSelectedItemPosition();
+                    mResponse.sendToTarget();
+                })
+                .setNegativeButton(R.string.file_save_button_cancel, null)
+                .create();
+    }
+    
+    public void show() {
+        mDialog.show();
     }
 
     private void setFilenameEditBoxFromName(boolean onlyIfNotEdited) {
@@ -113,7 +111,7 @@ public class FileSaveDialog extends Dialog {
 
         int newSelection = mTypeSpinner.getSelectedItemPosition();
         String newSuffix = mTypeArray.get(newSelection);
-        mFilename.setText(getContext().getString(R.string.filename_with_suffix, mOriginalName, newSuffix));
+        mFilename.setText(mFilename.getContext().getString(R.string.filename_with_suffix, mOriginalName, newSuffix));
         mPreviousSelection = mTypeSpinner.getSelectedItemPosition();
     }
 }

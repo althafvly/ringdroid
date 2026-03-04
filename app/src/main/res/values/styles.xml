@@ -18,7 +18,7 @@
 -->
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat">
+    <style name="AppTheme" parent="Theme.Material3.DayNight">
         <!-- Disable edge-to-edge -->
         <item name="android:fitsSystemWindows">true</item>
     </style>

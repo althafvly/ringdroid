@@ -59,4 +59,5 @@ android {
 
 dependencies {
     implementation(libs.appcompat)
+    implementation(libs.material)
 }

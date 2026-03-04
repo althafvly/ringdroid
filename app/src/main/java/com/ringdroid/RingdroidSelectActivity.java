@@ -18,6 +18,7 @@ package com.ringdroid;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -536,7 +537,7 @@ public class RingdroidSelectActivity extends AppCompatActivity {
             title = getResources().getText(R.string.delete_audio);
         }
 
-        new AlertDialog.Builder(RingdroidSelectActivity.this).setTitle(title).setMessage(message)
+        new MaterialAlertDialogBuilder(RingdroidSelectActivity.this).setTitle(title).setMessage(message)
                 .setPositiveButton(R.string.delete_ok_button, (dialog, whichButton) -> onDelete())
                 .setNegativeButton(R.string.delete_cancel_button, (dialog, whichButton) -> {
                 }).setCancelable(true).show();
@@ -573,7 +574,7 @@ public class RingdroidSelectActivity extends AppCompatActivity {
     }
 
     private void showFinalAlert(CharSequence message) {
-        new AlertDialog.Builder(RingdroidSelectActivity.this)
+        new MaterialAlertDialogBuilder(RingdroidSelectActivity.this)
                 .setTitle(getResources().getText(R.string.alert_title_failure)).setMessage(message)
                 .setPositiveButton(R.string.alert_ok_button, (dialog, whichButton) -> finish()).setCancelable(false)
                 .show();

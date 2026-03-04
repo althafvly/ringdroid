@@ -19,19 +19,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
-    android:layout_marginEnd="10dp"
-    android:layout_marginBottom="10dp"
     android:orientation="vertical"
-    android:padding="16dp">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/file_save_title"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="8dp">
 
     <TextView
         android:layout_width="match_parent"
@@ -47,52 +38,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp" />
 
-    <TextView
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:labelFor="@+id/filename"
-        android:text="@string/ringtone_name_label"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="14sp" />
+        android:hint="@string/ringtone_name_label">
 
-    <EditText
-        android:id="@+id/filename"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:inputType="text" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/save"
-            android:layout_width="0dp"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/filename"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minHeight="44dp"
-            android:text="@string/file_save_button_save"
-            android:textAllCaps="false"
-            android:textSize="17sp"
-            android:gravity="center" />
+            android:inputType="text" />
 
-        <Button
-            android:id="@+id/cancel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_weight="1"
-            android:minHeight="44dp"
-            android:text="@string/file_save_button_cancel"
-            android:textAllCaps="false"
-            android:textSize="17sp"
-            android:gravity="center" />
-
-    </LinearLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>
+
