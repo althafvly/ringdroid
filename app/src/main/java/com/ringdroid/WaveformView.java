@@ -17,12 +17,10 @@
 package com.ringdroid;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -112,7 +110,7 @@ public class WaveformView extends View {
         mTimecodePaint.setShadowLayer(2, 1, 1, getColorRes(R.color.timecode_shadow));
 
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-            public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float vx, float vy) {
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float vx, float vy) {
                 mListener.waveformFling(vx);
                 return true;
             }
@@ -120,13 +118,13 @@ public class WaveformView extends View {
 
         mScaleGestureDetector = new ScaleGestureDetector(context,
                 new ScaleGestureDetector.SimpleOnScaleGestureListener() {
-                    public boolean onScaleBegin(@NonNull ScaleGestureDetector d) {
+                    public boolean onScaleBegin(ScaleGestureDetector d) {
                         Log.v(TAG, "ScaleBegin " + d.getCurrentSpanX());
                         mInitialScaleSpan = Math.abs(d.getCurrentSpanX());
                         return true;
                     }
 
-                    public boolean onScale(@NonNull ScaleGestureDetector d) {
+                    public boolean onScale(ScaleGestureDetector d) {
                         float scale = Math.abs(d.getCurrentSpanX());
                         Log.v(TAG, "Scale " + (scale - mInitialScaleSpan));
                         if (scale - mInitialScaleSpan > 40) {
@@ -140,7 +138,7 @@ public class WaveformView extends View {
                         return true;
                     }
 
-                    public void onScaleEnd(@NonNull ScaleGestureDetector d) {
+                    public void onScaleEnd(ScaleGestureDetector d) {
                         Log.v(TAG, "ScaleEnd " + d.getCurrentSpanX());
                     }
                 });
@@ -345,7 +343,7 @@ public class WaveformView extends View {
     }
 
     @Override
-    protected void onDraw(@NonNull Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (mSoundFile == null)
             return;

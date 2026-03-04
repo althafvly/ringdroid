@@ -16,8 +16,6 @@
 
 package com.ringdroid;
 
-import com.ringdroid.databinding.ChooseContactBinding;
-
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -28,7 +26,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.ContactsContract.Contacts;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +35,8 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
+
+import com.ringdroid.databinding.ChooseContactBinding;
 
 /**
  * After a ringtone has been saved, this activity lets you pick a contact and
@@ -155,7 +154,7 @@ public class ChooseContactActivity extends Activity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_about) {
             RingdroidEditActivity.onAbout(this);
             return true;
@@ -164,8 +163,8 @@ public class ChooseContactActivity extends Activity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-            @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode != PermissionUtils.CONTACT_PERMISSION_REQUEST)

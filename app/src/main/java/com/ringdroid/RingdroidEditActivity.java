@@ -32,7 +32,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -43,8 +42,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import com.ringdroid.databinding.EditorBinding;
-
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
@@ -53,6 +50,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ringdroid.databinding.EditorBinding;
 import com.ringdroid.soundfile.SoundFile;
 
 import java.io.File;
@@ -248,8 +246,8 @@ public class RingdroidEditActivity extends Activity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-            @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == PermissionUtils.MIC_PERMISSION_REQUEST) {
@@ -412,7 +410,7 @@ public class RingdroidEditActivity extends Activity
      * redo our layout somewhat.
      */
     @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+    public void onConfigurationChanged(Configuration newConfig) {
         Log.v(TAG, "EditActivity onConfigurationChanged");
         final int saveZoomLevel = mWaveformView.getZoomLevel();
         super.onConfigurationChanged(newConfig);
@@ -448,7 +446,7 @@ public class RingdroidEditActivity extends Activity
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.action_save) {
@@ -1545,7 +1543,7 @@ public class RingdroidEditActivity extends Activity
         // contact, or do nothing.
 
         final Handler handler = new Handler(Looper.getMainLooper()) {
-            public void handleMessage(@NonNull Message response) {
+            public void handleMessage(Message response) {
                 int actionId = response.arg1;
                 if (actionId == R.id.button_make_default) {
                     RingdroidUtils.setDefaultRingTone(RingdroidEditActivity.this, RingtoneManager.TYPE_RINGTONE, newUri,
@@ -1578,7 +1576,7 @@ public class RingdroidEditActivity extends Activity
         }
 
         final Handler handler = new Handler(Looper.getMainLooper()) {
-            public void handleMessage(@NonNull Message response) {
+            public void handleMessage(Message response) {
                 CharSequence newTitle = (CharSequence) response.obj;
                 mNewFileKind = response.arg1;
                 saveRingtone(newTitle);
