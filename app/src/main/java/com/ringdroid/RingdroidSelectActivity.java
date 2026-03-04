@@ -566,6 +566,8 @@ public class RingdroidSelectActivity extends Activity {
         try {
             if (getContentResolver().delete(contentUri, null, null) == 0) {
                 showFinalAlert(getResources().getText(R.string.delete_failed));
+            } else {
+                refreshListView();
             }
         } catch (Exception e) {
             showFinalAlert(getResources().getText(R.string.delete_failed));
