@@ -1545,10 +1545,10 @@ public class RingdroidEditActivity extends Activity
         final Handler handler = new Handler(Looper.getMainLooper()) {
             public void handleMessage(Message response) {
                 int actionId = response.arg1;
-                if (actionId == R.id.button_make_default) {
+                if (actionId == AfterSaveActionDialog.ACTION_MAKE_DEFAULT) {
                     RingdroidUtils.setDefaultRingTone(RingdroidEditActivity.this, RingtoneManager.TYPE_RINGTONE, newUri,
                             true);
-                } else if (actionId == R.id.button_choose_contact) {
+                } else if (actionId == AfterSaveActionDialog.ACTION_CHOOSE_CONTACT) {
                     chooseContactForRingtone(newUri);
                 } else {
                     finish();

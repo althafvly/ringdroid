@@ -16,37 +16,45 @@
 
 package com.ringdroid;
 
-import android.app.Dialog;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Message;
 import android.view.LayoutInflater;
 
 import com.ringdroid.databinding.AfterSaveActionBinding;
 
-public class AfterSaveActionDialog extends Dialog {
+public class AfterSaveActionDialog {
+
+    public static final int ACTION_MAKE_DEFAULT = 1;
+    public static final int ACTION_CHOOSE_CONTACT = 2;
+    public static final int ACTION_DO_NOTHING = 3;
 
     private final Message mResponse;
+    private final AlertDialog mDialog;
 
     public AfterSaveActionDialog(Context context, Message response) {
-        super(context);
-
-        requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.alert_title_success);
 
         // Inflate our UI from its XML layout description.
         AfterSaveActionBinding binding = AfterSaveActionBinding.inflate(LayoutInflater.from(context));
-        setContentView(binding.getRoot());
+        builder.setView(binding.getRoot());
 
-        binding.buttonMakeDefault.setOnClickListener(view -> closeAndSendResult(R.id.button_make_default));
-        binding.buttonChooseContact
-                .setOnClickListener(view -> closeAndSendResult(R.id.button_choose_contact));
-        binding.buttonDoNothing.setOnClickListener(view -> closeAndSendResult(R.id.button_do_nothing));
+        binding.buttonMakeDefault.setOnClickListener(view -> closeAndSendResult(ACTION_MAKE_DEFAULT));
+        binding.buttonChooseContact.setOnClickListener(view -> closeAndSendResult(ACTION_CHOOSE_CONTACT));
+        binding.buttonDoNothing.setOnClickListener(view -> closeAndSendResult(ACTION_DO_NOTHING));
 
         mResponse = response;
+        mDialog = builder.create();
     }
 
     private void closeAndSendResult(int clickedButtonId) {
         mResponse.arg1 = clickedButtonId;
         mResponse.sendToTarget();
-        dismiss();
+        mDialog.dismiss();
+    }
+
+    public void show() {
+        mDialog.show();
     }
 }
