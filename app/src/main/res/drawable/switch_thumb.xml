@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-
-    <size
-        android:width="28dp"
-        android:height="28dp" />
-
-    <solid android:color="#FFFFFF" />
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Transparent base for maintaining correct bounds -->
+    <item>
+        <shape android:shape="oval">
+            <size android:width="28dp" android:height="28dp" />
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+    <!-- Actual thumb, scaled down to sit comfortably inside the track -->
+    <item android:left="2dp" android:right="2dp" android:top="2dp" android:bottom="2dp">
+        <shape android:shape="oval">
+            <solid android:color="#FFFFFF" />
+            <!-- Subtle shadow approximation using stroke -->
+            <stroke android:width="0.5dp" android:color="#33000000" />
+        </shape>
+    </item>
+</layer-list>
