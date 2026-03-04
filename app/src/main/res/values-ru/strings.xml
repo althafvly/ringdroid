@@ -61,15 +61,9 @@
 
     <string name="ringtone_name_label">Имя:</string>
 
-    <string name="delete_ringtone">Удалить рингтон</string>
-    <string name="delete_alarm">Удалить будильник</string>
-    <string name="delete_notification">Удалить уведомление</string>
-    <string name="delete_music">Удалить музыку</string>
     <string name="delete_audio">Удалить аудио</string>
 
     <string name="confirm_delete_ringdroid">Вы уверены?</string>
-    <string name="confirm_delete_non_ringdroid">Вы уверены? Этот файл не был создан с помощью Ringdroid!</string>
-
 
     <string name="delete_failed">Не удалось удалить файл</string>
 

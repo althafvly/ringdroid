@@ -61,15 +61,9 @@
 
     <string name="ringtone_name_label">Naam:</string>
 
-    <string name="delete_ringtone">Beltoon verwijderen</string>
-    <string name="delete_alarm">Alarm verwijderen</string>
-    <string name="delete_notification">Melding verwijderen</string>
-    <string name="delete_music">Muziek verwijderen</string>
     <string name="delete_audio">Audio verwijderen</string>
 
     <string name="confirm_delete_ringdroid">Weet u het zeker?</string>
-    <string name="confirm_delete_non_ringdroid">Weet u het zeker? Dit bestand is niet gemaakt met Ringdroid!</string>
-
 
     <string name="delete_failed">Kan bestand niet verwijderen</string>
 

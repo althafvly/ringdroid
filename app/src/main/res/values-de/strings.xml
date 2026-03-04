@@ -61,15 +61,9 @@
 
     <string name="ringtone_name_label">Name:</string>
 
-    <string name="delete_ringtone">Klingelton löschen</string>
-    <string name="delete_alarm">Alarm löschen</string>
-    <string name="delete_notification">Benachrichtigung löschen</string>
-    <string name="delete_music">Musik löschen</string>
     <string name="delete_audio">Audio löschen</string>
 
     <string name="confirm_delete_ringdroid">Sind Sie sicher?</string>
-    <string name="confirm_delete_non_ringdroid">Sind Sie sicher? Diese Datei wurde nicht mit Ringdroid erstellt!</string>
-
 
     <string name="delete_failed">Datei konnte nicht gelöscht werden</string>
 

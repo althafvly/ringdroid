@@ -512,34 +512,14 @@ public class RingdroidSelectActivity extends Activity {
         // determine which alert message to show
         Cursor c = mAdapter.getCursor();
         if (c == null || c.isClosed()) return;
-        
-        String artist = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
-        CharSequence ringdroidArtist = getResources().getText(R.string.artist_name);
 
-        CharSequence message;
-        if (artist != null && artist.contentEquals(ringdroidArtist)) {
-            message = getResources().getText(R.string.confirm_delete_ringdroid);
-        } else {
-            message = getResources().getText(R.string.confirm_delete_non_ringdroid);
-        }
-
-        CharSequence title;
-        if (0 != c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE))) {
-            title = getResources().getText(R.string.delete_ringtone);
-        } else if (0 != c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_ALARM))) {
-            title = getResources().getText(R.string.delete_alarm);
-        } else if (0 != c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_NOTIFICATION))) {
-            title = getResources().getText(R.string.delete_notification);
-        } else if (0 != c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_MUSIC))) {
-            title = getResources().getText(R.string.delete_music);
-        } else {
-            title = getResources().getText(R.string.delete_audio);
-        }
-
-        new AlertDialog.Builder(RingdroidSelectActivity.this).setTitle(title).setMessage(message)
+        new AlertDialog.Builder(RingdroidSelectActivity.this)
+                .setTitle(getResources().getText(R.string.delete_audio))
+                .setMessage(getResources().getText(R.string.confirm_delete_ringdroid))
                 .setPositiveButton(R.string.delete_ok_button, (dialog, whichButton) -> onDelete())
-                .setNegativeButton(R.string.delete_cancel_button, (dialog, whichButton) -> {
-                }).setCancelable(true).show();
+                .setNegativeButton(R.string.delete_cancel_button, (dialog, whichButton) -> {})
+                .setCancelable(true)
+                .show();
     }
 
     private void onDelete() {

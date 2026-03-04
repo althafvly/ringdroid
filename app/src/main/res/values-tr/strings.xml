@@ -61,15 +61,9 @@
 
     <string name="ringtone_name_label">Ad:</string>
 
-    <string name="delete_ringtone">Zil Sesini Sil</string>
-    <string name="delete_alarm">Alarmı Sil</string>
-    <string name="delete_notification">Bildirimi Sil</string>
-    <string name="delete_music">Müziği Sil</string>
     <string name="delete_audio">Sesi Sil</string>
 
     <string name="confirm_delete_ringdroid">Emin misiniz?</string>
-    <string name="confirm_delete_non_ringdroid">Emin misiniz? Bu dosya Ringdroid kullanılarak oluşturulmadı!</string>
-
 
     <string name="delete_failed">Dosya silinemedi</string>
 

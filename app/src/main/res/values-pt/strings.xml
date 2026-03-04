@@ -61,15 +61,9 @@
 
     <string name="ringtone_name_label">Nome:</string>
 
-    <string name="delete_ringtone">Excluir Toque</string>
-    <string name="delete_alarm">Excluir Alarme</string>
-    <string name="delete_notification">Excluir Notificação</string>
-    <string name="delete_music">Excluir Música</string>
     <string name="delete_audio">Excluir Áudio</string>
 
     <string name="confirm_delete_ringdroid">Você tem certeza?</string>
-    <string name="confirm_delete_non_ringdroid">Você tem certeza? Este arquivo não foi criado usando o Ringdroid!</string>
-
 
     <string name="delete_failed">Não foi possível excluir o arquivo</string>
 

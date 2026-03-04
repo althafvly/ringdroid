@@ -61,15 +61,9 @@
 
     <string name="ringtone_name_label">名称:</string>
 
-    <string name="delete_ringtone">删除铃声</string>
-    <string name="delete_alarm">删除闹钟</string>
-    <string name="delete_notification">删除通知</string>
-    <string name="delete_music">删除音乐</string>
     <string name="delete_audio">删除音频</string>
 
     <string name="confirm_delete_ringdroid">您确定吗?</string>
-    <string name="confirm_delete_non_ringdroid">您确定吗? 此文件不是使用 Ringdroid 创建的!</string>
-
 
     <string name="delete_failed">无法删除文件</string>
 

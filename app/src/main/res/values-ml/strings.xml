@@ -61,15 +61,9 @@
 
     <string name="ringtone_name_label">പേര്:</string>
 
-    <string name="delete_ringtone">റിംഗ്‌ടോൺ ഡിലീറ്റ് ചെയ്യുക</string>
-    <string name="delete_alarm">അലാറം ഡിലീറ്റ് ചെയ്യുക</string>
-    <string name="delete_notification">നോട്ടിഫിക്കേഷൻ ഡിലീറ്റ് ചെയ്യുക</string>
-    <string name="delete_music">സംഗീതം ഡിലീറ്റ് ചെയ്യുക</string>
     <string name="delete_audio">ഓഡിയോ ഡിലീറ്റ് ചെയ്യുക</string>
 
     <string name="confirm_delete_ringdroid">നിങ്ങൾ ഉറപ്പാണോ?</string>
-    <string name="confirm_delete_non_ringdroid">നിങ്ങൾ ഉറപ്പാണോ? ഈ ഫയൽ Ringdroid ഉപയോഗിച്ച് ഉണ്ടാക്കിയതല്ല!</string>
-
 
     <string name="delete_failed">ഫയൽ ഡിലീറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല</string>
 

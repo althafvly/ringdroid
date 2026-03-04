@@ -61,15 +61,9 @@
 
     <string name="ringtone_name_label">이름:</string>
 
-    <string name="delete_ringtone">벨소리 삭제</string>
-    <string name="delete_alarm">알람 삭제</string>
-    <string name="delete_notification">알림 삭제</string>
-    <string name="delete_music">음악 삭제</string>
     <string name="delete_audio">오디오 삭제</string>
 
     <string name="confirm_delete_ringdroid">확실합니까?</string>
-    <string name="confirm_delete_non_ringdroid">확실합니까? 이 파일은 Ringdroid를 사용하여 생성되지 않았습니다!</string>
-
 
     <string name="delete_failed">파일을 삭제할 수 없습니다</string>
 

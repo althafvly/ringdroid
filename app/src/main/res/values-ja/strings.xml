@@ -61,15 +61,9 @@
 
     <string name="ringtone_name_label">名前:</string>
 
-    <string name="delete_ringtone">着信音を削除</string>
-    <string name="delete_alarm">アラームを削除</string>
-    <string name="delete_notification">通知を削除</string>
-    <string name="delete_music">音楽を削除</string>
     <string name="delete_audio">オーディオを削除</string>
 
     <string name="confirm_delete_ringdroid">よろしいですか？</string>
-    <string name="confirm_delete_non_ringdroid">よろしいですか？このファイルはRingdroidを使用して作成されていません！</string>
-
 
     <string name="delete_failed">ファイルを削除できません</string>
 
