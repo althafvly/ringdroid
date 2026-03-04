@@ -1,14 +1,14 @@
 package com.ringdroid
 
-import android.app.Activity
-import android.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.CompoundButton
-import android.widget.Switch
+import androidx.appcompat.widget.SwitchCompat
 import com.ringdroid.PermissionUtils.hasContactPermissions
 import com.ringdroid.PermissionUtils.hasMediaAudioPermission
 import com.ringdroid.PermissionUtils.hasMicPermissions
@@ -21,12 +21,12 @@ import com.ringdroid.PermissionUtils.requestStoragePermission
 import com.ringdroid.PermissionUtils.requestWriteSettingsPermission
 import com.ringdroid.databinding.PermissionScreenBinding
 
-class PermissionActivity : Activity() {
-    private var storageSwitch: Switch? = null
-    private var writeSettingsSwitch: Switch? = null
-    private var micSwitch: Switch? = null
-    private var contactSwitch: Switch? = null
-    private var mediaAudioSwitch: Switch? = null
+class PermissionActivity : AppCompatActivity() {
+    private var storageSwitch: SwitchCompat? = null
+    private var writeSettingsSwitch: SwitchCompat? = null
+    private var micSwitch: SwitchCompat? = null
+    private var contactSwitch: SwitchCompat? = null
+    private var mediaAudioSwitch: SwitchCompat? = null
     private var nextButton: Button? = null
     private var binding: PermissionScreenBinding? = null
 

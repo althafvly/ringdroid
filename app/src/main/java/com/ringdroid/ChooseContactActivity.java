@@ -16,7 +16,7 @@
 
 package com.ringdroid;
 
-import android.app.Activity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -42,7 +42,7 @@ import com.ringdroid.databinding.ChooseContactBinding;
  * After a ringtone has been saved, this activity lets you pick a contact and
  * assign the ringtone to that contact.
  */
-public class ChooseContactActivity extends Activity {
+public class ChooseContactActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getName();
     private final Handler mUiHandler = new Handler(Looper.getMainLooper());
     private SearchView mFilter;

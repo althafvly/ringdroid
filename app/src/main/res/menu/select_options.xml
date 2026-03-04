@@ -1,33 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_search_filter"
-        android:actionViewClass="android.widget.SearchView"
         android:icon="@drawable/baseline_search_24"
-        android:showAsAction="always|collapseActionView"
-        android:title="@string/search_edit_box" />
+        android:title="@string/search_edit_box"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView" />
 
     <item
         android:id="@+id/action_record"
         android:icon="@drawable/baseline_mic_24"
-        android:showAsAction="always"
-        android:title="@string/button_start_record_activity" />
+        android:title="@string/button_start_record_activity"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/action_about"
-        android:showAsAction="never"
-        android:title="@string/menu_about" />
+        android:title="@string/menu_about"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_show_all_audio"
         android:checkable="true"
         android:checked="false"
-        android:showAsAction="never"
-        android:title="@string/menu_show_all_audio" />
+        android:title="@string/menu_show_all_audio"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_permissions"
-        android:showAsAction="never"
-        android:title="@string/menu_permissions" />
+        android:title="@string/menu_permissions"
+        app:showAsAction="never" />
 
 </menu>

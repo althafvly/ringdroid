@@ -16,8 +16,9 @@
 
 package com.ringdroid;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -65,7 +66,7 @@ import java.util.Objects;
  * waveform display, current horizontal offset, marker handles, start / end text
  * boxes, and handles all of the buttons and controls.
  */
-public class RingdroidEditActivity extends Activity
+public class RingdroidEditActivity extends AppCompatActivity
         implements
             MarkerView.MarkerListener,
             WaveformView.WaveformListener {

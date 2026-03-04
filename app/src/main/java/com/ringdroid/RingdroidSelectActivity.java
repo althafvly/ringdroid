@@ -16,8 +16,8 @@
 
 package com.ringdroid;
 
-import android.app.Activity;
-import android.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -59,7 +59,7 @@ import java.util.Objects;
  * audio file or using an intent to record a new one, and then launches
  * RingdroidEditActivity from here.
  */
-public class RingdroidSelectActivity extends Activity {
+public class RingdroidSelectActivity extends AppCompatActivity {
     // Result codes
     private static final int REQUEST_CODE_EDIT = 1;
     private static final int REQUEST_CODE_CHOOSE_CONTACT = 2;
