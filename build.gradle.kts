@@ -12,7 +12,7 @@ spotless {
         eclipse()
         leadingSpacesToTabs(2)
         leadingTabsToSpaces(4)
-        target("src/*/java/**/*.java")
+        target("src/**/*.java")
     }
     format("xml") {
         target("src/**/*.xml")
