@@ -777,11 +777,20 @@ public class RingdroidEditActivity extends Activity
         progressBar.setMax(100);
         mLoadingProgressBar = progressBar;
 
-        mProgressDialog = new AlertDialog.Builder(this).setTitle(R.string.progress_dialog_loading).setView(dialogView)
-                .setCancelable(true).setOnCancelListener(dialog -> {
+        mProgressDialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.progress_dialog_loading)
+                .setView(dialogView)
+                .setCancelable(true)
+                .setNegativeButton(R.string.progress_dialog_cancel, (dialog, id) -> {
                     mLoadingKeepGoing = false;
                     mFinishActivity = true;
-                }).create();
+                })
+                .setOnCancelListener(dialog -> {
+                    mLoadingKeepGoing = false;
+                    mFinishActivity = true;
+                })
+                .create();
+        mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.show();
 
         final SoundFile.ProgressListener listener = fractionComplete -> {
@@ -798,6 +807,7 @@ public class RingdroidEditActivity extends Activity
 
         // Load the sound file in a background thread
         mLoadSoundFileThread = new Thread(() -> {
+            boolean loadingCancelled = false;
             try {
                 mSoundFile = SoundFile.create(mFile.getAbsolutePath(), listener);
 
@@ -805,21 +815,30 @@ public class RingdroidEditActivity extends Activity
                     if (mProgressDialog != null) {
                         mProgressDialog.dismiss();
                     }
-                    String name = mFile.getName().toLowerCase();
-                    String[] components = name.split("\\.");
-                    String err;
-                    if (components.length < 2) {
-                        err = getResources().getString(R.string.no_extension_error);
+                    if (!mLoadingKeepGoing) {
+                        loadingCancelled = true;
                     } else {
-                        err = getResources().getString(R.string.bad_extension_error) + " "
-                                + components[components.length - 1];
+                        String name = mFile.getName().toLowerCase();
+                        String[] components = name.split("\\.");
+                        String err;
+                        if (components.length < 2) {
+                            err = getResources().getString(R.string.no_extension_error);
+                        } else {
+                            err = getResources().getString(R.string.bad_extension_error) + " "
+                                    + components[components.length - 1];
+                        }
+                        final String finalErr = err;
+                        Runnable runnable = () -> showFinalAlert(new Exception(), finalErr);
+                        mHandler.post(runnable);
+                        return;
                     }
-                    final String finalErr = err;
-                    Runnable runnable = () -> showFinalAlert(new Exception(), finalErr);
-                    mHandler.post(runnable);
-                    return;
+                } else if (!mLoadingKeepGoing) {
+                    loadingCancelled = true;
+                } else if (mSoundFile.getSamples() == null) {
+                    throw new IllegalStateException("Decoded samples are unavailable");
+                } else {
+                    mPlayer = new SamplePlayer(mSoundFile);
                 }
-                mPlayer = new SamplePlayer(mSoundFile);
             } catch (final Exception e) {
                 if (mProgressDialog != null) {
                     mProgressDialog.dismiss();
@@ -835,7 +854,7 @@ public class RingdroidEditActivity extends Activity
             if (mProgressDialog != null) {
                 mProgressDialog.dismiss();
             }
-            if (mLoadingKeepGoing) {
+            if (mLoadingKeepGoing && !loadingCancelled) {
                 Runnable runnable = this::finishOpeningSoundFile;
                 mHandler.post(runnable);
             } else if (mFinishActivity) {
