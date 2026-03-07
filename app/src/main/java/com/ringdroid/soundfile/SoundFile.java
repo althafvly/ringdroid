@@ -531,6 +531,14 @@ public class SoundFile {
     public void WriteFile(OutputStream outputStream, float startTime, float endTime) throws IOException {
         int startOffset = (int) (startTime * mSampleRate) * 2 * mChannels;
         int numSamples = (int) ((endTime - startTime) * mSampleRate);
+
+        if (numSamples <= 0) {
+            throw new IOException("Invalid time bounds: " + startTime + " to " + endTime);
+        }
+        if (startOffset < 0 || startOffset > mDecodedBytes.limit()) {
+            throw new IOException("Start offset out of bounds: " + startOffset);
+        }
+
         // Some devices have problems reading mono AAC files (e.g. Samsung S3). Making
         // it stereo.
         int numChannels = (mChannels == 1) ? 2 : mChannels;
@@ -711,6 +719,13 @@ public class SoundFile {
     public void WriteWAVFile(OutputStream outputStream, float startTime, float endTime) throws java.io.IOException {
         int startOffset = (int) (startTime * mSampleRate) * 2 * mChannels;
         int numSamples = (int) ((endTime - startTime) * mSampleRate);
+
+        if (numSamples <= 0) {
+            throw new IOException("Invalid time bounds: " + startTime + " to " + endTime);
+        }
+        if (startOffset < 0 || startOffset > mDecodedBytes.limit()) {
+            throw new IOException("Start offset out of bounds: " + startOffset);
+        }
 
         // Start by writing the RIFF header.
         outputStream.write(WAVHeader.getWAVHeader(mSampleRate, mChannels, numSamples));

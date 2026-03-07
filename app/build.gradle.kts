@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("jacoco")
 }
 
 android {
@@ -13,6 +14,7 @@ android {
         targetSdk = 36
         versionCode = 20907
         versionName = "2.9.7"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -31,6 +33,8 @@ android {
             isDebuggable = true
             isJniDebuggable = true
             isMinifyEnabled = false
+            enableAndroidTestCoverage = true
+            enableUnitTestCoverage = true
         }
     }
 
@@ -58,4 +62,33 @@ android {
 }
 
 dependencies {
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.runner)
+}
+
+tasks.register("jacocoTestReport", JacocoReport::class) {
+    dependsOn("connectedFdroidDebugAndroidTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    val fileFilter = listOf(
+        "**/R.class", "**/R$*.class", "**/BuildConfig.*", "**/Manifest*.*", "**/*Test*.*", "android/**/*.*"
+    )
+    val debugTree = fileTree("${project.layout.buildDirectory}/tmp/kotlin-classes/fdroidDebug") {
+        exclude(fileFilter)
+    }
+    val mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories.setFrom(files(mainSrc))
+    classDirectories.setFrom(files(debugTree))
+    executionData.setFrom(fileTree(project.layout.buildDirectory) {
+        include(
+            "outputs/code_coverage/fdroidDebugAndroidTest/connected/*coverage.ec"
+        )
+    })
 }
