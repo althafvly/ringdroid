@@ -40,6 +40,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
 
 public class SoundFile {
@@ -219,11 +220,17 @@ public class SoundFile {
         mChannels = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
         mSampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE);
 
-        long durationUs = format.getLong(MediaFormat.KEY_DURATION);
-        long durationMs = durationUs / 1000;
-
         // Expected total number of samples per channel.
         int expectedNumSamples = (int) ((format.getLong(MediaFormat.KEY_DURATION) / 1000000.f) * mSampleRate + 0.5f);
+        long expectedMemory = (long) expectedNumSamples * mChannels * 2;
+        long maxAllowedMemory = (long) (Runtime.getRuntime().maxMemory() * 0.6); // 60% of Dalvik Max Heap
+
+        if (expectedMemory > maxAllowedMemory) {
+            extractor.release();
+            throw new InvalidInputException(String.format(Locale.US,
+                    "Audio file is too long for the available memory (%.1f MB required, %.1f MB available)",
+                    expectedMemory / 1048576f, maxAllowedMemory / 1048576f));
+        }
 
         MediaCodec codec = null;
         try {
