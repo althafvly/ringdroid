@@ -35,12 +35,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.io.Serial;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.MappedByteBuffer;
 import java.nio.ShortBuffer;
+import java.nio.channels.FileChannel;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.Objects;
 
 public class SoundFile {
@@ -56,13 +58,18 @@ public class SoundFile {
     private int mSampleRate;
     private int mChannels;
     private int mNumSamples; // total number of samples per channel in audio file
-    private ByteBuffer mDecodedBytes; // Raw audio data
+    private ByteBuffer mDecodedBytes; // Raw audio data (memory-mapped from disk for large files)
     private ShortBuffer mDecodedSamples; // shared buffer with mDecodedBytes.
     // mDecodedSamples has the following format:
     // {s1c1, s1c2, ..., s1cM, s2c1, ..., s2cM, ..., sNc1, ..., sNcM}
     // where sicj is the ith sample of the jth channel (a sample is a signed short)
     // M is the number of channels (e.g. 2 for stereo) and N is the number of
     // samples per channel.
+
+    // Temp file backing the memory-mapped PCM buffer (null for short files).
+    private File mPcmTempFile = null;
+    private RandomAccessFile mPcmRaf = null;
+    private FileChannel mPcmChannel = null;
 
     // VisibleForTesting
     static long sMaxAllowedMemoryOverride = -1;
@@ -189,12 +196,25 @@ public class SoundFile {
 
     /**
      * Release the decoded audio data to free up memory.
+     * Closes and deletes any temporary PCM file used for disk-backed decoding.
      * Should be called when the SoundFile is no longer needed.
      */
     public void release() {
         mDecodedBytes = null;
         mDecodedSamples = null;
         mFrameGains = null;
+        if (mPcmChannel != null) {
+            try { mPcmChannel.close(); } catch (IOException ignored) {}
+            mPcmChannel = null;
+        }
+        if (mPcmRaf != null) {
+            try { mPcmRaf.close(); } catch (IOException ignored) {}
+            mPcmRaf = null;
+        }
+        if (mPcmTempFile != null) {
+            mPcmTempFile.delete();
+            mPcmTempFile = null;
+        }
     }
 
     private void ReadFile(File inputFile) throws java.io.IOException, InvalidInputException {
@@ -223,19 +243,10 @@ public class SoundFile {
         mChannels = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
         mSampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE);
 
-        // Expected total number of samples per channel.
-        int expectedNumSamples = (int) ((format.getLong(MediaFormat.KEY_DURATION) / 1000000.f) * mSampleRate + 0.5f);
-        long expectedMemory = (long) expectedNumSamples * mChannels * 2;
-        long maxAllowedMemory = sMaxAllowedMemoryOverride > -1 ?
-                sMaxAllowedMemoryOverride :
-                (long) (Runtime.getRuntime().maxMemory() * 0.6); // 60% of Dalvik Max Heap
-
-        if (expectedMemory > maxAllowedMemory) {
-            extractor.release();
-            throw new InvalidInputException(String.format(Locale.US,
-                    "Audio file is too long for the available memory (%.1f MB required, %.1f MB available)",
-                    expectedMemory / 1048576f, maxAllowedMemory / 1048576f));
-        }
+        // Compute the expected decoded PCM size to pre-allocate the disk-backed buffer.
+        // Uses long arithmetic to avoid int overflow for files > ~24 min at 44100Hz.
+        long expectedNumSamples = (long) ((format.getLong(MediaFormat.KEY_DURATION) / 1000000.f) * mSampleRate + 0.5f);
+        long expectedMemory = expectedNumSamples * mChannels * 2;
 
         MediaCodec codec = null;
         try {
@@ -253,17 +264,21 @@ public class SoundFile {
             int tot_size_read = 0;
             boolean done_reading = false;
 
-            // Set the size of the decoded samples buffer to 1MB (~6sec of a stereo stream
-            // at 44.1kHz).
-            // For longer streams, the buffer size will be increased later on, calculating a
-            // rough
-            // estimate of the total size needed to store all the samples in order to resize
-            // the buffer
-            // only once.
-            mDecodedBytes = ByteBuffer.allocate(1 << 20);
+            // Use disk-backed memory-mapped buffer so files of any size can be decoded
+            // without being limited by Java heap. The OS handles paging automatically.
+            mPcmTempFile = File.createTempFile("ringdroid_pcm_", ".raw",
+                    mInputFile.getParentFile());
+            mPcmTempFile.deleteOnExit();
+            long initialSize = Math.max(expectedMemory, 1L << 20); // at least 1MB
+            mPcmRaf = new RandomAccessFile(mPcmTempFile, "rw");
+            mPcmRaf.setLength(initialSize);
+            mPcmChannel = mPcmRaf.getChannel();
+            MappedByteBuffer mappedBuffer = mPcmChannel.map(FileChannel.MapMode.READ_WRITE, 0, initialSize);
+            mDecodedBytes = mappedBuffer;
             boolean firstSampleData = true;
             boolean outputFormatUpdated = false;
             while (true) {
+
                 // read data from file and feed it to the decoder input buffers.
                 int inputBufferIndex = codec.dequeueInputBuffer(100);
                 if (!done_reading && inputBufferIndex >= 0) {
@@ -323,47 +338,18 @@ public class SoundFile {
                         }
                         outputBuffer.get(decodedSamples, 0, info.size);
                         outputBuffer.clear();
-                        // Check if buffer is big enough. Resize it if it's too small.
+                        // Check if buffer is big enough. Remap file if needed.
                         if (mDecodedBytes.remaining() < info.size) {
-                            // Getting a rough estimate of the total size, allocate 20% more, and
-                            // make sure to allocate at least 5MB more than the initial size.
                             int position = mDecodedBytes.position();
-                            int newSize = (int) ((position * (1.0 * mFileSize / tot_size_read)) * 1.2);
-                            if (newSize - position < info.size + 5 * (1 << 20)) {
-                                newSize = position + info.size + 5 * (1 << 20);
+                            long newSize = (long) ((position * (1.0 * mFileSize / tot_size_read)) * 1.2);
+                            if (newSize - position < info.size + 5L * (1 << 20)) {
+                                newSize = position + info.size + 5L * (1 << 20);
                             }
-                            ByteBuffer newDecodedBytes = null;
-                            // Try to allocate memory. If we are OOM, try to run the garbage collector.
-                            int retry = 10;
-                            while (retry > 0) {
-                                try {
-                                    newDecodedBytes = ByteBuffer.allocate(newSize);
-                                    break;
-                                } catch (OutOfMemoryError oome) {
-                                    // setting android:largeHeap="true" in <application> seem to help not
-                                    // reaching this section.
-                                    retry--;
-                                    if (retry > 0) {
-                                        // Explicitly request garbage collection to free up memory
-                                        System.gc();
-                                        try {
-                                            Thread.sleep(100);
-                                        } catch (InterruptedException ignored) {
-                                        }
-                                    }
-                                }
-                            }
-                            if (retry == 0) {
-                                // Failed to allocate memory... Stop reading more data and finalize the
-                                // instance with the data decoded so far.
-                                break;
-                            }
-                            // ByteBuffer newDecodedBytes = ByteBuffer.allocate(newSize);
-                            mDecodedBytes.rewind();
-                            assert newDecodedBytes != null;
-                            newDecodedBytes.put(mDecodedBytes);
-                            mDecodedBytes = newDecodedBytes;
-                            mDecodedBytes.position(position);
+                            // Extend the file and remap.
+                            mPcmRaf.setLength(newSize);
+                            MappedByteBuffer newMap = mPcmChannel.map(FileChannel.MapMode.READ_WRITE, 0, newSize);
+                            newMap.position(position);
+                            mDecodedBytes = newMap;
                         }
                         mDecodedBytes.put(decodedSamples, 0, info.size);
                     }
