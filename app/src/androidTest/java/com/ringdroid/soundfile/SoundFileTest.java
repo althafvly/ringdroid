@@ -159,6 +159,77 @@ public class SoundFileTest {
         SoundFile.uriExists(context, uri);
     }
 
+    @Test
+    public void testFileTooLongForMemory() throws Exception {
+        File oggFile = new File(context.getCacheDir(), "test_audio.ogg");
+        try (java.io.InputStream in = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getContext().getAssets().open("test_audio.ogg");
+             FileOutputStream out = new FileOutputStream(oggFile)) {
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+        }
+
+        try {
+            SoundFile.sMaxAllowedMemoryOverride = 10;
+            SoundFile.create(oggFile.getAbsolutePath(), null);
+            org.junit.Assert.fail("Expected InvalidInputException for a file that is too large");
+        } catch (SoundFile.InvalidInputException e) {
+            assertTrue(e.getMessage().contains("Audio file is too long for the available memory"));
+        } finally {
+            SoundFile.sMaxAllowedMemoryOverride = -1;
+            oggFile.delete();
+        }
+    }
+
+    @Test
+    public void testLongAudioFileParsing() throws Exception {
+        // This test generates a real, valid 11-minute WAV file
+        // and successfully parses it, proving the old 10-minute limit
+        // has been successfully eliminated.
+        File longWav = new File(context.getCacheDir(), "long_audio.wav");
+        try (FileOutputStream out = new FileOutputStream(longWav)) {
+            int sampleRate = 8000;
+            short channels = 1;
+            short bitsPerSample = 16;
+            // 11 minutes
+            int numSamples = 660 * sampleRate;
+            int byteRate = sampleRate * channels * (bitsPerSample / 8);
+            short blockAlign = (short) (channels * (bitsPerSample / 8));
+            int dataSize = numSamples * blockAlign;
+            int chunkSize = 36 + dataSize;
+
+            out.write("RIFF".getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+            out.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(chunkSize).array());
+            out.write("WAVE".getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+            out.write("fmt ".getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+            out.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(16).array());
+            out.write(ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort((short) 1).array());
+            out.write(ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(channels).array());
+            out.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(sampleRate).array());
+            out.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(byteRate).array());
+            out.write(ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(blockAlign).array());
+            out.write(ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(bitsPerSample).array());
+            out.write("data".getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+            out.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(dataSize).array());
+
+            // Write 10.5 MB of actual silent PCM data so the file is completely valid
+            byte[] silenceBuffer = new byte[8000 * 2]; // 1 second of silence
+            for (int i = 0; i < 660; i++) {
+                out.write(silenceBuffer);
+            }
+        }
+
+        try {
+            // Should easily fit in RAM of the emulator and parse in a second.
+            SoundFile soundFile = SoundFile.create(longWav.getAbsolutePath(), null);
+            assertNotNull(soundFile);
+            assertEquals(1, soundFile.getChannels());
+            assertTrue(soundFile.getNumFrames() > 0);
+        } finally {
+            longWav.delete();
+        }
+    }
+
     // --- 3. Audio Recording ---
 
     @Test

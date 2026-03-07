@@ -64,6 +64,9 @@ public class SoundFile {
     // M is the number of channels (e.g. 2 for stereo) and N is the number of
     // samples per channel.
 
+    // VisibleForTesting
+    static long sMaxAllowedMemoryOverride = -1;
+
     // Member variables for hack (making it work with old version, until app just
     // uses the samples).
     private int mNumFrames;
@@ -223,7 +226,9 @@ public class SoundFile {
         // Expected total number of samples per channel.
         int expectedNumSamples = (int) ((format.getLong(MediaFormat.KEY_DURATION) / 1000000.f) * mSampleRate + 0.5f);
         long expectedMemory = (long) expectedNumSamples * mChannels * 2;
-        long maxAllowedMemory = (long) (Runtime.getRuntime().maxMemory() * 0.6); // 60% of Dalvik Max Heap
+        long maxAllowedMemory = sMaxAllowedMemoryOverride > -1 ?
+                sMaxAllowedMemoryOverride :
+                (long) (Runtime.getRuntime().maxMemory() * 0.6); // 60% of Dalvik Max Heap
 
         if (expectedMemory > maxAllowedMemory) {
             extractor.release();
