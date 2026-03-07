@@ -71,6 +71,10 @@ public class SoundFileTest {
         assertTrue(extensions.length > 0);
         assertTrue(Arrays.asList(extensions).contains("wav"));
         assertTrue(Arrays.asList(extensions).contains("mp3"));
+        assertTrue(Arrays.asList(extensions).contains("flac"));
+        assertTrue(Arrays.asList(extensions).contains("opus"));
+        assertTrue(Arrays.asList(extensions).contains("wma"));
+        assertTrue(Arrays.asList(extensions).contains("mkv"));
     }
 
     @Test
@@ -78,6 +82,10 @@ public class SoundFileTest {
         assertTrue(SoundFile.isFilenameSupported("audio.wav"));
         assertTrue(SoundFile.isFilenameSupported("music.mp3"));
         assertTrue(SoundFile.isFilenameSupported("track.m4a"));
+        assertTrue(SoundFile.isFilenameSupported("track.flac"));
+        assertTrue(SoundFile.isFilenameSupported("track.opus"));
+        assertTrue(SoundFile.isFilenameSupported("track.wma"));
+        assertTrue(SoundFile.isFilenameSupported("track.mkv"));
         assertFalse(SoundFile.isFilenameSupported("image.jpg"));
         assertFalse(SoundFile.isFilenameSupported("document.txt"));
     }

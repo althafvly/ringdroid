@@ -76,7 +76,7 @@ public class SoundFile {
     // TODO(nfaralli): what is the real list of supported extensions? Is it device
     // dependent?
     public static String[] getSupportedExtensions() {
-        return new String[]{"mp3", "wav", "3gpp", "3gp", "amr", "aac", "m4a", "ogg"};
+        return new String[]{"mp3", "wav", "3gpp", "3gp", "amr", "aac", "m4a", "ogg", "flac", "opus", "wma", "mkv"};
     }
 
     public static boolean isFilenameSupported(String filename) {
@@ -221,11 +221,6 @@ public class SoundFile {
 
         long durationUs = format.getLong(MediaFormat.KEY_DURATION);
         long durationMs = durationUs / 1000;
-
-        if (durationMs > 10 * 60 * 1000) { // 10 minutes
-            extractor.release();
-            throw new InvalidInputException("Audio file too long");
-        }
 
         // Expected total number of samples per channel.
         int expectedNumSamples = (int) ((format.getLong(MediaFormat.KEY_DURATION) / 1000000.f) * mSampleRate + 0.5f);
