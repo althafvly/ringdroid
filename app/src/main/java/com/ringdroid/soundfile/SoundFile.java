@@ -128,8 +128,22 @@ public class SoundFile {
         }
         SoundFile soundFile = new SoundFile();
         soundFile.setProgressListener(progressListener);
-        soundFile.ReadFile(f);
-        return soundFile;
+        boolean readCompleted = false;
+        try {
+            soundFile.ReadFile(f);
+            readCompleted = true;
+            // Decoding can return early when canceled by the progress listener.
+            // In that case, ensure temp PCM resources are freed and report no file loaded.
+            if (soundFile.mDecodedSamples == null) {
+                soundFile.release();
+                return null;
+            }
+            return soundFile;
+        } finally {
+            if (!readCompleted) {
+                soundFile.release();
+            }
+        }
     }
 
     // Create and return a SoundFile object by recording a mono audio stream.
@@ -212,7 +226,9 @@ public class SoundFile {
             mPcmRaf = null;
         }
         if (mPcmTempFile != null) {
-            mPcmTempFile.delete();
+            if (!mPcmTempFile.delete() && mPcmTempFile.exists()) {
+                Log.w(TAG, "Failed to delete temporary PCM file: " + mPcmTempFile.getAbsolutePath());
+            }
             mPcmTempFile = null;
         }
     }
@@ -266,8 +282,13 @@ public class SoundFile {
 
             // Use disk-backed memory-mapped buffer so files of any size can be decoded
             // without being limited by Java heap. The OS handles paging automatically.
-            mPcmTempFile = File.createTempFile("ringdroid_pcm_", ".raw",
-                    mInputFile.getParentFile());
+            File pcmParentDir = mInputFile.getParentFile();
+            if (pcmParentDir == null) {
+                throw new IOException("Cannot determine parent directory for PCM temp buffer");
+            }
+            String pcmBufferName = "ringdroid_pcm_" + Integer.toHexString(mInputFile.getAbsolutePath().hashCode())
+                    + ".raw";
+            mPcmTempFile = new File(pcmParentDir, pcmBufferName);
             mPcmTempFile.deleteOnExit();
             long initialSize = Math.max(expectedMemory, 1L << 20); // at least 1MB
             mPcmRaf = new RandomAccessFile(mPcmTempFile, "rw");
