@@ -12,8 +12,8 @@ android {
         applicationId = "org.thayyil.ringdroid"
         minSdk = 21
         targetSdk = 36
-        versionCode = 20907
-        versionName = "2.9.7"
+        versionCode = 20908
+        versionName = "2.9.8"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
