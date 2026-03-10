@@ -111,7 +111,7 @@ public class SoundFile {
     }
 
     // Create and return a SoundFile object using the file fileName.
-    public static SoundFile create(String fileName, ProgressListener progressListener)
+    public static SoundFile create(File cacheDir, String fileName, ProgressListener progressListener)
             throws java.io.IOException, InvalidInputException {
         // First check that the file exists and that its extension is supported.
         File f = new File(fileName);
@@ -130,7 +130,7 @@ public class SoundFile {
         soundFile.setProgressListener(progressListener);
         boolean readCompleted = false;
         try {
-            soundFile.ReadFile(f);
+            soundFile.ReadFile(cacheDir, f);
             readCompleted = true;
             // Decoding can return early when canceled by the progress listener.
             // In that case, ensure temp PCM resources are freed and report no file loaded.
@@ -233,7 +233,7 @@ public class SoundFile {
         }
     }
 
-    private void ReadFile(File inputFile) throws java.io.IOException, InvalidInputException {
+    private void ReadFile(File cacheDir, File inputFile) throws java.io.IOException, InvalidInputException {
         MediaExtractor extractor = new MediaExtractor();
         MediaFormat format = null;
         int i;
@@ -282,9 +282,9 @@ public class SoundFile {
 
             // Use disk-backed memory-mapped buffer so files of any size can be decoded
             // without being limited by Java heap. The OS handles paging automatically.
-            File pcmParentDir = mInputFile.getParentFile();
+            File pcmParentDir = cacheDir;
             if (pcmParentDir == null) {
-                throw new IOException("Cannot determine parent directory for PCM temp buffer");
+                throw new IOException("Cannot determine app cache directory for PCM temp buffer");
             }
             String pcmBufferName = "ringdroid_pcm_" + Integer.toHexString(mInputFile.getAbsolutePath().hashCode())
                     + ".raw";

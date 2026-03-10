@@ -809,7 +809,7 @@ public class RingdroidEditActivity extends Activity
         mLoadSoundFileThread = new Thread(() -> {
             boolean loadingCancelled = false;
             try {
-                mSoundFile = SoundFile.create(mFile.getAbsolutePath(), listener);
+                mSoundFile = SoundFile.create(getCacheDir(), mFile.getAbsolutePath(), listener);
 
                 if (mSoundFile == null) {
                     if (mProgressDialog != null) {
@@ -1455,7 +1455,7 @@ public class RingdroidEditActivity extends Activity
                     if (PermissionUtils.hasMediaAudioPermission(mContext) && outUri != null) {
                         SoundFile.uriExists(mContext, outUri);
                     } else {
-                        SoundFile.create(outPath, listener);
+                        SoundFile.create(mContext.getCacheDir(), outPath, listener);
                     }
                 } catch (final Exception e) {
                     mProgressDialog.dismiss();
