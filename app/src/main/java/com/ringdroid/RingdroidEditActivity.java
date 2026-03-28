@@ -791,7 +791,9 @@ public class RingdroidEditActivity extends Activity
                 })
                 .create();
         mProgressDialog.setCanceledOnTouchOutside(false);
-        mProgressDialog.show();
+        if (!isFinishing() && !isDestroyed()) {
+            mProgressDialog.show();
+        }
 
         final SoundFile.ProgressListener listener = fractionComplete -> {
             long now = getCurrentTime();
@@ -887,7 +889,11 @@ public class RingdroidEditActivity extends Activity
         // of view).
         // On the other hand, if the text is big enough, this is good enough.
         adBuilder.setView(getLayoutInflater().inflate(R.layout.record_audio, null));
-        mAlertDialog = adBuilder.show();
+        if (!isFinishing() && !isDestroyed()) {
+            mAlertDialog = adBuilder.show();
+        } else {
+            return;
+        }
         mTimerTextView = mAlertDialog.findViewById(R.id.record_audio_timer);
 
         final SoundFile.ProgressListener listener = elapsedTime -> {
@@ -1251,6 +1257,10 @@ public class RingdroidEditActivity extends Activity
             title = getResources().getText(R.string.alert_title_success);
         }
 
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+
         new AlertDialog.Builder(RingdroidEditActivity.this).setTitle(title).setMessage(message)
                 .setPositiveButton(R.string.alert_ok_button, (dialog, whichButton) -> finish()).setCancelable(false)
                 .show();
@@ -1351,7 +1361,9 @@ public class RingdroidEditActivity extends Activity
 
         mProgressDialog = new AlertDialog.Builder(this).setTitle(R.string.progress_dialog_saving).setView(view)
                 .setCancelable(false).create();
-        mProgressDialog.show();
+        if (!isFinishing() && !isDestroyed()) {
+            mProgressDialog.show();
+        }
 
         ContentValues values = new ContentValues();
         values.put(MediaStore.Audio.Media.IS_RINGTONE, mNewFileKind == FileSaveDialog.FILE_KIND_RINGTONE);

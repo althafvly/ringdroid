@@ -513,6 +513,10 @@ public class RingdroidSelectActivity extends Activity {
         Cursor c = mAdapter.getCursor();
         if (c == null || c.isClosed()) return;
 
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+
         new AlertDialog.Builder(RingdroidSelectActivity.this)
                 .setTitle(getResources().getText(R.string.delete_audio))
                 .setMessage(getResources().getText(R.string.confirm_delete_ringdroid))
@@ -555,6 +559,9 @@ public class RingdroidSelectActivity extends Activity {
     }
 
     private void showFinalAlert(CharSequence message) {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
         new AlertDialog.Builder(RingdroidSelectActivity.this)
                 .setTitle(getResources().getText(R.string.alert_title_failure)).setMessage(message)
                 .setPositiveButton(R.string.alert_ok_button, (dialog, whichButton) -> finish()).setCancelable(false)
