@@ -5,13 +5,12 @@ plugins {
 
 android {
     namespace = "com.ringdroid"
-    compileSdk = 36
-    compileSdkMinor = 1
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "org.thayyil.ringdroid"
         minSdk = 21
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 30000
         versionName = "3.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
