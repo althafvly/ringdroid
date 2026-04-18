@@ -31,14 +31,3 @@ jobs:
           report-path: app/build/reports/lint-results-debug.xml
         continue-on-error: false
 
-      - name: Create Release
-        if: github.ref == 'refs/heads/master'
-        uses: ncipollo/release-action@v1
-        with:
-          tag: "latest"
-          name: "latest"
-          prerelease: true
-          artifacts: app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk
-          token: ${{ secrets.GITHUB_TOKEN }}
-          allowUpdates: true
-          replacesArtifacts: true
