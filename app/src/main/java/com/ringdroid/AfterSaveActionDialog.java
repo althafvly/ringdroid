@@ -16,12 +16,10 @@
 
 package com.ringdroid;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.content.Context;
 import android.os.Message;
-import android.view.LayoutInflater;
-
-import com.ringdroid.databinding.AfterSaveActionBinding;
 
 public class AfterSaveActionDialog {
 
@@ -33,23 +31,28 @@ public class AfterSaveActionDialog {
     private final AlertDialog mDialog;
 
     public AfterSaveActionDialog(Context context, Message response) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.alert_title_success);
-
-        // Inflate our UI from its XML layout description.
-        AfterSaveActionBinding binding = AfterSaveActionBinding.inflate(LayoutInflater.from(context));
-        builder.setView(binding.getRoot());
-
-        binding.buttonMakeDefault.setOnClickListener(view -> closeAndSendResult(ACTION_MAKE_DEFAULT));
-        binding.buttonChooseContact.setOnClickListener(view -> closeAndSendResult(ACTION_CHOOSE_CONTACT));
-        binding.buttonDoNothing.setOnClickListener(view -> closeAndSendResult(ACTION_DO_NOTHING));
-
         mResponse = response;
-        mDialog = builder.create();
+
+        int[] actions = {
+                ACTION_MAKE_DEFAULT,
+                ACTION_CHOOSE_CONTACT,
+                ACTION_DO_NOTHING
+        };
+
+        CharSequence[] items = {
+                context.getString(R.string.make_default_ringtone_button),
+                context.getString(R.string.choose_contact_ringtone_button),
+                context.getString(R.string.do_nothing_with_ringtone_button)
+        };
+
+        mDialog = new MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.alert_title_success)
+                .setItems(items, (dialog, which) -> closeAndSendResult(actions[which]))
+                .create();
     }
 
-    private void closeAndSendResult(int clickedButtonId) {
-        mResponse.arg1 = clickedButtonId;
+    private void closeAndSendResult(int action) {
+        mResponse.arg1 = action;
         mResponse.sendToTarget();
         mDialog.dismiss();
     }

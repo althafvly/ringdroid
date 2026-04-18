@@ -18,15 +18,19 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="64dp"
-    android:orientation="horizontal">
+    android:layout_height="72dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="16dp"
+    android:paddingEnd="8dp">
 
     <ImageView
         android:id="@+id/row_icon"
-        android:layout_width="40dp"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="8dp"
-        android:scaleType="centerInside" />
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        android:scaleType="centerInside"
+        android:tint="?attr/colorOnSurfaceVariant" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -39,9 +43,10 @@
             android:id="@+id/row_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="#ffffffff"
-            android:textSize="14sp" />
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,9 +59,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:ellipsize="end"
                 android:singleLine="true"
-                android:textColor="#ff99ff"
-                android:textSize="14sp" />
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/row_album"
@@ -64,9 +70,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
+                android:ellipsize="end"
                 android:singleLine="true"
-                android:textColor="#ffff99"
-                android:textSize="14sp" />
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -74,12 +81,13 @@
 
     <ImageView
         android:id="@+id/row_options_button"
-        android:layout_width="50dp"
-        android:layout_height="match_parent"
-        android:layout_marginStart="8dp"
-        android:background="@drawable/button_options_bkgnd"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/button_options"
+        android:padding="12dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/baseline_navigate_next_24" />
+        android:src="@drawable/baseline_navigate_next_24"
+        android:tint="?attr/colorOnSurfaceVariant" />
 
 </LinearLayout>

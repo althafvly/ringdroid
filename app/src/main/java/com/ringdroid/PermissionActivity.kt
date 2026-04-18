@@ -1,14 +1,14 @@
 package com.ringdroid
 
-import android.app.Activity
-import android.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.CompoundButton
-import android.widget.Switch
+import com.google.android.material.materialswitch.MaterialSwitch
+import com.google.android.material.button.MaterialButton
 import com.ringdroid.PermissionUtils.hasContactPermissions
 import com.ringdroid.PermissionUtils.hasMediaAudioPermission
 import com.ringdroid.PermissionUtils.hasMicPermissions
@@ -21,13 +21,13 @@ import com.ringdroid.PermissionUtils.requestStoragePermission
 import com.ringdroid.PermissionUtils.requestWriteSettingsPermission
 import com.ringdroid.databinding.PermissionScreenBinding
 
-class PermissionActivity : Activity() {
-    private var storageSwitch: Switch? = null
-    private var writeSettingsSwitch: Switch? = null
-    private var micSwitch: Switch? = null
-    private var contactSwitch: Switch? = null
-    private var mediaAudioSwitch: Switch? = null
-    private var nextButton: Button? = null
+class PermissionActivity : AppCompatActivity() {
+    private var storageSwitch: MaterialSwitch? = null
+    private var writeSettingsSwitch: MaterialSwitch? = null
+    private var micSwitch: MaterialSwitch? = null
+    private var contactSwitch: MaterialSwitch? = null
+    private var mediaAudioSwitch: MaterialSwitch? = null
+    private var nextButton: MaterialButton? = null
     private var binding: PermissionScreenBinding? = null
 
     private val buildType = BuildConfig.FLAVOR
@@ -36,6 +36,8 @@ class PermissionActivity : Activity() {
         super.onCreate(savedInstanceState)
         binding = PermissionScreenBinding.inflate(layoutInflater)
         setContentView(binding!!.getRoot())
+
+        setSupportActionBar(binding!!.toolbar)
 
         val forceShow = intent.getBooleanExtra(EXTRA_FORCE_SHOW, false)
 
@@ -64,7 +66,7 @@ class PermissionActivity : Activity() {
         if (buildType != "play") {
             message = R.string.storage_permission_required_for_editor_fdroid
         }
-        AlertDialog.Builder(this).setTitle(R.string.storage_permission).setMessage(message)
+        MaterialAlertDialogBuilder(this).setTitle(R.string.storage_permission).setMessage(message)
             .setPositiveButton(android.R.string.ok, null).show()
     }
 
@@ -78,7 +80,7 @@ class PermissionActivity : Activity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             mediaAudioSwitch!!.isChecked = hasMediaAudioPermission
             mediaAudioSwitch!!.isClickable = !hasMediaAudioPermission
-            mediaAudioSwitch!!.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            mediaAudioSwitch!!.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     requestMediaAudioPermission(this)
                 }
@@ -90,7 +92,7 @@ class PermissionActivity : Activity() {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 || buildType == "fdroid") {
             storageSwitch!!.isChecked = hasStoragePermission
             storageSwitch!!.isClickable = !hasStoragePermission
-            storageSwitch!!.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            storageSwitch!!.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     requestStoragePermission(this)
                 }
@@ -102,7 +104,7 @@ class PermissionActivity : Activity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             writeSettingsSwitch!!.isChecked = hasWritePermission
             writeSettingsSwitch!!.isClickable = !hasWritePermission
-            writeSettingsSwitch!!.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            writeSettingsSwitch!!.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     requestWriteSettingsPermission(this)
                 }
@@ -113,7 +115,7 @@ class PermissionActivity : Activity() {
 
         contactSwitch!!.isChecked = hasContactPermissions
         contactSwitch!!.isClickable = !hasContactPermissions
-        contactSwitch!!.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+        contactSwitch!!.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 requestContactPermissions(this)
             }
@@ -121,7 +123,7 @@ class PermissionActivity : Activity() {
 
         micSwitch!!.isChecked = hasMicPermissions
         micSwitch!!.isClickable = !hasMicPermissions
-        micSwitch!!.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+        micSwitch!!.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 requestMicPermissions(this)
             }

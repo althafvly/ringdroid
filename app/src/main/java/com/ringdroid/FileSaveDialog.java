@@ -16,7 +16,8 @@
 
 package com.ringdroid;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Message;
@@ -51,7 +52,7 @@ public class FileSaveDialog {
 
     public FileSaveDialog(Context context, Resources resources, String originalName, Message response) {
         mContext = context;
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         builder.setTitle(R.string.file_save_title);
 
         // Inflate our UI from its XML layout description.
@@ -85,16 +86,14 @@ public class FileSaveDialog {
             }
         });
 
-        mDialog = builder.create();
-
-        binding.save.setOnClickListener(view -> {
+        builder.setPositiveButton(R.string.file_save_button_save, (dialog, which) -> {
             response.obj = mFilename.getText();
             response.arg1 = mTypeSpinner.getSelectedItemPosition();
             response.sendToTarget();
-            mDialog.dismiss();
         });
+        builder.setNegativeButton(R.string.file_save_button_cancel, null);
 
-        binding.cancel.setOnClickListener(view -> mDialog.dismiss());
+        mDialog = builder.create();
     }
 
     private void setFilenameEditBoxFromName(boolean onlyIfNotEdited) {

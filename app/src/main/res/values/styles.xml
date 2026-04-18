@@ -18,25 +18,24 @@
 -->
 <resources>
 
-    <style name="AppTheme" parent="@android:style/Theme.Material">
-        <!-- Disable edge-to-edge -->
+    <style name="AppTheme" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <!-- Disable edge-to-edge for now as the app is not fully ready for it -->
         <item name="android:fitsSystemWindows">true</item>
     </style>
 
     <style name="AudioFileInfoOverlayText">
-        <item name="android:paddingLeft">4px</item>
-        <item name="android:paddingBottom">4px</item>
-        <item name="android:textColor">#ffffffff</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
         <item name="android:textSize">12sp</item>
-        <item name="android:shadowColor">#000000</item>
-        <item name="android:shadowDx">1</item>
-        <item name="android:shadowDy">1</item>
-        <item name="android:shadowRadius">1</item>
         <item name="android:focusable">true</item>
     </style>
 
     <style name="ToolbarBackground">
-        <item name="android:background">#222233</item>
+        <item name="android:background">?attr/colorSurfaceVariant</item>
     </style>
 
 </resources>

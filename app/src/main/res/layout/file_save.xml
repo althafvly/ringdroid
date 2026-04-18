@@ -29,7 +29,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/ringtone_type_label"
-        android:textColor="?android:attr/textColorPrimary"
         android:textSize="14sp" />
 
     <Spinner
@@ -44,7 +43,6 @@
         android:layout_marginTop="16dp"
         android:labelFor="@+id/filename"
         android:text="@string/ringtone_name_label"
-        android:textColor="?android:attr/textColorPrimary"
         android:textSize="14sp" />
 
     <EditText
@@ -53,41 +51,5 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
         android:inputType="text" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/save"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/btn_primary"
-            android:minHeight="44dp"
-            android:text="@string/file_save_button_save"
-            android:textColor="#FFFFFF"
-            android:textAllCaps="false"
-            android:textSize="17sp"
-            android:gravity="center" />
-
-        <Button
-            android:id="@+id/cancel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_weight="1"
-            android:background="@drawable/btn_secondary"
-            android:minHeight="44dp"
-            android:text="@string/file_save_button_cancel"
-            android:textColor="?android:attr/colorAccent"
-            android:textAllCaps="false"
-            android:textSize="17sp"
-            android:gravity="center" />
-
-    </LinearLayout>
 
 </LinearLayout>

@@ -16,8 +16,9 @@
 
 package com.ringdroid;
 
-import android.app.Activity;
-import android.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -43,7 +44,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SearchView;
+import androidx.appcompat.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -59,7 +60,7 @@ import java.util.Objects;
  * audio file or using an intent to record a new one, and then launches
  * RingdroidEditActivity from here.
  */
-public class RingdroidSelectActivity extends Activity {
+public class RingdroidSelectActivity extends AppCompatActivity {
     // Result codes
     private static final int REQUEST_CODE_EDIT = 1;
     private static final int REQUEST_CODE_CHOOSE_CONTACT = 2;
@@ -116,6 +117,8 @@ public class RingdroidSelectActivity extends Activity {
         // Inflate our UI from its XML layout description.
         binding = MediaSelectBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        setSupportActionBar(binding.toolbar);
 
         ListView listView = binding.list;
 
@@ -517,7 +520,7 @@ public class RingdroidSelectActivity extends Activity {
             return;
         }
 
-        new AlertDialog.Builder(RingdroidSelectActivity.this)
+        new MaterialAlertDialogBuilder(RingdroidSelectActivity.this)
                 .setTitle(getResources().getText(R.string.delete_audio))
                 .setMessage(getResources().getText(R.string.confirm_delete_ringdroid))
                 .setPositiveButton(R.string.delete_ok_button, (dialog, whichButton) -> onDelete())
@@ -562,7 +565,7 @@ public class RingdroidSelectActivity extends Activity {
         if (isFinishing() || isDestroyed()) {
             return;
         }
-        new AlertDialog.Builder(RingdroidSelectActivity.this)
+        new MaterialAlertDialogBuilder(RingdroidSelectActivity.this)
                 .setTitle(getResources().getText(R.string.alert_title_failure)).setMessage(message)
                 .setPositiveButton(R.string.alert_ok_button, (dialog, whichButton) -> finish()).setCancelable(false)
                 .show();

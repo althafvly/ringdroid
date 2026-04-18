@@ -4,11 +4,15 @@ spotless = "8.4.0"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.3.0"
 androidx-test-runner = "1.7.0"
+androidx-appcompat = "1.7.1"
+google-material = "1.13.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-test-runner" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
+google-material = { group = "com.google.android.material", name = "material", version.ref = "google-material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
