@@ -154,15 +154,6 @@ public class ChooseContactActivity extends Activity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_about) {
-            RingdroidEditActivity.onAbout(this);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
             int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
