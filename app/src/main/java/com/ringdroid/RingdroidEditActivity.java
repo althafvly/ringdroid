@@ -441,7 +441,6 @@ public class RingdroidEditActivity extends Activity
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.action_save).setVisible(true);
         menu.findItem(R.id.action_reset).setVisible(true);
-        menu.findItem(R.id.action_about).setVisible(true);
         return true;
     }
 
@@ -456,9 +455,6 @@ public class RingdroidEditActivity extends Activity
             resetPositions();
             mOffsetGoal = 0;
             updateDisplay();
-            return true;
-        } else if (id == R.id.action_about) {
-            onAbout(this);
             return true;
         }
 

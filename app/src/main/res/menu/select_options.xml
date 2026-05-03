@@ -10,13 +10,8 @@
     <item
         android:id="@+id/action_record"
         android:icon="@drawable/baseline_mic_24"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:title="@string/button_start_record_activity" />
-
-    <item
-        android:id="@+id/action_about"
-        android:showAsAction="never"
-        android:title="@string/menu_about" />
 
     <item
         android:id="@+id/action_show_all_audio"
@@ -25,5 +20,9 @@
         android:showAsAction="never"
         android:title="@string/menu_show_all_audio" />
 
+    <item
+        android:id="@+id/action_about"
+        android:showAsAction="never"
+        android:title="@string/menu_about" />
 
 </menu>
