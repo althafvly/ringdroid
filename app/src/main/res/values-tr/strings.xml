@@ -121,17 +121,6 @@
     <string name="require_contacts_permission">Bir zil sesi atamak için lütfen kişiler iznini etkinleştirin.</string>
     <string name="required_mic_permission">Ses kaydetmek için mikrofon izni gereklidir</string>
     <string name="required_system_modify_permission">Zil sesini ayarlamak için sistem ayarlarını değiştirme izni gereklidir</string>
-    <string name="storage_permission">Depolama İzni</string>
-    <string name="write_system_settings">Sistem Ayarlarını Yaz</string>
-    <string name="mic_permission">Mikrofon İzni</string>
-    <string name="contacts_permission">Kişiler İzni</string>
-    <string name="start">Başlat</string>
-    <string name="storage_permission_summary">Ses dosyalarını kaydetmek ve erişmek için gereklidir</string>
-    <string name="write_system_settings_summary">Zil seslerini sistem varsayılanı olarak ayarlamak için gereklidir</string>
-    <string name="mic_permission_summary">Kendi ses kliplerinizi kaydetmek için gereklidir</string>
-    <string name="contact_permission_summary">Kişilerinize zil sesi atamak için gereklidir</string>
-    <string name="media_audio_permission">Medya ses izni</string>
-    <string name="media_audio_summary">Akıllı telefonunuzdan zil sesi dosyalarını okumak için gereklidir</string>
     <string name="list_is_empty">Ses dosyası bulunamadı. Sistem ses dosyalarını görmek için üç nokta menüsünden “Tüm sesleri göster” seçeneğini etkinleştirin.</string>
 
     <string name="zoom_in">Yakınlaştır</string>
@@ -139,4 +128,5 @@
 
     <string name="menu_permissions">İzinler</string>
 
+    <string name="settings_button">Ayarlar</string>
 </resources>

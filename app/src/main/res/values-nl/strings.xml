@@ -121,17 +121,6 @@
     <string name="require_contacts_permission">Schakel de contacten toestemming in om een beltoon toe te wijzen.</string>
     <string name="required_mic_permission">Microfoon toestemming vereist om audio op te nemen</string>
     <string name="required_system_modify_permission">Toestemming om systeeminstellingen te wijzigen is vereist om de beltoon in te stellen</string>
-    <string name="storage_permission">Opslagtoestemming</string>
-    <string name="write_system_settings">Systeeminstellingen schrijven</string>
-    <string name="mic_permission">Microfoontoestemming</string>
-    <string name="contacts_permission">Contactentoestemming</string>
-    <string name="start">Start</string>
-    <string name="storage_permission_summary">Nodig om audiobestanden op te slaan en te openen</string>
-    <string name="write_system_settings_summary">Nodig om beltonen als systeemstandaard in te stellen</string>
-    <string name="mic_permission_summary">Nodig om uw eigen audioclips op te nemen</string>
-    <string name="contact_permission_summary">Nodig om beltonen aan uw contacten toe te wijzen</string>
-    <string name="media_audio_permission">Media-audiotoestemming</string>
-    <string name="media_audio_summary">Nodig om beltoonbestanden van uw smartphone te lezen</string>
     <string name="list_is_empty">Geen audiobestanden gevonden. Schakel ‘Alle audio tonen’ in via het menu met drie puntjes om systeemaudiobestanden te bekijken.</string>
 
     <string name="zoom_in">Inzoomen</string>
@@ -139,4 +128,5 @@
 
     <string name="menu_permissions">Machtigingen</string>
 
+    <string name="settings_button">Instellingen</string>
 </resources>

@@ -121,17 +121,6 @@
     <string name="require_contacts_permission">Por favor, ative a permissão de contatos para atribuir um toque.</string>
     <string name="required_mic_permission">Permissão de microfone necessária para gravar áudio</string>
     <string name="required_system_modify_permission">A permissão para modificar as configurações do sistema é necessária para definir o toque</string>
-    <string name="storage_permission">Permissão de Armazenamento</string>
-    <string name="write_system_settings">Gravar Configurações do Sistema</string>
-    <string name="mic_permission">Permissão de Microfone</string>
-    <string name="contacts_permission">Permissão de Contatos</string>
-    <string name="start">Iniciar</string>
-    <string name="storage_permission_summary">Necessária para salvar e acessar arquivos de áudio</string>
-    <string name="write_system_settings_summary">Necessária para definir toques como padrão do sistema</string>
-    <string name="mic_permission_summary">Necessária para gravar seus próprios clipes de áudio</string>
-    <string name="contact_permission_summary">Necessária para atribuir toques aos seus contatos</string>
-    <string name="media_audio_permission">Permissão de áudio de mídia</string>
-    <string name="media_audio_summary">Necessária para ler arquivos de toque do seu smartphone</string>
     <string name="list_is_empty">Nenhum arquivo de áudio encontrado. Ative “Mostrar todos os áudios” no menu de três pontos para visualizar os arquivos de áudio do sistema.</string>
 
     <string name="zoom_in">Ampliar</string>
@@ -139,4 +128,5 @@
 
     <string name="menu_permissions">Permissões</string>
 
+    <string name="settings_button">Configurações</string>
 </resources>

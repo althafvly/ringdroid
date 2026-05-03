@@ -121,17 +121,6 @@
     <string name="require_contacts_permission">請啟用聯絡人權限以分配鈴聲。</string>
     <string name="required_mic_permission">錄製音訊需要麥克風權限</string>
     <string name="required_system_modify_permission">設定鈴聲需要修改系統設定權限</string>
-    <string name="storage_permission">儲存權限</string>
-    <string name="write_system_settings">寫入系統設定</string>
-    <string name="mic_permission">麥克風權限</string>
-    <string name="contacts_permission">聯絡人權限</string>
-    <string name="start">開始</string>
-    <string name="storage_permission_summary">儲存和存取音訊檔案所需</string>
-    <string name="write_system_settings_summary">將鈴聲設為系統預設所需</string>
-    <string name="mic_permission_summary">錄製您自己的音訊片段所需</string>
-    <string name="contact_permission_summary">將鈴聲分配給您的聯絡人所需</string>
-    <string name="media_audio_permission">媒體音訊權限</string>
-    <string name="media_audio_summary">從您的智慧型手機讀取鈴聲檔案所需</string>
     <string name="list_is_empty">找不到音訊檔案。請在右上角的三點選單中啟用「顯示所有音訊」以查看系統音訊檔案。</string>
 
     <string name="zoom_in">放大</string>
@@ -139,4 +128,5 @@
 
     <string name="menu_permissions">權限</string>
 
+    <string name="settings_button">設定</string>
 </resources>

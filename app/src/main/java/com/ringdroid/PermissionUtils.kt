@@ -13,7 +13,7 @@ object PermissionUtils : StoragePermissionUtils() {
     const val CONTACT_PERMISSION_REQUEST: Int = 1
     const val MEDIA_AUDIO_PERMISSION_REQUEST: Int = 2
     const val MIC_PERMISSION_REQUEST: Int = 3
-    private const val STORAGE_PERMISSION_REQUEST = 4
+    const val STORAGE_PERMISSION_REQUEST: Int = 4
 
     @JvmStatic
     fun hasContactPermissions(activity: Activity): Boolean {
