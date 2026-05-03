@@ -39,7 +39,7 @@
 
     <string name="menu_reset">リセット</string>
     <string name="menu_about">情報</string>
-    <string name="menu_show_all_audio">すべてのオーディオを表示</string>
+    <string name="menu_show_all_audio">システムオーディオ</string>
 
     <string name="context_menu_delete">削除</string>
     <string name="context_menu_default_ringtone">デフォルトの着信音に設定</string>
@@ -121,7 +121,7 @@
     <string name="require_contacts_permission">着信音を割り当てるには、連絡先権限を有効にしてください。</string>
     <string name="required_mic_permission">オーディオを録音するにはマイク権限が必要です</string>
     <string name="required_system_modify_permission">着信音を設定するには、システム設定の変更権限が必要です</string>
-    <string name="list_is_empty">オーディオファイルが見つかりません。システムのオーディオファイルを表示するには、三点メニューから「すべてのオーディオを表示」を有効にしてください。</string>
+    <string name="list_is_empty">オーディオファイルが見つかりません。システムオーディオファイルを表示するには、3点メニューから「システムオーディオ」を有効にしてください</string>
 
     <string name="zoom_in">拡大</string>
     <string name="zoom_out">縮小</string>

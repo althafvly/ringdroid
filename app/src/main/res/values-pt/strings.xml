@@ -39,7 +39,7 @@
 
     <string name="menu_reset">Redefinir</string>
     <string name="menu_about">Sobre</string>
-    <string name="menu_show_all_audio">Mostrar Todo o Áudio</string>
+    <string name="menu_show_all_audio">Áudios do sistema</string>
 
     <string name="context_menu_delete">Excluir</string>
     <string name="context_menu_default_ringtone">Definir como Toque Padrão</string>
@@ -121,7 +121,7 @@
     <string name="require_contacts_permission">Por favor, ative a permissão de contatos para atribuir um toque.</string>
     <string name="required_mic_permission">Permissão de microfone necessária para gravar áudio</string>
     <string name="required_system_modify_permission">A permissão para modificar as configurações do sistema é necessária para definir o toque</string>
-    <string name="list_is_empty">Nenhum arquivo de áudio encontrado. Ative “Mostrar todos os áudios” no menu de três pontos para visualizar os arquivos de áudio do sistema.</string>
+    <string name="list_is_empty">Nenhum arquivo de áudio encontrado. Ative \'Áudios do sistema\' no menu de três pontos para visualizar os arquivos de áudio do sistema</string>
 
     <string name="zoom_in">Ampliar</string>
     <string name="zoom_out">Reduzir</string>

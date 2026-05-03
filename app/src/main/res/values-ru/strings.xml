@@ -39,7 +39,7 @@
 
     <string name="menu_reset">Сбросить</string>
     <string name="menu_about">О программе</string>
-    <string name="menu_show_all_audio">Показать все аудио</string>
+    <string name="menu_show_all_audio">Системные аудио</string>
 
     <string name="context_menu_delete">Удалить</string>
     <string name="context_menu_default_ringtone">Установить как рингтон по умолчанию</string>
@@ -121,7 +121,7 @@
     <string name="require_contacts_permission">Пожалуйста, включите разрешение контактов, чтобы назначить рингтон.</string>
     <string name="required_mic_permission">Требуется разрешение микрофона для записи аудио</string>
     <string name="required_system_modify_permission">Требуется разрешение на изменение системных настроек для установки рингтона</string>
-    <string name="list_is_empty">Аудиофайлы не найдены. Включите «Показать все аудио» в меню с тремя точками, чтобы просмотреть системные аудиофайлы.</string>
+    <string name="list_is_empty">Аудиофайлы не найдены. Включите «Системные аудио» в меню из трех точек, чтобы просмотреть системные аудиофайлы</string>
 
     <string name="zoom_in">Увеличить</string>
     <string name="zoom_out">Уменьшить</string>

@@ -39,7 +39,7 @@
 
     <string name="menu_reset">重置</string>
     <string name="menu_about">关于</string>
-    <string name="menu_show_all_audio">显示所有音频</string>
+    <string name="menu_show_all_audio">系统音频</string>
 
     <string name="context_menu_delete">删除</string>
     <string name="context_menu_default_ringtone">设为默认铃声</string>
@@ -121,7 +121,7 @@
     <string name="require_contacts_permission">请启用联系人权限以分配铃声。</string>
     <string name="required_mic_permission">录制音频需要麦克风权限</string>
     <string name="required_system_modify_permission">设置铃声需要修改系统设置权限</string>
-    <string name="list_is_empty">未找到音频文件。请在右上角三点菜单中启用“显示所有音频”以查看系统音频文件。</string>
+    <string name="list_is_empty">未找到音频文件。从三点菜单启用“系统音频”以查看系统音频文件</string>
 
     <string name="zoom_in">放大</string>
     <string name="zoom_out">缩小</string>

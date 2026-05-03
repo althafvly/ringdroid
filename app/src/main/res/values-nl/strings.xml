@@ -39,7 +39,7 @@
 
     <string name="menu_reset">Herstellen</string>
     <string name="menu_about">Over</string>
-    <string name="menu_show_all_audio">Toon alle audio</string>
+    <string name="menu_show_all_audio">Systeemaudio\'s</string>
 
     <string name="context_menu_delete">Verwijderen</string>
     <string name="context_menu_default_ringtone">Instellen als Standaardbeltoon</string>
@@ -121,7 +121,7 @@
     <string name="require_contacts_permission">Schakel de contacten toestemming in om een beltoon toe te wijzen.</string>
     <string name="required_mic_permission">Microfoon toestemming vereist om audio op te nemen</string>
     <string name="required_system_modify_permission">Toestemming om systeeminstellingen te wijzigen is vereist om de beltoon in te stellen</string>
-    <string name="list_is_empty">Geen audiobestanden gevonden. Schakel ‘Alle audio tonen’ in via het menu met drie puntjes om systeemaudiobestanden te bekijken.</string>
+    <string name="list_is_empty">Geen audiobestanden gevonden. Schakel \'Systeemaudio\'s\' in via het driepuntenmenu om systeemaudiobestanden te bekijken</string>
 
     <string name="zoom_in">Inzoomen</string>
     <string name="zoom_out">Uitzoomen</string>

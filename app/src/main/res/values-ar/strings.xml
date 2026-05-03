@@ -39,7 +39,7 @@
 
     <string name="menu_reset">إعادة ضبط</string>
     <string name="menu_about">حول</string>
-    <string name="menu_show_all_audio">عرض كل الملفات الصوتية</string>
+    <string name="menu_show_all_audio">صوتيات النظام</string>
 
     <string name="context_menu_delete">حذف</string>
     <string name="context_menu_default_ringtone">تعيين كنغمة رنين افتراضية</string>
@@ -121,7 +121,7 @@
     <string name="require_contacts_permission">الرجاء تمكين إذن جهات الاتصال لتعيين نغمة رنين.</string>
     <string name="required_mic_permission">إذن الميكروفون مطلوب لتسجيل الصوت</string>
     <string name="required_system_modify_permission">إذن تعديل إعدادات النظام مطلوب لتعيين نغمة الرنين</string>
-    <string name="list_is_empty">لا توجد ملفات صوتية. فعّل خيار "إظهار كل الصوتيات" من قائمة النقاط الثلاث لعرض ملفات النظام الصوتية.</string>
+    <string name="list_is_empty">لم يتم العثور على ملفات صوتية. قم بتمكين "صوتيات النظام" من قائمة النقاط الثلاث لعرض ملفات صوت النظام</string>
 
     <string name="zoom_in">تكبير</string>
     <string name="zoom_out">تصغير</string>

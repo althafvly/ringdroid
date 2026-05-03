@@ -39,7 +39,7 @@
 
     <string name="menu_reset">Ripristina</string>
     <string name="menu_about">Informazioni</string>
-    <string name="menu_show_all_audio">Mostra tutti gli audio</string>
+    <string name="menu_show_all_audio">Audio di sistema</string>
 
     <string name="context_menu_delete">Elimina</string>
     <string name="context_menu_default_ringtone">Imposta come suoneria predefinita</string>
@@ -121,7 +121,7 @@
     <string name="require_contacts_permission">Si prega di abilitare il permesso dei contatti per assegnare una suoneria.</string>
     <string name="required_mic_permission">Permesso microfono richiesto per registrare l\'audio</string>
     <string name="required_system_modify_permission">Il permesso di modifica delle impostazioni di sistema è richiesto per impostare la suoneria</string>
-    <string name="list_is_empty">Nessun file audio trovato. Abilita “Mostra tutti gli audio” dal menu con i tre punti per visualizzare i file audio di sistema.</string>
+    <string name="list_is_empty">Nessun file audio trovato. Abilita "Audio di sistema" dal menu a tre punti per visualizzare i file audio di sistema</string>
 
     <string name="zoom_in">Ingrandisci</string>
     <string name="zoom_out">Riduci</string>

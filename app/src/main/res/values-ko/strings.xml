@@ -39,7 +39,7 @@
 
     <string name="menu_reset">재설정</string>
     <string name="menu_about">정보</string>
-    <string name="menu_show_all_audio">모든 오디오 표시</string>
+    <string name="menu_show_all_audio">시스템 오디오</string>
 
     <string name="context_menu_delete">삭제</string>
     <string name="context_menu_default_ringtone">기본 벨소리로 설정</string>
@@ -121,7 +121,7 @@
     <string name="require_contacts_permission">벨소리를 할당하려면 연락처 권한을 활성화하세요.</string>
     <string name="required_mic_permission">오디오 녹음을 위해서는 마이크 권한이 필요합니다</string>
     <string name="required_system_modify_permission">벨소리를 설정하려면 시스템 설정 수정 권한이 필요합니다</string>
-    <string name="list_is_empty">오디오 파일이 없습니다. 시스템 오디오 파일을 보려면 오른쪽 상단의 점 세 개 메뉴에서 ‘모든 오디오 표시’를 활성화하세요.</string>
+    <string name="list_is_empty">오디오 파일을 찾을 수 없습니다. 시스템 오디오 파일을 보려면 점 3개 메뉴에서 ‘시스템 오디오’를 활성화하세요.</string>
 
     <string name="zoom_in">확대</string>
     <string name="zoom_out">축소</string>

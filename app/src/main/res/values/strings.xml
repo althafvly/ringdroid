@@ -81,7 +81,7 @@
     <string name="menu_save" translatable="false">@string/save_button</string>
     <string name="menu_reset">Reset</string>
     <string name="menu_about">About</string>
-    <string name="menu_show_all_audio">Show All Audio</string>
+    <string name="menu_show_all_audio">System audios</string>
 
     <!--
      Context menu items
@@ -191,7 +191,7 @@
     <string name="require_contacts_permission">Please enable contacts permission to assign a ringtone.</string>
     <string name="required_mic_permission">Microphone permission required to record audio</string>
     <string name="required_system_modify_permission">Modify system settings permission is required to set ringtone</string>
-    <string name="list_is_empty">No audio files found. Enable ‘Show all audio’ from the three-dot menu to view system audio files</string>
+    <string name="list_is_empty">No audio files found. Enable ‘System audios’ from the three-dot menu to view system audio files</string>
 
     <!-- Permission requirement dialog -->
     <string name="storage_permission_required_for_editor_fdroid">Storage or media audio permission is required for this app to work. All other permissions are optional.</string>

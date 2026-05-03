@@ -39,7 +39,7 @@
 
     <string name="menu_reset">Réinitialiser</string>
     <string name="menu_about">À propos</string>
-    <string name="menu_show_all_audio">Afficher tous les fichiers audio</string>
+    <string name="menu_show_all_audio">Audios système</string>
 
     <string name="context_menu_delete">Supprimer</string>
     <string name="context_menu_default_ringtone">Définir comme Sonnerie par Défaut</string>
@@ -121,7 +121,7 @@
     <string name="require_contacts_permission">Veuillez activer l\'autorisation des contacts pour attribuer une sonnerie.</string>
     <string name="required_mic_permission">Autorisation du microphone requise pour enregistrer l\'audio</string>
     <string name="required_system_modify_permission">L\'autorisation de modification des paramètres système est requise pour définir la sonnerie</string>
-    <string name="list_is_empty">Aucun fichier audio trouvé. Activez « Afficher tous les fichiers audio » depuis le menu à trois points pour voir les fichiers audio du système.</string>
+    <string name="list_is_empty">Aucun fichier audio trouvé. Activez « Audios système » dans le menu à trois points pour afficher les fichiers audio du système</string>
 
     <string name="zoom_in">Zoom avant</string>
     <string name="zoom_out">Zoom arrière</string>

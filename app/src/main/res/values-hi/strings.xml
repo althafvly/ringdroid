@@ -39,7 +39,7 @@
 
     <string name="menu_reset">रीसेट करें</string>
     <string name="menu_about">के बारे में</string>
-    <string name="menu_show_all_audio">सभी ऑडियो दिखाएँ</string>
+    <string name="menu_show_all_audio">सिस्टम ऑडिओस</string>
 
     <string name="context_menu_delete">हटाएँ</string>
     <string name="context_menu_default_ringtone">डिफ़ॉल्ट रिंगटोन के रूप में सेट करें</string>
@@ -121,7 +121,7 @@
     <string name="require_contacts_permission">रिंगटोन असाइन करने के लिए कृपया संपर्क अनुमति सक्षम करें।</string>
     <string name="required_mic_permission">ऑडियो रिकॉर्ड करने के लिए माइक्रोफ़ोन अनुमति आवश्यक है</string>
     <string name="required_system_modify_permission">रिंगटोन सेट करने के लिए सिस्टम सेटिंग्स को संशोधित करने की अनुमति आवश्यक है</string>
-    <string name="list_is_empty">कोई ऑडियो फ़ाइल नहीं मिली। सिस्टम की ऑडियो फ़ाइलें देखने के लिए तीन-डॉट मेनू से “सभी ऑडियो दिखाएँ” सक्षम करें।</string>
+    <string name="list_is_empty">कोई ऑडियो फ़ाइल नहीं मिली. सिस्टम ऑडियो फ़ाइलें देखने के लिए तीन-बिंदु मेनू से ‘सिस्टम ऑडिओस’ सक्षम करें</string>
 
     <string name="zoom_in">ज़ूम इन</string>
     <string name="zoom_out">ज़ूम आउट</string>
