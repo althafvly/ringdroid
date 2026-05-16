@@ -140,4 +140,8 @@
     <string name="menu_permissions">Berechtigungen</string>
 
     <string name="menu_amplify">Verstärken</string>
+    <string name="icon_media">Medien</string>
+    <string name="icon_ringtone">Klingelton</string>
+    <string name="icon_starred">Markiert</string>
+    <string name="waveform_description">Audiowellenform</string>
 </resources>

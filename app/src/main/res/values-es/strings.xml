@@ -141,4 +141,8 @@
     <string name="menu_permissions">Permisos</string>
 
     <string name="menu_amplify">Amplificar</string>
+    <string name="icon_media">Multimedia</string>
+    <string name="icon_ringtone">Tono de llamada</string>
+    <string name="icon_starred">Destacado</string>
+    <string name="waveform_description">Forma de onda de audio</string>
 </resources>

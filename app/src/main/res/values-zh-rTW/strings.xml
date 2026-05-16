@@ -140,4 +140,8 @@
     <string name="menu_permissions">權限</string>
 
     <string name="menu_amplify">放大</string>
+    <string name="icon_media">媒體</string>
+    <string name="icon_ringtone">鈴聲</string>
+    <string name="icon_starred">已加星號</string>
+    <string name="waveform_description">音訊波形</string>
 </resources>

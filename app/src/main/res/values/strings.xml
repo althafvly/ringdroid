@@ -214,4 +214,8 @@
     <string name="menu_permissions">Permissions</string>
 
     <string name="menu_amplify">Amplify</string>
+    <string name="icon_media">Media</string>
+    <string name="icon_ringtone">Ringtone</string>
+    <string name="icon_starred">Starred</string>
+    <string name="waveform_description">Audio Waveform</string>
 </resources>

@@ -29,7 +29,8 @@
         <com.ringdroid.WaveformView
             android:id="@+id/waveform"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:contentDescription="@string/waveform_description" />
 
         <com.ringdroid.MarkerView
             android:id="@+id/startmarker"

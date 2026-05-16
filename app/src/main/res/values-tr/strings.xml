@@ -140,4 +140,8 @@
     <string name="menu_permissions">İzinler</string>
 
     <string name="menu_amplify">Yükselt</string>
+    <string name="icon_media">Medya</string>
+    <string name="icon_ringtone">Zil sesi</string>
+    <string name="icon_starred">Yıldızlı</string>
+    <string name="waveform_description">Ses Dalgası Formu</string>
 </resources>

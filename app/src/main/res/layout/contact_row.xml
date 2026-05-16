@@ -32,6 +32,7 @@
         android:layout_marginStart="4dip"
         android:layout_marginTop="4dip"
         android:layout_marginBottom="4dip"
+        android:contentDescription="@string/icon_ringtone"
         android:gravity="center_vertical"
         android:src="@drawable/baseline_call_24" />
 
@@ -43,6 +44,7 @@
         android:layout_marginTop="4dip"
         android:layout_marginEnd="3dip"
         android:layout_marginBottom="4dip"
+        android:contentDescription="@string/icon_starred"
         android:gravity="center_vertical"
         android:src="@drawable/baseline_star_24" />
 

@@ -1645,6 +1645,7 @@ public class RingdroidEditActivity extends Activity
         final SeekBar seekBar = new SeekBar(this);
         seekBar.setMax(400); // Max 400% (or 4.0x)
         seekBar.setProgress((int)(mAmplifyFactor * 100));
+        seekBar.setContentDescription(getString(R.string.menu_amplify));
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
