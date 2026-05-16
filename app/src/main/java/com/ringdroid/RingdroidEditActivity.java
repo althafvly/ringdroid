@@ -16,6 +16,9 @@
 
 package com.ringdroid;
 
+import androidx.activity.ComponentActivity;
+import androidx.lifecycle.ViewModelProvider;
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -56,6 +59,9 @@ import com.ringdroid.databinding.EditorBinding;
 import com.ringdroid.databinding.RecordAudioBinding;
 import com.ringdroid.soundfile.SoundFile;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
@@ -68,7 +74,7 @@ import java.util.Objects;
  * waveform display, current horizontal offset, marker handles, start / end text
  * boxes, and handles all of the buttons and controls.
  */
-public class RingdroidEditActivity extends Activity
+public class RingdroidEditActivity extends ComponentActivity
         implements
             MarkerView.MarkerListener,
             WaveformView.WaveformListener {
@@ -116,6 +122,7 @@ public class RingdroidEditActivity extends Activity
     private int mPlayStartMsec;
     private int mPlayEndMsec;
     private Context mContext;
+    private PermissionViewModel mPermissionViewModel;
     private Handler mHandler;
     private boolean mIsPlaying;
     private SamplePlayer mPlayer;
@@ -131,6 +138,7 @@ public class RingdroidEditActivity extends Activity
     private int mMarkerTopOffset;
     private int mMarkerBottomOffset;
     private EditorBinding binding;
+    private ActivityResultLauncher<String> requestMicPermissionLauncher;
 
     //
     // Public methods and protected overrides
@@ -248,29 +256,7 @@ public class RingdroidEditActivity extends Activity
         return builder;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == PermissionUtils.MIC_PERMISSION_REQUEST) {
-            boolean micPermissionGranted = true;
-
-            for (int result : grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    micPermissionGranted = false;
-                    break;
-                }
-            }
-
-            if (micPermissionGranted) {
-                recordAudio();
-            } else {
-                Toast.makeText(this, R.string.required_mic_permission, Toast.LENGTH_LONG).show();
-                finish();
-            }
-        }
-    }
 
     /**
      * Called when the activity is first created.
@@ -279,6 +265,17 @@ public class RingdroidEditActivity extends Activity
     public void onCreate(Bundle icicle) {
         Log.v(TAG, "EditActivity OnCreate");
         super.onCreate(icicle);
+
+        mPermissionViewModel = new ViewModelProvider(this).get(PermissionViewModel.class);
+        requestMicPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+            if (isGranted) {
+                mPermissionViewModel.checkMicPermission();
+                recordAudio();
+            } else {
+                Toast.makeText(this, R.string.required_mic_permission, Toast.LENGTH_LONG).show();
+                finish();
+            }
+        });
 
         mPlayer = null;
         mIsPlaying = false;
@@ -313,10 +310,13 @@ public class RingdroidEditActivity extends Activity
         if (!mFilename.equals("record")) {
             loadFromFile();
         } else {
-            if (PermissionUtils.hasMicPermissions(this)) {
+            mPermissionViewModel.checkMicPermission();
+            if (Boolean.TRUE.equals(mPermissionViewModel.getMicPermission().getValue())) {
                 recordAudio();
             } else {
-                PermissionUtils.requestMicPermissions(this);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestMicPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO);
+                }
             }
         }
     }
@@ -1270,7 +1270,7 @@ public class RingdroidEditActivity extends Activity
     }
 
     private String getSubDir() {
-        String saveDir = PermissionUtils.hasMediaAudioPermission(mContext)
+        String saveDir = PermissionViewModel.hasMediaAudioPermission(mContext)
                 ? Environment.DIRECTORY_RINGTONES
                 : "media/audio";
         StringBuilder subdir = new StringBuilder(saveDir);
@@ -1386,7 +1386,7 @@ public class RingdroidEditActivity extends Activity
                 boolean fallbackToWAV = false;
                 try {
                     // Write the new file
-                    if (PermissionUtils.hasMediaAudioPermission(mContext)) {
+                    if (PermissionViewModel.hasMediaAudioPermission(mContext)) {
                         values.put(MediaStore.Audio.Media.DISPLAY_NAME, title + ".m4a");
                         values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/mp4a-latm");
                         outUri = getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
@@ -1418,7 +1418,7 @@ public class RingdroidEditActivity extends Activity
                     outFile = new File(outPath);
                     try {
                         // create the .wav file
-                        if (PermissionUtils.hasMediaAudioPermission(mContext)) {
+                        if (PermissionViewModel.hasMediaAudioPermission(mContext)) {
                             values.put(MediaStore.Audio.Media.DISPLAY_NAME, title + ".wav");
                             values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/wav");
                             outUri = getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
@@ -1463,7 +1463,7 @@ public class RingdroidEditActivity extends Activity
                         // estimate anyway.
                         return false; // Keep going
                     };
-                    if (PermissionUtils.hasMediaAudioPermission(mContext) && outUri != null) {
+                    if (PermissionViewModel.hasMediaAudioPermission(mContext) && outUri != null) {
                         SoundFile.uriExists(mContext, outUri);
                     } else {
                         SoundFile.create(mContext.getCacheDir(), outPath, listener);
@@ -1492,7 +1492,7 @@ public class RingdroidEditActivity extends Activity
 
     private void afterSavingRingtone(CharSequence title, String outPath, Uri outUri, int duration) {
         Uri newUri;
-        if (PermissionUtils.hasMediaAudioPermission(mContext) && outUri == null) {
+        if (PermissionViewModel.hasMediaAudioPermission(mContext) && outUri == null) {
             File outFile = new File(outPath);
             long fileSize = outFile.length();
             if (fileSize <= 512) {

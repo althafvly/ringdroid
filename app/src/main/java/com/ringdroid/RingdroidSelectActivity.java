@@ -16,8 +16,10 @@
 
 package com.ringdroid;
 
-import android.app.Activity;
+import androidx.activity.ComponentActivity;
+import androidx.lifecycle.ViewModelProvider;
 import android.app.AlertDialog;
+import android.Manifest;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -51,6 +53,9 @@ import android.widget.Toast;
 import com.ringdroid.databinding.MediaSelectBinding;
 import com.ringdroid.soundfile.SoundFile;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -60,7 +65,7 @@ import java.util.Objects;
  * audio file or using an intent to record a new one, and then launches
  * RingdroidEditActivity from here.
  */
-public class RingdroidSelectActivity extends Activity {
+public class RingdroidSelectActivity extends ComponentActivity {
     // Result codes
     private static final int REQUEST_CODE_EDIT = 1;
     private static final int REQUEST_CODE_CHOOSE_CONTACT = 2;
@@ -87,6 +92,8 @@ public class RingdroidSelectActivity extends Activity {
     private boolean mShowAll = false;
     private Thread mLoaderThread;
     private MediaSelectBinding binding;
+    private PermissionViewModel mPermissionViewModel;
+    private ActivityResultLauncher<String> requestPermissionLauncher;
 
     /**
      * Called when the activity is first created.
@@ -95,11 +102,31 @@ public class RingdroidSelectActivity extends Activity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        if (!PermissionUtils.hasStoragePermission(this) && !PermissionUtils.hasMediaAudioPermission(this)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                PermissionUtils.requestMediaAudioPermission(this);
+        mPermissionViewModel = new ViewModelProvider(this).get(PermissionViewModel.class);
+        mPermissionViewModel.getStoragePermission().observe(this, isGranted -> {
+            if (isGranted) {
+                refreshListView();
+            }
+        });
+
+        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+            if (isGranted) {
+                mPermissionViewModel.checkStoragePermission();
             } else {
-                PermissionUtils.requestStoragePermission(this);
+                int messageRes = BuildConfig.FLAVOR.equals("play")
+                    ? R.string.storage_permission_required_for_editor
+                    : R.string.storage_permission_required_for_editor;
+                Toast.makeText(this, messageRes, Toast.LENGTH_LONG).show();
+                finish();
+            }
+        });
+
+        mPermissionViewModel.checkStoragePermission();
+        if (Boolean.FALSE.equals(mPermissionViewModel.getStoragePermission().getValue())) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_AUDIO);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             }
         }
 
@@ -178,11 +205,7 @@ public class RingdroidSelectActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
-
-
-        // Refresh the list to show any newly saved files
-        refreshListView();
+        mPermissionViewModel.checkStoragePermission();
     }
 
     private void loadAudioAsync(String filter) {
@@ -304,19 +327,6 @@ public class RingdroidSelectActivity extends Activity {
             return getResources().getColor(color, null);
         } else {
             return getResources().getColor(color);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == PermissionUtils.STORAGE_PERMISSION_REQUEST ||
-            requestCode == PermissionUtils.MEDIA_AUDIO_PERMISSION_REQUEST) {
-            if (PermissionUtils.hasStoragePermission(this) || PermissionUtils.hasMediaAudioPermission(this)) {
-                refreshListView();
-            } else {
-                Toast.makeText(this, R.string.storage_permission_required_for_editor, Toast.LENGTH_LONG).show();
-                finish();
-            }
         }
     }
 

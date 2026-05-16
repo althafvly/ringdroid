@@ -9,9 +9,9 @@ import android.widget.Toast;
 
 public class RingdroidUtils {
     public static void setDefaultRingTone(Activity activity, int type, Uri ringtoneUri, boolean shouldFinish) {
-        if (!PermissionUtils.hasWriteSettingsPermission(activity)) {
+        if (!PermissionViewModel.hasWriteSettingsPermission(activity)) {
             Toast.makeText(activity, R.string.required_system_modify_permission, Toast.LENGTH_SHORT).show();
-            PermissionUtils.requestWriteSettingsPermission(activity);
+            PermissionViewModel.requestWriteSettingsPermission(activity);
             return;
         }
 
