@@ -213,4 +213,5 @@
     <string name="zoom_out">Zoom out</string>
     <string name="menu_permissions">Permissions</string>
 
+    <string name="menu_amplify">Amplify</string>
 </resources>

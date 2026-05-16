@@ -12,4 +12,10 @@
         android:showAsAction="always"
         android:title="@string/menu_reset" />
 
+    <item
+        android:id="@+id/action_amplify"
+        android:icon="@drawable/baseline_volume_up_24"
+        android:showAsAction="always"
+        android:title="@string/menu_amplify" />
+
 </menu>
