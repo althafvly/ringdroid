@@ -118,6 +118,7 @@
 
     <string name="require_contacts_permission">Bitte aktivieren Sie die Kontaktberechtigung, um einen Klingelton zuzuweisen.</string>
     <string name="required_mic_permission">Mikrofonberechtigung zur Audioaufnahme erforderlich</string>
+    <string name="required_storage_permission">Speicherberechtigung erforderlich, um Audiodateien aufzulisten</string>
     <string name="required_system_modify_permission">Berechtigung zum Ändern der Systemeinstellungen ist erforderlich, um den Klingelton festzulegen</string>
     <string name="storage_permission">Speicherberechtigung</string>
     <string name="write_system_settings">Systemeinstellungen schreiben</string>

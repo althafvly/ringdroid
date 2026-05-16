@@ -54,20 +54,14 @@
 
         <!-- Main activity that's launched when the user opens Ringdroid. -->
         <activity
-            android:name=".PermissionActivity"
+            android:name=".RingdroidSelectActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:exported="true"
             android:label="@string/main_activity_label">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".RingdroidSelectActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
-            android:exported="true"
-            android:label="@string/main_activity_label">
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
                 <action android:name="android.intent.action.VIEW" />

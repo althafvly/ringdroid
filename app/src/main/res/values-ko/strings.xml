@@ -118,6 +118,7 @@
 
     <string name="require_contacts_permission">벨소리를 할당하려면 연락처 권한을 활성화하세요.</string>
     <string name="required_mic_permission">오디오 녹음을 위해서는 마이크 권한이 필요합니다</string>
+    <string name="required_storage_permission">오디오 파일을 나열하려면 저장소 권한이 필요합니다</string>
     <string name="required_system_modify_permission">벨소리를 설정하려면 시스템 설정 수정 권한이 필요합니다</string>
     <string name="storage_permission">저장소 권한</string>
     <string name="write_system_settings">시스템 설정 쓰기</string>

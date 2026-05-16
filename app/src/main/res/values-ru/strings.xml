@@ -118,6 +118,7 @@
 
     <string name="require_contacts_permission">Пожалуйста, включите разрешение контактов, чтобы назначить рингтон.</string>
     <string name="required_mic_permission">Требуется разрешение микрофона для записи аудио</string>
+    <string name="required_storage_permission">Требуется разрешение на хранение для отображения списка аудиофайлов</string>
     <string name="required_system_modify_permission">Требуется разрешение на изменение системных настроек для установки рингтона</string>
     <string name="storage_permission">Разрешение на хранение</string>
     <string name="write_system_settings">Изменить системные настройки</string>

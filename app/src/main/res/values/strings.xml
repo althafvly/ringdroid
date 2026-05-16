@@ -190,6 +190,7 @@
 
     <string name="require_contacts_permission">Please enable contacts permission to assign a ringtone.</string>
     <string name="required_mic_permission">Microphone permission required to record audio</string>
+    <string name="required_storage_permission">Storage permission required to list audio files</string>
     <string name="required_system_modify_permission">Modify system settings permission is required to set ringtone</string>
     <string name="storage_permission">Storage Permission</string>
     <string name="write_system_settings">Write System Settings</string>

@@ -118,6 +118,7 @@
 
     <string name="require_contacts_permission">請啟用聯絡人權限以分配鈴聲。</string>
     <string name="required_mic_permission">錄製音訊需要麥克風權限</string>
+    <string name="required_storage_permission">列出音訊檔案需要儲存權限</string>
     <string name="required_system_modify_permission">設定鈴聲需要修改系統設定權限</string>
     <string name="storage_permission">儲存權限</string>
     <string name="write_system_settings">寫入系統設定</string>

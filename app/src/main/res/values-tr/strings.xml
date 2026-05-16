@@ -118,6 +118,7 @@
 
     <string name="require_contacts_permission">Bir zil sesi atamak için lütfen kişiler iznini etkinleştirin.</string>
     <string name="required_mic_permission">Ses kaydetmek için mikrofon izni gereklidir</string>
+    <string name="required_storage_permission">Ses dosyalarını listelemek için depolama izni gereklidir</string>
     <string name="required_system_modify_permission">Zil sesini ayarlamak için sistem ayarlarını değiştirme izni gereklidir</string>
     <string name="storage_permission">Depolama İzni</string>
     <string name="write_system_settings">Sistem Ayarlarını Yaz</string>

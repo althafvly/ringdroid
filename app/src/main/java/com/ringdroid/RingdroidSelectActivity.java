@@ -46,6 +46,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ringdroid.databinding.MediaSelectBinding;
 import com.ringdroid.soundfile.SoundFile;
@@ -86,6 +87,7 @@ public class RingdroidSelectActivity extends Activity {
     private boolean mShowAll = false;
     private Thread mLoaderThread;
     private MediaSelectBinding binding;
+    private boolean mSettingsPermissionRequested = false;
 
     /**
      * Called when the activity is first created.
@@ -93,6 +95,10 @@ public class RingdroidSelectActivity extends Activity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
+        if (!PermissionUtils.hasStoragePermission(this)) {
+            PermissionUtils.requestStoragePermission(this);
+        }
 
         handleIncoming(getIntent());
 
@@ -169,6 +175,13 @@ public class RingdroidSelectActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (mSettingsPermissionRequested) {
+            mSettingsPermissionRequested = false;
+            onPermissionChanged();
+            return;
+        }
+
         // Refresh the list to show any newly saved files
         refreshListView();
     }
@@ -295,6 +308,21 @@ public class RingdroidSelectActivity extends Activity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PermissionUtils.STORAGE_PERMISSION_REQUEST) {
+            onPermissionChanged();
+        }
+    }
+
+    private void onPermissionChanged() {
+        if (PermissionUtils.hasStoragePermission(this)) {
+            refreshListView();
+        } else {
+            Toast.makeText(this, R.string.required_storage_permission, Toast.LENGTH_LONG).show();
+        }
+    }
+
     /**
      * Called with an Activity we started with an Intent returns.
      */
@@ -354,11 +382,6 @@ public class RingdroidSelectActivity extends Activity {
             item.setChecked(newState);
             mShowAll = newState;
             refreshListView();
-            return true;
-        } else if (id == R.id.action_permissions) {
-            Intent intent = new Intent(this, PermissionActivity.class);
-            intent.putExtra(PermissionActivity.EXTRA_FORCE_SHOW, true);
-            startActivity(intent);
             return true;
         }
 

@@ -118,6 +118,7 @@
 
     <string name="require_contacts_permission">रिंगटोन असाइन करने के लिए कृपया संपर्क अनुमति सक्षम करें।</string>
     <string name="required_mic_permission">ऑडियो रिकॉर्ड करने के लिए माइक्रोफ़ोन अनुमति आवश्यक है</string>
+    <string name="required_storage_permission">ऑडियो फ़ाइलों को सूचीबद्ध करने के लिए भंडारण अनुमति आवश्यक है</string>
     <string name="required_system_modify_permission">रिंगटोन सेट करने के लिए सिस्टम सेटिंग्स को संशोधित करने की अनुमति आवश्यक है</string>
     <string name="storage_permission">भंडारण अनुमति</string>
     <string name="write_system_settings">सिस्टम सेटिंग्स लिखें</string>

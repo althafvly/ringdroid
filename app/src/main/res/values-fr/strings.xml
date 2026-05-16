@@ -118,6 +118,7 @@
 
     <string name="require_contacts_permission">Veuillez activer l\'autorisation des contacts pour attribuer une sonnerie.</string>
     <string name="required_mic_permission">Autorisation du microphone requise pour enregistrer l\'audio</string>
+    <string name="required_storage_permission">Autorisation de stockage requise pour lister les fichiers audio</string>
     <string name="required_system_modify_permission">L\'autorisation de modification des paramètres système est requise pour définir la sonnerie</string>
     <string name="storage_permission">Autorisation de Stockage</string>
     <string name="write_system_settings">Écrire les Paramètres Système</string>

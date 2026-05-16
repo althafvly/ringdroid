@@ -118,6 +118,7 @@
 
     <string name="require_contacts_permission">Proszę włączyć uprawnienie do kontaktów, aby przypisać dzwonek.</string>
     <string name="required_mic_permission">Wymagane uprawnienie mikrofonu do nagrywania dźwięku</string>
+    <string name="required_storage_permission">Wymagane uprawnienie do pamięci, aby wyświetlić listę plików audio</string>
     <string name="required_system_modify_permission">Wymagane jest uprawnienie do modyfikacji ustawień systemowych, aby ustawić dzwonek</string>
     <string name="storage_permission">Uprawnienie do pamięci</string>
     <string name="write_system_settings">Zapis ustawień systemowych</string>
