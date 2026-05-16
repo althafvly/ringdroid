@@ -17,8 +17,8 @@ import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Objects;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -174,7 +174,7 @@ public class SoundFileTest {
             SoundFile.create(outDir, oggFile.getAbsolutePath(), null);
             org.junit.Assert.fail("Expected InvalidInputException for a file that is too large");
         } catch (SoundFile.InvalidInputException e) {
-            assertTrue(e.getMessage().contains("Audio file is too long for the available memory"));
+            assertTrue(Objects.requireNonNull(e.getMessage()).contains("Audio file is too long for the available memory"));
         } finally {
             SoundFile.sMaxAllowedMemoryOverride = -1;
             oggFile.delete();
@@ -322,6 +322,7 @@ public class SoundFileTest {
         injectMockAudioData(soundFile, 2); // Set channels to 2
 
         File outputFile = new File(outDir, "out_audio_stereo.m4a");
+        assertNotNull(soundFile);
         soundFile.WriteFile(outputFile, 0, 50);
 
         assertTrue(outputFile.exists());
@@ -335,6 +336,7 @@ public class SoundFileTest {
         injectMockAudioData(soundFile, 1);
 
         File outputFile = new File(outDir, "out_audio.wav");
+        assertNotNull(soundFile);
         soundFile.WriteWAVFile(outputFile, 0, 50);
 
         assertTrue(outputFile.exists());
