@@ -16,10 +16,8 @@
 
 package com.ringdroid;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,12 +27,15 @@ import android.provider.ContactsContract.Contacts;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
+
+import androidx.activity.ComponentActivity;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.ringdroid.databinding.ChooseContactBinding;
 
@@ -42,7 +43,7 @@ import com.ringdroid.databinding.ChooseContactBinding;
  * After a ringtone has been saved, this activity lets you pick a contact and
  * assign the ringtone to that contact.
  */
-public class ChooseContactActivity extends Activity {
+public class ChooseContactActivity extends ComponentActivity {
     private final String TAG = this.getClass().getName();
     private final Handler mUiHandler = new Handler(Looper.getMainLooper());
     private SearchView mFilter;
@@ -50,6 +51,15 @@ public class ChooseContactActivity extends Activity {
     private Uri mRingtoneUri;
     private Thread mLoaderThread;
     private ChooseContactBinding binding;
+    private final ActivityResultLauncher<String[]> mContactPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+                if (PermissionUtils.hasContactPermissions(this)) {
+                    loadData();
+                } else {
+                    Toast.makeText(this, R.string.require_contacts_permission, Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            });
 
     public ChooseContactActivity() {
     }
@@ -78,7 +88,7 @@ public class ChooseContactActivity extends Activity {
         if (PermissionUtils.hasContactPermissions(this)) {
             loadData();
         } else {
-            PermissionUtils.requestContactPermissions(this);
+            mContactPermissionLauncher.launch(PermissionUtils.getContactPermissions());
         }
     }
 
@@ -151,30 +161,6 @@ public class ChooseContactActivity extends Activity {
         }
 
         return true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode != PermissionUtils.CONTACT_PERMISSION_REQUEST)
-            return;
-
-        boolean allPermissionsGranted = true;
-        for (int result : grantResults) {
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                allPermissionsGranted = false;
-                break;
-            }
-        }
-
-        if (allPermissionsGranted) {
-            loadData();
-        } else {
-            Toast.makeText(this, R.string.require_contacts_permission, Toast.LENGTH_LONG).show();
-            finish();
-        }
     }
 
     private void assignRingtoneToContact() {

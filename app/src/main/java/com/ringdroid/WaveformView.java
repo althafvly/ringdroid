@@ -20,13 +20,14 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+
+import androidx.core.content.ContextCompat;
 
 import com.ringdroid.soundfile.SoundFile;
 
@@ -85,29 +86,29 @@ public class WaveformView extends View {
 
         mGridPaint = new Paint();
         mGridPaint.setAntiAlias(false);
-        mGridPaint.setColor(getColorRes(R.color.grid_line));
+        mGridPaint.setColor(ContextCompat.getColor(context, R.color.grid_line));
         mSelectedLinePaint = new Paint();
         mSelectedLinePaint.setAntiAlias(false);
-        mSelectedLinePaint.setColor(getColorRes(R.color.waveform_selected));
+        mSelectedLinePaint.setColor(ContextCompat.getColor(context, R.color.waveform_selected));
         mUnselectedLinePaint = new Paint();
         mUnselectedLinePaint.setAntiAlias(false);
-        mUnselectedLinePaint.setColor(getColorRes(R.color.waveform_unselected));
+        mUnselectedLinePaint.setColor(ContextCompat.getColor(context, R.color.waveform_unselected));
         mUnselectedBkgndLinePaint = new Paint();
         mUnselectedBkgndLinePaint.setAntiAlias(false);
-        mUnselectedBkgndLinePaint.setColor(getColorRes(R.color.waveform_unselected_bkgnd_overlay));
+        mUnselectedBkgndLinePaint.setColor(ContextCompat.getColor(context, R.color.waveform_unselected_bkgnd_overlay));
         mBorderLinePaint = new Paint();
         mBorderLinePaint.setAntiAlias(true);
         mBorderLinePaint.setStrokeWidth(1.5f);
         mBorderLinePaint.setPathEffect(new DashPathEffect(new float[]{3.0f, 2.0f}, 0.0f));
-        mBorderLinePaint.setColor(getColorRes(R.color.selection_border));
+        mBorderLinePaint.setColor(ContextCompat.getColor(context, R.color.selection_border));
         mPlaybackLinePaint = new Paint();
         mPlaybackLinePaint.setAntiAlias(false);
-        mPlaybackLinePaint.setColor(getColorRes(R.color.playback_indicator));
+        mPlaybackLinePaint.setColor(ContextCompat.getColor(context, R.color.playback_indicator));
         mTimecodePaint = new Paint();
         mTimecodePaint.setTextSize(12);
         mTimecodePaint.setAntiAlias(true);
-        mTimecodePaint.setColor(getColorRes(R.color.timecode));
-        mTimecodePaint.setShadowLayer(2, 1, 1, getColorRes(R.color.timecode_shadow));
+        mTimecodePaint.setColor(ContextCompat.getColor(context, R.color.timecode));
+        mTimecodePaint.setShadowLayer(2, 1, 1, ContextCompat.getColor(context, R.color.timecode_shadow));
 
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             public boolean onFling(MotionEvent e1, MotionEvent e2, float vx, float vy) {
@@ -153,15 +154,6 @@ public class WaveformView extends View {
         mSelectionEnd = 0;
         mDensity = 1.0f;
         mInitialized = false;
-    }
-
-    @SuppressWarnings("deprecation")
-    private int getColorRes(int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getResources().getColor(color, null);
-        } else {
-            return getResources().getColor(color);
-        }
     }
 
     @Override

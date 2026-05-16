@@ -16,7 +16,6 @@
 
 package com.ringdroid;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -33,10 +32,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -45,10 +42,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.ComponentActivity;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.text.HtmlCompat;
 
 import com.ringdroid.databinding.DialogProgressBinding;
 import com.ringdroid.databinding.DialogProgressHorizontalBinding;
@@ -59,9 +63,6 @@ import com.ringdroid.soundfile.SoundFile;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
-import android.widget.SeekBar;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import java.io.StringWriter;
 import java.util.Locale;
 import java.util.Objects;
@@ -71,13 +72,22 @@ import java.util.Objects;
  * waveform display, current horizontal offset, marker handles, start / end text
  * boxes, and handles all of the buttons and controls.
  */
-public class RingdroidEditActivity extends Activity
+public class RingdroidEditActivity extends ComponentActivity
         implements
             MarkerView.MarkerListener,
             WaveformView.WaveformListener {
-    // Result codes
-    private static final int REQUEST_CODE_CHOOSE_CONTACT = 1;
     private final String TAG = this.getClass().getName();
+    private final ActivityResultLauncher<String> mMicPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
+                if (PermissionUtils.hasMicPermissions(this)) {
+                    recordAudio();
+                } else {
+                    Toast.makeText(this, R.string.required_mic_permission, Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            });
+    private final ActivityResultLauncher<Intent> mChooseContactLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> finish());
     private long mLoadingLastUpdateTime;
     private boolean mLoadingKeepGoing;
     private long mRecordingLastUpdateTime;
@@ -218,17 +228,17 @@ public class RingdroidEditActivity extends Activity
     private Thread mRecordAudioThread;
     private Thread mSaveSoundFileThread;
 
-    public static void onAbout(final Activity activity) {
+    public static void onAbout(final Context context) {
         String versionName;
         try {
-            PackageManager packageManager = activity.getPackageManager();
-            String packageName = activity.getPackageName();
+            PackageManager packageManager = context.getPackageManager();
+            String packageName = context.getPackageName();
             versionName = packageManager.getPackageInfo(packageName, 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
             versionName = "unknown";
         }
 
-        AlertDialog dialog = getAlertDialog(activity, versionName).show();
+        AlertDialog dialog = getAlertDialog(context, versionName).show();
 
         // Make links clickable
         TextView messageView = dialog.findViewById(android.R.id.message);
@@ -237,43 +247,14 @@ public class RingdroidEditActivity extends Activity
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private static AlertDialog.Builder getAlertDialog(Activity activity, String versionName) {
-        String html = activity.getString(R.string.about_text_html, versionName);
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity).setTitle(R.string.about_title)
+    private static AlertDialog.Builder getAlertDialog(Context context, String versionName) {
+        String html = context.getString(R.string.about_text_html, versionName);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context).setTitle(R.string.about_title)
                 .setPositiveButton(R.string.alert_ok_button, null);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            builder.setMessage(Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            builder.setMessage(Html.fromHtml(html)); // deprecated but works on < 24
-        }
+        builder.setMessage(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY));
 
         return builder;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == PermissionUtils.MIC_PERMISSION_REQUEST) {
-            boolean micPermissionGranted = true;
-
-            for (int result : grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    micPermissionGranted = false;
-                    break;
-                }
-            }
-
-            if (micPermissionGranted) {
-                recordAudio();
-            } else {
-                Toast.makeText(this, R.string.required_mic_permission, Toast.LENGTH_LONG).show();
-                finish();
-            }
-        }
     }
 
     /**
@@ -320,7 +301,7 @@ public class RingdroidEditActivity extends Activity
             if (PermissionUtils.hasMicPermissions(this)) {
                 recordAudio();
             } else {
-                PermissionUtils.requestMicPermissions(this);
+                mMicPermissionLauncher.launch(PermissionUtils.getMicPermission());
             }
         }
     }
@@ -395,20 +376,6 @@ public class RingdroidEditActivity extends Activity
         }
 
         super.onDestroy();
-    }
-
-    /**
-     * Called with an Activity we started with an Intent returns.
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
-        Log.v(TAG, "EditActivity onActivityResult");
-        if (requestCode == REQUEST_CODE_CHOOSE_CONTACT) {
-            // The user finished saving their ringtone and they're
-            // just applying it to a contact. When they return here,
-            // they're done.
-            finish();
-        }
     }
 
     /**
@@ -684,16 +651,12 @@ public class RingdroidEditActivity extends Activity
      * Called from both onCreate and onConfigurationChanged (if the user switched
      * layouts)
      */
-    @SuppressWarnings("deprecation")
     private void loadGui() {
         // Inflate our UI from its XML layout description.
         binding = EditorBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-        mDensity = metrics.density;
+        mDensity = getResources().getDisplayMetrics().density;
 
         mMarkerLeftInset = (int) (46 * mDensity);
         mMarkerRightInset = (int) (48 * mDensity);
@@ -1605,7 +1568,7 @@ public class RingdroidEditActivity extends Activity
         try {
             Intent intent = new Intent(Intent.ACTION_EDIT, uri);
             intent.setClass(this, ChooseContactActivity.class);
-            startActivityForResult(intent, REQUEST_CODE_CHOOSE_CONTACT);
+            mChooseContactLauncher.launch(intent);
         } catch (Exception e) {
             Log.e(TAG, "Couldn't open Choose Contact window");
         }

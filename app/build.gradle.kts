@@ -60,6 +60,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.core)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

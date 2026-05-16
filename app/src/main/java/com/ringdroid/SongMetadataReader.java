@@ -16,7 +16,7 @@
 
 package com.ringdroid;
 
-import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -25,7 +25,7 @@ import java.util.HashMap;
 
 public class SongMetadataReader {
     public Uri GENRES_URI = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
-    public Activity mActivity;
+    public Context mContext;
     public String mFilename;
     public String mTitle = "";
     public String mArtist = "";
@@ -33,8 +33,8 @@ public class SongMetadataReader {
     public String mGenre = "";
     public int mYear = -1;
 
-    SongMetadataReader(Activity activity, String filename) {
-        mActivity = activity;
+    SongMetadataReader(Context context, String filename) {
+        mContext = context;
         mFilename = filename;
         mTitle = getBasename(filename);
         try {
@@ -46,7 +46,7 @@ public class SongMetadataReader {
     private void ReadMetadata() {
         // Get a map from genre ids to names
         HashMap<String, String> genreIdMap = new HashMap<>();
-        Cursor c = mActivity.getContentResolver().query(GENRES_URI,
+        Cursor c = mContext.getContentResolver().query(GENRES_URI,
                 new String[]{MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME}, null, null, null);
         assert c != null;
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
@@ -55,7 +55,7 @@ public class SongMetadataReader {
         c.close();
         mGenre = "";
         for (String genreId : genreIdMap.keySet()) {
-            try (Cursor genreCursor = mActivity.getContentResolver().query(makeGenreUri(genreId),
+            try (Cursor genreCursor = mContext.getContentResolver().query(makeGenreUri(genreId),
                     new String[]{MediaStore.Audio.Media.DATA}, MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"",
                     null, null)) {
                 if (genreCursor != null && genreCursor.getCount() != 0) {
@@ -66,7 +66,7 @@ public class SongMetadataReader {
         }
 
         Uri uri = RingdroidUtils.getExternalAudioCollectionUri();
-        c = mActivity.getContentResolver().query(uri,
+        c = mContext.getContentResolver().query(uri,
                 new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
                         MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DATA},
                 MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"", null, null);
@@ -75,7 +75,7 @@ public class SongMetadataReader {
                 c.close();
             }
             uri = RingdroidUtils.getInternalAudioCollectionUri();
-            c = mActivity.getContentResolver().query(uri,
+            c = mContext.getContentResolver().query(uri,
                     new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,
                             MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
                             MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DATA},

@@ -1,14 +1,15 @@
 package com.ringdroid;
 
-import android.app.Activity;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import androidx.activity.ComponentActivity;
+
 public class RingdroidUtils {
-    public static void setDefaultRingTone(Activity activity, int type, Uri ringtoneUri, boolean shouldFinish) {
+    public static void setDefaultRingTone(ComponentActivity activity, int type, Uri ringtoneUri, boolean shouldFinish) {
         if (!PermissionUtils.hasWriteSettingsPermission(activity)) {
             Toast.makeText(activity, R.string.required_system_modify_permission, Toast.LENGTH_SHORT).show();
             PermissionUtils.requestWriteSettingsPermission(activity);
@@ -28,7 +29,6 @@ public class RingdroidUtils {
         } catch (Exception e) {
             Toast.makeText(activity, "Error setting ringtone: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
-
 
         if (shouldFinish) {
             activity.finish();

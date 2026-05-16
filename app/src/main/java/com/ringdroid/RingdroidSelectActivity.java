@@ -16,7 +16,6 @@
 
 package com.ringdroid;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
@@ -48,6 +47,12 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.ComponentActivity;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
+
 import com.ringdroid.databinding.MediaSelectBinding;
 import com.ringdroid.soundfile.SoundFile;
 
@@ -60,10 +65,7 @@ import java.util.Objects;
  * audio file or using an intent to record a new one, and then launches
  * RingdroidEditActivity from here.
  */
-public class RingdroidSelectActivity extends Activity {
-    // Result codes
-    private static final int REQUEST_CODE_EDIT = 1;
-    private static final int REQUEST_CODE_CHOOSE_CONTACT = 2;
+public class RingdroidSelectActivity extends ComponentActivity {
     // Context menu
     private static final int CMD_EDIT = 4;
     private static final int CMD_DELETE = 5;
@@ -88,6 +90,12 @@ public class RingdroidSelectActivity extends Activity {
     private Thread mLoaderThread;
     private MediaSelectBinding binding;
     private boolean mSettingsPermissionRequested = false;
+    private final ActivityResultLauncher<String> mStoragePermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(),
+                    granted -> onPermissionChanged());
+    private final ActivityResultLauncher<Intent> mEditActivityLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    this::onEditActivityResult);
 
     /**
      * Called when the activity is first created.
@@ -97,7 +105,7 @@ public class RingdroidSelectActivity extends Activity {
         super.onCreate(icicle);
 
         if (!PermissionUtils.hasStoragePermission(this)) {
-            PermissionUtils.requestStoragePermission(this);
+            mStoragePermissionLauncher.launch(PermissionUtils.getStoragePermission());
         }
 
         handleIncoming(getIntent());
@@ -281,37 +289,20 @@ public class RingdroidSelectActivity extends Activity {
     private void setSoundIconFromCursor(ImageView view, Cursor cursor) {
         if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE))) {
             view.setImageResource(R.drawable.baseline_call_24);
-            ((View) view.getParent()).setBackgroundColor(getColorRes(R.color.type_bkgnd_ringtone));
+            ((View) view.getParent()).setBackgroundColor(ContextCompat.getColor(this,R.color.type_bkgnd_ringtone));
         } else if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_ALARM))) {
             view.setImageResource(R.drawable.baseline_access_alarm_24);
-            ((View) view.getParent()).setBackgroundColor(getColorRes(R.color.type_bkgnd_alarm));
+            ((View) view.getParent()).setBackgroundColor(ContextCompat.getColor(this,R.color.type_bkgnd_alarm));
         } else if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_NOTIFICATION))) {
             view.setImageResource(R.drawable.baseline_notifications_24);
-            ((View) view.getParent()).setBackgroundColor(getColorRes(R.color.type_bkgnd_notification));
+            ((View) view.getParent()).setBackgroundColor(ContextCompat.getColor(this,R.color.type_bkgnd_notification));
         } else if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_MUSIC))) {
             view.setImageResource(R.drawable.baseline_music_note_24);
-            ((View) view.getParent()).setBackgroundColor(getColorRes(R.color.type_bkgnd_music));
+            ((View) view.getParent()).setBackgroundColor(ContextCompat.getColor(this, R.color.type_bkgnd_music));
         }
-
         String filename = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
         if (!SoundFile.isFilenameSupported(filename)) {
-            ((View) view.getParent()).setBackgroundColor(getColorRes(R.color.type_bkgnd_unsupported));
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    private int getColorRes(int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getResources().getColor(color, null);
-        } else {
-            return getResources().getColor(color);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == PermissionUtils.STORAGE_PERMISSION_REQUEST) {
-            onPermissionChanged();
+            ((View) view.getParent()).setBackgroundColor(ContextCompat.getColor(this,R.color.type_bkgnd_unsupported));
         }
     }
 
@@ -323,16 +314,12 @@ public class RingdroidSelectActivity extends Activity {
         }
     }
 
-    /**
-     * Called with an Activity we started with an Intent returns.
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
-        if (requestCode != REQUEST_CODE_EDIT || resultCode != RESULT_OK) {
+    private void onEditActivityResult(ActivityResult result) {
+        if (result.getResultCode() != RESULT_OK) {
             return;
         }
 
-        setResult(RESULT_OK, dataIntent);
+        setResult(RESULT_OK, result.getData());
     }
 
     @Override
@@ -523,7 +510,7 @@ public class RingdroidSelectActivity extends Activity {
             // Go to the choose contact activity
             Intent intent = new Intent(Intent.ACTION_EDIT, uri);
             intent.setClass(this, ChooseContactActivity.class);
-            startActivityForResult(intent, REQUEST_CODE_CHOOSE_CONTACT);
+            startActivity(intent);
         } catch (Exception e) {
             Log.e(TAG, "Couldn't open Choose Contact window");
         }
@@ -596,7 +583,7 @@ public class RingdroidSelectActivity extends Activity {
             Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse("record"));
             intent.putExtra("was_get_content_intent", mWasGetContentIntent);
             intent.setClass(this, RingdroidEditActivity.class);
-            startActivityForResult(intent, REQUEST_CODE_EDIT);
+            mEditActivityLauncher.launch(intent);
         } catch (Exception e) {
             Log.e(TAG, "Couldn't start editor");
         }
@@ -653,7 +640,7 @@ public class RingdroidSelectActivity extends Activity {
             Intent intent = new Intent(Intent.ACTION_EDIT, filename);
             intent.putExtra("was_get_content_intent", mWasGetContentIntent);
             intent.setClass(this, RingdroidEditActivity.class);
-            startActivityForResult(intent, REQUEST_CODE_EDIT);
+            mEditActivityLauncher.launch(intent);
         } catch (Exception e) {
             Log.e(TAG, "Couldn't start editor");
         }
