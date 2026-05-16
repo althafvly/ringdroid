@@ -65,6 +65,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
+import android.widget.SeekBar;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import java.io.StringWriter;
 import java.util.Locale;
 import java.util.Objects;
@@ -139,6 +142,7 @@ public class RingdroidEditActivity extends ComponentActivity
     private int mMarkerBottomOffset;
     private EditorBinding binding;
     private ActivityResultLauncher<String> requestMicPermissionLauncher;
+    private float mAmplifyFactor = 1.0f;
 
     //
     // Public methods and protected overrides
@@ -444,6 +448,7 @@ public class RingdroidEditActivity extends ComponentActivity
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.action_save).setVisible(true);
         menu.findItem(R.id.action_reset).setVisible(true);
+        menu.findItem(R.id.action_amplify).setVisible(true);
         return true;
     }
 
@@ -458,6 +463,9 @@ public class RingdroidEditActivity extends ComponentActivity
             resetPositions();
             mOffsetGoal = 0;
             updateDisplay();
+            return true;
+        } else if (id == R.id.action_amplify) {
+            onAmplify();
             return true;
         }
 
@@ -1349,6 +1357,9 @@ public class RingdroidEditActivity extends ComponentActivity
     }
 
     private void saveRingtone(final CharSequence title) {
+        if (mSoundFile != null) {
+            mSoundFile.setGain(mAmplifyFactor);
+        }
         double startTime = mWaveformView.pixelsToSeconds(mStartPos);
         double endTime = mWaveformView.pixelsToSeconds(mEndPos);
         final int startFrame = mWaveformView.secondsToFrames(startTime);
@@ -1619,6 +1630,45 @@ public class RingdroidEditActivity extends ComponentActivity
 
     private long getCurrentTime() {
         return System.nanoTime() / 1000000;
+    }
+
+    private void onAmplify() {
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(50, 50, 50, 50);
+
+        final TextView label = new TextView(this);
+        label.setText(String.format(Locale.getDefault(), "Amplification: %d%%", (int)(mAmplifyFactor * 100)));
+        label.setPadding(0, 0, 0, 30);
+        layout.addView(label);
+
+        final SeekBar seekBar = new SeekBar(this);
+        seekBar.setMax(400); // Max 400% (or 4.0x)
+        seekBar.setProgress((int)(mAmplifyFactor * 100));
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (progress < 10) {
+                    seekBar.setProgress(10);
+                    progress = 10;
+                }
+                label.setText(String.format(Locale.getDefault(), "Amplification: %d%%", progress));
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+        layout.addView(seekBar);
+
+        new AlertDialog.Builder(this)
+            .setTitle(R.string.menu_amplify)
+            .setView(layout)
+            .setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
+                mAmplifyFactor = seekBar.getProgress() / 100.0f;
+            })
+            .setNegativeButton(android.R.string.cancel, null)
+            .show();
     }
 
     /**

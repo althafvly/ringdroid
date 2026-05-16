@@ -78,6 +78,7 @@ public class SoundFile {
     // uses the samples).
     private int mNumFrames;
     private int[] mFrameGains;
+    private float mGain = 1.0f;
 
     // A SoundFile object should only be created using the static methods create()
     // and record().
@@ -160,6 +161,10 @@ public class SoundFile {
 
     public String getFiletype() {
         return mFileType;
+    }
+
+    public void setGain(float gain) {
+        mGain = gain;
     }
 
     public int getAvgBitrateKbps() {
@@ -622,6 +627,16 @@ public class SoundFile {
                             buffer[2 * i - 2] = buffer[2 * i];
                         }
                     }
+                    if (mGain != 1.0f) {
+                        for (int i = 0; i < buffer.length; i += 2) {
+                            short sample = (short) ((buffer[i] & 0xFF) | (buffer[i + 1] << 8));
+                            int scaled = Math.round(sample * mGain);
+                            if (scaled > Short.MAX_VALUE) scaled = Short.MAX_VALUE;
+                            if (scaled < Short.MIN_VALUE) scaled = Short.MIN_VALUE;
+                            buffer[i] = (byte) (scaled & 0xFF);
+                            buffer[i + 1] = (byte) ((scaled >> 8) & 0xFF);
+                        }
+                    }
                     num_samples_left -= frame_size;
                     inputBuffer.put(buffer);
                     presentation_time = (long) (((num_frames++) * frame_size * 1e6) / mSampleRate);
@@ -761,6 +776,16 @@ public class SoundFile {
             if (mChannels == 2) {
                 swapLeftRightChannels(buffer);
             }
+            if (mGain != 1.0f) {
+                for (int i = 0; i < buffer.length; i += 2) {
+                    short sample = (short) ((buffer[i] & 0xFF) | (buffer[i + 1] << 8));
+                    int scaled = Math.round(sample * mGain);
+                    if (scaled > Short.MAX_VALUE) scaled = Short.MAX_VALUE;
+                    if (scaled < Short.MIN_VALUE) scaled = Short.MIN_VALUE;
+                    buffer[i] = (byte) (scaled & 0xFF);
+                    buffer[i + 1] = (byte) ((scaled >> 8) & 0xFF);
+                }
+            }
             outputStream.write(buffer);
             numBytesLeft -= buffer.length;
         }
@@ -776,6 +801,16 @@ public class SoundFile {
             }
             if (mChannels == 2) {
                 swapLeftRightChannels(buffer);
+            }
+            if (mGain != 1.0f) {
+                for (int i = 0; i < numBytesLeft; i += 2) {
+                    short sample = (short) ((buffer[i] & 0xFF) | (buffer[i + 1] << 8));
+                    int scaled = Math.round(sample * mGain);
+                    if (scaled > Short.MAX_VALUE) scaled = Short.MAX_VALUE;
+                    if (scaled < Short.MIN_VALUE) scaled = Short.MIN_VALUE;
+                    buffer[i] = (byte) (scaled & 0xFF);
+                    buffer[i + 1] = (byte) ((scaled >> 8) & 0xFF);
+                }
             }
             outputStream.write(buffer, 0, numBytesLeft);
         }
