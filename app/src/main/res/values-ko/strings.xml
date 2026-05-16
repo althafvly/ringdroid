@@ -49,8 +49,6 @@
     <string name="file_save_title">다른 이름으로 저장:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">이 앱이 작동하려면 저장소 또는 미디어 오디오 권한이 필요합니다. 다른 모든 권한은 선택사항입니다.</string>
-    <string name="storage_permission_required_for_editor_play">이 앱이 작동하려면 미디어 오디오 권한이 필요합니다. 다른 모든 권한은 선택사항입니다.</string>
 
     <string name="ringtone_type_label">유형:</string>
 
@@ -130,8 +128,6 @@
     <string name="write_system_settings_summary">벨소리를 시스템 기본값으로 설정하는 데 필요합니다</string>
     <string name="mic_permission_summary">자신의 오디오 클립을 녹음하는 데 필요합니다</string>
     <string name="contact_permission_summary">연락처에 벨소리를 할당하는 데 필요합니다</string>
-    <string name="media_audio_permission">미디어 오디오 권한</string>
-    <string name="media_audio_summary">스마트폰에서 벨소리 파일을 읽는 데 필요합니다</string>
     <string name="list_is_empty">오디오 파일이 없습니다. 시스템 오디오 파일을 보려면 오른쪽 상단의 점 세 개 메뉴에서 ‘모든 오디오 표시’를 활성화하세요.</string>
 
     <string name="zoom_in">확대</string>

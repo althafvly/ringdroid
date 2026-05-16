@@ -49,8 +49,6 @@
     <string name="file_save_title">इस रूप में सहेजें:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">इस ऐप के काम करने के लिए स्टोरेज या मीडिया ऑडियो अनुमति आवश्यक है। अन्य सभी अनुमतियां वैकल्पिक हैं।</string>
-    <string name="storage_permission_required_for_editor_play">इस ऐप के काम करने के लिए मीडिया ऑडियो अनुमति आवश्यक है। अन्य सभी अनुमतियां वैकल्पिक हैं।</string>
 
     <string name="ringtone_type_label">प्रकार:</string>
 
@@ -130,8 +128,6 @@
     <string name="write_system_settings_summary">रिंगटोन को सिस्टम डिफ़ॉल्ट के रूप में सेट करने के लिए आवश्यक है</string>
     <string name="mic_permission_summary">अपने स्वयं के ऑडियो क्लिप रिकॉर्ड करने के लिए आवश्यक है</string>
     <string name="contact_permission_summary">अपने संपर्कों को रिंगटोन असाइन करने के लिए आवश्यक है</string>
-    <string name="media_audio_permission">मीडिया ऑडियो अनुमति</string>
-    <string name="media_audio_summary">आपके स्मार्टफोन से रिंगटोन फ़ाइलें पढ़ने के लिए आवश्यक है</string>
     <string name="list_is_empty">कोई ऑडियो फ़ाइल नहीं मिली। सिस्टम की ऑडियो फ़ाइलें देखने के लिए तीन-डॉट मेनू से “सभी ऑडियो दिखाएँ” सक्षम करें।</string>
 
     <string name="zoom_in">ज़ूम इन</string>

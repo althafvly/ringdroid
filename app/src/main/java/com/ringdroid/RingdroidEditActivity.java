@@ -1278,7 +1278,7 @@ public class RingdroidEditActivity extends Activity
     }
 
     private String getSubDir() {
-        String saveDir = PermissionUtils.hasMediaAudioPermission(mContext)
+        String saveDir = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
                 ? Environment.DIRECTORY_RINGTONES
                 : "media/audio";
         StringBuilder subdir = new StringBuilder(saveDir);
@@ -1397,7 +1397,7 @@ public class RingdroidEditActivity extends Activity
                 boolean fallbackToWAV = false;
                 try {
                     // Write the new file
-                    if (PermissionUtils.hasMediaAudioPermission(mContext)) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         values.put(MediaStore.Audio.Media.DISPLAY_NAME, title + ".m4a");
                         values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/mp4a-latm");
                         outUri = getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
@@ -1429,7 +1429,7 @@ public class RingdroidEditActivity extends Activity
                     outFile = new File(outPath);
                     try {
                         // create the .wav file
-                        if (PermissionUtils.hasMediaAudioPermission(mContext)) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             values.put(MediaStore.Audio.Media.DISPLAY_NAME, title + ".wav");
                             values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/wav");
                             outUri = getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
@@ -1474,7 +1474,7 @@ public class RingdroidEditActivity extends Activity
                         // estimate anyway.
                         return false; // Keep going
                     };
-                    if (PermissionUtils.hasMediaAudioPermission(mContext) && outUri != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && outUri != null) {
                         SoundFile.uriExists(mContext, outUri);
                     } else {
                         SoundFile.create(mContext.getCacheDir(), outPath, listener);
@@ -1503,7 +1503,7 @@ public class RingdroidEditActivity extends Activity
 
     private void afterSavingRingtone(CharSequence title, String outPath, Uri outUri, int duration) {
         Uri newUri;
-        if (PermissionUtils.hasMediaAudioPermission(mContext) && outUri == null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && outUri == null) {
             File outFile = new File(outPath);
             long fileSize = outFile.length();
             if (fileSize <= 512) {

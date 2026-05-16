@@ -49,8 +49,6 @@
     <string name="file_save_title">Zapisz jako:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Uprawnienie do przechowywania lub mediów audio jest wymagane, aby ta aplikacja działała. Wszystkie inne uprawnienia są opcjonalne.</string>
-    <string name="storage_permission_required_for_editor_play">Uprawnienie do mediów audio jest wymagane, aby ta aplikacja działała. Wszystkie inne uprawnienia są opcjonalne.</string>
 
     <string name="ringtone_type_label">Typ:</string>
 
@@ -130,8 +128,6 @@
     <string name="write_system_settings_summary">Potrzebne do ustawienia dzwonków jako domyślne systemowe</string>
     <string name="mic_permission_summary">Potrzebne do nagrywania własnych klipów audio</string>
     <string name="contact_permission_summary">Potrzebne do przypisywania dzwonków do kontaktów</string>
-    <string name="media_audio_permission">Uprawnienie do mediów audio</string>
-    <string name="media_audio_summary">Potrzebne do odczytu plików dzwonków ze smartfona</string>
     <string name="list_is_empty">Nie znaleziono plików audio. Włącz „Pokaż wszystkie pliki audio” z menu trzech kropek, aby wyświetlić systemowe pliki audio.</string>
 
     <string name="zoom_in">Powiększ</string>

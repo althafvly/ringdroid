@@ -49,8 +49,6 @@
     <string name="file_save_title">Сохранить как:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Разрешение на хранилище или медиа-аудио необходимо для работы этого приложения. Все остальные разрешения являются необязательными.</string>
-    <string name="storage_permission_required_for_editor_play">Разрешение на медиа-аудио необходимо для работы этого приложения. Все остальные разрешения являются необязательными.</string>
 
     <string name="ringtone_type_label">Тип:</string>
 
@@ -130,8 +128,6 @@
     <string name="write_system_settings_summary">Требуется для установки рингтонов в качестве системных по умолчанию</string>
     <string name="mic_permission_summary">Требуется для записи ваших собственных аудиоклипов</string>
     <string name="contact_permission_summary">Требуется для назначения рингтонов вашим контактам</string>
-    <string name="media_audio_permission">Разрешение на медиа-аудио</string>
-    <string name="media_audio_summary">Требуется для чтения файлов рингтонов с вашего смартфона</string>
     <string name="list_is_empty">Аудиофайлы не найдены. Включите «Показать все аудио» в меню с тремя точками, чтобы просмотреть системные аудиофайлы.</string>
 
     <string name="zoom_in">Увеличить</string>

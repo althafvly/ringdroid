@@ -49,8 +49,6 @@
     <string name="file_save_title">ഇതുപോലെ സേവ് ചെയ്യുക:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">ഈ അപ്ലിക്കേഷൻ പ്രവർത്തിക്കുന്നതിന് സ്റ്റോറേജ് അല്ലെങ്കിൽ മീഡിയ ഓഡിയോ അനുമതി ആവശ്യമാണ്. മറ്റെല്ലാ അനുമതികളും ഐച്ഛികമാണ്.</string>
-    <string name="storage_permission_required_for_editor_play">ഈ അപ്ലിക്കേഷൻ പ്രവർത്തിക്കുന്നതിന് മീഡിയ ഓഡിയോ അനുമതി ആവശ്യമാണ്. മറ്റെല്ലാ അനുമതികളും ഐച്ഛികമാണ്.</string>
 
     <string name="ringtone_type_label">തരം:</string>
 
@@ -130,8 +128,6 @@
     <string name="write_system_settings_summary">റിംഗ്‌ടോണുകൾ സിസ്റ്റം ഡിഫോൾട്ടായി സജ്ജമാക്കാൻ ആവശ്യമാണ്</string>
     <string name="mic_permission_summary">നിങ്ങളുടെ സ്വന്തം ഓഡിയോ ക്ലിപ്പുകൾ റെക്കോർഡ് ചെയ്യാൻ ആവശ്യമാണ്</string>
     <string name="contact_permission_summary">നിങ്ങളുടെ കോൺടാക്റ്റുകൾക്ക് റിംഗ്‌ടോണുകൾ നൽകാൻ ആവശ്യമാണ്</string>
-    <string name="media_audio_permission">മീഡിയ ഓഡിയോ പെർമിഷൻ</string>
-    <string name="media_audio_summary">നിങ്ങളുടെ സ്മാർട്ട്‌ഫോണിൽ നിന്ന് റിംഗ്‌ടോൺ ഫയലുകൾ വായിക്കാൻ ആവശ്യമാണ്</string>
     <string name="list_is_empty">ഓഡിയോ ഫയലുകളൊന്നും കണ്ടെത്താനായില്ല. സിസ്റ്റം ഓഡിയോ ഫയലുകൾ കാണുന്നതിന് മൂന്ന്-ഡോട്ട് മെനുവിൽ നിന്ന് “എല്ലാ ഓഡിയോയും കാണിക്കുക” സജ്ജമാക്കുക.</string>
 
     <string name="zoom_in">വലുതാക്കുക</string>

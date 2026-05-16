@@ -49,8 +49,6 @@
     <string name="file_save_title">Farklı Kaydet:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Depolama veya medya ses izni bu uygulamanın çalışması için gereklidir. Diğer tüm izinler isteğe bağlıdır.</string>
-    <string name="storage_permission_required_for_editor_play">Medya ses izni bu uygulamanın çalışması için gereklidir. Diğer tüm izinler isteğe bağlıdır.</string>
 
     <string name="ringtone_type_label">Tür:</string>
 
@@ -130,8 +128,6 @@
     <string name="write_system_settings_summary">Zil seslerini sistem varsayılanı olarak ayarlamak için gereklidir</string>
     <string name="mic_permission_summary">Kendi ses kliplerinizi kaydetmek için gereklidir</string>
     <string name="contact_permission_summary">Kişilerinize zil sesi atamak için gereklidir</string>
-    <string name="media_audio_permission">Medya ses izni</string>
-    <string name="media_audio_summary">Akıllı telefonunuzdan zil sesi dosyalarını okumak için gereklidir</string>
     <string name="list_is_empty">Ses dosyası bulunamadı. Sistem ses dosyalarını görmek için üç nokta menüsünden “Tüm sesleri göster” seçeneğini etkinleştirin.</string>
 
     <string name="zoom_in">Yakınlaştır</string>

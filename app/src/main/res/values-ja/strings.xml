@@ -49,8 +49,6 @@
     <string name="file_save_title">名前を付けて保存:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">このアプリが動作するにはストレージまたはメディアオーディオ権限が必要です。その他すべての権限はオプションです。</string>
-    <string name="storage_permission_required_for_editor_play">このアプリが動作するにはメディアオーディオ権限が必要です。その他すべての権限はオプションです。</string>
 
     <string name="ringtone_type_label">タイプ:</string>
 
@@ -130,8 +128,6 @@
     <string name="write_system_settings_summary">着信音をシステムのデフォルトとして設定するために必要です</string>
     <string name="mic_permission_summary">独自のオーディオクリップを録音するために必要です</string>
     <string name="contact_permission_summary">連絡先に着信音を割り当てるために必要です</string>
-    <string name="media_audio_permission">メディアオーディオ権限</string>
-    <string name="media_audio_summary">スマートフォンから着信音ファイルを読み取るために必要です</string>
     <string name="list_is_empty">オーディオファイルが見つかりません。システムのオーディオファイルを表示するには、三点メニューから「すべてのオーディオを表示」を有効にしてください。</string>
 
     <string name="zoom_in">拡大</string>

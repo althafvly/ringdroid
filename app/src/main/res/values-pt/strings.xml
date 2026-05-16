@@ -49,8 +49,6 @@
     <string name="file_save_title">Salvar como:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Permissão de armazenamento ou áudio de mídia é necessária para este aplicativo funcionar. Todas as outras permissões são opcionais.</string>
-    <string name="storage_permission_required_for_editor_play">Permissão de áudio de mídia é necessária para este aplicativo funcionar. Todas as outras permissões são opcionais.</string>
 
     <string name="ringtone_type_label">Tipo:</string>
 
@@ -130,8 +128,6 @@
     <string name="write_system_settings_summary">Necessária para definir toques como padrão do sistema</string>
     <string name="mic_permission_summary">Necessária para gravar seus próprios clipes de áudio</string>
     <string name="contact_permission_summary">Necessária para atribuir toques aos seus contatos</string>
-    <string name="media_audio_permission">Permissão de áudio de mídia</string>
-    <string name="media_audio_summary">Necessária para ler arquivos de toque do seu smartphone</string>
     <string name="list_is_empty">Nenhum arquivo de áudio encontrado. Ative “Mostrar todos os áudios” no menu de três pontos para visualizar os arquivos de áudio do sistema.</string>
 
     <string name="zoom_in">Ampliar</string>

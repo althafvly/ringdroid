@@ -2,18 +2,16 @@ package com.ringdroid
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 
-object PermissionUtils : StoragePermissionUtils() {
+object PermissionUtils {
     const val CONTACT_PERMISSION_REQUEST: Int = 1
-    const val MEDIA_AUDIO_PERMISSION_REQUEST: Int = 2
+    const val STORAGE_PERMISSION_REQUEST: Int = 2
     const val MIC_PERMISSION_REQUEST: Int = 3
-    private const val STORAGE_PERMISSION_REQUEST = 4
 
     @JvmStatic
     fun hasContactPermissions(activity: Activity): Boolean {
@@ -21,9 +19,12 @@ object PermissionUtils : StoragePermissionUtils() {
             return true
         }
 
-        return activity.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
-                && activity
-            .checkSelfPermission(Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED
+        return activity.checkSelfPermission(
+            Manifest.permission.READ_CONTACTS
+        ) == PackageManager.PERMISSION_GRANTED
+                && activity.checkSelfPermission(
+            Manifest.permission.WRITE_CONTACTS
+                ) == PackageManager.PERMISSION_GRANTED
     }
 
     @JvmStatic
@@ -33,7 +34,10 @@ object PermissionUtils : StoragePermissionUtils() {
         }
 
         activity.requestPermissions(
-            arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS),
+            arrayOf(
+                Manifest.permission.READ_CONTACTS,
+                Manifest.permission.WRITE_CONTACTS
+            ),
             CONTACT_PERMISSION_REQUEST
         )
     }
@@ -44,7 +48,9 @@ object PermissionUtils : StoragePermissionUtils() {
             return true
         }
 
-        return activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        return activity.checkSelfPermission(
+            Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     @JvmStatic
@@ -70,7 +76,9 @@ object PermissionUtils : StoragePermissionUtils() {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED
         } else {
-            hasExternalStoragePermission()
+            activity.checkSelfPermission(
+                Manifest.permission.READ_MEDIA_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
         }
     }
 
@@ -86,29 +94,11 @@ object PermissionUtils : StoragePermissionUtils() {
                 STORAGE_PERMISSION_REQUEST
             )
         } else {
-            requestExternalStoragePermission(activity)
+            activity.requestPermissions(
+                arrayOf(Manifest.permission.READ_MEDIA_AUDIO),
+                STORAGE_PERMISSION_REQUEST
+            )
         }
-    }
-
-    @JvmStatic
-    fun hasMediaAudioPermission(context: Context): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            return false
-        }
-
-        return context.checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED
-    }
-
-    @JvmStatic
-    fun requestMediaAudioPermission(activity: Activity) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            return
-        }
-
-        activity.requestPermissions(
-            arrayOf(Manifest.permission.READ_MEDIA_AUDIO),
-            MEDIA_AUDIO_PERMISSION_REQUEST
-        )
     }
 
     @JvmStatic

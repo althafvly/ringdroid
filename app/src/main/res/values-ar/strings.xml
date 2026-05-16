@@ -49,8 +49,6 @@
     <string name="file_save_title">حفظ باسم:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">إذن التخزين أو الوسائط الصوتية مطلوب لكي يعمل هذا التطبيق. جميع الأذونات الأخرى اختيارية.</string>
-    <string name="storage_permission_required_for_editor_play">إذن الوسائط الصوتية مطلوب لكي يعمل هذا التطبيق. جميع الأذونات الأخرى اختيارية.</string>
 
     <string name="ringtone_type_label">النوع:</string>
 
@@ -130,8 +128,6 @@
     <string name="write_system_settings_summary">مطلوب لتعيين نغمات الرنين كإعدادات افتراضية للنظام</string>
     <string name="mic_permission_summary">مطلوب لتسجيل مقاطع الصوت الخاصة بك</string>
     <string name="contact_permission_summary">مطلوب لتعيين نغمات رنين لجهات الاتصال الخاصة بك</string>
-    <string name="media_audio_permission">إذن الوسائط الصوتية</string>
-    <string name="media_audio_summary">مطلوب لقراءة ملفات نغمات الرنين من هاتفك الذكي</string>
     <string name="list_is_empty">لا توجد ملفات صوتية. فعّل خيار "إظهار كل الصوتيات" من قائمة النقاط الثلاث لعرض ملفات النظام الصوتية.</string>
 
     <string name="zoom_in">تكبير</string>

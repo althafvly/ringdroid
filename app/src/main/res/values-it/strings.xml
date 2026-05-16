@@ -49,8 +49,6 @@
     <string name="file_save_title">Salva come:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Il permesso di archiviazione o audio multimediale è obbligatorio per il funzionamento di questa app. Tutti gli altri permessi sono facoltativi.</string>
-    <string name="storage_permission_required_for_editor_play">L\'autorizzazione audio multimediale è obbligatoria per il funzionamento di questa app. Tutti gli altri permessi sono facoltativi.</string>
 
     <string name="ringtone_type_label">Tipo:</string>
 
@@ -130,8 +128,6 @@
     <string name="write_system_settings_summary">Necessario per impostare le suonerie come predefinite del sistema</string>
     <string name="mic_permission_summary">Necessario per registrare i propri clip audio</string>
     <string name="contact_permission_summary">Necessario per assegnare suonerie ai tuoi contatti</string>
-    <string name="media_audio_permission">Permesso audio multimediale</string>
-    <string name="media_audio_summary">Necessario per leggere i file di suoneria dal tuo smartphone</string>
     <string name="list_is_empty">Nessun file audio trovato. Abilita “Mostra tutti gli audio” dal menu con i tre punti per visualizzare i file audio di sistema.</string>
 
     <string name="zoom_in">Ingrandisci</string>

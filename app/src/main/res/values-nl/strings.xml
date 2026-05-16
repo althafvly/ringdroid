@@ -49,8 +49,6 @@
     <string name="file_save_title">Opslaan als:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Opslag- of media-audiotoesteming is vereist voor deze app om te werken. Alle overige machtigingen zijn optioneel.</string>
-    <string name="storage_permission_required_for_editor_play">Media-audiotoesteming is vereist voor deze app om te werken. Alle overige machtigingen zijn optioneel.</string>
 
     <string name="ringtone_type_label">Type:</string>
 
@@ -130,8 +128,6 @@
     <string name="write_system_settings_summary">Nodig om beltonen als systeemstandaard in te stellen</string>
     <string name="mic_permission_summary">Nodig om uw eigen audioclips op te nemen</string>
     <string name="contact_permission_summary">Nodig om beltonen aan uw contacten toe te wijzen</string>
-    <string name="media_audio_permission">Media-audiotoestemming</string>
-    <string name="media_audio_summary">Nodig om beltoonbestanden van uw smartphone te lezen</string>
     <string name="list_is_empty">Geen audiobestanden gevonden. Schakel ‘Alle audio tonen’ in via het menu met drie puntjes om systeemaudiobestanden te bekijken.</string>
 
     <string name="zoom_in">Inzoomen</string>

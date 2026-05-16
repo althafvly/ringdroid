@@ -18,48 +18,6 @@
             android:layout_marginRight="16dp">
 
             <LinearLayout
-                android:id="@+id/switch_media_audio_entry"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingBottom="12dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/media_audio_permission"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/media_audio_summary"
-                        android:textColor="#777"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <Switch
-                    android:id="@+id/switch_media_audio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:thumb="@drawable/switch_thumb"
-                    android:track="@drawable/switch_track"
-                    android:splitTrack="false"
-                    android:switchMinWidth="48dp"
-                    android:thumbOffset="2dp"
-                    android:padding="0dp" />
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/switch_storage_entry"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
