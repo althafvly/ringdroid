@@ -31,6 +31,7 @@ import android.widget.Spinner;
 import com.ringdroid.databinding.FileSaveBinding;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class FileSaveDialog {
 
@@ -58,11 +59,12 @@ public class FileSaveDialog {
         FileSaveBinding binding = FileSaveBinding.inflate(LayoutInflater.from(context));
         builder.setView(binding.getRoot());
 
-        mTypeArray = new ArrayList<>();
-        mTypeArray.add(resources.getString(R.string.type_music));
-        mTypeArray.add(resources.getString(R.string.type_alarm));
-        mTypeArray.add(resources.getString(R.string.type_notification));
-        mTypeArray.add(resources.getString(R.string.type_ringtone));
+        mTypeArray = new ArrayList<>(Arrays.asList(
+                resources.getString(R.string.type_music),
+                resources.getString(R.string.type_alarm),
+                resources.getString(R.string.type_notification),
+                resources.getString(R.string.type_ringtone)
+        ));
 
         mFilename = binding.filename;
         mOriginalName = originalName;
