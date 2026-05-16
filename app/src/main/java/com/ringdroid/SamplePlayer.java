@@ -49,14 +49,10 @@ class SamplePlayer {
         mNumSamples = numSamples;
         mPlaybackStart = 0;
 
-        int bufferSize = AudioTrack.getMinBufferSize(mSampleRate,
-                mChannels == 1 ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO,
-                AudioFormat.ENCODING_PCM_16BIT);
-        // make sure minBufferSize can contain at least 1 second of audio (16 bits
-        // sample).
-        if (bufferSize < mChannels * mSampleRate * 2) {
-            bufferSize = mChannels * mSampleRate * 2;
-        }
+        int channelMask = mChannels == 1 ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO;
+        int bufferSize = Math.max(
+                AudioTrack.getMinBufferSize(mSampleRate, channelMask, AudioFormat.ENCODING_PCM_16BIT),
+                mChannels * mSampleRate * 2);
         mBuffer = new short[bufferSize / 2]; // bufferSize is in Bytes.
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_MEDIA)
@@ -65,7 +61,7 @@ class SamplePlayer {
         AudioFormat audioFormat = new AudioFormat.Builder()
                 .setSampleRate(mSampleRate)
                 .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                .setChannelMask(mChannels == 1 ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO)
+                .setChannelMask(channelMask)
                 .build();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -135,17 +131,9 @@ class SamplePlayer {
             mSamples.position(position);
             int limit = mNumSamples * mChannels;
             while (mSamples.position() < limit && mKeepPlaying) {
-                int numSamplesLeft = limit - mSamples.position();
-                if (numSamplesLeft >= mBuffer.length) {
-                    mSamples.get(mBuffer);
-                } else {
-                    for (int i = numSamplesLeft; i < mBuffer.length; i++) {
-                        mBuffer[i] = 0;
-                    }
-                    mSamples.get(mBuffer, 0, numSamplesLeft);
-                }
-                // TODO(nfaralli): use the write method that takes a ByteBuffer as argument.
-                mAudioTrack.write(mBuffer, 0, mBuffer.length);
+                int toWrite = Math.min(limit - mSamples.position(), mBuffer.length);
+                mSamples.get(mBuffer, 0, toWrite);
+                mAudioTrack.write(mBuffer, 0, toWrite);
             }
         });
         mPlayThread.start();
