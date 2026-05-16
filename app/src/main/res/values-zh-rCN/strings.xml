@@ -49,8 +49,6 @@
     <string name="file_save_title">另存为:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">此应用需要存储或媒体音频权限才能运行。所有其他权限都是可选的。</string>
-    <string name="storage_permission_required_for_editor_play">此应用需要媒体音频权限才能运行。所有其他权限都是可选的。</string>
 
     <string name="ringtone_type_label">类型:</string>
 
@@ -126,7 +124,5 @@
     <string name="zoom_in">放大</string>
     <string name="zoom_out">缩小</string>
 
-    <string name="menu_permissions">权限</string>
-
-    <string name="settings_button">设置</string>
+    <string name="storage_permission_required_for_editor">此应用需要媒体音频权限才能正常工作。</string>
 </resources>

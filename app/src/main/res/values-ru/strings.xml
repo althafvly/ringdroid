@@ -49,8 +49,6 @@
     <string name="file_save_title">Сохранить как:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Разрешение на хранилище или медиа-аудио необходимо для работы этого приложения. Все остальные разрешения являются необязательными.</string>
-    <string name="storage_permission_required_for_editor_play">Разрешение на медиа-аудио необходимо для работы этого приложения. Все остальные разрешения являются необязательными.</string>
 
     <string name="ringtone_type_label">Тип:</string>
 
@@ -126,7 +124,5 @@
     <string name="zoom_in">Увеличить</string>
     <string name="zoom_out">Уменьшить</string>
 
-    <string name="menu_permissions">Разрешения</string>
-
-    <string name="settings_button">Настройки</string>
+    <string name="storage_permission_required_for_editor">Для работы этого приложения требуется разрешение на доступ к медиа-аудио.</string>
 </resources>

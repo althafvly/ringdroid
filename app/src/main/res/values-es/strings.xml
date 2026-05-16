@@ -121,13 +121,9 @@
     <string name="list_is_empty">No se encontraron archivos de audio. Habilite \'Audios del sistema\' en el menú de tres puntos para ver los archivos de audio del sistema</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Se requiere permiso de almacenamiento o audio multimedia para que esta aplicación funcione. Todos los demás permisos son opcionales.</string>
-    <string name="storage_permission_required_for_editor_play">Se requiere permiso de audio multimedia para que esta aplicación funcione. Todos los demás permisos son opcionales.</string>
 
     <string name="zoom_in">Acercar</string>
     <string name="zoom_out">Alejar</string>
 
-    <string name="menu_permissions">Permisos</string>
-
-    <string name="settings_button">Ajustes</string>
+    <string name="storage_permission_required_for_editor">Se requiere permiso de audio multimedia para que esta aplicación funcione.</string>
 </resources>

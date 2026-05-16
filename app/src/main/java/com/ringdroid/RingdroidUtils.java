@@ -5,16 +5,15 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.widget.Toast;
 
 public class RingdroidUtils {
     public static void setDefaultRingTone(Activity activity, int type, Uri ringtoneUri, boolean shouldFinish) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.System.canWrite(activity)) {
+        if (!PermissionUtils.hasWriteSettingsPermission(activity)) {
             Toast.makeText(activity, R.string.required_system_modify_permission, Toast.LENGTH_SHORT).show();
+            PermissionUtils.requestWriteSettingsPermission(activity);
             return;
         }
-
 
         try {
             RingtoneManager.setActualDefaultRingtoneUri(activity, type, ringtoneUri);

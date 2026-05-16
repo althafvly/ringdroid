@@ -49,8 +49,6 @@
     <string name="file_save_title">Farklı Kaydet:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Depolama veya medya ses izni bu uygulamanın çalışması için gereklidir. Diğer tüm izinler isteğe bağlıdır.</string>
-    <string name="storage_permission_required_for_editor_play">Medya ses izni bu uygulamanın çalışması için gereklidir. Diğer tüm izinler isteğe bağlıdır.</string>
 
     <string name="ringtone_type_label">Tür:</string>
 
@@ -126,7 +124,5 @@
     <string name="zoom_in">Yakınlaştır</string>
     <string name="zoom_out">Uzaklaştır</string>
 
-    <string name="menu_permissions">İzinler</string>
-
-    <string name="settings_button">Ayarlar</string>
+    <string name="storage_permission_required_for_editor">Bu uygulamanın çalışması için medya ses izni gereklidir.</string>
 </resources>

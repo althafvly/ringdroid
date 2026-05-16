@@ -49,8 +49,6 @@
     <string name="file_save_title">Salva come:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">Il permesso di archiviazione o audio multimediale è obbligatorio per il funzionamento di questa app. Tutti gli altri permessi sono facoltativi.</string>
-    <string name="storage_permission_required_for_editor_play">L\'autorizzazione audio multimediale è obbligatoria per il funzionamento di questa app. Tutti gli altri permessi sono facoltativi.</string>
 
     <string name="ringtone_type_label">Tipo:</string>
 
@@ -126,7 +124,5 @@
     <string name="zoom_in">Ingrandisci</string>
     <string name="zoom_out">Riduci</string>
 
-    <string name="menu_permissions">Autorizzazioni</string>
-
-    <string name="settings_button">Impostazioni</string>
+    <string name="storage_permission_required_for_editor">È necessaria l\'autorizzazione per i contenuti multimediali audio affinché questa app funzioni.</string>
 </resources>

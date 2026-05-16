@@ -9,7 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 
-object PermissionUtils : StoragePermissionUtils() {
+internal object PermissionUtils {
     const val CONTACT_PERMISSION_REQUEST: Int = 1
     const val MEDIA_AUDIO_PERMISSION_REQUEST: Int = 2
     const val MIC_PERMISSION_REQUEST: Int = 3
@@ -65,13 +65,9 @@ object PermissionUtils : StoragePermissionUtils() {
             return true
         }
 
-        return if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-            activity.checkSelfPermission(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
-        } else {
-            hasExternalStoragePermission()
-        }
+        return activity.checkSelfPermission(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     @JvmStatic
@@ -80,14 +76,10 @@ object PermissionUtils : StoragePermissionUtils() {
             return
         }
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-            activity.requestPermissions(
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                STORAGE_PERMISSION_REQUEST
-            )
-        } else {
-            requestExternalStoragePermission(activity)
-        }
+        activity.requestPermissions(
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            STORAGE_PERMISSION_REQUEST
+        )
     }
 
     @JvmStatic

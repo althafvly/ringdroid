@@ -33,7 +33,6 @@ import android.os.Looper;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -47,6 +46,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ringdroid.databinding.MediaSelectBinding;
 import com.ringdroid.soundfile.SoundFile;
@@ -77,7 +77,7 @@ public class RingdroidSelectActivity extends Activity {
             MediaStore.Audio.Media.IS_RINGTONE, MediaStore.Audio.Media.IS_ALARM, MediaStore.Audio.Media.IS_NOTIFICATION,
             MediaStore.Audio.Media.IS_MUSIC,
 
-            // File path — will be non-null since we use MANAGE_EXTERNAL_STORAGE
+            // File path
             MediaStore.Audio.Media.DATA};
     private final String TAG = this.getClass().getName();
     private final Handler mUiHandler = new Handler(Looper.getMainLooper());
@@ -87,7 +87,6 @@ public class RingdroidSelectActivity extends Activity {
     private boolean mShowAll = false;
     private Thread mLoaderThread;
     private MediaSelectBinding binding;
-    private boolean mSettingsPermissionRequested = false;
 
     /**
      * Called when the activity is first created.
@@ -100,9 +99,6 @@ public class RingdroidSelectActivity extends Activity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 PermissionUtils.requestMediaAudioPermission(this);
             } else {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S_V2) {
-                    mSettingsPermissionRequested = true;
-                }
                 PermissionUtils.requestStoragePermission(this);
             }
         }
@@ -183,13 +179,7 @@ public class RingdroidSelectActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        if (mSettingsPermissionRequested) {
-            mSettingsPermissionRequested = false;
-            if (!PermissionUtils.hasStoragePermission(this) && !PermissionUtils.hasMediaAudioPermission(this)) {
-                showPermissionRationaleAndExit();
-                return;
-            }
-        }
+
 
         // Refresh the list to show any newly saved files
         refreshListView();
@@ -324,31 +314,10 @@ public class RingdroidSelectActivity extends Activity {
             if (PermissionUtils.hasStoragePermission(this) || PermissionUtils.hasMediaAudioPermission(this)) {
                 refreshListView();
             } else {
-                showPermissionRationaleAndExit();
+                Toast.makeText(this, R.string.storage_permission_required_for_editor, Toast.LENGTH_LONG).show();
+                finish();
             }
         }
-    }
-
-    private void showPermissionRationaleAndExit() {
-        if (isFinishing() || isDestroyed()) return;
-
-        int messageRes = BuildConfig.FLAVOR.equals("play")
-            ? R.string.storage_permission_required_for_editor_play
-            : R.string.storage_permission_required_for_editor_fdroid;
-
-        new AlertDialog.Builder(this)
-            .setTitle(R.string.alert_title_failure)
-            .setMessage(messageRes)
-            .setPositiveButton(R.string.settings_button, (dialog, which) -> {
-                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                intent.setData(uri);
-                startActivity(intent);
-                finish();
-            })
-            .setNegativeButton(R.string.alert_ok_button, (dialog, which) -> finish())
-            .setCancelable(false)
-            .show();
     }
 
     /**

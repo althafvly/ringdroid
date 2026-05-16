@@ -49,8 +49,6 @@
     <string name="file_save_title">Enregistrer sous:</string>
 
     <!-- Permission requirement dialog -->
-    <string name="storage_permission_required_for_editor_fdroid">L\'autorisation de stockage ou d\'audio multimédia est requise pour que cette application fonctionne. Toutes les autres autorisations sont facultatives.</string>
-    <string name="storage_permission_required_for_editor_play">L\'autorisation audio multimédia est requise pour que cette application fonctionne. Toutes les autres autorisations sont facultatives.</string>
 
     <string name="ringtone_type_label">Type:</string>
 
@@ -126,7 +124,5 @@
     <string name="zoom_in">Zoom avant</string>
     <string name="zoom_out">Zoom arrière</string>
 
-    <string name="menu_permissions">Autorisations</string>
-
-    <string name="settings_button">Paramètres</string>
+    <string name="storage_permission_required_for_editor">L\'autorisation d\'accès aux médias audio est requise pour que cette application fonctionne.</string>
 </resources>
