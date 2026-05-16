@@ -50,7 +50,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ringdroid.databinding.DialogProgressBinding;
+import com.ringdroid.databinding.DialogProgressHorizontalBinding;
 import com.ringdroid.databinding.EditorBinding;
+import com.ringdroid.databinding.RecordAudioBinding;
 import com.ringdroid.soundfile.SoundFile;
 
 import java.io.File;
@@ -768,14 +771,13 @@ public class RingdroidEditActivity extends Activity
         mLoadingLastUpdateTime = getCurrentTime();
         mLoadingKeepGoing = true;
         mFinishActivity = false;
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_progress_horizontal, null);
-        ProgressBar progressBar = dialogView.findViewById(R.id.progress_bar);
-        progressBar.setMax(100);
-        mLoadingProgressBar = progressBar;
+        DialogProgressHorizontalBinding progressBinding = DialogProgressHorizontalBinding.inflate(getLayoutInflater());
+        mLoadingProgressBar = progressBinding.progressBar;
+        mLoadingProgressBar.setMax(100);
 
         mProgressDialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.progress_dialog_loading)
-                .setView(dialogView)
+                .setView(progressBinding.getRoot())
                 .setCancelable(true)
                 .setNegativeButton(R.string.progress_dialog_cancel, (dialog, id) -> {
                     mLoadingKeepGoing = false;
@@ -884,13 +886,14 @@ public class RingdroidEditActivity extends Activity
         // Using null, android:layout_width etc. may not work (hence text is at the top
         // of view).
         // On the other hand, if the text is big enough, this is good enough.
-        adBuilder.setView(getLayoutInflater().inflate(R.layout.record_audio, null));
+        RecordAudioBinding recordBinding = RecordAudioBinding.inflate(getLayoutInflater());
+        adBuilder.setView(recordBinding.getRoot());
         if (!isFinishing() && !isDestroyed()) {
             mAlertDialog = adBuilder.show();
         } else {
             return;
         }
-        mTimerTextView = mAlertDialog.findViewById(R.id.record_audio_timer);
+        mTimerTextView = recordBinding.recordAudioTimer;
 
         final SoundFile.ProgressListener listener = elapsedTime -> {
             long now = getCurrentTime();
@@ -1353,9 +1356,9 @@ public class RingdroidEditActivity extends Activity
         final int duration = (int) (endTime - startTime + 0.5);
 
         // Create an indeterminate progress dialog
-        View view = getLayoutInflater().inflate(R.layout.dialog_progress, null);
+        DialogProgressBinding progressBinding = DialogProgressBinding.inflate(getLayoutInflater());
 
-        mProgressDialog = new AlertDialog.Builder(this).setTitle(R.string.progress_dialog_saving).setView(view)
+        mProgressDialog = new AlertDialog.Builder(this).setTitle(R.string.progress_dialog_saving).setView(progressBinding.getRoot())
                 .setCancelable(false).create();
         if (!isFinishing() && !isDestroyed()) {
             mProgressDialog.show();
