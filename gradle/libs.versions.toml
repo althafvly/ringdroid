@@ -1,6 +1,6 @@
 [versions]
 agp = "9.2.1"
-spotless = "8.5.1"
+spotless = "8.6.0"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.3.0"
 androidx-test-runner = "1.7.0"
