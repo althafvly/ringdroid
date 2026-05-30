@@ -120,21 +120,10 @@
     <string name="required_mic_permission">Permesso microfono richiesto per registrare l\'audio</string>
     <string name="required_storage_permission">Permesso di archiviazione richiesto per elencare i file audio</string>
     <string name="required_system_modify_permission">Il permesso di modifica delle impostazioni di sistema è richiesto per impostare la suoneria</string>
-    <string name="storage_permission">Permesso di Archiviazione</string>
-    <string name="write_system_settings">Scrivi Impostazioni di Sistema</string>
-    <string name="mic_permission">Permesso Microfono</string>
-    <string name="contacts_permission">Permesso Contatti</string>
-    <string name="start">Inizia</string>
-    <string name="storage_permission_summary">Necessario per salvare e accedere ai file audio</string>
-    <string name="write_system_settings_summary">Necessario per impostare le suonerie come predefinite del sistema</string>
-    <string name="mic_permission_summary">Necessario per registrare i propri clip audio</string>
-    <string name="contact_permission_summary">Necessario per assegnare suonerie ai tuoi contatti</string>
     <string name="list_is_empty">Nessun file audio trovato. Abilita “Mostra tutti gli audio” dal menu con i tre punti per visualizzare i file audio di sistema.</string>
 
     <string name="zoom_in">Ingrandisci</string>
     <string name="zoom_out">Riduci</string>
-
-    <string name="menu_permissions">Autorizzazioni</string>
 
     <string name="menu_amplify">Amplifica</string>
     <string name="icon_media">Media</string>

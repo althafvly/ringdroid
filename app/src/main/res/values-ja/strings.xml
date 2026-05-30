@@ -120,21 +120,10 @@
     <string name="required_mic_permission">オーディオを録音するにはマイク権限が必要です</string>
     <string name="required_storage_permission">オーディオファイルを一覧表示するにはストレージ権限が必要です</string>
     <string name="required_system_modify_permission">着信音を設定するには、システム設定の変更権限が必要です</string>
-    <string name="storage_permission">ストレージ権限</string>
-    <string name="write_system_settings">システム設定の書き込み</string>
-    <string name="mic_permission">マイク権限</string>
-    <string name="contacts_permission">連絡先権限</string>
-    <string name="start">開始</string>
-    <string name="storage_permission_summary">オーディオファイルの保存とアクセスに必要です</string>
-    <string name="write_system_settings_summary">着信音をシステムのデフォルトとして設定するために必要です</string>
-    <string name="mic_permission_summary">独自のオーディオクリップを録音するために必要です</string>
-    <string name="contact_permission_summary">連絡先に着信音を割り当てるために必要です</string>
     <string name="list_is_empty">オーディオファイルが見つかりません。システムのオーディオファイルを表示するには、三点メニューから「すべてのオーディオを表示」を有効にしてください。</string>
 
     <string name="zoom_in">拡大</string>
     <string name="zoom_out">縮小</string>
-
-    <string name="menu_permissions">権限</string>
 
     <string name="menu_amplify">増幅</string>
     <string name="icon_media">メディア</string>

@@ -120,21 +120,10 @@
     <string name="required_mic_permission">Wymagane uprawnienie mikrofonu do nagrywania dźwięku</string>
     <string name="required_storage_permission">Wymagane uprawnienie do pamięci, aby wyświetlić listę plików audio</string>
     <string name="required_system_modify_permission">Wymagane jest uprawnienie do modyfikacji ustawień systemowych, aby ustawić dzwonek</string>
-    <string name="storage_permission">Uprawnienie do pamięci</string>
-    <string name="write_system_settings">Zapis ustawień systemowych</string>
-    <string name="mic_permission">Uprawnienie mikrofonu</string>
-    <string name="contacts_permission">Uprawnienie do kontaktów</string>
-    <string name="start">Start</string>
-    <string name="storage_permission_summary">Potrzebne do zapisywania i dostępu do plików audio</string>
-    <string name="write_system_settings_summary">Potrzebne do ustawienia dzwonków jako domyślne systemowe</string>
-    <string name="mic_permission_summary">Potrzebne do nagrywania własnych klipów audio</string>
-    <string name="contact_permission_summary">Potrzebne do przypisywania dzwonków do kontaktów</string>
     <string name="list_is_empty">Nie znaleziono plików audio. Włącz „Pokaż wszystkie pliki audio” z menu trzech kropek, aby wyświetlić systemowe pliki audio.</string>
 
     <string name="zoom_in">Powiększ</string>
     <string name="zoom_out">Pomniejsz</string>
-
-    <string name="menu_permissions">Uprawnienia</string>
 
     <string name="menu_amplify">Wzmocnij</string>
     <string name="icon_media">Multimedia</string>

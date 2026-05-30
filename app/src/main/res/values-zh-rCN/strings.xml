@@ -120,21 +120,10 @@
     <string name="required_mic_permission">录制音频需要麦克风权限</string>
     <string name="required_storage_permission">列出音频文件需要存储权限</string>
     <string name="required_system_modify_permission">设置铃声需要修改系统设置权限</string>
-    <string name="storage_permission">存储权限</string>
-    <string name="write_system_settings">写入系统设置</string>
-    <string name="mic_permission">麦克风权限</string>
-    <string name="contacts_permission">联系人权限</string>
-    <string name="start">开始</string>
-    <string name="storage_permission_summary">保存和访问音频文件所需</string>
-    <string name="write_system_settings_summary">将铃声设为系统默认所需</string>
-    <string name="mic_permission_summary">录制您自己的音频片段所需</string>
-    <string name="contact_permission_summary">将铃声分配给您的联系人所需</string>
     <string name="list_is_empty">未找到音频文件。请在右上角三点菜单中启用“显示所有音频”以查看系统音频文件。</string>
 
     <string name="zoom_in">放大</string>
     <string name="zoom_out">缩小</string>
-
-    <string name="menu_permissions">权限</string>
 
     <string name="menu_amplify">放大</string>
     <string name="icon_media">媒体</string>
