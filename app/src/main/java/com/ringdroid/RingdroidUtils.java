@@ -4,11 +4,14 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.ComponentActivity;
 
 public class RingdroidUtils {
+    private static final String TAG = "RingdroidUtils";
+
     public static void setDefaultRingTone(ComponentActivity activity, int type, Uri ringtoneUri, boolean shouldFinish) {
         if (!PermissionUtils.hasWriteSettingsPermission(activity)) {
             Toast.makeText(activity, R.string.required_system_modify_permission, Toast.LENGTH_SHORT).show();
@@ -24,9 +27,11 @@ public class RingdroidUtils {
                 Toast.makeText(activity, R.string.default_ringtone_success_message, Toast.LENGTH_SHORT).show();
             }
         } catch (IllegalArgumentException e) {
+            Log.e(TAG, "Unable to set default ringtone due to restriction", e);
             // On some Android versions/devices, setting ringtones may be restricted
             Toast.makeText(activity, "Unable to set as default ringtone. Your device may not allow this.", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
+            Log.e(TAG, "Failed to set default ringtone", e);
             Toast.makeText(activity, "Error setting ringtone: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 

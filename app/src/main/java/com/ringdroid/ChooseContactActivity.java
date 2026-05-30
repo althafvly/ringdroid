@@ -44,7 +44,7 @@ import com.ringdroid.databinding.ChooseContactBinding;
  * assign the ringtone to that contact.
  */
 public class ChooseContactActivity extends ComponentActivity {
-    private final String TAG = this.getClass().getName();
+    private static final String TAG = "ChooseContactActivity";
     private final Handler mUiHandler = new Handler(Looper.getMainLooper());
     private SearchView mFilter;
     private SimpleCursorAdapter mAdapter;
@@ -136,7 +136,7 @@ public class ChooseContactActivity extends ComponentActivity {
             loadContactsAsync(null);
         } catch (SecurityException e) {
             // No permission to retrieve contacts?
-            Log.e(TAG, e.toString());
+            Log.e(TAG, "No permission to retrieve contacts", e);
         }
     }
 

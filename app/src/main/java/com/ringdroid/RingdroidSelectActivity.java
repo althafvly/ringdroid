@@ -81,7 +81,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
 
             // File path — will be non-null since we use MANAGE_EXTERNAL_STORAGE
             MediaStore.Audio.Media.DATA};
-    private final String TAG = this.getClass().getName();
+    private static final String TAG = "RingdroidSelectActivity";
     private final Handler mUiHandler = new Handler(Looper.getMainLooper());
     private SearchView mFilter;
     private SimpleCursorAdapter mAdapter;
@@ -152,7 +152,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
 
             loadAudioAsync(null);
         } catch (SecurityException | IllegalArgumentException e) {
-            Log.e(TAG, e.toString());
+            Log.e(TAG, "Failed to initialize cursor adapter", e);
         }
 
         mAdapter.setViewBinder((view, cursor, columnIndex) -> {
@@ -210,7 +210,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
 
                 mUiHandler.post(() -> updateUiWithCursors(internal, external));
             } catch (Exception e) {
-                Log.e(TAG, "Loader error: " + e);
+                Log.e(TAG, "Loader error", e);
             }
         });
 
@@ -512,7 +512,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
             intent.setClass(this, ChooseContactActivity.class);
             startActivity(intent);
         } catch (Exception e) {
-            Log.e(TAG, "Couldn't open Choose Contact window");
+            Log.e(TAG, "Couldn't open Choose Contact window", e);
         }
         return true;
     }
@@ -552,7 +552,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
                 if (filePath != null) {
                     File file = new File(filePath);
                     boolean status = file.delete();
-                    Log.d(TAG, "Delete file: " + file + "status:" + status);
+                    Log.d(TAG, "Delete file: " + file + " status: " + status);
                 }
             }
         }
@@ -585,7 +585,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
             intent.setClass(this, RingdroidEditActivity.class);
             mEditActivityLauncher.launch(intent);
         } catch (Exception e) {
-            Log.e(TAG, "Couldn't start editor");
+            Log.e(TAG, "Couldn't start editor", e);
         }
     }
 
@@ -642,7 +642,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
             intent.setClass(this, RingdroidEditActivity.class);
             mEditActivityLauncher.launch(intent);
         } catch (Exception e) {
-            Log.e(TAG, "Couldn't start editor");
+            Log.e(TAG, "Couldn't start editor", e);
         }
     }
 

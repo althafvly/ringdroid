@@ -29,8 +29,6 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
-import com.ringdroid.FilesUtil;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -46,7 +44,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class SoundFile {
-    private final String TAG = this.getClass().getName();
+    private static final String TAG = "SoundFile";
 
     private ProgressListener mProgressListener = null;
     private File mInputFile = null;
@@ -104,10 +102,11 @@ public class SoundFile {
     public static void uriExists(Context context, Uri uri) {
         try (Cursor cursor = context.getContentResolver().query(uri, new String[]{OpenableColumns.DISPLAY_NAME}, null,
                 null, null)) {
-            if (cursor != null) {
-                cursor.moveToFirst();
+            if (cursor == null || !cursor.moveToFirst()) {
+                Log.w(TAG, "URI query returned null or empty cursor: " + uri);
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to verify if URI exists: " + uri, e);
         }
     }
 
@@ -691,8 +690,7 @@ public class SoundFile {
             }
             outputStream.close();
         } catch (IOException e) {
-            Log.e(TAG, "Failed to create the .m4a file.");
-            Log.e(TAG, FilesUtil.getStackTrace(e));
+            Log.e(TAG, "Failed to create the .m4a file.", e);
         }
     }
 

@@ -20,10 +20,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.util.HashMap;
 
 public class SongMetadataReader {
+    private static final String TAG = "SongMetadataReader";
+
     public Uri GENRES_URI = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
     public Context mContext;
     public String mFilename;
@@ -39,7 +42,8 @@ public class SongMetadataReader {
         mTitle = getBasename(filename);
         try {
             ReadMetadata();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to read song metadata", e);
         }
     }
 

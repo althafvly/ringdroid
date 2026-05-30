@@ -61,9 +61,7 @@ import com.ringdroid.databinding.RecordAudioBinding;
 import com.ringdroid.soundfile.SoundFile;
 
 import java.io.File;
-import java.io.PrintWriter;
 import java.io.RandomAccessFile;
-import java.io.StringWriter;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -76,7 +74,7 @@ public class RingdroidEditActivity extends ComponentActivity
         implements
             MarkerView.MarkerListener,
             WaveformView.WaveformListener {
-    private final String TAG = this.getClass().getName();
+    private static final String TAG = "RingdroidEditActivity";
     private final ActivityResultLauncher<String> mMicPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
                 if (PermissionUtils.hasMicPermissions(this)) {
@@ -814,7 +812,7 @@ public class RingdroidEditActivity extends ComponentActivity
                 if (mProgressDialog != null) {
                     mProgressDialog.dismiss();
                 }
-                Log.e(TAG, "Unexpected error: " + e.getMessage(), e);
+                Log.e(TAG, "Unexpected error", e);
                 mInfoContent = e.toString();
                 runOnUiThread(() -> setSafeText(mInfo, mInfoContent));
 
@@ -899,7 +897,7 @@ public class RingdroidEditActivity extends ComponentActivity
                 if (mAlertDialog != null) {
                     mAlertDialog.dismiss();
                 }
-                Log.e(TAG, "Unexpected error: " + e.getMessage(), e);
+                Log.e(TAG, "Unexpected error", e);
                 mInfoContent = e.toString();
                 runOnUiThread(() -> mInfo.setText(mInfoContent));
 
@@ -1218,8 +1216,7 @@ public class RingdroidEditActivity extends ComponentActivity
     private void showFinalAlert(Exception e, CharSequence message) {
         CharSequence title;
         if (e != null) {
-            Log.e(TAG, "Error: " + message);
-            Log.e(TAG, FilesUtil.getStackTrace(e));
+            Log.e(TAG, "Error: " + message, e);
             title = getResources().getText(R.string.alert_title_failure);
             setResult(RESULT_CANCELED, new Intent());
         } else {
@@ -1281,7 +1278,7 @@ public class RingdroidEditActivity extends ComponentActivity
         // Create the parent directory
         File parentDirFile = new File(parentdir);
         boolean status = parentDirFile.mkdirs();
-        Log.d(TAG, "Created folder: " + parentdir + "status:" + status);
+        Log.d(TAG, "Created folder: " + parentdir + " status: " + status);
 
         // If we can't write to that special path, try just writing
         // directly to the sdcard
@@ -1372,12 +1369,9 @@ public class RingdroidEditActivity extends ComponentActivity
                     // log the error and try to create a .wav file instead
                     if (outFile.exists()) {
                         boolean status = outFile.delete();
-                        Log.d(TAG, "Delete file: " + outPath + "status:" + status);
+                        Log.d(TAG, "Delete file: " + outPath + " status: " + status);
                     }
-                    StringWriter writer = new StringWriter();
-                    e.printStackTrace(new PrintWriter(writer));
-                    Log.e(TAG, "Error: Failed to create " + outPath);
-                    Log.e(TAG, writer.toString());
+                    Log.e(TAG, "Error: Failed to create " + outPath, e);
                     fallbackToWAV = true;
                 }
 
@@ -1570,7 +1564,7 @@ public class RingdroidEditActivity extends ComponentActivity
             intent.setClass(this, ChooseContactActivity.class);
             mChooseContactLauncher.launch(intent);
         } catch (Exception e) {
-            Log.e(TAG, "Couldn't open Choose Contact window");
+            Log.e(TAG, "Couldn't open Choose Contact window", e);
         }
     }
 

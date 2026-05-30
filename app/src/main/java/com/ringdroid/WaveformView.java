@@ -47,7 +47,7 @@ import com.ringdroid.soundfile.SoundFile;
  * selected part of the waveform in a different color.
  */
 public class WaveformView extends View {
-    private final String TAG = this.getClass().getName();
+    private static final String TAG = "WaveformView";
 
     // Colors
     private final Paint mGridPaint;
