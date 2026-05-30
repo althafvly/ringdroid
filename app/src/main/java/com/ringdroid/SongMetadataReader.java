@@ -51,7 +51,8 @@ public class SongMetadataReader {
         // Get a map from genre ids to names
         HashMap<String, String> genreIdMap = new HashMap<>();
         Cursor c = mContext.getContentResolver().query(GENRES_URI,
-                new String[]{MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME}, null, null, null);
+                new String[]{MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME}, null, null,
+                null);
         assert c != null;
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             genreIdMap.put(c.getString(0), c.getString(1));
@@ -60,8 +61,8 @@ public class SongMetadataReader {
         mGenre = "";
         for (String genreId : genreIdMap.keySet()) {
             try (Cursor genreCursor = mContext.getContentResolver().query(makeGenreUri(genreId),
-                    new String[]{MediaStore.Audio.Media.DATA}, MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"",
-                    null, null)) {
+                    new String[]{MediaStore.Audio.Media.DATA},
+                    MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"", null, null)) {
                 if (genreCursor != null && genreCursor.getCount() != 0) {
                     mGenre = genreIdMap.get(genreId);
                     break;
@@ -71,8 +72,9 @@ public class SongMetadataReader {
 
         Uri uri = RingdroidUtils.getExternalAudioCollectionUri();
         c = mContext.getContentResolver().query(uri,
-                new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
-                        MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DATA},
+                new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,
+                        MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
+                        MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DATA},
                 MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"", null, null);
         if (c == null || c.getCount() == 0) {
             if (c != null) {

@@ -31,8 +31,8 @@ import android.widget.ImageView;
  * Most events are passed back to the client class using a listener interface.
  *
  * <p>
- * This class directly keeps track of its own velocity, though, accelerating as
- * the user holds down the left or right arrows while this control is focused.
+ * This class directly keeps track of its own velocity, though, accelerating as the user holds down
+ * the left or right arrows while this control is focused.
  */
 public class MarkerView extends ImageView {
 

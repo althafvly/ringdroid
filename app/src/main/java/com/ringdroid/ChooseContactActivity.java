@@ -40,8 +40,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import com.ringdroid.databinding.ChooseContactBinding;
 
 /**
- * After a ringtone has been saved, this activity lets you pick a contact and
- * assign the ringtone to that contact.
+ * After a ringtone has been saved, this activity lets you pick a contact and assign the ringtone to
+ * that contact.
  */
 public class ChooseContactActivity extends ComponentActivity {
     private static final String TAG = "ChooseContactActivity";
@@ -51,12 +51,13 @@ public class ChooseContactActivity extends ComponentActivity {
     private Uri mRingtoneUri;
     private Thread mLoaderThread;
     private ChooseContactBinding binding;
-    private final ActivityResultLauncher<String[]> mContactPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+    private final ActivityResultLauncher<String[]> mContactPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(), result -> {
                 if (PermissionUtils.hasContactPermissions(this)) {
                     loadData();
                 } else {
-                    Toast.makeText(this, R.string.require_contacts_permission, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.require_contacts_permission, Toast.LENGTH_LONG)
+                            .show();
                     finish();
                 }
             });
@@ -131,7 +132,8 @@ public class ChooseContactActivity extends ComponentActivity {
             listView.setAdapter(mAdapter);
 
             // On click, assign ringtone to contact
-            listView.setOnItemClickListener((parent, view, position, id) -> assignRingtoneToContact());
+            listView.setOnItemClickListener(
+                    (parent, view, position, id) -> assignRingtoneToContact());
 
             loadContactsAsync(null);
         } catch (SecurityException e) {
@@ -182,7 +184,8 @@ public class ChooseContactActivity extends ComponentActivity {
         values.put(Contacts.CUSTOM_RINGTONE, mRingtoneUri.toString());
         getContentResolver().update(uri, values, null, null);
 
-        String message = getResources().getText(R.string.success_contact_ringtone) + " " + displayName;
+        String message = getResources().getText(R.string.success_contact_ringtone) + " "
+                + displayName;
 
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         finish();
@@ -207,8 +210,7 @@ public class ChooseContactActivity extends ComponentActivity {
                 Cursor cursor = getContentResolver().query(Contacts.CONTENT_URI,
                         new String[]{Contacts._ID, Contacts.CUSTOM_RINGTONE, Contacts.DISPLAY_NAME,
                                 Contacts.STARRED},
-                        selection, selectionArgs,
-                        "STARRED DESC, DISPLAY_NAME ASC");
+                        selection, selectionArgs, "STARRED DESC, DISPLAY_NAME ASC");
 
                 if (Thread.interrupted())
                     return;

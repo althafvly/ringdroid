@@ -32,19 +32,18 @@ import androidx.core.content.ContextCompat;
 import com.ringdroid.soundfile.SoundFile;
 
 /**
- * WaveformView is an Android view that displays a visual representation of an
- * audio waveform. It retrieves the frame gains from a CheapSoundFile object and
- * recomputes the shape contour at several zoom levels.
+ * WaveformView is an Android view that displays a visual representation of an audio waveform. It
+ * retrieves the frame gains from a CheapSoundFile object and recomputes the shape contour at
+ * several zoom levels.
  *
  * <p>
- * This class doesn't handle selection or any of the touch interactions
- * directly, so it exposes a listener interface. The class that embeds this view
- * should add itself as a listener and make the view scroll and respond to other
- * events appropriately.
+ * This class doesn't handle selection or any of the touch interactions directly, so it exposes a
+ * listener interface. The class that embeds this view should add itself as a listener and make the
+ * view scroll and respond to other events appropriately.
  *
  * <p>
- * WaveformView doesn't actually handle selection, but it will just display the
- * selected part of the waveform in a different color.
+ * WaveformView doesn't actually handle selection, but it will just display the selected part of the
+ * waveform in a different color.
  */
 public class WaveformView extends View {
     private static final String TAG = "WaveformView";
@@ -95,7 +94,8 @@ public class WaveformView extends View {
         mUnselectedLinePaint.setColor(ContextCompat.getColor(context, R.color.waveform_unselected));
         mUnselectedBkgndLinePaint = new Paint();
         mUnselectedBkgndLinePaint.setAntiAlias(false);
-        mUnselectedBkgndLinePaint.setColor(ContextCompat.getColor(context, R.color.waveform_unselected_bkgnd_overlay));
+        mUnselectedBkgndLinePaint.setColor(
+                ContextCompat.getColor(context, R.color.waveform_unselected_bkgnd_overlay));
         mBorderLinePaint = new Paint();
         mBorderLinePaint.setAntiAlias(true);
         mBorderLinePaint.setStrokeWidth(1.5f);
@@ -108,14 +108,16 @@ public class WaveformView extends View {
         mTimecodePaint.setTextSize(12);
         mTimecodePaint.setAntiAlias(true);
         mTimecodePaint.setColor(ContextCompat.getColor(context, R.color.timecode));
-        mTimecodePaint.setShadowLayer(2, 1, 1, ContextCompat.getColor(context, R.color.timecode_shadow));
+        mTimecodePaint.setShadowLayer(2, 1, 1,
+                ContextCompat.getColor(context, R.color.timecode_shadow));
 
-        mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float vx, float vy) {
-                mListener.waveformFling(vx);
-                return true;
-            }
-        });
+        mGestureDetector = new GestureDetector(context,
+                new GestureDetector.SimpleOnGestureListener() {
+                    public boolean onFling(MotionEvent e1, MotionEvent e2, float vx, float vy) {
+                        mListener.waveformFling(vx);
+                        return true;
+                    }
+                });
 
         mScaleGestureDetector = new ScaleGestureDetector(context,
                 new ScaleGestureDetector.SimpleOnScaleGestureListener() {
@@ -395,10 +397,10 @@ public class WaveformView extends View {
         }
 
         // Draw borders
-        canvas.drawLine(mSelectionStart - mOffset + 0.5f, 30, mSelectionStart - mOffset + 0.5f, measuredHeight,
-                mBorderLinePaint);
-        canvas.drawLine(mSelectionEnd - mOffset + 0.5f, 0, mSelectionEnd - mOffset + 0.5f, measuredHeight - 30,
-                mBorderLinePaint);
+        canvas.drawLine(mSelectionStart - mOffset + 0.5f, 30, mSelectionStart - mOffset + 0.5f,
+                measuredHeight, mBorderLinePaint);
+        canvas.drawLine(mSelectionEnd - mOffset + 0.5f, 0, mSelectionEnd - mOffset + 0.5f,
+                measuredHeight - 30, mBorderLinePaint);
 
         // Draw timecode
         double timecodeIntervalSecs = 1.0;
@@ -453,9 +455,11 @@ public class WaveformView extends View {
         } else if (numFrames > 2) {
             smoothedGains[0] = (frameGains[0] / 2.0) + (frameGains[1] / 2.0);
             for (int i = 1; i < numFrames - 1; i++) {
-                smoothedGains[i] = (frameGains[i - 1] / 3.0) + (frameGains[i] / 3.0) + (frameGains[i + 1] / 3.0);
+                smoothedGains[i] = (frameGains[i - 1] / 3.0) + (frameGains[i] / 3.0)
+                        + (frameGains[i + 1] / 3.0);
             }
-            smoothedGains[numFrames - 1] = (frameGains[numFrames - 2] / 2.0) + (frameGains[numFrames - 1] / 2.0);
+            smoothedGains[numFrames - 1] = (frameGains[numFrames - 2] / 2.0)
+                    + (frameGains[numFrames - 1] / 2.0);
         }
 
         // Make sure the range is no more than 0 - 255
@@ -562,8 +566,8 @@ public class WaveformView extends View {
     }
 
     /**
-     * Called the first time we need to draw when the zoom level has changed or the
-     * screen is resized
+     * Called the first time we need to draw when the zoom level has changed or the screen is
+     * resized
      */
     private void computeIntsForThisZoomLevel() {
         int halfHeight = (getMeasuredHeight() / 2) - 1;

@@ -26,7 +26,8 @@ public class FilesUtil {
                 String[] split = docId.split(":");
 
                 if (split.length == 2 && "primary".equalsIgnoreCase(split[0])) {
-                    return Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + split[1];
+                    return Environment.getExternalStorageDirectory().getAbsolutePath() + "/"
+                            + split[1];
                 }
             }
 
@@ -48,8 +49,8 @@ public class FilesUtil {
                     return id.substring(4);
                 }
                 try {
-                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),
-                            Long.parseLong(id));
+                    Uri contentUri = ContentUris.withAppendedId(
+                            Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
                     return getDataColumn(context, contentUri, null, null);
                 } catch (NumberFormatException e) {
                     return null;
@@ -64,7 +65,8 @@ public class FilesUtil {
 
     private static String getDataColumn(Context context, Uri uri, String sel, String[] selArgs) {
         String[] projection = {MediaStore.MediaColumns.DATA};
-        try (Cursor cursor = context.getContentResolver().query(uri, projection, sel, selArgs, null)) {
+        try (Cursor cursor = context.getContentResolver().query(uri, projection, sel, selArgs,
+                null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 int idx = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
                 return cursor.getString(idx);

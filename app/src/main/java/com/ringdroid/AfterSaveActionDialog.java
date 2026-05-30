@@ -37,11 +37,14 @@ public class AfterSaveActionDialog {
         builder.setTitle(R.string.alert_title_success);
 
         // Inflate our UI from its XML layout description.
-        AfterSaveActionBinding binding = AfterSaveActionBinding.inflate(LayoutInflater.from(context));
+        AfterSaveActionBinding binding = AfterSaveActionBinding
+                .inflate(LayoutInflater.from(context));
         builder.setView(binding.getRoot());
 
-        binding.buttonMakeDefault.setOnClickListener(view -> closeAndSendResult(ACTION_MAKE_DEFAULT));
-        binding.buttonChooseContact.setOnClickListener(view -> closeAndSendResult(ACTION_CHOOSE_CONTACT));
+        binding.buttonMakeDefault
+                .setOnClickListener(view -> closeAndSendResult(ACTION_MAKE_DEFAULT));
+        binding.buttonChooseContact
+                .setOnClickListener(view -> closeAndSendResult(ACTION_CHOOSE_CONTACT));
         binding.buttonDoNothing.setOnClickListener(view -> closeAndSendResult(ACTION_DO_NOTHING));
 
         mResponse = response;

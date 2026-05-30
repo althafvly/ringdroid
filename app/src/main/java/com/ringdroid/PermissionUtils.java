@@ -13,10 +13,7 @@ public final class PermissionUtils {
     }
 
     public static String[] getContactPermissions() {
-        return new String[] {
-                Manifest.permission.READ_CONTACTS,
-                Manifest.permission.WRITE_CONTACTS
-        };
+        return new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
     }
 
     public static String getMicPermission() {
@@ -44,7 +41,8 @@ public final class PermissionUtils {
     }
 
     public static boolean hasStoragePermission(Context context) {
-        return context.checkSelfPermission(getStoragePermission()) == PackageManager.PERMISSION_GRANTED;
+        return context
+                .checkSelfPermission(getStoragePermission()) == PackageManager.PERMISSION_GRANTED;
     }
 
     public static boolean hasWriteSettingsPermission(Context context) {

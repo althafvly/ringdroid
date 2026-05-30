@@ -46,11 +46,12 @@ public class FileSaveDialog {
     private final EditText mFilename;
     private final String mOriginalName;
     private final ArrayList<String> mTypeArray;
+    private final Context mContext;
     private int mPreviousSelection;
     private AlertDialog mDialog;
-    private final Context mContext;
 
-    public FileSaveDialog(Context context, Resources resources, String originalName, Message response) {
+    public FileSaveDialog(Context context, Resources resources, String originalName,
+            Message response) {
         mContext = context;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.file_save_title);
@@ -59,17 +60,16 @@ public class FileSaveDialog {
         FileSaveBinding binding = FileSaveBinding.inflate(LayoutInflater.from(context));
         builder.setView(binding.getRoot());
 
-        mTypeArray = new ArrayList<>(Arrays.asList(
-                resources.getString(R.string.type_music),
+        mTypeArray = new ArrayList<>(Arrays.asList(resources.getString(R.string.type_music),
                 resources.getString(R.string.type_alarm),
                 resources.getString(R.string.type_notification),
-                resources.getString(R.string.type_ringtone)
-        ));
+                resources.getString(R.string.type_ringtone)));
 
         mFilename = binding.filename;
         mOriginalName = originalName;
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, mTypeArray);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context,
+                android.R.layout.simple_spinner_item, mTypeArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mTypeSpinner = binding.ringtoneType;
         mTypeSpinner.setAdapter(adapter);
@@ -111,7 +111,8 @@ public class FileSaveDialog {
 
         int newSelection = mTypeSpinner.getSelectedItemPosition();
         String newSuffix = mTypeArray.get(newSelection);
-        mFilename.setText(mContext.getString(R.string.filename_with_suffix, mOriginalName, newSuffix));
+        mFilename.setText(
+                mContext.getString(R.string.filename_with_suffix, mOriginalName, newSuffix));
         mPreviousSelection = mTypeSpinner.getSelectedItemPosition();
     }
 

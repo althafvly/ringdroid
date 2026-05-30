@@ -45,10 +45,10 @@ import java.util.Objects;
 
 public class SoundFile {
     private static final String TAG = "SoundFile";
-
+    // VisibleForTesting
+    static long sMaxAllowedMemoryOverride = -1;
     private ProgressListener mProgressListener = null;
     private File mInputFile = null;
-
     // Member variables representing frame data
     private String mFileType;
     private int mFileSize;
@@ -57,21 +57,16 @@ public class SoundFile {
     private int mChannels;
     private int mNumSamples; // total number of samples per channel in audio file
     private ByteBuffer mDecodedBytes; // Raw audio data (memory-mapped from disk for large files)
-    private ShortBuffer mDecodedSamples; // shared buffer with mDecodedBytes.
     // mDecodedSamples has the following format:
     // {s1c1, s1c2, ..., s1cM, s2c1, ..., s2cM, ..., sNc1, ..., sNcM}
     // where sicj is the ith sample of the jth channel (a sample is a signed short)
     // M is the number of channels (e.g. 2 for stereo) and N is the number of
     // samples per channel.
-
+    private ShortBuffer mDecodedSamples; // shared buffer with mDecodedBytes.
     // Temp file backing the memory-mapped PCM buffer (null for short files).
     private File mPcmTempFile = null;
     private RandomAccessFile mPcmRaf = null;
     private FileChannel mPcmChannel = null;
-
-    // VisibleForTesting
-    static long sMaxAllowedMemoryOverride = -1;
-
     // Member variables for hack (making it work with old version, until app just
     // uses the samples).
     private int mNumFrames;
@@ -86,7 +81,8 @@ public class SoundFile {
     // TODO(nfaralli): what is the real list of supported extensions? Is it device
     // dependent?
     public static String[] getSupportedExtensions() {
-        return new String[]{"mp3", "wav", "3gpp", "3gp", "amr", "aac", "m4a", "ogg", "flac", "opus", "wma", "mkv"};
+        return new String[]{"mp3", "wav", "3gpp", "3gp", "amr", "aac", "m4a", "ogg", "flac", "opus",
+                "wma", "mkv"};
     }
 
     public static boolean isFilenameSupported(String filename) {
@@ -100,8 +96,8 @@ public class SoundFile {
     }
 
     public static void uriExists(Context context, Uri uri) {
-        try (Cursor cursor = context.getContentResolver().query(uri, new String[]{OpenableColumns.DISPLAY_NAME}, null,
-                null, null)) {
+        try (Cursor cursor = context.getContentResolver().query(uri,
+                new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null)) {
             if (cursor == null || !cursor.moveToFirst()) {
                 Log.w(TAG, "URI query returned null or empty cursor: " + uri);
             }
@@ -111,8 +107,8 @@ public class SoundFile {
     }
 
     // Create and return a SoundFile object using the file fileName.
-    public static SoundFile create(File cacheDir, String fileName, ProgressListener progressListener)
-            throws java.io.IOException, InvalidInputException {
+    public static SoundFile create(File cacheDir, String fileName,
+            ProgressListener progressListener) throws java.io.IOException, InvalidInputException {
         // First check that the file exists and that its extension is supported.
         File f = new File(fileName);
         if (!f.exists()) {
@@ -213,31 +209,38 @@ public class SoundFile {
     }
 
     /**
-     * Release the decoded audio data to free up memory.
-     * Closes and deletes any temporary PCM file used for disk-backed decoding.
-     * Should be called when the SoundFile is no longer needed.
+     * Release the decoded audio data to free up memory. Closes and deletes any temporary PCM file
+     * used for disk-backed decoding. Should be called when the SoundFile is no longer needed.
      */
     public void release() {
         mDecodedBytes = null;
         mDecodedSamples = null;
         mFrameGains = null;
         if (mPcmChannel != null) {
-            try { mPcmChannel.close(); } catch (IOException ignored) {}
+            try {
+                mPcmChannel.close();
+            } catch (IOException ignored) {
+            }
             mPcmChannel = null;
         }
         if (mPcmRaf != null) {
-            try { mPcmRaf.close(); } catch (IOException ignored) {}
+            try {
+                mPcmRaf.close();
+            } catch (IOException ignored) {
+            }
             mPcmRaf = null;
         }
         if (mPcmTempFile != null) {
             if (!mPcmTempFile.delete() && mPcmTempFile.exists()) {
-                Log.w(TAG, "Failed to delete temporary PCM file: " + mPcmTempFile.getAbsolutePath());
+                Log.w(TAG,
+                        "Failed to delete temporary PCM file: " + mPcmTempFile.getAbsolutePath());
             }
             mPcmTempFile = null;
         }
     }
 
-    private void ReadFile(File cacheDir, File inputFile) throws java.io.IOException, InvalidInputException {
+    private void ReadFile(File cacheDir, File inputFile)
+            throws java.io.IOException, InvalidInputException {
         MediaExtractor extractor = new MediaExtractor();
         MediaFormat format = null;
         int i;
@@ -251,7 +254,8 @@ public class SoundFile {
         // find and select the first audio track present in the file.
         for (i = 0; i < numTracks; i++) {
             format = extractor.getTrackFormat(i);
-            if (Objects.requireNonNull(format.getString(MediaFormat.KEY_MIME)).startsWith("audio/")) {
+            if (Objects.requireNonNull(format.getString(MediaFormat.KEY_MIME))
+                    .startsWith("audio/")) {
                 extractor.selectTrack(i);
                 break;
             }
@@ -265,14 +269,14 @@ public class SoundFile {
 
         // Compute the expected decoded PCM size to pre-allocate the disk-backed buffer.
         // Uses long arithmetic to avoid int overflow for files > ~24 min at 44100Hz.
-        long expectedNumSamples = (long) ((format.getLong(MediaFormat.KEY_DURATION) / 1000000.f) * mSampleRate + 0.5f);
+        long expectedNumSamples = (long) ((format.getLong(MediaFormat.KEY_DURATION) / 1000000.f)
+                * mSampleRate + 0.5f);
         long expectedMemory = expectedNumSamples * mChannels * 2;
 
         MediaCodec codec = null;
         try {
             codec = MediaCodec.createDecoderByType(
-                    Objects.requireNonNull(format.getString(MediaFormat.KEY_MIME))
-            );
+                    Objects.requireNonNull(format.getString(MediaFormat.KEY_MIME)));
             codec.configure(format, null, null, 0);
             codec.start();
 
@@ -290,15 +294,16 @@ public class SoundFile {
             if (pcmParentDir == null) {
                 throw new IOException("Cannot determine app cache directory for PCM temp buffer");
             }
-            String pcmBufferName = "ringdroid_pcm_" + Integer.toHexString(mInputFile.getAbsolutePath().hashCode())
-                    + ".raw";
+            String pcmBufferName = "ringdroid_pcm_"
+                    + Integer.toHexString(mInputFile.getAbsolutePath().hashCode()) + ".raw";
             mPcmTempFile = new File(pcmParentDir, pcmBufferName);
             mPcmTempFile.deleteOnExit();
             long initialSize = Math.max(expectedMemory, 1L << 20); // at least 1MB
             mPcmRaf = new RandomAccessFile(mPcmTempFile, "rw");
             mPcmRaf.setLength(initialSize);
             mPcmChannel = mPcmRaf.getChannel();
-            MappedByteBuffer mappedBuffer = mPcmChannel.map(FileChannel.MapMode.READ_WRITE, 0, initialSize);
+            MappedByteBuffer mappedBuffer = mPcmChannel.map(FileChannel.MapMode.READ_WRITE, 0,
+                    initialSize);
             mDecodedBytes = mappedBuffer;
             boolean firstSampleData = true;
             boolean outputFormatUpdated = false;
@@ -311,27 +316,35 @@ public class SoundFile {
                     if (inputBuffer != null) {
                         inputBuffer.clear();
                         sample_size = extractor.readSampleData(inputBuffer, 0);
-                        if (firstSampleData && Objects.equals(format.getString(MediaFormat.KEY_MIME), "audio/mp4a-latm")
+                        if (firstSampleData && Objects
+                                .equals(format.getString(MediaFormat.KEY_MIME), "audio/mp4a-latm")
                                 && sample_size == 2) {
                             // For some reasons on some devices (e.g. the Samsung S3) you should not
-                            // provide the first two bytes of an AAC stream, otherwise the MediaCodec will
-                            // crash. These two bytes do not contain music data but basic info on the
-                            // stream (e.g. channel configuration and sampling frequency), and skipping them
-                            // seems OK with other devices (MediaCodec has already been configured and
+                            // provide the first two bytes of an AAC stream, otherwise the
+                            // MediaCodec will
+                            // crash. These two bytes do not contain music data but basic info on
+                            // the
+                            // stream (e.g. channel configuration and sampling frequency), and
+                            // skipping them
+                            // seems OK with other devices (MediaCodec has already been configured
+                            // and
                             // already knows these parameters).
                             extractor.advance();
                             tot_size_read += sample_size;
                         } else if (sample_size < 0) {
                             // All samples have been read.
-                            codec.queueInputBuffer(inputBufferIndex, 0, 0, -1, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
+                            codec.queueInputBuffer(inputBufferIndex, 0, 0, -1,
+                                    MediaCodec.BUFFER_FLAG_END_OF_STREAM);
                             done_reading = true;
                         } else {
                             presentation_time = extractor.getSampleTime();
-                            codec.queueInputBuffer(inputBufferIndex, 0, sample_size, presentation_time, 0);
+                            codec.queueInputBuffer(inputBufferIndex, 0, sample_size,
+                                    presentation_time, 0);
                             extractor.advance();
                             tot_size_read += sample_size;
                             if (mProgressListener != null) {
-                                if (mProgressListener.reportProgress((float) (tot_size_read) / mFileSize)) {
+                                if (mProgressListener
+                                        .reportProgress((float) (tot_size_read) / mFileSize)) {
                                     return;
                                 }
                             }
@@ -342,13 +355,15 @@ public class SoundFile {
 
                 // Get decoded stream from the decoder output buffers.
                 int outputBufferIndex = codec.dequeueOutputBuffer(info, 100);
-                if (outputBufferIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED && !outputFormatUpdated) {
+                if (outputBufferIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED
+                        && !outputFormatUpdated) {
                     MediaFormat outputFormat = codec.getOutputFormat();
 
                     mSampleRate = outputFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE);
                     mChannels = outputFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
 
-                    Log.d(TAG, "Decoder output format: " + mSampleRate + " Hz, " + mChannels + " channels");
+                    Log.d(TAG, "Decoder output format: " + mSampleRate + " Hz, " + mChannels
+                            + " channels");
 
                     outputFormatUpdated = true;
                     continue;
@@ -366,13 +381,15 @@ public class SoundFile {
                         // Check if buffer is big enough. Remap file if needed.
                         if (mDecodedBytes.remaining() < info.size) {
                             int position = mDecodedBytes.position();
-                            long newSize = (long) ((position * (1.0 * mFileSize / tot_size_read)) * 1.2);
+                            long newSize = (long) ((position * (1.0 * mFileSize / tot_size_read))
+                                    * 1.2);
                             if (newSize - position < info.size + 5L * (1 << 20)) {
                                 newSize = position + info.size + 5L * (1 << 20);
                             }
                             // Extend the file and remap.
                             mPcmRaf.setLength(newSize);
-                            MappedByteBuffer newMap = mPcmChannel.map(FileChannel.MapMode.READ_WRITE, 0, newSize);
+                            MappedByteBuffer newMap = mPcmChannel
+                                    .map(FileChannel.MapMode.READ_WRITE, 0, newSize);
                             newMap.position(position);
                             mDecodedBytes = newMap;
                         }
@@ -425,12 +442,16 @@ public class SoundFile {
                         gain = value;
                     }
                 }
-                mFrameGains[i] = (int) Math.sqrt(gain); // here gain = sqrt(max value of 1st channel)...
+                mFrameGains[i] = (int) Math.sqrt(gain); // here gain = sqrt(max value of 1st
+                                                        // channel)...
             }
             mDecodedSamples.rewind();
         } finally {
             if (codec != null) {
-                try { codec.stop(); } catch (Exception ignored) {}
+                try {
+                    codec.stop();
+                } catch (Exception ignored) {
+                }
                 codec.release();
             }
             extractor.release();
@@ -491,7 +512,8 @@ public class SoundFile {
             mDecodedSamples.put(buffer);
             // Let the progress listener know how many seconds have been recorded.
             // The returned value tells us if we should keep recording or stop.
-            if (mProgressListener.reportProgress((float) (mDecodedSamples.position()) / mSampleRate)) {
+            if (mProgressListener
+                    .reportProgress((float) (mDecodedSamples.position()) / mSampleRate)) {
                 break;
             }
         }
@@ -529,14 +551,16 @@ public class SoundFile {
     }
 
     // should be removed in the near future...
-    public void WriteFile(File outputFile, int startFrame, int numFrames) throws java.io.IOException {
+    public void WriteFile(File outputFile, int startFrame, int numFrames)
+            throws java.io.IOException {
         float startTime = (float) startFrame * getSamplesPerFrame() / mSampleRate;
         float endTime = (float) (startFrame + numFrames) * getSamplesPerFrame() / mSampleRate;
         OutputStream outputStream = new FileOutputStream(outputFile);
         WriteFile(outputStream, startTime, endTime);
     }
 
-    public void WriteFile(Context context, Uri outputUri, int startFrame, int numFrames) throws java.io.IOException {
+    public void WriteFile(Context context, Uri outputUri, int startFrame, int numFrames)
+            throws java.io.IOException {
         float startTime = (float) startFrame * getSamplesPerFrame() / mSampleRate;
         float endTime = (float) (startFrame + numFrames) * getSamplesPerFrame() / mSampleRate;
         OutputStream outputStream = context.getContentResolver().openOutputStream(outputUri);
@@ -546,7 +570,8 @@ public class SoundFile {
         WriteFile(outputStream, startTime, endTime);
     }
 
-    public void WriteFile(OutputStream outputStream, float startTime, float endTime) throws IOException {
+    public void WriteFile(OutputStream outputStream, float startTime, float endTime)
+            throws IOException {
         int startOffset = (int) (startTime * mSampleRate) * 2 * mChannels;
         int numSamples = (int) ((endTime - startTime) * mSampleRate);
 
@@ -596,7 +621,8 @@ public class SoundFile {
             if (!done_reading && inputBufferIndex >= 0) {
                 if (num_samples_left <= 0) {
                     // All samples have been read.
-                    codec.queueInputBuffer(inputBufferIndex, 0, 0, -1, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
+                    codec.queueInputBuffer(inputBufferIndex, 0, 0, -1,
+                            MediaCodec.BUFFER_FLAG_END_OF_STREAM);
                     done_reading = true;
                 } else {
                     ByteBuffer inputBuffer = codec.getInputBuffer(inputBufferIndex);
@@ -632,7 +658,8 @@ public class SoundFile {
                     num_samples_left -= frame_size;
                     inputBuffer.put(buffer);
                     presentation_time = (long) (((num_frames++) * frame_size * 1e6) / mSampleRate);
-                    codec.queueInputBuffer(inputBufferIndex, 0, buffer.length, presentation_time, 0);
+                    codec.queueInputBuffer(inputBufferIndex, 0, buffer.length, presentation_time,
+                            0);
                 }
             }
 
@@ -678,7 +705,8 @@ public class SoundFile {
         // Write the encoded stream to the file, 4kB at a time.
         buffer = new byte[4096];
         try {
-            outputStream.write(MP4Header.getMP4Header(mSampleRate, numChannels, frame_sizes, bitrate));
+            outputStream
+                    .write(MP4Header.getMP4Header(mSampleRate, numChannels, frame_sizes, bitrate));
             while (encoded_size - encodedBytes.position() > buffer.length) {
                 encodedBytes.get(buffer);
                 outputStream.write(buffer);
@@ -724,22 +752,26 @@ public class SoundFile {
         for (int i = 0; i < length; i += 2) {
             short sample = (short) ((buffer[i] & 0xFF) | (buffer[i + 1] << 8));
             int scaled = Math.round(sample * mGain);
-            if (scaled > Short.MAX_VALUE) scaled = Short.MAX_VALUE;
-            if (scaled < Short.MIN_VALUE) scaled = Short.MIN_VALUE;
+            if (scaled > Short.MAX_VALUE)
+                scaled = Short.MAX_VALUE;
+            if (scaled < Short.MIN_VALUE)
+                scaled = Short.MIN_VALUE;
             buffer[i] = (byte) (scaled & 0xFF);
             buffer[i + 1] = (byte) ((scaled >> 8) & 0xFF);
         }
     }
 
     // should be removed in the near future...
-    public void WriteWAVFile(File outputFile, int startFrame, int numFrames) throws java.io.IOException {
+    public void WriteWAVFile(File outputFile, int startFrame, int numFrames)
+            throws java.io.IOException {
         float startTime = (float) startFrame * getSamplesPerFrame() / mSampleRate;
         float endTime = (float) (startFrame + numFrames) * getSamplesPerFrame() / mSampleRate;
         OutputStream outputStream = new FileOutputStream(outputFile);
         WriteWAVFile(outputStream, startTime, endTime);
     }
 
-    public void WriteWAVFile(Context context, Uri outputUri, int startTime, int endTime) throws java.io.IOException {
+    public void WriteWAVFile(Context context, Uri outputUri, int startTime, int endTime)
+            throws java.io.IOException {
         OutputStream outputStream = context.getContentResolver().openOutputStream(outputUri);
         if (outputStream == null) {
             throw new IOException("Cannot open MediaStore output stream");
@@ -747,7 +779,8 @@ public class SoundFile {
         WriteFile(outputStream, startTime, endTime);
     }
 
-    public void WriteWAVFile(OutputStream outputStream, float startTime, float endTime) throws java.io.IOException {
+    public void WriteWAVFile(OutputStream outputStream, float startTime, float endTime)
+            throws java.io.IOException {
         int startOffset = (int) (startTime * mSampleRate) * 2 * mChannels;
         int numSamples = (int) ((endTime - startTime) * mSampleRate);
 
@@ -808,9 +841,9 @@ public class SoundFile {
     // Progress listener interface.
     public interface ProgressListener {
         /**
-         * Will be called by the SoundFile class periodically with values between 0.0
-         * and 1.0. Return true to continue loading the file or recording the audio, and
-         * false to cancel or stop recording.
+         * Will be called by the SoundFile class periodically with values between 0.0 and 1.0.
+         * Return true to continue loading the file or recording the audio, and false to cancel or
+         * stop recording.
          */
         boolean reportProgress(double fractionComplete);
     }

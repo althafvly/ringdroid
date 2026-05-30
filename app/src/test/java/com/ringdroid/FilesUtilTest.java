@@ -10,7 +10,7 @@ public class FilesUtilTest {
     public void testGetStackTrace() {
         Exception e = new RuntimeException("Test Exception");
         String stackTrace = FilesUtil.getStackTrace(e);
-        
+
         assertNotNull(stackTrace);
         assertTrue(stackTrace.contains("java.lang.RuntimeException: Test Exception"));
         assertTrue(stackTrace.contains("com.ringdroid.FilesUtilTest.testGetStackTrace"));

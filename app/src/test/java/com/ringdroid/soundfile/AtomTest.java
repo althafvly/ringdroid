@@ -16,7 +16,7 @@ public class AtomTest {
 
     @Test
     public void testAtomWithVersion() {
-        Atom atom = new Atom("test", (byte)1, 0x123456);
+        Atom atom = new Atom("test", (byte) 1, 0x123456);
         assertEquals(12, atom.getSize());
     }
 
@@ -35,7 +35,7 @@ public class AtomTest {
         Atom child = new Atom("chld");
         parent.addChild(child);
         assertEquals(16, parent.getSize()); // 8 (parent header) + 8 (child size)
-        
+
         Atom retrieved = parent.getChild("chld");
         assertNotNull(retrieved);
         assertEquals("chld", retrieved.getTypeStr());

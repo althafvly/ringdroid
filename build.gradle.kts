@@ -1,6 +1,6 @@
 import com.android.build.gradle.internal.crash.afterEvaluate
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// Top-level build file where you can add configuration options common to all subprojects/modules.
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.spotless)
@@ -9,16 +9,23 @@ plugins {
 spotless {
     java {
         removeUnusedImports()
-        eclipse()
-        leadingSpacesToTabs(2)
+        eclipse().configFile(rootProject.file("eclipse-formatter.xml"))
         leadingTabsToSpaces(4)
-        target("src/**/*.java")
+        target("app/src/**/*.java")
     }
     format("xml") {
-        target("src/**/*.xml")
+        target("app/src/**/*.xml")
         targetExclude("**/build/", ".idea/")
         trimTrailingWhitespace()
         leadingTabsToSpaces()
+    }
+    kotlin {
+        target("app/src/**/*.kt")
+        ktlint()
+    }
+    kotlinGradle {
+        target("*.gradle.kts", "**/build.gradle.kts")
+        ktlint()
     }
 }
 
@@ -36,11 +43,10 @@ subprojects {
             if (preCommitFile.exists()) return@doLast
             val content =
                 """
-                    #!/usr/bin/env bash
+                #!/usr/bin/env bash
 
-                    [ -f ./hooks/pre-commit.sh ] && ./hooks/pre-commit.sh
-                     """
-                    .trimIndent()
+                [ -f ./hooks/pre-commit.sh ] && ./hooks/pre-commit.sh
+                """.trimIndent()
 
             preCommitFile.writeText(content)
             preCommitFile.setExecutable(true)

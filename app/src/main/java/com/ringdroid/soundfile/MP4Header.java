@@ -59,14 +59,17 @@ public class MP4Header {
         if ((numSamples * 1000) % mSampleRate > 0) { // round the duration up.
             durationMS++;
         }
-        mNumSamples = new byte[]{(byte) ((numSamples >> 26) & 0XFF), (byte) ((numSamples >> 16) & 0XFF),
-                (byte) ((numSamples >> 8) & 0XFF), (byte) (numSamples & 0XFF)};
-        mDurationMS = new byte[]{(byte) ((durationMS >> 26) & 0XFF), (byte) ((durationMS >> 16) & 0XFF),
-                (byte) ((durationMS >> 8) & 0XFF), (byte) (durationMS & 0XFF)};
+        mNumSamples = new byte[]{(byte) ((numSamples >> 26) & 0XFF),
+                (byte) ((numSamples >> 16) & 0XFF), (byte) ((numSamples >> 8) & 0XFF),
+                (byte) (numSamples & 0XFF)};
+        mDurationMS = new byte[]{(byte) ((durationMS >> 26) & 0XFF),
+                (byte) ((durationMS >> 16) & 0XFF), (byte) ((durationMS >> 8) & 0XFF),
+                (byte) (durationMS & 0XFF)};
         setHeader();
     }
 
-    public static byte[] getMP4Header(int sampleRate, int numChannels, int[] frame_size, int bitrate) {
+    public static byte[] getMP4Header(int sampleRate, int numChannels, int[] frame_size,
+            int bitrate) {
         return new MP4Header(sampleRate, numChannels, frame_size, bitrate).mHeader;
     }
 
@@ -139,7 +142,8 @@ public class MP4Header {
                 0, 0, 0, 0, // reserved
                 0, 0, 0, 0, // reserved
                 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // unity matrix
-                0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x40, 0, 0, 0, 0, 0, 0, 0, // pre-defined
+                0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x40, 0, 0, 0, 0, 0, 0,
+                0, // pre-defined
                 0, 0, 0, 0, // pre-defined
                 0, 0, 0, 0, // pre-defined
                 0, 0, 0, 0, // pre-defined
@@ -171,7 +175,8 @@ public class MP4Header {
                 1, 0, // volume = 1.0
                 0, 0, // reserved
                 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // unity matrix
-                0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x40, 0, 0, 0, 0, 0, 0, 0, // width
+                0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x40, 0, 0, 0, 0, 0, 0,
+                0, // width
                 0, 0, 0, 0 // height
         });
         return atom;
@@ -300,8 +305,8 @@ public class MP4Header {
     // can contain at
     // least 2 frames. (See section 7.2.6.5 of ISO/IEC 14496-1 for more details).
     private byte[] getESDescriptor() {
-        int[] samplingFrequencies = new int[]{96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 16000, 12000,
-                11025, 8000, 7350};
+        int[] samplingFrequencies = new int[]{96000, 88200, 64000, 48000, 44100, 32000, 24000,
+                22050, 16000, 12000, 11025, 8000, 7350};
         // First 5 bytes of the ES Descriptor.
         byte[] ESDescriptor_top = new byte[]{0x03, 0x19, 0x00, 0x00, 0x00};
         // First 4 bytes of Decoder Configuration Descriptor. Audio ISO/IEC 14496-3,
@@ -347,7 +352,8 @@ public class MP4Header {
         }
         audioSpecificConfig[2] |= (byte) ((index >> 1) & 0x07);
         audioSpecificConfig[3] |= (byte) (((index & 1) << 7) | ((mChannels & 0x0F) << 3));
-        System.arraycopy(audioSpecificConfig, 0, decConfigDescr, offset, audioSpecificConfig.length);
+        System.arraycopy(audioSpecificConfig, 0, decConfigDescr, offset,
+                audioSpecificConfig.length);
 
         // create the ES Descriptor
         byte[] ESDescriptor = new byte[2 + ESDescriptor_top[1]];
@@ -364,8 +370,9 @@ public class MP4Header {
         int numAudioFrames = mFrameSize.length - 1;
         atom.setData(new byte[]{0, 0, 0, 0x02, // entry count
                 0, 0, 0, 0x01, // first frame contains no audio
-                0, 0, 0, 0, (byte) ((numAudioFrames >> 24) & 0xFF), (byte) ((numAudioFrames >> 16) & 0xFF),
-                (byte) ((numAudioFrames >> 8) & 0xFF), (byte) (numAudioFrames & 0xFF), 0, 0, 0x04, 0, // delay between
+                0, 0, 0, 0, (byte) ((numAudioFrames >> 24) & 0xFF),
+                (byte) ((numAudioFrames >> 16) & 0xFF), (byte) ((numAudioFrames >> 8) & 0xFF),
+                (byte) (numAudioFrames & 0xFF), 0, 0, 0x04, 0, // delay between
                 // frames = 1024
                 // samples (cf.
                 // timescale =

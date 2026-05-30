@@ -47,43 +47,38 @@ class SamplePlayer {
         mNumSamples = numSamples;
         mPlaybackStart = 0;
 
-        int channelMask = mChannels == 1 ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO;
-        int bufferSize = Math.max(
-                AudioTrack.getMinBufferSize(mSampleRate, channelMask, AudioFormat.ENCODING_PCM_16BIT),
-                mChannels * mSampleRate * 2);
+        int channelMask = mChannels == 1
+                ? AudioFormat.CHANNEL_OUT_MONO
+                : AudioFormat.CHANNEL_OUT_STEREO;
+        int bufferSize = Math.max(AudioTrack.getMinBufferSize(mSampleRate, channelMask,
+                AudioFormat.ENCODING_PCM_16BIT), mChannels * mSampleRate * 2);
         mBuffer = new short[bufferSize / 2]; // bufferSize is in Bytes.
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_MEDIA)
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .build();
-        AudioFormat audioFormat = new AudioFormat.Builder()
-                .setSampleRate(mSampleRate)
-                .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                .setChannelMask(channelMask)
-                .build();
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build();
+        AudioFormat audioFormat = new AudioFormat.Builder().setSampleRate(mSampleRate)
+                .setEncoding(AudioFormat.ENCODING_PCM_16BIT).setChannelMask(channelMask).build();
 
-        mAudioTrack = new AudioTrack.Builder()
-                .setAudioAttributes(audioAttributes)
-                .setAudioFormat(audioFormat)
-                .setTransferMode(AudioTrack.MODE_STREAM)
-                .setBufferSizeInBytes(mBuffer.length * 2)
-                .build();
+        mAudioTrack = new AudioTrack.Builder().setAudioAttributes(audioAttributes)
+                .setAudioFormat(audioFormat).setTransferMode(AudioTrack.MODE_STREAM)
+                .setBufferSizeInBytes(mBuffer.length * 2).build();
         // Check when player played all the given data and notify user if mListener is
         // set.
         mAudioTrack.setNotificationMarkerPosition(mNumSamples - 1); // Set the marker to the end.
-        mAudioTrack.setPlaybackPositionUpdateListener(new AudioTrack.OnPlaybackPositionUpdateListener() {
-            @Override
-            public void onPeriodicNotification(AudioTrack track) {
-            }
+        mAudioTrack.setPlaybackPositionUpdateListener(
+                new AudioTrack.OnPlaybackPositionUpdateListener() {
+                    @Override
+                    public void onPeriodicNotification(AudioTrack track) {
+                    }
 
-            @Override
-            public void onMarkerReached(AudioTrack track) {
-                stop();
-                if (mListener != null) {
-                    mListener.onCompletion();
-                }
-            }
-        });
+                    @Override
+                    public void onMarkerReached(AudioTrack track) {
+                        stop();
+                        if (mListener != null) {
+                            mListener.onCompletion();
+                        }
+                    }
+                });
         mPlayThread = null;
         mKeepPlaying = true;
         mListener = null;
@@ -169,7 +164,8 @@ class SamplePlayer {
     }
 
     public int getCurrentPosition() {
-        return (int) ((mPlaybackStart + mAudioTrack.getPlaybackHeadPosition()) * (1000.0 / mSampleRate));
+        return (int) ((mPlaybackStart + mAudioTrack.getPlaybackHeadPosition())
+                * (1000.0 / mSampleRate));
     }
 
     public interface OnCompletionListener {

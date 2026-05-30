@@ -18,7 +18,8 @@ package com.ringdroid.soundfile;
 
 public class Atom { // note: latest versions of spec simply call it 'box' instead of 'atom'.
     private final int mType;
-    private final byte mVersion; // if negative, then the atom does not contain version and flags data.
+    private final byte mVersion; // if negative, then the atom does not contain version and flags
+                                 // data.
     private final int mFlags;
     private int mSize; // includes atom header (8 bytes)
     private byte[] mData; // an atom can either contain data or children, but not both.

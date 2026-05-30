@@ -66,26 +66,17 @@ import java.util.Locale;
 import java.util.Objects;
 
 /**
- * The activity for the Ringdroid main editor window. Keeps track of the
- * waveform display, current horizontal offset, marker handles, start / end text
- * boxes, and handles all of the buttons and controls.
+ * The activity for the Ringdroid main editor window. Keeps track of the waveform display, current
+ * horizontal offset, marker handles, start / end text boxes, and handles all of the buttons and
+ * controls.
  */
 public class RingdroidEditActivity extends ComponentActivity
         implements
             MarkerView.MarkerListener,
             WaveformView.WaveformListener {
     private static final String TAG = "RingdroidEditActivity";
-    private final ActivityResultLauncher<String> mMicPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
-                if (PermissionUtils.hasMicPermissions(this)) {
-                    recordAudio();
-                } else {
-                    Toast.makeText(this, R.string.required_mic_permission, Toast.LENGTH_LONG).show();
-                    finish();
-                }
-            });
-    private final ActivityResultLauncher<Intent> mChooseContactLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> finish());
+    private final ActivityResultLauncher<Intent> mChooseContactLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> finish());
     private long mLoadingLastUpdateTime;
     private boolean mLoadingKeepGoing;
     private long mRecordingLastUpdateTime;
@@ -141,9 +132,6 @@ public class RingdroidEditActivity extends ComponentActivity
     private int mMarkerRightInset;
     private int mMarkerTopOffset;
     private int mMarkerBottomOffset;
-    private EditorBinding binding;
-    private float mAmplifyFactor = 1.0f;
-
     //
     // Public methods and protected overrides
     //
@@ -208,22 +196,36 @@ public class RingdroidEditActivity extends ComponentActivity
             }
             if (mStartText.hasFocus()) {
                 try {
-                    mStartPos = mWaveformView.secondsToPixels(Double.parseDouble(mStartText.getText().toString()));
+                    mStartPos = mWaveformView
+                            .secondsToPixels(Double.parseDouble(mStartText.getText().toString()));
                     updateDisplay();
                 } catch (NumberFormatException ignored) {
                 }
             }
             if (mEndText.hasFocus()) {
                 try {
-                    mEndPos = mWaveformView.secondsToPixels(Double.parseDouble(mEndText.getText().toString()));
+                    mEndPos = mWaveformView
+                            .secondsToPixels(Double.parseDouble(mEndText.getText().toString()));
                     updateDisplay();
                 } catch (NumberFormatException ignored) {
                 }
             }
         }
     };
+    private EditorBinding binding;
+    private float mAmplifyFactor = 1.0f;
     private Thread mLoadSoundFileThread;
     private Thread mRecordAudioThread;
+    private final ActivityResultLauncher<String> mMicPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(), granted -> {
+                if (PermissionUtils.hasMicPermissions(this)) {
+                    recordAudio();
+                } else {
+                    Toast.makeText(this, R.string.required_mic_permission, Toast.LENGTH_LONG)
+                            .show();
+                    finish();
+                }
+            });
     private Thread mSaveSoundFileThread;
 
     public static void onAbout(final Context context) {
@@ -247,8 +249,8 @@ public class RingdroidEditActivity extends ComponentActivity
 
     private static AlertDialog.Builder getAlertDialog(Context context, String versionName) {
         String html = context.getString(R.string.about_text_html, versionName);
-        AlertDialog.Builder builder = new AlertDialog.Builder(context).setTitle(R.string.about_title)
-                .setPositiveButton(R.string.alert_ok_button, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setTitle(R.string.about_title).setPositiveButton(R.string.alert_ok_button, null);
 
         builder.setMessage(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY));
 
@@ -282,8 +284,8 @@ public class RingdroidEditActivity extends ComponentActivity
         // they create.
         mWasGetContentIntent = intent.getBooleanExtra("was_get_content_intent", false);
 
-        mFilename = Objects.requireNonNull(intent.getData()).toString().replaceFirst("file://", "").replaceAll("%20",
-                " ");
+        mFilename = Objects.requireNonNull(intent.getData()).toString().replaceFirst("file://", "")
+                .replaceAll("%20", " ");
         mSoundFile = null;
         mKeyDown = false;
 
@@ -377,9 +379,8 @@ public class RingdroidEditActivity extends ComponentActivity
     }
 
     /**
-     * Called when the orientation changes and/or the keyboard is shown or hidden.
-     * We don't need to recreate the whole activity in this case, but we do need to
-     * redo our layout somewhat.
+     * Called when the orientation changes and/or the keyboard is shown or hidden. We don't need to
+     * recreate the whole activity in this case, but we do need to redo our layout somewhat.
      */
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -452,8 +453,8 @@ public class RingdroidEditActivity extends ComponentActivity
     //
 
     /**
-     * Every time we get a message that our waveform drew, see if we need to animate
-     * and trigger another redraw.
+     * Every time we get a message that our waveform drew, see if we need to animate and trigger
+     * another redraw.
      */
     public void waveformDraw() {
         mWidth = mWaveformView.getMeasuredWidth();
@@ -646,8 +647,7 @@ public class RingdroidEditActivity extends ComponentActivity
     }
 
     /**
-     * Called from both onCreate and onConfigurationChanged (if the user switched
-     * layouts)
+     * Called from both onCreate and onConfigurationChanged (if the user switched layouts)
      */
     private void loadGui() {
         // Inflate our UI from its XML layout description.
@@ -740,23 +740,20 @@ public class RingdroidEditActivity extends ComponentActivity
         mLoadingLastUpdateTime = getCurrentTime();
         mLoadingKeepGoing = true;
         mFinishActivity = false;
-        DialogProgressHorizontalBinding progressBinding = DialogProgressHorizontalBinding.inflate(getLayoutInflater());
+        DialogProgressHorizontalBinding progressBinding = DialogProgressHorizontalBinding
+                .inflate(getLayoutInflater());
         mLoadingProgressBar = progressBinding.progressBar;
         mLoadingProgressBar.setMax(100);
 
-        mProgressDialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.progress_dialog_loading)
-                .setView(progressBinding.getRoot())
-                .setCancelable(true)
+        mProgressDialog = new AlertDialog.Builder(this).setTitle(R.string.progress_dialog_loading)
+                .setView(progressBinding.getRoot()).setCancelable(true)
                 .setNegativeButton(R.string.progress_dialog_cancel, (dialog, id) -> {
                     mLoadingKeepGoing = false;
                     mFinishActivity = true;
-                })
-                .setOnCancelListener(dialog -> {
+                }).setOnCancelListener(dialog -> {
                     mLoadingKeepGoing = false;
                     mFinishActivity = true;
-                })
-                .create();
+                }).create();
         mProgressDialog.setCanceledOnTouchOutside(false);
         if (!isFinishing() && !isDestroyed()) {
             mProgressDialog.show();
@@ -816,7 +813,8 @@ public class RingdroidEditActivity extends ComponentActivity
                 mInfoContent = e.toString();
                 runOnUiThread(() -> setSafeText(mInfo, mInfoContent));
 
-                Runnable runnable = () -> showFinalAlert(e, getResources().getText(R.string.read_error));
+                Runnable runnable = () -> showFinalAlert(e,
+                        getResources().getText(R.string.read_error));
                 mHandler.post(runnable);
                 return;
             }
@@ -844,10 +842,11 @@ public class RingdroidEditActivity extends ComponentActivity
         AlertDialog.Builder adBuilder = new AlertDialog.Builder(RingdroidEditActivity.this);
         adBuilder.setTitle(getResources().getText(R.string.progress_dialog_recording));
         adBuilder.setCancelable(true);
-        adBuilder.setNegativeButton(getResources().getText(R.string.progress_dialog_cancel), (dialog, id) -> {
-            mRecordingKeepGoing = false;
-            mFinishActivity = true;
-        });
+        adBuilder.setNegativeButton(getResources().getText(R.string.progress_dialog_cancel),
+                (dialog, id) -> {
+                    mRecordingKeepGoing = false;
+                    mFinishActivity = true;
+                });
         adBuilder.setPositiveButton(getResources().getText(R.string.progress_dialog_stop),
                 (dialog, id) -> mRecordingKeepGoing = false);
         // TODO(nfaralli): try to use a FrameLayout and pass it to the following inflate
@@ -872,7 +871,8 @@ public class RingdroidEditActivity extends ComponentActivity
                 runOnUiThread(() -> {
                     int min = (int) (mRecordingTime / 60);
                     float sec = (float) (mRecordingTime - 60 * min);
-                    mTimerTextView.setText(String.format(Locale.getDefault(), "%d:%05.2f", min, sec));
+                    mTimerTextView
+                            .setText(String.format(Locale.getDefault(), "%d:%05.2f", min, sec));
                 });
                 mRecordingLastUpdateTime = now;
             }
@@ -901,7 +901,8 @@ public class RingdroidEditActivity extends ComponentActivity
                 mInfoContent = e.toString();
                 runOnUiThread(() -> mInfo.setText(mInfoContent));
 
-                Runnable runnable = () -> showFinalAlert(e, getResources().getText(R.string.record_error));
+                Runnable runnable = () -> showFinalAlert(e,
+                        getResources().getText(R.string.record_error));
                 mHandler.post(runnable);
                 return;
             }
@@ -917,23 +918,6 @@ public class RingdroidEditActivity extends ComponentActivity
         });
         mRecordAudioThread.start();
     }
-    private final Runnable mTimerRunnable = new Runnable() {
-        public void run() {
-            // Updating an EditText is slow on Android. Make sure
-            // we only do the update if the text has actually changed.
-            if (mStartPos != mLastDisplayedStartPos && !mStartText.hasFocus()) {
-                mStartText.setText(formatTime(mStartPos));
-                mLastDisplayedStartPos = mStartPos;
-            }
-
-            if (mEndPos != mLastDisplayedEndPos && !mEndText.hasFocus()) {
-                mEndText.setText(formatTime(mEndPos));
-                mLastDisplayedEndPos = mEndPos;
-            }
-
-            mHandler.postDelayed(mTimerRunnable, 100);
-        }
-    };
 
     private void finishOpeningSoundFile() {
         mWaveformView.setSoundFile(mSoundFile);
@@ -959,6 +943,23 @@ public class RingdroidEditActivity extends ComponentActivity
 
         updateDisplay();
     }
+    private final Runnable mTimerRunnable = new Runnable() {
+        public void run() {
+            // Updating an EditText is slow on Android. Make sure
+            // we only do the update if the text has actually changed.
+            if (mStartPos != mLastDisplayedStartPos && !mStartText.hasFocus()) {
+                mStartText.setText(formatTime(mStartPos));
+                mLastDisplayedStartPos = mStartPos;
+            }
+
+            if (mEndPos != mLastDisplayedEndPos && !mEndText.hasFocus()) {
+                mEndText.setText(formatTime(mEndPos));
+                mLastDisplayedEndPos = mEndPos;
+            }
+
+            mHandler.postDelayed(mTimerRunnable, 100);
+        }
+    };
 
     private synchronized void updateDisplay() {
         if (mIsPlaying) {
@@ -1014,10 +1015,12 @@ public class RingdroidEditActivity extends ComponentActivity
         mWaveformView.setParameters(mStartPos, mEndPos, mOffset);
         mWaveformView.invalidate();
 
-        // Only update content descriptions when positions actually change to avoid excessive string allocations
+        // Only update content descriptions when positions actually change to avoid
+        // excessive string allocations
         if (mStartPos != mLastDisplayedStartPos) {
             try {
-                String desc = getResources().getText(R.string.start_marker) + " " + formatTime(mStartPos);
+                String desc = getResources().getText(R.string.start_marker) + " "
+                        + formatTime(mStartPos);
                 if (desc.length() > 200) { // Sanity check
                     desc = desc.substring(0, 200);
                 }
@@ -1029,7 +1032,8 @@ public class RingdroidEditActivity extends ComponentActivity
         }
         if (mEndPos != mLastDisplayedEndPos) {
             try {
-                String desc = getResources().getText(R.string.end_marker) + " " + formatTime(mEndPos);
+                String desc = getResources().getText(R.string.end_marker) + " "
+                        + formatTime(mEndPos);
                 if (desc.length() > 200) { // Sanity check
                     desc = desc.substring(0, 200);
                 }
@@ -1074,14 +1078,16 @@ public class RingdroidEditActivity extends ComponentActivity
             endX = 0;
         }
 
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(startX, mMarkerTopOffset, -mStartMarker.getWidth(), -mStartMarker.getHeight());
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(startX, mMarkerTopOffset, -mStartMarker.getWidth(),
+                -mStartMarker.getHeight());
         mStartMarker.setLayoutParams(params);
 
         params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(endX, mWaveformView.getMeasuredHeight() - mEndMarker.getHeight() - mMarkerBottomOffset,
+        params.setMargins(endX,
+                mWaveformView.getMeasuredHeight() - mEndMarker.getHeight() - mMarkerBottomOffset,
                 -mStartMarker.getWidth(), -mStartMarker.getHeight());
         mEndMarker.setLayoutParams(params);
     }
@@ -1208,10 +1214,10 @@ public class RingdroidEditActivity extends ComponentActivity
     }
 
     /**
-     * Show a "final" alert dialog that will exit the activity after the user clicks
-     * on the OK button. If an exception is passed, it's assumed to be an error
-     * condition, and the dialog is presented as an error, and the stack trace is
-     * logged. If there's no exception, it's a success message.
+     * Show a "final" alert dialog that will exit the activity after the user clicks on the OK
+     * button. If an exception is passed, it's assumed to be an error condition, and the dialog is
+     * presented as an error, and the stack trace is logged. If there's no exception, it's a success
+     * message.
      */
     private void showFinalAlert(Exception e, CharSequence message) {
         CharSequence title;
@@ -1229,8 +1235,8 @@ public class RingdroidEditActivity extends ComponentActivity
         }
 
         new AlertDialog.Builder(RingdroidEditActivity.this).setTitle(title).setMessage(message)
-                .setPositiveButton(R.string.alert_ok_button, (dialog, whichButton) -> finish()).setCancelable(false)
-                .show();
+                .setPositiveButton(R.string.alert_ok_button, (dialog, whichButton) -> finish())
+                .setCancelable(false).show();
     }
 
     private void showFinalAlert(Exception e, int messageResourceId) {
@@ -1329,15 +1335,17 @@ public class RingdroidEditActivity extends ComponentActivity
         // Create an indeterminate progress dialog
         DialogProgressBinding progressBinding = DialogProgressBinding.inflate(getLayoutInflater());
 
-        mProgressDialog = new AlertDialog.Builder(this).setTitle(R.string.progress_dialog_saving).setView(progressBinding.getRoot())
-                .setCancelable(false).create();
+        mProgressDialog = new AlertDialog.Builder(this).setTitle(R.string.progress_dialog_saving)
+                .setView(progressBinding.getRoot()).setCancelable(false).create();
         if (!isFinishing() && !isDestroyed()) {
             mProgressDialog.show();
         }
 
         ContentValues values = new ContentValues();
-        values.put(MediaStore.Audio.Media.IS_RINGTONE, mNewFileKind == FileSaveDialog.FILE_KIND_RINGTONE);
-        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION);
+        values.put(MediaStore.Audio.Media.IS_RINGTONE,
+                mNewFileKind == FileSaveDialog.FILE_KIND_RINGTONE);
+        values.put(MediaStore.Audio.Media.IS_NOTIFICATION,
+                mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION);
         values.put(MediaStore.Audio.Media.IS_ALARM, mNewFileKind == FileSaveDialog.FILE_KIND_ALARM);
         values.put(MediaStore.Audio.Media.IS_MUSIC, mNewFileKind == FileSaveDialog.FILE_KIND_MUSIC);
         values.put(MediaStore.Audio.Media.RELATIVE_PATH, getSubDir());
@@ -1349,7 +1357,8 @@ public class RingdroidEditActivity extends ComponentActivity
                 String outPath = makeRingtoneFilename(title, ".m4a");
                 Uri outUri = null;
                 if (outPath == null) {
-                    Runnable runnable = () -> showFinalAlert(new Exception(), R.string.no_unique_filename);
+                    Runnable runnable = () -> showFinalAlert(new Exception(),
+                            R.string.no_unique_filename);
                     mHandler.post(runnable);
                     return;
                 }
@@ -1360,7 +1369,8 @@ public class RingdroidEditActivity extends ComponentActivity
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         values.put(MediaStore.Audio.Media.DISPLAY_NAME, title + ".m4a");
                         values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/mp4a-latm");
-                        outUri = getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
+                        outUri = getContentResolver()
+                                .insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
                         mSoundFile.WriteFile(mContext, outUri, startFrame, endFrame - startFrame);
                     } else {
                         mSoundFile.WriteFile(outFile, startFrame, endFrame - startFrame);
@@ -1379,7 +1389,8 @@ public class RingdroidEditActivity extends ComponentActivity
                 if (fallbackToWAV) {
                     outPath = makeRingtoneFilename(title, ".wav");
                     if (outPath == null) {
-                        Runnable runnable = () -> showFinalAlert(new Exception(), R.string.no_unique_filename);
+                        Runnable runnable = () -> showFinalAlert(new Exception(),
+                                R.string.no_unique_filename);
                         mHandler.post(runnable);
                         return;
                     }
@@ -1389,8 +1400,10 @@ public class RingdroidEditActivity extends ComponentActivity
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             values.put(MediaStore.Audio.Media.DISPLAY_NAME, title + ".wav");
                             values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/wav");
-                            outUri = getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
-                            mSoundFile.WriteWAVFile(mContext, outUri, startFrame, endFrame - startFrame);
+                            outUri = getContentResolver()
+                                    .insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
+                            mSoundFile.WriteWAVFile(mContext, outUri, startFrame,
+                                    endFrame - startFrame);
                         } else {
                             mSoundFile.WriteWAVFile(outFile, startFrame, endFrame - startFrame);
                         }
@@ -1442,7 +1455,8 @@ public class RingdroidEditActivity extends ComponentActivity
                     mInfoContent = e.toString();
                     runOnUiThread(() -> mInfo.setText(mInfoContent));
 
-                    Runnable runnable = () -> showFinalAlert(e, getResources().getText(R.string.write_error));
+                    Runnable runnable = () -> showFinalAlert(e,
+                            getResources().getText(R.string.write_error));
                     mHandler.post(runnable);
                     return;
                 }
@@ -1451,7 +1465,8 @@ public class RingdroidEditActivity extends ComponentActivity
 
                 final String finalOutPath = outPath;
                 final Uri finalOutUri = outUri;
-                Runnable runnable = () -> afterSavingRingtone(title, finalOutPath, finalOutUri, duration);
+                Runnable runnable = () -> afterSavingRingtone(title, finalOutPath, finalOutUri,
+                        duration);
                 mHandler.post(runnable);
             }
         };
@@ -1467,8 +1482,9 @@ public class RingdroidEditActivity extends ComponentActivity
                 boolean status = outFile.delete();
                 if (status) {
                     new AlertDialog.Builder(this).setTitle(R.string.alert_title_failure)
-                            .setMessage(R.string.too_small_error).setPositiveButton(R.string.alert_ok_button, null)
-                            .setCancelable(false).show();
+                            .setMessage(R.string.too_small_error)
+                            .setPositiveButton(R.string.alert_ok_button, null).setCancelable(false)
+                            .show();
                 }
                 return;
             }
@@ -1495,10 +1511,14 @@ public class RingdroidEditActivity extends ComponentActivity
             values.put(MediaStore.Audio.Media.ARTIST, artist);
             values.put(MediaStore.Audio.Media.DURATION, duration);
 
-            values.put(MediaStore.Audio.Media.IS_RINGTONE, mNewFileKind == FileSaveDialog.FILE_KIND_RINGTONE);
-            values.put(MediaStore.Audio.Media.IS_NOTIFICATION, mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION);
-            values.put(MediaStore.Audio.Media.IS_ALARM, mNewFileKind == FileSaveDialog.FILE_KIND_ALARM);
-            values.put(MediaStore.Audio.Media.IS_MUSIC, mNewFileKind == FileSaveDialog.FILE_KIND_MUSIC);
+            values.put(MediaStore.Audio.Media.IS_RINGTONE,
+                    mNewFileKind == FileSaveDialog.FILE_KIND_RINGTONE);
+            values.put(MediaStore.Audio.Media.IS_NOTIFICATION,
+                    mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION);
+            values.put(MediaStore.Audio.Media.IS_ALARM,
+                    mNewFileKind == FileSaveDialog.FILE_KIND_ALARM);
+            values.put(MediaStore.Audio.Media.IS_MUSIC,
+                    mNewFileKind == FileSaveDialog.FILE_KIND_MUSIC);
             values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_RINGTONES);
 
             // Insert it into the database
@@ -1517,7 +1537,8 @@ public class RingdroidEditActivity extends ComponentActivity
 
         // There's nothing more to do with music or an alarm. Show a
         // success message and then quit.
-        if (mNewFileKind == FileSaveDialog.FILE_KIND_MUSIC || mNewFileKind == FileSaveDialog.FILE_KIND_ALARM) {
+        if (mNewFileKind == FileSaveDialog.FILE_KIND_MUSIC
+                || mNewFileKind == FileSaveDialog.FILE_KIND_ALARM) {
             Toast.makeText(this, R.string.save_success_message, Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -1526,12 +1547,14 @@ public class RingdroidEditActivity extends ComponentActivity
         // If it's a notification, give the user the option of making
         // this their default notification. If they say no, we're finished.
         if (mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION) {
-            new AlertDialog.Builder(RingdroidEditActivity.this).setTitle(R.string.alert_title_success)
+            new AlertDialog.Builder(RingdroidEditActivity.this)
+                    .setTitle(R.string.alert_title_success)
                     .setMessage(R.string.set_default_notification)
                     .setPositiveButton(R.string.alert_yes_button, (dialog, whichButton) -> {
-                        RingdroidUtils.setDefaultRingTone(RingdroidEditActivity.this, RingtoneManager.TYPE_NOTIFICATION,
-                                newUri, true);
-                    }).setNegativeButton(R.string.alert_no_button, (dialog, whichButton) -> finish())
+                        RingdroidUtils.setDefaultRingTone(RingdroidEditActivity.this,
+                                RingtoneManager.TYPE_NOTIFICATION, newUri, true);
+                    })
+                    .setNegativeButton(R.string.alert_no_button, (dialog, whichButton) -> finish())
                     .setCancelable(false).show();
             return;
         }
@@ -1544,8 +1567,8 @@ public class RingdroidEditActivity extends ComponentActivity
             public void handleMessage(Message response) {
                 int actionId = response.arg1;
                 if (actionId == AfterSaveActionDialog.ACTION_MAKE_DEFAULT) {
-                    RingdroidUtils.setDefaultRingTone(RingdroidEditActivity.this, RingtoneManager.TYPE_RINGTONE, newUri,
-                            true);
+                    RingdroidUtils.setDefaultRingTone(RingdroidEditActivity.this,
+                            RingtoneManager.TYPE_RINGTONE, newUri, true);
                 } else if (actionId == AfterSaveActionDialog.ACTION_CHOOSE_CONTACT) {
                     chooseContactForRingtone(newUri);
                 } else {
@@ -1595,13 +1618,14 @@ public class RingdroidEditActivity extends ComponentActivity
         layout.setPadding(50, 50, 50, 50);
 
         final TextView label = new TextView(this);
-        label.setText(String.format(Locale.getDefault(), "Amplification: %d%%", (int)(mAmplifyFactor * 100)));
+        label.setText(String.format(Locale.getDefault(), "Amplification: %d%%",
+                (int) (mAmplifyFactor * 100)));
         label.setPadding(0, 0, 0, 30);
         layout.addView(label);
 
         final SeekBar seekBar = new SeekBar(this);
         seekBar.setMax(400); // Max 400% (or 4.0x)
-        seekBar.setProgress((int)(mAmplifyFactor * 100));
+        seekBar.setProgress((int) (mAmplifyFactor * 100));
         seekBar.setContentDescription(getString(R.string.menu_amplify));
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -1612,29 +1636,31 @@ public class RingdroidEditActivity extends ComponentActivity
                 }
                 label.setText(String.format(Locale.getDefault(), "Amplification: %d%%", progress));
             }
+
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
         layout.addView(seekBar);
 
-        new AlertDialog.Builder(this)
-            .setTitle(R.string.menu_amplify)
-            .setView(layout)
-            .setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
-                mAmplifyFactor = seekBar.getProgress() / 100.0f;
-            })
-            .setNegativeButton(android.R.string.cancel, null)
-            .show();
+        new AlertDialog.Builder(this).setTitle(R.string.menu_amplify).setView(layout)
+                .setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
+                    mAmplifyFactor = seekBar.getProgress() / 100.0f;
+                }).setNegativeButton(android.R.string.cancel, null).show();
     }
 
     /**
-     * Safely set text to a TextView with length limiting to prevent OutOfMemoryError.
-     * This is especially important for error messages and stack traces which can be very large.
+     * Safely set text to a TextView with length limiting to prevent OutOfMemoryError. This is
+     * especially important for error messages and stack traces which can be very large.
      *
-     * @param textView The TextView to set text on
-     * @param text The text to set (can be null)
+     * @param textView
+     *            The TextView to set text on
+     * @param text
+     *            The text to set (can be null)
      */
     private void setSafeText(TextView textView, String text) {
         if (text == null) {

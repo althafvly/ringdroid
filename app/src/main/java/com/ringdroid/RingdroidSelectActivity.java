@@ -61,9 +61,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 /**
- * Main screen that shows up when you launch Ringdroid. Handles selecting an
- * audio file or using an intent to record a new one, and then launches
- * RingdroidEditActivity from here.
+ * Main screen that shows up when you launch Ringdroid. Handles selecting an audio file or using an
+ * intent to record a new one, and then launches RingdroidEditActivity from here.
  */
 public class RingdroidSelectActivity extends ComponentActivity {
     // Context menu
@@ -71,31 +70,30 @@ public class RingdroidSelectActivity extends ComponentActivity {
     private static final int CMD_DELETE = 5;
     private static final int CMD_SET_AS_DEFAULT = 6;
     private static final int CMD_SET_AS_CONTACT = 7;
-    private static final String[] AUDIO_PROJECTION = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,
-            MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION,
+    private static final String[] AUDIO_PROJECTION = {MediaStore.Audio.Media._ID,
+            MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
+            MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.SIZE, MediaStore.Audio.Media.MIME_TYPE,
 
             // Flags your UI uses:
-            MediaStore.Audio.Media.IS_RINGTONE, MediaStore.Audio.Media.IS_ALARM, MediaStore.Audio.Media.IS_NOTIFICATION,
-            MediaStore.Audio.Media.IS_MUSIC,
+            MediaStore.Audio.Media.IS_RINGTONE, MediaStore.Audio.Media.IS_ALARM,
+            MediaStore.Audio.Media.IS_NOTIFICATION, MediaStore.Audio.Media.IS_MUSIC,
 
             // File path — will be non-null since we use MANAGE_EXTERNAL_STORAGE
             MediaStore.Audio.Media.DATA};
     private static final String TAG = "RingdroidSelectActivity";
     private final Handler mUiHandler = new Handler(Looper.getMainLooper());
+    private final ActivityResultLauncher<Intent> mEditActivityLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), this::onEditActivityResult);
     private SearchView mFilter;
     private SimpleCursorAdapter mAdapter;
     private boolean mWasGetContentIntent;
     private boolean mShowAll = false;
     private Thread mLoaderThread;
+    private final ActivityResultLauncher<String> mStoragePermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(), granted -> onPermissionChanged());
     private MediaSelectBinding binding;
     private boolean mSettingsPermissionRequested = false;
-    private final ActivityResultLauncher<String> mStoragePermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(),
-                    granted -> onPermissionChanged());
-    private final ActivityResultLauncher<Intent> mEditActivityLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                    this::onEditActivityResult);
 
     /**
      * Called when the activity is first created.
@@ -139,16 +137,19 @@ public class RingdroidSelectActivity extends ComponentActivity {
                     R.layout.media_select_row, null,
                     // Map from database columns...
                     new String[]{MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
-                            MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media._ID, MediaStore.Audio.Media._ID},
+                            MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media._ID,
+                            MediaStore.Audio.Media._ID},
                     // To widget ids in the row layout...
-                    new int[]{R.id.row_artist, R.id.row_album, R.id.row_title, R.id.row_icon, R.id.row_options_button},
+                    new int[]{R.id.row_artist, R.id.row_album, R.id.row_title, R.id.row_icon,
+                            R.id.row_options_button},
                     0);
 
             listView.setAdapter(mAdapter);
             listView.setItemsCanFocus(true);
 
             // Normal click - open the editor
-            listView.setOnItemClickListener((parent, view, position, id) -> startRingdroidEditor(position));
+            listView.setOnItemClickListener(
+                    (parent, view, position, id) -> startRingdroidEditor(position));
 
             loadAudioAsync(null);
         } catch (SecurityException | IllegalArgumentException e) {
@@ -259,7 +260,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
         // Apply search filter
         if (filter != null && !filter.isEmpty()) {
             String like = "%" + filter + "%";
-            selection = new StringBuilder("(" + selection + " AND (TITLE LIKE ? OR ARTIST LIKE ? OR ALBUM LIKE ?))");
+            selection = new StringBuilder(
+                    "(" + selection + " AND (TITLE LIKE ? OR ARTIST LIKE ? OR ALBUM LIKE ?))");
             selectionArgsList.add(like);
             selectionArgsList.add(like);
             selectionArgsList.add(like);
@@ -267,8 +269,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
 
         String[] selectionArgs = selectionArgsList.toArray(new String[0]);
 
-        return getContentResolver().query(baseUri, AUDIO_PROJECTION, selection.toString(), selectionArgs,
-                MediaStore.Audio.Media.TITLE + " ASC");
+        return getContentResolver().query(baseUri, AUDIO_PROJECTION, selection.toString(),
+                selectionArgs, MediaStore.Audio.Media.TITLE + " ASC");
     }
 
     private void updateUiWithCursors(Cursor internal, Cursor external) {
@@ -289,20 +291,29 @@ public class RingdroidSelectActivity extends ComponentActivity {
     private void setSoundIconFromCursor(ImageView view, Cursor cursor) {
         if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE))) {
             view.setImageResource(R.drawable.baseline_call_24);
-            ((View) view.getParent()).setBackgroundColor(ContextCompat.getColor(this,R.color.type_bkgnd_ringtone));
-        } else if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_ALARM))) {
+            ((View) view.getParent())
+                    .setBackgroundColor(ContextCompat.getColor(this, R.color.type_bkgnd_ringtone));
+        } else if (0 != cursor
+                .getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_ALARM))) {
             view.setImageResource(R.drawable.baseline_access_alarm_24);
-            ((View) view.getParent()).setBackgroundColor(ContextCompat.getColor(this,R.color.type_bkgnd_alarm));
-        } else if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_NOTIFICATION))) {
+            ((View) view.getParent())
+                    .setBackgroundColor(ContextCompat.getColor(this, R.color.type_bkgnd_alarm));
+        } else if (0 != cursor
+                .getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_NOTIFICATION))) {
             view.setImageResource(R.drawable.baseline_notifications_24);
-            ((View) view.getParent()).setBackgroundColor(ContextCompat.getColor(this,R.color.type_bkgnd_notification));
-        } else if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_MUSIC))) {
+            ((View) view.getParent()).setBackgroundColor(
+                    ContextCompat.getColor(this, R.color.type_bkgnd_notification));
+        } else if (0 != cursor
+                .getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_MUSIC))) {
             view.setImageResource(R.drawable.baseline_music_note_24);
-            ((View) view.getParent()).setBackgroundColor(ContextCompat.getColor(this, R.color.type_bkgnd_music));
+            ((View) view.getParent())
+                    .setBackgroundColor(ContextCompat.getColor(this, R.color.type_bkgnd_music));
         }
-        String filename = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
+        String filename = cursor
+                .getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
         if (!SoundFile.isFilenameSupported(filename)) {
-            ((View) view.getParent()).setBackgroundColor(ContextCompat.getColor(this,R.color.type_bkgnd_unsupported));
+            ((View) view.getParent()).setBackgroundColor(
+                    ContextCompat.getColor(this, R.color.type_bkgnd_unsupported));
         }
     }
 
@@ -395,7 +406,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
 
         Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed()) return;
+        if (c == null || c.isClosed())
+            return;
 
         if (menuInfo instanceof AdapterView.AdapterContextMenuInfo) {
             c.moveToPosition(((AdapterView.AdapterContextMenuInfo) menuInfo).position);
@@ -426,38 +438,39 @@ public class RingdroidSelectActivity extends ComponentActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case CMD_EDIT:
+            case CMD_EDIT :
                 startRingdroidEditor();
                 return true;
 
-            case CMD_DELETE:
+            case CMD_DELETE :
                 confirmDelete();
                 return true;
 
-            case CMD_SET_AS_DEFAULT:
+            case CMD_SET_AS_DEFAULT :
                 setAsDefaultRingtoneOrNotification();
                 return true;
 
-            case CMD_SET_AS_CONTACT:
+            case CMD_SET_AS_CONTACT :
                 return chooseContactForRingtone();
 
-            default:
+            default :
                 return super.onContextItemSelected(item);
         }
     }
 
     private void setAsDefaultRingtoneOrNotification() {
         Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed()) return;
+        if (c == null || c.isClosed())
+            return;
 
         // If the item is a ringtone then set the default ringtone,
         // otherwise it has to be a notification so set the default notification sound
         if (0 != c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE))) {
-            RingdroidUtils.setDefaultRingTone(RingdroidSelectActivity.this, RingtoneManager.TYPE_RINGTONE, getUri(),
-                    false);
+            RingdroidUtils.setDefaultRingTone(RingdroidSelectActivity.this,
+                    RingtoneManager.TYPE_RINGTONE, getUri(), false);
         } else {
-            RingdroidUtils.setDefaultRingTone(RingdroidSelectActivity.this, RingtoneManager.TYPE_NOTIFICATION, getUri(),
-                    false);
+            RingdroidUtils.setDefaultRingTone(RingdroidSelectActivity.this,
+                    RingtoneManager.TYPE_NOTIFICATION, getUri(), false);
         }
     }
 
@@ -484,7 +497,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
     private Uri getUri() {
         // Get the uri of the item that is in the row
         Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed()) return null;
+        if (c == null || c.isClosed())
+            return null;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             int idCol = c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID);
@@ -498,7 +512,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
             return null;
         }
 
-        String itemUri = c.getString(uriIndex) + "/" + c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
+        String itemUri = c.getString(uriIndex) + "/"
+                + c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
 
         return Uri.parse(itemUri);
     }
@@ -506,7 +521,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
     private boolean chooseContactForRingtone() {
         try {
             Uri uri = getUri();
-            if (uri == null) return false;
+            if (uri == null)
+                return false;
             // Go to the choose contact activity
             Intent intent = new Intent(Intent.ACTION_EDIT, uri);
             intent.setClass(this, ChooseContactActivity.class);
@@ -521,7 +537,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
         // See if the selected list item was created by Ringdroid to
         // determine which alert message to show
         Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed()) return;
+        if (c == null || c.isClosed())
+            return;
 
         if (isFinishing() || isDestroyed()) {
             return;
@@ -531,9 +548,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
                 .setTitle(getResources().getText(R.string.delete_audio))
                 .setMessage(getResources().getText(R.string.confirm_delete_ringdroid))
                 .setPositiveButton(R.string.delete_ok_button, (dialog, whichButton) -> onDelete())
-                .setNegativeButton(R.string.delete_cancel_button, (dialog, whichButton) -> {})
-                .setCancelable(true)
-                .show();
+                .setNegativeButton(R.string.delete_cancel_button, (dialog, whichButton) -> {
+                }).setCancelable(true).show();
     }
 
     private void onDelete() {
@@ -542,7 +558,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
             return;
 
         long id = c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
-        Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+        Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                id);
 
         // Legacy direct file delete (Android 9 and below)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -574,8 +591,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
         }
         new AlertDialog.Builder(RingdroidSelectActivity.this)
                 .setTitle(getResources().getText(R.string.alert_title_failure)).setMessage(message)
-                .setPositiveButton(R.string.alert_ok_button, (dialog, whichButton) -> finish()).setCancelable(false)
-                .show();
+                .setPositiveButton(R.string.alert_ok_button, (dialog, whichButton) -> finish())
+                .setCancelable(false).show();
     }
 
     private void onRecord() {
@@ -616,7 +633,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
 
     private void startRingdroidEditor() {
         Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed()) return;
+        if (c == null || c.isClosed())
+            return;
         int dataIndex = c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
         String filename = c.getString(dataIndex);
         if (filename != null) {
@@ -626,7 +644,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
 
     private void startRingdroidEditor(int position) {
         Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed()) return;
+        if (c == null || c.isClosed())
+            return;
         c.moveToPosition(position);
         int dataIndex = c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
         String filename = c.getString(dataIndex);
