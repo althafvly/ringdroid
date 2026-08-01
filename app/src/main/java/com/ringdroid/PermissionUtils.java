@@ -28,6 +28,9 @@ public final class PermissionUtils {
     }
 
     public static boolean hasContactPermissions(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
         for (String permission : getContactPermissions()) {
             if (context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
                 return false;
@@ -37,21 +40,32 @@ public final class PermissionUtils {
     }
 
     public static boolean hasMicPermissions(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
         return context.checkSelfPermission(getMicPermission()) == PackageManager.PERMISSION_GRANTED;
     }
 
     public static boolean hasStoragePermission(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
         return context
                 .checkSelfPermission(getStoragePermission()) == PackageManager.PERMISSION_GRANTED;
     }
 
     public static boolean hasWriteSettingsPermission(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
         return Settings.System.canWrite(context);
     }
 
     public static void requestWriteSettingsPermission(Context context) {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-        intent.setData(Uri.parse("package:" + context.getPackageName()));
-        context.startActivity(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+            context.startActivity(intent);
+        }
     }
 }

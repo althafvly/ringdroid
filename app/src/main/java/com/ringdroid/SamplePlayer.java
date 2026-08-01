@@ -18,7 +18,9 @@ package com.ringdroid;
 
 import android.media.AudioAttributes;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.os.Build;
 
 import com.ringdroid.soundfile.SoundFile;
 
@@ -59,9 +61,16 @@ class SamplePlayer {
         AudioFormat audioFormat = new AudioFormat.Builder().setSampleRate(mSampleRate)
                 .setEncoding(AudioFormat.ENCODING_PCM_16BIT).setChannelMask(channelMask).build();
 
-        mAudioTrack = new AudioTrack.Builder().setAudioAttributes(audioAttributes)
-                .setAudioFormat(audioFormat).setTransferMode(AudioTrack.MODE_STREAM)
-                .setBufferSizeInBytes(mBuffer.length * 2).build();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mAudioTrack = new AudioTrack.Builder().setAudioAttributes(audioAttributes)
+                    .setAudioFormat(audioFormat).setTransferMode(AudioTrack.MODE_STREAM)
+                    .setBufferSizeInBytes(mBuffer.length * 2).build();
+        } else {
+            // Fallback for API 21-22 where AudioTrack.Builder is not available.
+            mAudioTrack = new AudioTrack(audioAttributes, audioFormat, mBuffer.length * 2,
+                    AudioTrack.MODE_STREAM, AudioManager.AUDIO_SESSION_ID_GENERATE);
+        }
+
         // Check when player played all the given data and notify user if mListener is
         // set.
         mAudioTrack.setNotificationMarkerPosition(mNumSamples - 1); // Set the marker to the end.

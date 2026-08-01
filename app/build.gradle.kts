@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId = "org.thayyil.ringdroid"
-        minSdk = 24
+        minSdk = 21
         targetSdk = 37
         versionCode = 30001
         versionName = "3.0.1"
