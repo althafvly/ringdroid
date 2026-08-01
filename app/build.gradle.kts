@@ -10,8 +10,8 @@ android {
         applicationId = "org.thayyil.ringdroid"
         minSdk = 21
         targetSdk = 37
-        versionCode = 30001
-        versionName = "3.0.1"
+        versionCode = 30100
+        versionName = "3.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
