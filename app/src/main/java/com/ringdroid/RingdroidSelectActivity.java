@@ -179,6 +179,9 @@ public class RingdroidSelectActivity extends ComponentActivity {
 
         // Long-press opens a context menu
         registerForContextMenu(listView);
+
+        // Clear intent extras to prevent TransactionTooLargeException when this activity is stopped
+        getIntent().replaceExtras((Bundle) null);
     }
 
     @Override
@@ -276,7 +279,10 @@ public class RingdroidSelectActivity extends ComponentActivity {
     private void updateUiWithCursors(Cursor internal, Cursor external) {
         TextView emptyView = binding.emptyText;
 
-        if (internal.getCount() == 0 && external.getCount() == 0 && !mShowAll) {
+        int internalCount = internal != null ? internal.getCount() : 0;
+        int externalCount = external != null ? external.getCount() : 0;
+
+        if (internalCount == 0 && externalCount == 0 && !mShowAll) {
             emptyView.setVisibility(View.VISIBLE);
             mAdapter.swapCursor(null);
             return;
@@ -284,7 +290,13 @@ public class RingdroidSelectActivity extends ComponentActivity {
             emptyView.setVisibility(View.GONE);
         }
 
-        Cursor merged = new MergeCursor(new Cursor[]{internal, external});
+        ArrayList<Cursor> cursors = new ArrayList<>();
+        if (internal != null)
+            cursors.add(internal);
+        if (external != null)
+            cursors.add(external);
+
+        Cursor merged = new MergeCursor(cursors.toArray(new Cursor[0]));
         mAdapter.swapCursor(merged);
     }
 

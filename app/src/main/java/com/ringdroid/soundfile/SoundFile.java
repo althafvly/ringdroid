@@ -30,6 +30,7 @@ import android.provider.OpenableColumns;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -594,10 +595,10 @@ public class SoundFile {
         codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         codec.start();
 
-        // Get an estimation of the encoded data based on the bitrate. Add 10% to it.
-        int estimatedEncodedSize = (int) ((endTime - startTime) * ((double) bitrate / 8) * 1.1);
-        ByteBuffer encodedBytes = ByteBuffer.allocate(estimatedEncodedSize);
         MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
+        File tempFile = File.createTempFile("ringdroid", ".tmp");
+        FileOutputStream tempOut = new FileOutputStream(tempFile);
+        int encoded_size = 0;
         boolean done_reading = false;
         long presentation_time;
 
@@ -681,41 +682,30 @@ public class SoundFile {
                 outputBuffer.get(encodedSamples, 0, info.size);
                 outputBuffer.clear();
                 codec.releaseOutputBuffer(outputBufferIndex, false);
-                if (encodedBytes.remaining() < info.size) { // Hopefully this should not happen.
-                    estimatedEncodedSize = (int) (estimatedEncodedSize * 1.2); // Add 20%.
-                    ByteBuffer newEncodedBytes = ByteBuffer.allocate(estimatedEncodedSize);
-                    int position = encodedBytes.position();
-                    encodedBytes.rewind();
-                    newEncodedBytes.put(encodedBytes);
-                    encodedBytes = newEncodedBytes;
-                    encodedBytes.position(position);
-                }
-                encodedBytes.put(encodedSamples, 0, info.size);
+                tempOut.write(encodedSamples, 0, info.size);
+                encoded_size += info.size;
             }
             if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
                 // We got all the encoded data from the encoder.
                 break;
             }
         }
-        int encoded_size = encodedBytes.position();
-        encodedBytes.rewind();
+        tempOut.close();
         codec.stop();
         codec.release();
 
-        // Write the encoded stream to the file, 4kB at a time.
-        buffer = new byte[4096];
+        // Write the encoded stream to the file
         try {
             outputStream
                     .write(MP4Header.getMP4Header(mSampleRate, numChannels, frame_sizes, bitrate));
-            while (encoded_size - encodedBytes.position() > buffer.length) {
-                encodedBytes.get(buffer);
-                outputStream.write(buffer);
+            FileInputStream tempIn = new FileInputStream(tempFile);
+            byte[] ioBuffer = new byte[8192];
+            int bytesRead;
+            while ((bytesRead = tempIn.read(ioBuffer)) != -1) {
+                outputStream.write(ioBuffer, 0, bytesRead);
             }
-            int remaining = encoded_size - encodedBytes.position();
-            if (remaining > 0) {
-                encodedBytes.get(buffer, 0, remaining);
-                outputStream.write(buffer, 0, remaining);
-            }
+            tempIn.close();
+            tempFile.delete();
             outputStream.close();
         } catch (IOException e) {
             Log.e(TAG, "Failed to create the .m4a file.", e);

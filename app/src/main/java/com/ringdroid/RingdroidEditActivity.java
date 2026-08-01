@@ -63,7 +63,6 @@ import com.ringdroid.soundfile.SoundFile;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.Locale;
-import java.util.Objects;
 
 /**
  * The activity for the Ringdroid main editor window. Keeps track of the waveform display, current
@@ -284,8 +283,13 @@ public class RingdroidEditActivity extends ComponentActivity
         // they create.
         mWasGetContentIntent = intent.getBooleanExtra("was_get_content_intent", false);
 
-        mFilename = Objects.requireNonNull(intent.getData()).toString().replaceFirst("file://", "")
-                .replaceAll("%20", " ");
+        Uri data = intent.getData();
+        if (data == null) {
+            Toast.makeText(this, R.string.alert_title_failure, Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        mFilename = data.toString().replaceFirst("file://", "").replaceAll("%20", " ");
         mSoundFile = null;
         mKeyDown = false;
 
