@@ -19,6 +19,7 @@ package com.ringdroid;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -515,11 +516,7 @@ public class RingdroidEditActivity extends ComponentActivity
         updateDisplay();
     }
 
-    public void waveformZoomIn() {
-        if (!mWaveformView.isInitialized()) {
-            return;
-        }
-        mWaveformView.zoomIn();
+    private void syncWaveformPositions() {
         mStartPos = mWaveformView.getStart();
         mEndPos = mWaveformView.getEnd();
         mMaxPos = mWaveformView.maxPos();
@@ -528,17 +525,20 @@ public class RingdroidEditActivity extends ComponentActivity
         updateDisplay();
     }
 
+    public void waveformZoomIn() {
+        if (!mWaveformView.isInitialized()) {
+            return;
+        }
+        mWaveformView.zoomIn();
+        syncWaveformPositions();
+    }
+
     public void waveformZoomOut() {
         if (!mWaveformView.isInitialized()) {
             return;
         }
         mWaveformView.zoomOut();
-        mStartPos = mWaveformView.getStart();
-        mEndPos = mWaveformView.getEnd();
-        mMaxPos = mWaveformView.maxPos();
-        mOffset = mWaveformView.getOffset();
-        mOffsetGoal = mOffset;
-        updateDisplay();
+        syncWaveformPositions();
     }
 
     public void markerDraw() {
@@ -1664,10 +1664,8 @@ public class RingdroidEditActivity extends ComponentActivity
 
     private void chooseContactForRingtone(Uri uri) {
         try {
-            Intent intent = new Intent(Intent.ACTION_EDIT, uri);
-            intent.setClass(this, ChooseContactActivity.class);
-            mChooseContactLauncher.launch(intent);
-        } catch (Exception e) {
+            mChooseContactLauncher.launch(ChooseContactActivity.createIntent(this, uri));
+        } catch (ActivityNotFoundException | SecurityException e) {
             Log.e(TAG, "Couldn't open Choose Contact window", e);
         }
     }
