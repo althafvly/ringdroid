@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId = "org.thayyil.ringdroid"
-        minSdk = 21
+        minSdk = 24
         targetSdk = 37
         versionCode = 30200
         versionName = "3.2.0"
@@ -44,7 +44,6 @@ android {
         }
 
         create("play") {
-            minSdk = 24
             dimension = "distribution"
         }
     }

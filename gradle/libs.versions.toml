@@ -5,8 +5,8 @@ junit = "4.13.2"
 androidx-test-ext-junit = "1.3.0"
 androidx-test-runner = "1.7.0"
 androidx-test-core = "1.7.0"
-androidx-activity = { strictly = "1.11.0" }
-androidx-core = { strictly = "1.17.0" }
+androidx-activity = "1.13.0"
+androidx-core = "1.19.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }

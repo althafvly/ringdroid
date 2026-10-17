@@ -848,7 +848,7 @@ public class RingdroidEditActivity extends ComponentActivity
                     if (!mLoadingKeepGoing) {
                         loadingCancelled = true;
                     } else {
-                        String name = mFile.getName().toLowerCase();
+                        String name = mFile.getName().toLowerCase(Locale.getDefault());
                         String[] components = name.split("\\.");
                         String err;
                         if (components.length < 2) {

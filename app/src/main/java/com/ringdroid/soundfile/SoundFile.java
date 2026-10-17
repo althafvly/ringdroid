@@ -42,6 +42,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
 
 public class SoundFile {
@@ -114,7 +115,7 @@ public class SoundFile {
         if (!f.exists()) {
             throw new java.io.FileNotFoundException(fileName);
         }
-        String name = f.getName().toLowerCase();
+        String name = f.getName().toLowerCase(Locale.getDefault());
         String[] components = name.split("\\.");
         if (components.length < 2) {
             return null;
