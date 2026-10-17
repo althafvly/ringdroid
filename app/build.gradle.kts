@@ -44,6 +44,7 @@ android {
         }
 
         create("play") {
+            minSdk = 24
             dimension = "distribution"
         }
     }
