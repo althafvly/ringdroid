@@ -40,6 +40,7 @@
     <string name="menu_reset">إعادة ضبط</string>
     <string name="menu_about">حول</string>
     <string name="menu_show_all_audio">عرض كل الملفات الصوتية</string>
+    <string name="menu_show_all_audio_subtitle">تضمين ملفات الصوت المخفية والنظام</string>
 
     <string name="context_menu_delete">حذف</string>
     <string name="context_menu_default_ringtone">تعيين كنغمة رنين افتراضية</string>

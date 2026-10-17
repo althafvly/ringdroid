@@ -40,6 +40,7 @@
     <string name="menu_reset">Sıfırla</string>
     <string name="menu_about">Hakkında</string>
     <string name="menu_show_all_audio">Tüm Sesleri Göster</string>
+    <string name="menu_show_all_audio_subtitle">Sistem ve gizli sesleri dahil et</string>
 
     <string name="context_menu_delete">Sil</string>
     <string name="context_menu_default_ringtone">Varsayılan Zil Sesi Olarak Ayarla</string>

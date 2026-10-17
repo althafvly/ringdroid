@@ -40,6 +40,7 @@
     <string name="menu_reset">Resetuj</string>
     <string name="menu_about">Informacje</string>
     <string name="menu_show_all_audio">Pokaż wszystkie pliki audio</string>
+    <string name="menu_show_all_audio_subtitle">Uwzględnij dźwięki systemowe i ukryte</string>
 
     <string name="context_menu_delete">Usuń</string>
     <string name="context_menu_default_ringtone">Ustaw jako domyślny dzwonek</string>

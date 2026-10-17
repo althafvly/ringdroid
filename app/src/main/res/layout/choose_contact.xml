@@ -22,6 +22,60 @@
     android:background="@color/window_background"
     android:orientation="vertical">
 
+    <!-- Modern App Toolbar -->
+    <FrameLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface_toolbar">
+
+        <!-- Normal Toolbar View -->
+        <RelativeLayout
+            android:id="@+id/toolbar_normal"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+            <ImageView
+                android:id="@+id/btn_back"
+                style="@style/ToolbarButton"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/alert_ok_button"
+                android:src="@drawable/baseline_arrow_back_24" />
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                style="@style/ToolbarTitle"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@+id/btn_back"
+                android:layout_toStartOf="@+id/btn_search"
+                android:text="@string/choose_contact_title"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/btn_search"
+                style="@style/ToolbarButton"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/search_edit_box"
+                android:src="@drawable/baseline_search_24" />
+        </RelativeLayout>
+
+        <!-- Search Toolbar View -->
+        <include
+            android:id="@+id/toolbar_search"
+            layout="@layout/toolbar_search" />
+
+        <!-- Bottom 1dp Divider -->
+        <View
+            style="@style/ToolbarDivider"
+            android:layout_gravity="bottom" />
+    </FrameLayout>
+
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"

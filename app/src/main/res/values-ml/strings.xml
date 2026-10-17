@@ -40,6 +40,7 @@
     <string name="menu_reset">പുനഃസജ്ജമാക്കുക</string>
     <string name="menu_about">വിവരം</string>
     <string name="menu_show_all_audio">എല്ലാ ഓഡിയോയും കാണിക്കുക</string>
+    <string name="menu_show_all_audio_subtitle">സിസ്റ്റം, മറഞ്ഞിരിക്കുന്ന ഓഡിയോകൾ ഉൾപ്പെടുത്തുക</string>
 
     <string name="context_menu_delete">ഡിലീറ്റ് ചെയ്യുക</string>
     <string name="context_menu_default_ringtone">ഡിഫോൾട്ട് റിംഗ്‌ടോൺ ആയി സജ്ജമാക്കുക</string>

@@ -26,6 +26,12 @@
         <item name="android:fitsSystemWindows">true</item>
     </style>
 
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/surface_toolbar</item>
+    </style>
+
     <style name="AudioFileInfoOverlayText">
         <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingRight">8dp</item>
@@ -38,6 +44,29 @@
 
     <style name="ToolbarBackground">
         <item name="android:background">@color/surface_toolbar</item>
+    </style>
+
+    <style name="ToolbarButton">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:tint">@color/toolbar_icon_tint</item>
+    </style>
+
+    <style name="ToolbarTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/toolbar_title_text</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="ToolbarDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/toolbar_divider</item>
     </style>
 
 </resources>

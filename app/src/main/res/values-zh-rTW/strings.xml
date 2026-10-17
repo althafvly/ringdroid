@@ -40,6 +40,7 @@
     <string name="menu_reset">重設</string>
     <string name="menu_about">關於</string>
     <string name="menu_show_all_audio">顯示所有音訊</string>
+    <string name="menu_show_all_audio_subtitle">包含系統和隱藏音訊</string>
 
     <string name="context_menu_delete">刪除</string>
     <string name="context_menu_default_ringtone">設為預設鈴聲</string>

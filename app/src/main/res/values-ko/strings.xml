@@ -40,6 +40,7 @@
     <string name="menu_reset">재설정</string>
     <string name="menu_about">정보</string>
     <string name="menu_show_all_audio">모든 오디오 표시</string>
+    <string name="menu_show_all_audio_subtitle">시스템 및 숨김 오디오 포함</string>
 
     <string name="context_menu_delete">삭제</string>
     <string name="context_menu_default_ringtone">기본 벨소리로 설정</string>

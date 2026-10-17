@@ -40,6 +40,7 @@
     <string name="menu_reset">リセット</string>
     <string name="menu_about">情報</string>
     <string name="menu_show_all_audio">すべてのオーディオを表示</string>
+    <string name="menu_show_all_audio_subtitle">システムと非表示の音声を含める</string>
 
     <string name="context_menu_delete">削除</string>
     <string name="context_menu_default_ringtone">デフォルトの着信音に設定</string>

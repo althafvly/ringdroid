@@ -25,11 +25,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.ContactsContract.Contacts;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
@@ -46,11 +43,11 @@ import com.ringdroid.databinding.ChooseContactBinding;
 public class ChooseContactActivity extends ComponentActivity {
     private static final String TAG = "ChooseContactActivity";
     private final Handler mUiHandler = new Handler(Looper.getMainLooper());
-    private SearchView mFilter;
     private SimpleCursorAdapter mAdapter;
     private Uri mRingtoneUri;
     private Thread mLoaderThread;
     private ChooseContactBinding binding;
+    private SearchToolbarHelper mSearchHelper;
     private final ActivityResultLauncher<String[]> mContactPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestMultiplePermissions(), result -> {
                 if (PermissionUtils.hasContactPermissions(this)) {
@@ -85,6 +82,8 @@ public class ChooseContactActivity extends ComponentActivity {
         // Inflate our UI from its XML layout description.
         binding = ChooseContactBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        setupToolbar();
 
         if (PermissionUtils.hasContactPermissions(this)) {
             loadData();
@@ -142,27 +141,14 @@ public class ChooseContactActivity extends ComponentActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.contacts_options, menu);
+    private void setupToolbar() {
+        RingdroidUtils.applyStatusBarInsets(binding.toolbarContainer);
+        RingdroidUtils.applyNavigationBarInsets(binding.list, 8);
 
-        mFilter = (SearchView) menu.findItem(R.id.action_search_filter).getActionView();
-        if (mFilter != null) {
-            mFilter.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                public boolean onQueryTextChange(String newText) {
-                    refreshListView();
-                    return true;
-                }
+        binding.btnBack.setOnClickListener(v -> finish());
 
-                public boolean onQueryTextSubmit(String query) {
-                    refreshListView();
-                    return true;
-                }
-            });
-        }
-
-        return true;
+        mSearchHelper = new SearchToolbarHelper(this, binding.toolbarNormal, binding.toolbarSearch,
+                binding.btnSearch, query -> refreshListView());
     }
 
     private void assignRingtoneToContact() {
@@ -233,8 +219,13 @@ public class ChooseContactActivity extends ComponentActivity {
     }
 
     public void refreshListView() {
-        Bundle args = new Bundle();
-        args.putString("filter", mFilter.getQuery().toString());
-        loadContactsAsync(mFilter.getQuery().toString());
+        String filter = null;
+        if (mSearchHelper != null && mSearchHelper.isSearchOpen()) {
+            String query = mSearchHelper.getQuery();
+            if (!query.isEmpty()) {
+                filter = query;
+            }
+        }
+        loadContactsAsync(filter);
     }
 }

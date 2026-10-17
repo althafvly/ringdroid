@@ -1,14 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="24dp">
+    android:background="@drawable/bg_dialog"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingTop="28dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="24dp">
 
+    <!-- Music Note Avatar -->
+    <ImageView
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:background="@drawable/bg_category_avatar"
+        android:backgroundTint="#1E3A5F"
+        android:contentDescription="@string/progress_dialog_loading"
+        android:padding="14dp"
+        android:src="@drawable/baseline_music_note_24"
+        android:tint="#38BDF8" />
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/progress_dialog_loading"
+        android:textColor="#F8FAFC"
+        android:textSize="18sp" />
+
+    <!-- File Title / Subtitle -->
+    <TextView
+        android:id="@+id/loading_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif"
+        android:singleLine="true"
+        android:textColor="#94A3B8"
+        android:textSize="13sp" />
+
+    <!-- Progress Info Row -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:fontFamily="sans-serif"
+            android:text="Decoding audio samples…"
+            android:textColor="#64748B"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/progress_percentage_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:fontFamily="sans-serif-medium"
+            android:text="0%"
+            android:textColor="#38BDF8"
+            android:textSize="13sp" />
+    </RelativeLayout>
+
+    <!-- Progress Bar -->
     <ProgressBar
         android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="100" />
+        android:layout_height="8dp"
+        android:layout_marginTop="8dp"
+        android:max="100"
+        android:progressBackgroundTint="#334155"
+        android:progressTint="#38BDF8" />
 
-</FrameLayout>
+    <!-- Cancel Button -->
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginTop="22dp"
+        android:background="@drawable/btn_secondary"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/progress_dialog_cancel"
+        android:textAllCaps="false"
+        android:textColor="#94A3B8"
+        android:textSize="15sp" />
+
+</LinearLayout>

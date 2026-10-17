@@ -53,6 +53,10 @@
     <color name="list_divider">#1E293B</color>
     <color name="window_background">#0F172A</color>
     <color name="surface_toolbar">#1E293B</color>
+    <color name="toolbar_divider">#334155</color>
+    <color name="toolbar_icon_tint">#E2E8F0</color>
+    <color name="toolbar_title_text">#F8FAFC</color>
+    <color name="toolbar_subtitle_text">#94A3B8</color>
 
     <color name="ic_launcher_background">#FFFFFF</color>
 

@@ -40,6 +40,7 @@
     <string name="menu_reset">Ripristina</string>
     <string name="menu_about">Informazioni</string>
     <string name="menu_show_all_audio">Mostra tutti gli audio</string>
+    <string name="menu_show_all_audio_subtitle">Includi audio di sistema e nascosti</string>
 
     <string name="context_menu_delete">Elimina</string>
     <string name="context_menu_default_ringtone">Imposta come suoneria predefinita</string>

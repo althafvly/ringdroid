@@ -1,13 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="24dp">
+    android:background="@drawable/bg_dialog"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingTop="28dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="28dp">
 
-    <ProgressBar
+    <!-- Save Avatar -->
+    <ImageView
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:background="@drawable/bg_category_avatar"
+        android:backgroundTint="#164E63"
+        android:contentDescription="@string/progress_dialog_saving"
+        android:padding="14dp"
+        android:src="@drawable/baseline_save_24"
+        android:tint="#22D3EE" />
+
+    <!-- Title -->
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminate="true" />
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/progress_dialog_saving"
+        android:textColor="#F8FAFC"
+        android:textSize="18sp" />
 
-</FrameLayout>
+    <!-- Subtitle -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif"
+        android:text="Writing audio file…"
+        android:textColor="#94A3B8"
+        android:textSize="13sp" />
+
+    <!-- Spinner -->
+    <ProgressBar
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:indeterminate="true"
+        android:indeterminateTint="#38BDF8" />
+
+</LinearLayout>

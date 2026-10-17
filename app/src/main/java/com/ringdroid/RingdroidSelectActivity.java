@@ -20,9 +20,12 @@ import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.MergeCursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -34,16 +37,11 @@ import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SearchView;
+import android.widget.PopupWindow;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,7 +52,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 
+import com.ringdroid.databinding.DialogConfirmDeleteBinding;
 import com.ringdroid.databinding.MediaSelectBinding;
+import com.ringdroid.databinding.RowOptionsPopupBinding;
+import com.ringdroid.databinding.SelectOptionsPopupBinding;
 import com.ringdroid.soundfile.SoundFile;
 
 import java.io.File;
@@ -66,11 +67,6 @@ import java.util.Objects;
  * intent to record a new one, and then launches RingdroidEditActivity from here.
  */
 public class RingdroidSelectActivity extends ComponentActivity {
-    // Context menu
-    private static final int CMD_EDIT = 4;
-    private static final int CMD_DELETE = 5;
-    private static final int CMD_SET_AS_DEFAULT = 6;
-    private static final int CMD_SET_AS_CONTACT = 7;
     private static final String[] AUDIO_PROJECTION = {MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION,
@@ -86,7 +82,6 @@ public class RingdroidSelectActivity extends ComponentActivity {
     private final Handler mUiHandler = new Handler(Looper.getMainLooper());
     private final ActivityResultLauncher<Intent> mEditActivityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), this::onEditActivityResult);
-    private SearchView mFilter;
     private SimpleCursorAdapter mAdapter;
     private boolean mWasGetContentIntent;
     private boolean mShowAll = false;
@@ -94,6 +89,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
     private final ActivityResultLauncher<String> mStoragePermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(), granted -> onPermissionChanged());
     private MediaSelectBinding binding;
+    private SearchToolbarHelper mSearchHelper;
     private boolean mSettingsPermissionRequested = false;
 
     /**
@@ -130,6 +126,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
         binding = MediaSelectBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        setupToolbar();
+
         ListView listView = binding.list;
 
         try {
@@ -159,16 +157,9 @@ public class RingdroidSelectActivity extends ComponentActivity {
 
         mAdapter.setViewBinder((view, cursor, columnIndex) -> {
             if (view.getId() == R.id.row_options_button) {
-                // Get the arrow ImageView and set the onClickListener to open the context menu.
                 ImageView iv = (ImageView) view;
                 int position = cursor.getPosition();
-                iv.setOnClickListener(v -> {
-                    Cursor c = mAdapter.getCursor();
-                    if (c != null && !c.isClosed()) {
-                        c.moveToPosition(position);
-                    }
-                    openContextMenu(v);
-                });
+                iv.setOnClickListener(v -> showRowOptions(v, position));
                 return true;
             } else if (view.getId() == R.id.row_icon) {
                 setSoundIconFromCursor((ImageView) view, cursor);
@@ -199,8 +190,15 @@ public class RingdroidSelectActivity extends ComponentActivity {
             return false;
         });
 
-        // Long-press opens a context menu
-        registerForContextMenu(listView);
+        // Long-press opens row options
+        listView.setOnItemLongClickListener((parent, view, position, id) -> {
+            View anchor = view.findViewById(R.id.row_options_button);
+            if (anchor == null) {
+                anchor = view;
+            }
+            showRowOptions(anchor, position);
+            return true;
+        });
 
         // Clear intent extras to prevent TransactionTooLargeException when this activity is stopped
         getIntent().replaceExtras((Bundle) null);
@@ -376,57 +374,55 @@ public class RingdroidSelectActivity extends ComponentActivity {
         setResult(RESULT_OK, result.getData());
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.select_options, menu);
+    private void setupToolbar() {
+        RingdroidUtils.applyStatusBarInsets(binding.toolbarContainer);
+        RingdroidUtils.applyNavigationBarInsets(binding.list, 16);
 
-        mFilter = (SearchView) menu.findItem(R.id.action_search_filter).getActionView();
-        if (mFilter != null) {
-            mFilter.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                public boolean onQueryTextChange(String newText) {
-                    refreshListView();
-                    return true;
-                }
+        mSearchHelper = new SearchToolbarHelper(this, binding.toolbarNormal, binding.toolbarSearch,
+                binding.btnSearch, query -> refreshListView());
 
-                public boolean onQueryTextSubmit(String query) {
-                    refreshListView();
-                    return true;
-                }
-            });
+        binding.btnRecord.setOnClickListener(v -> onRecord());
+        binding.btnMore.setOnClickListener(this::showOptionsMenu);
+    }
+
+    private void showOptionsMenu(View anchor) {
+        SelectOptionsPopupBinding popupBinding = SelectOptionsPopupBinding
+                .inflate(getLayoutInflater());
+
+        popupBinding.switchShowAll.setChecked(mShowAll);
+
+        String versionName;
+        try {
+            versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            versionName = "3.1.0";
         }
+        popupBinding.menuAboutVersion.setText("v" + versionName);
 
-        return true;
-    }
+        int width = (int) (280 * getResources().getDisplayMetrics().density);
+        PopupWindow popupWindow = new PopupWindow(popupBinding.getRoot(), width,
+                ViewGroup.LayoutParams.WRAP_CONTENT, true);
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        menu.findItem(R.id.action_about).setVisible(true);
-        menu.findItem(R.id.action_record).setVisible(true);
-        menu.findItem(R.id.action_show_all_audio).setVisible(true);
-        return true;
-    }
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setElevation(12 * getResources().getDisplayMetrics().density);
+        popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_about) {
-            RingdroidEditActivity.onAbout(this);
-            return true;
-        } else if (id == R.id.action_record) {
-            onRecord();
-            return true;
-        } else if (id == R.id.action_show_all_audio) {
-            boolean newState = !item.isChecked();
-            item.setChecked(newState);
-            mShowAll = newState;
+        popupBinding.menuItemShowAll.setOnClickListener(v -> {
+            mShowAll = !mShowAll;
+            popupBinding.switchShowAll.setChecked(mShowAll);
             refreshListView();
-            return true;
-        }
+        });
 
-        return false;
+        popupBinding.menuItemAbout.setOnClickListener(v -> {
+            popupWindow.dismiss();
+            RingdroidEditActivity.onAbout(this);
+        });
+
+        int xOffset = anchor.getWidth() - width
+                - (int) (8 * getResources().getDisplayMetrics().density);
+        int yOffset = (int) (8 * getResources().getDisplayMetrics().density);
+        popupWindow.showAsDropDown(anchor, xOffset, yOffset);
     }
 
     private boolean isProtectedDir(String path) {
@@ -444,61 +440,99 @@ public class RingdroidSelectActivity extends ComponentActivity {
         return parent == null || !parent.canWrite();
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-
+    private void showRowOptions(View anchor, int position) {
         Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed())
+        if (c == null || c.isClosed()) {
             return;
-
-        if (menuInfo instanceof AdapterView.AdapterContextMenuInfo) {
-            c.moveToPosition(((AdapterView.AdapterContextMenuInfo) menuInfo).position);
         }
+        if (!c.moveToPosition(position)) {
+            return;
+        }
+
+        RowOptionsPopupBinding popupBinding = RowOptionsPopupBinding.inflate(getLayoutInflater());
 
         String title = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
-
-        menu.setHeaderTitle(title != null ? title : "");
-
-        menu.add(0, CMD_EDIT, 0, R.string.context_menu_edit);
+        popupBinding.rowMenuTitle.setText(title != null ? title : "");
 
         String filename = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
+        boolean canDelete = !isProtectedDir(filename);
 
-        // Only show delete if we can delete
-        if (!isProtectedDir(filename)) {
-            menu.add(0, CMD_DELETE, 0, R.string.context_menu_delete);
+        int isRingtone = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE));
+        int isNotification = c
+                .getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_NOTIFICATION));
+
+        int width = (int) (260 * getResources().getDisplayMetrics().density);
+        PopupWindow popupWindow = new PopupWindow(popupBinding.getRoot(), width,
+                ViewGroup.LayoutParams.WRAP_CONTENT, true);
+
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setElevation(12 * getResources().getDisplayMetrics().density);
+        popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
+
+        // Edit
+        popupBinding.menuItemEdit.setOnClickListener(v -> {
+            popupWindow.dismiss();
+            startRingdroidEditor(position);
+        });
+
+        // Default Ringtone / Notification
+        if (isRingtone != 0) {
+            popupBinding.menuItemDefault.setVisibility(View.VISIBLE);
+            popupBinding.menuDefaultIcon.setImageResource(R.drawable.baseline_call_24);
+            popupBinding.menuDefaultText.setText(R.string.context_menu_default_ringtone);
+            popupBinding.menuItemDefault.setOnClickListener(v -> {
+                popupWindow.dismiss();
+                if (c.moveToPosition(position)) {
+                    setAsDefaultRingtoneOrNotification();
+                }
+            });
+        } else if (isNotification != 0) {
+            popupBinding.menuItemDefault.setVisibility(View.VISIBLE);
+            popupBinding.menuDefaultIcon.setImageResource(R.drawable.baseline_notifications_24);
+            popupBinding.menuDefaultText.setText(R.string.context_menu_default_notification);
+            popupBinding.menuItemDefault.setOnClickListener(v -> {
+                popupWindow.dismiss();
+                if (c.moveToPosition(position)) {
+                    setAsDefaultRingtoneOrNotification();
+                }
+            });
+        } else {
+            popupBinding.menuItemDefault.setVisibility(View.GONE);
         }
 
-        // Add items to the context menu item based on file type
-        if (0 != c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE))) {
-            menu.add(0, CMD_SET_AS_DEFAULT, 0, R.string.context_menu_default_ringtone);
-            menu.add(0, CMD_SET_AS_CONTACT, 0, R.string.context_menu_contact);
-        } else if (0 != c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_NOTIFICATION))) {
-            menu.add(0, CMD_SET_AS_DEFAULT, 0, R.string.context_menu_default_notification);
+        // Contact
+        if (isRingtone != 0) {
+            popupBinding.menuItemContact.setVisibility(View.VISIBLE);
+            popupBinding.menuItemContact.setOnClickListener(v -> {
+                popupWindow.dismiss();
+                if (c.moveToPosition(position)) {
+                    chooseContactForRingtone();
+                }
+            });
+        } else {
+            popupBinding.menuItemContact.setVisibility(View.GONE);
         }
-    }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case CMD_EDIT :
-                startRingdroidEditor();
-                return true;
-
-            case CMD_DELETE :
-                confirmDelete();
-                return true;
-
-            case CMD_SET_AS_DEFAULT :
-                setAsDefaultRingtoneOrNotification();
-                return true;
-
-            case CMD_SET_AS_CONTACT :
-                return chooseContactForRingtone();
-
-            default :
-                return super.onContextItemSelected(item);
+        // Delete
+        if (canDelete) {
+            popupBinding.deleteDivider.setVisibility(View.VISIBLE);
+            popupBinding.menuItemDelete.setVisibility(View.VISIBLE);
+            popupBinding.menuItemDelete.setOnClickListener(v -> {
+                popupWindow.dismiss();
+                if (c.moveToPosition(position)) {
+                    confirmDelete();
+                }
+            });
+        } else {
+            popupBinding.deleteDivider.setVisibility(View.GONE);
+            popupBinding.menuItemDelete.setVisibility(View.GONE);
         }
+
+        int xOffset = anchor.getWidth() - width
+                - (int) (8 * getResources().getDisplayMetrics().density);
+        int yOffset = (int) (4 * getResources().getDisplayMetrics().density);
+        popupWindow.showAsDropDown(anchor, xOffset, yOffset);
     }
 
     private void setAsDefaultRingtoneOrNotification() {
@@ -577,22 +611,38 @@ public class RingdroidSelectActivity extends ComponentActivity {
     }
 
     private void confirmDelete() {
-        // See if the selected list item was created by Ringdroid to
-        // determine which alert message to show
         Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed())
+        if (c == null || c.isClosed()) {
             return;
+        }
 
         if (isFinishing() || isDestroyed()) {
             return;
         }
 
-        new AlertDialog.Builder(RingdroidSelectActivity.this)
-                .setTitle(getResources().getText(R.string.delete_audio))
-                .setMessage(getResources().getText(R.string.confirm_delete_ringdroid))
-                .setPositiveButton(R.string.delete_ok_button, (dialog, whichButton) -> onDelete())
-                .setNegativeButton(R.string.delete_cancel_button, (dialog, whichButton) -> {
-                }).setCancelable(true).show();
+        String title = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
+        DialogConfirmDeleteBinding dialogBinding = DialogConfirmDeleteBinding
+                .inflate(getLayoutInflater());
+
+        if (title != null && !title.isEmpty()) {
+            dialogBinding.deleteMessage.setText(
+                    getString(R.string.confirm_delete_ringdroid) + "\n\n\"" + title + "\"");
+        }
+
+        AlertDialog dialog = new AlertDialog.Builder(this).setView(dialogBinding.getRoot())
+                .setCancelable(true).create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        dialogBinding.btnCancel.setOnClickListener(v -> dialog.dismiss());
+        dialogBinding.btnConfirmDelete.setOnClickListener(v -> {
+            dialog.dismiss();
+            onDelete();
+        });
+
+        dialog.show();
     }
 
     private void onDelete() {
@@ -709,7 +759,13 @@ public class RingdroidSelectActivity extends ComponentActivity {
     }
 
     private void refreshListView() {
-        String filter = mFilter != null ? mFilter.getQuery().toString() : null;
+        String filter = null;
+        if (mSearchHelper != null && mSearchHelper.isSearchOpen()) {
+            String query = mSearchHelper.getQuery();
+            if (!query.isEmpty()) {
+                filter = query;
+            }
+        }
         loadAudioAsync(filter);
     }
 }

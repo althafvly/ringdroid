@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingTop="28dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="24dp">
+
+    <!-- Trash Avatar -->
+    <ImageView
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:background="@drawable/bg_category_avatar"
+        android:backgroundTint="#450A0A"
+        android:contentDescription="@string/delete_audio"
+        android:padding="14dp"
+        android:src="@drawable/baseline_delete_24"
+        android:tint="#F87171" />
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/delete_audio"
+        android:textColor="#F8FAFC"
+        android:textSize="20sp" />
+
+    <!-- Track title / message -->
+    <TextView
+        android:id="@+id/delete_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="@string/confirm_delete_ringdroid"
+        android:textColor="#94A3B8"
+        android:textSize="14sp" />
+
+    <!-- Actions -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_secondary"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/delete_cancel_button"
+            android:textAllCaps="false"
+            android:textColor="#94A3B8"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btn_confirm_delete"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_danger"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/delete_ok_button"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+</LinearLayout>
+

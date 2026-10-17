@@ -40,6 +40,7 @@
     <string name="menu_reset">रीसेट करें</string>
     <string name="menu_about">के बारे में</string>
     <string name="menu_show_all_audio">सभी ऑडियो दिखाएँ</string>
+    <string name="menu_show_all_audio_subtitle">सिस्टम और छिपे हुए ऑडियो शामिल करें</string>
 
     <string name="context_menu_delete">हटाएँ</string>
     <string name="context_menu_default_ringtone">डिफ़ॉल्ट रिंगटोन के रूप में सेट करें</string>

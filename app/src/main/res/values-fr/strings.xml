@@ -40,6 +40,7 @@
     <string name="menu_reset">Réinitialiser</string>
     <string name="menu_about">À propos</string>
     <string name="menu_show_all_audio">Afficher tous les fichiers audio</string>
+    <string name="menu_show_all_audio_subtitle">Inclure les fichiers audio système et masqués</string>
 
     <string name="context_menu_delete">Supprimer</string>
     <string name="context_menu_default_ringtone">Définir comme Sonnerie par Défaut</string>

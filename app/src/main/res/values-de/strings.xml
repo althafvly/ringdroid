@@ -40,6 +40,7 @@
     <string name="menu_reset">Zurücksetzen</string>
     <string name="menu_about">Über</string>
     <string name="menu_show_all_audio">Alle Audiodateien anzeigen</string>
+    <string name="menu_show_all_audio_subtitle">System- und versteckte Audiodateien einbeziehen</string>
 
     <string name="context_menu_delete">Löschen</string>
     <string name="context_menu_default_ringtone">Als Standard-Klingelton festlegen</string>

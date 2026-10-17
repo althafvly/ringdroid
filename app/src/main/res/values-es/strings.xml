@@ -40,6 +40,7 @@
     <string name="menu_reset">Restablecer</string>
     <string name="menu_about">Acerca de</string>
     <string name="menu_show_all_audio">Mostrar todo el audio</string>
+    <string name="menu_show_all_audio_subtitle">Incluir audios del sistema y ocultos</string>
 
     <string name="context_menu_delete">Eliminar</string>
     <string name="context_menu_default_ringtone">Establecer como Tono de Llamada Predeterminado</string>

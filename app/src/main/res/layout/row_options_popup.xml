@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="260dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_popup_menu"
+    android:orientation="vertical"
+    android:padding="6dp">
+
+    <!-- Track title header -->
+    <TextView
+        android:id="@+id/row_menu_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="8dp"
+        android:singleLine="true"
+        android:textColor="#94A3B8"
+        android:textSize="12sp" />
+
+    <View
+        style="@style/ToolbarDivider"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Option: Edit -->
+    <LinearLayout
+        android:id="@+id/menu_item_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_menu_item_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:minHeight="48dp"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="6dp">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="@drawable/bg_category_avatar"
+            android:backgroundTint="#1E3A5F"
+            android:contentDescription="@string/context_menu_edit"
+            android:padding="8dp"
+            android:src="@drawable/baseline_edit_24"
+            android:tint="#38BDF8" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/context_menu_edit"
+            android:textColor="#F8FAFC"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Option: Set as Default Ringtone / Notification -->
+    <LinearLayout
+        android:id="@+id/menu_item_default"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_menu_item_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:minHeight="48dp"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="6dp">
+
+        <ImageView
+            android:id="@+id/menu_default_icon"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="@drawable/bg_category_avatar"
+            android:backgroundTint="#164E63"
+            android:contentDescription="@string/context_menu_default_ringtone"
+            android:padding="8dp"
+            android:src="@drawable/baseline_call_24"
+            android:tint="#22D3EE" />
+
+        <TextView
+            android:id="@+id/menu_default_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/context_menu_default_ringtone"
+            android:textColor="#F8FAFC"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Option: Assign to Contact -->
+    <LinearLayout
+        android:id="@+id/menu_item_contact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_menu_item_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:minHeight="48dp"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="6dp">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="@drawable/bg_category_avatar"
+            android:backgroundTint="#581C87"
+            android:contentDescription="@string/context_menu_contact"
+            android:padding="8dp"
+            android:src="@drawable/baseline_person_24"
+            android:tint="#C084FC" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/context_menu_contact"
+            android:textColor="#F8FAFC"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Delete Divider -->
+    <View
+        android:id="@+id/delete_divider"
+        style="@style/ToolbarDivider"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Option: Delete -->
+    <LinearLayout
+        android:id="@+id/menu_item_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_menu_item_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:minHeight="48dp"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="6dp">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="@drawable/bg_category_avatar"
+            android:backgroundTint="#450A0A"
+            android:contentDescription="@string/context_menu_delete"
+            android:padding="8dp"
+            android:src="@drawable/baseline_delete_24"
+            android:tint="#F87171" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/context_menu_delete"
+            android:textColor="#F87171"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+</LinearLayout>
+

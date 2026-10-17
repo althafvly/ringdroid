@@ -47,7 +47,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -60,6 +59,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.text.HtmlCompat;
 
 import com.ringdroid.databinding.AboutDialogBinding;
+import com.ringdroid.databinding.DialogAmplifyBinding;
 import com.ringdroid.databinding.DialogProgressBinding;
 import com.ringdroid.databinding.DialogProgressHorizontalBinding;
 import com.ringdroid.databinding.EditorBinding;
@@ -663,6 +663,19 @@ public class RingdroidEditActivity extends ComponentActivity
         binding = EditorBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        RingdroidUtils.applyStatusBarInsets(binding.toolbarContainer);
+
+        binding.btnBack.setOnClickListener(v -> finish());
+        binding.btnAmplify.setOnClickListener(v -> onAmplify());
+        binding.btnReset.setOnClickListener(v -> {
+            resetPositions();
+            mOffsetGoal = 0;
+            updateDisplay();
+        });
+        binding.btnSave.setOnClickListener(v -> onSave());
+
+        updateToolbarTitle();
+
         mDensity = getResources().getDisplayMetrics().density;
 
         mMarkerLeftInset = (int) (46 * mDensity);
@@ -733,6 +746,24 @@ public class RingdroidEditActivity extends ComponentActivity
         updateDisplay();
     }
 
+    private void updateToolbarTitle() {
+        if (binding == null) {
+            return;
+        }
+        if (mTitle != null && !mTitle.isEmpty()) {
+            binding.toolbarTitle.setText(mTitle);
+            if (mArtist != null && !mArtist.isEmpty()) {
+                binding.toolbarSubtitle.setText(mArtist);
+                binding.toolbarSubtitle.setVisibility(View.VISIBLE);
+            } else {
+                binding.toolbarSubtitle.setVisibility(View.GONE);
+            }
+        } else {
+            binding.toolbarTitle.setText(R.string.edit_intent);
+            binding.toolbarSubtitle.setVisibility(View.GONE);
+        }
+    }
+
     private void loadFromFile() {
         mFile = new File(mFilename);
 
@@ -745,6 +776,7 @@ public class RingdroidEditActivity extends ComponentActivity
             titleLabel += " - " + mArtist;
         }
         setTitle(titleLabel);
+        updateToolbarTitle();
 
         mLoadingLastUpdateTime = getCurrentTime();
         mLoadingKeepGoing = true;
@@ -753,17 +785,31 @@ public class RingdroidEditActivity extends ComponentActivity
                 .inflate(getLayoutInflater());
         mLoadingProgressBar = progressBinding.progressBar;
         mLoadingProgressBar.setMax(100);
+        if (mTitle != null && !mTitle.isEmpty()) {
+            progressBinding.loadingSubtitle.setText(mTitle);
+            progressBinding.loadingSubtitle.setVisibility(View.VISIBLE);
+        } else {
+            progressBinding.loadingSubtitle.setVisibility(View.GONE);
+        }
 
-        mProgressDialog = new AlertDialog.Builder(this).setTitle(R.string.progress_dialog_loading)
-                .setView(progressBinding.getRoot()).setCancelable(true)
-                .setNegativeButton(R.string.progress_dialog_cancel, (dialog, id) -> {
-                    mLoadingKeepGoing = false;
-                    mFinishActivity = true;
-                }).setOnCancelListener(dialog -> {
+        mProgressDialog = new AlertDialog.Builder(this).setView(progressBinding.getRoot())
+                .setCancelable(true).setOnCancelListener(dialog -> {
                     mLoadingKeepGoing = false;
                     mFinishActivity = true;
                 }).create();
+        if (mProgressDialog.getWindow() != null) {
+            mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
         mProgressDialog.setCanceledOnTouchOutside(false);
+
+        progressBinding.btnCancel.setOnClickListener(v -> {
+            mLoadingKeepGoing = false;
+            mFinishActivity = true;
+            if (mProgressDialog != null) {
+                mProgressDialog.dismiss();
+            }
+        });
+
         if (!isFinishing() && !isDestroyed()) {
             mProgressDialog.show();
         }
@@ -774,6 +820,11 @@ public class RingdroidEditActivity extends ComponentActivity
                 if (mLoadingProgressBar != null) {
                     int progress = (int) (fractionComplete * 100);
                     mLoadingProgressBar.setProgress(progress);
+                    runOnUiThread(() -> {
+                        if (progressBinding.progressPercentageText != null) {
+                            progressBinding.progressPercentageText.setText(progress + "%");
+                        }
+                    });
                 }
                 mLoadingLastUpdateTime = now;
             }
@@ -1362,8 +1413,11 @@ public class RingdroidEditActivity extends ComponentActivity
         // Create an indeterminate progress dialog
         DialogProgressBinding progressBinding = DialogProgressBinding.inflate(getLayoutInflater());
 
-        mProgressDialog = new AlertDialog.Builder(this).setTitle(R.string.progress_dialog_saving)
-                .setView(progressBinding.getRoot()).setCancelable(false).create();
+        mProgressDialog = new AlertDialog.Builder(this).setView(progressBinding.getRoot())
+                .setCancelable(false).create();
+        if (mProgressDialog.getWindow() != null) {
+            mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
         if (!isFinishing() && !isDestroyed()) {
             mProgressDialog.show();
         }
@@ -1640,44 +1694,50 @@ public class RingdroidEditActivity extends ComponentActivity
     }
 
     private void onAmplify() {
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(50, 50, 50, 50);
+        DialogAmplifyBinding amplifyBinding = DialogAmplifyBinding.inflate(getLayoutInflater());
+        int currentProgress = (int) (mAmplifyFactor * 100);
+        if (currentProgress < 10) {
+            currentProgress = 10;
+        }
+        amplifyBinding.amplifySeekbar.setProgress(currentProgress);
+        amplifyBinding.amplifyPercentageText
+                .setText(String.format(Locale.getDefault(), "%d%%", currentProgress));
 
-        final TextView label = new TextView(this);
-        label.setText(String.format(Locale.getDefault(), "Amplification: %d%%",
-                (int) (mAmplifyFactor * 100)));
-        label.setPadding(0, 0, 0, 30);
-        layout.addView(label);
+        AlertDialog dialog = new AlertDialog.Builder(this).setView(amplifyBinding.getRoot())
+                .setCancelable(true).create();
 
-        final SeekBar seekBar = new SeekBar(this);
-        seekBar.setMax(400); // Max 400% (or 4.0x)
-        seekBar.setProgress((int) (mAmplifyFactor * 100));
-        seekBar.setContentDescription(getString(R.string.menu_amplify));
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (progress < 10) {
-                    seekBar.setProgress(10);
-                    progress = 10;
-                }
-                label.setText(String.format(Locale.getDefault(), "Amplification: %d%%", progress));
-            }
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
+        amplifyBinding.amplifySeekbar
+                .setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        if (progress < 10) {
+                            seekBar.setProgress(10);
+                            progress = 10;
+                        }
+                        amplifyBinding.amplifyPercentageText
+                                .setText(String.format(Locale.getDefault(), "%d%%", progress));
+                    }
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                    }
+                });
+
+        amplifyBinding.btnCancel.setOnClickListener(v -> dialog.dismiss());
+        amplifyBinding.btnApply.setOnClickListener(v -> {
+            mAmplifyFactor = amplifyBinding.amplifySeekbar.getProgress() / 100.0f;
+            dialog.dismiss();
         });
-        layout.addView(seekBar);
 
-        new AlertDialog.Builder(this).setTitle(R.string.menu_amplify).setView(layout)
-                .setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
-                    mAmplifyFactor = seekBar.getProgress() / 100.0f;
-                }).setNegativeButton(android.R.string.cancel, null).show();
+        dialog.show();
     }
 
     /**
