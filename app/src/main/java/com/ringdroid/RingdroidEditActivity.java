@@ -1287,7 +1287,7 @@ public class RingdroidEditActivity extends ComponentActivity
             mPlayer.start();
             updateDisplay();
             enableDisableButtons();
-        } catch (IllegalStateException | NullPointerException e) {
+        } catch (IllegalStateException | NullPointerException | IllegalArgumentException e) {
             showFinalAlert(e, R.string.play_error);
         }
     }

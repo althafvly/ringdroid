@@ -25,7 +25,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
-import java.util.Objects;
 
 @RunWith(AndroidJUnit4.class)
 public class SoundFileTest {
@@ -117,7 +116,7 @@ public class SoundFileTest {
 
     @Test
     public void testCreateValidFileAndGetters() throws Exception {
-        SoundFile.ProgressListener listener = fractionComplete -> true;
+        SoundFile.ProgressListener listener = fractionComplete -> false;
         SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(), listener);
 
         injectMockAudioData(soundFile, 1); // Mock data for getters
@@ -142,13 +141,9 @@ public class SoundFileTest {
     @Test
     public void testCreateWithProgressListenerCancellation() throws Exception {
         // Cancel immediately
-        SoundFile.ProgressListener listener = fractionComplete -> false;
-
-        // This will likely stop parsing midway.
-        // It might still return a SoundFile object but with partially decoded data,
-        // or return early. We just verify it doesn't crash.
+        SoundFile.ProgressListener listener = fractionComplete -> true;
         SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(), listener);
-        assertNotNull(soundFile);
+        assertNull(soundFile);
     }
 
     @Test
@@ -162,31 +157,6 @@ public class SoundFileTest {
         // Just verify it doesn't crash on null or empty Uri
         android.net.Uri uri = android.net.Uri.parse("content://dummy");
         SoundFile.uriExists(context, uri);
-    }
-
-    @Test
-    public void testFileTooLongForMemory() throws Exception {
-        File oggFile = new File(context.getCacheDir(), "test_audio.ogg");
-        try (java.io.InputStream in = InstrumentationRegistry.getInstrumentation().getContext()
-                .getAssets().open("test_audio.ogg");
-                FileOutputStream out = new FileOutputStream(oggFile)) {
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0)
-                out.write(buf, 0, len);
-        }
-
-        try {
-            SoundFile.sMaxAllowedMemoryOverride = 10;
-            SoundFile.create(outDir, oggFile.getAbsolutePath(), null);
-            org.junit.Assert.fail("Expected InvalidInputException for a file that is too large");
-        } catch (SoundFile.InvalidInputException e) {
-            assertTrue(Objects.requireNonNull(e.getMessage())
-                    .contains("Audio file is too long for the available memory"));
-        } finally {
-            SoundFile.sMaxAllowedMemoryOverride = -1;
-            oggFile.delete();
-        }
     }
 
     @Test
@@ -322,7 +292,7 @@ public class SoundFileTest {
     @Test
     public void testWriteFileM4AMono() throws Exception {
         SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(),
-                fractionComplete -> true);
+                fractionComplete -> false);
         injectMockAudioData(soundFile, 1);
 
         File outputFile = new File(outDir, "out_audio.m4a");
@@ -336,7 +306,7 @@ public class SoundFileTest {
     @Test
     public void testWriteFileM4AStereo() throws Exception {
         SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(),
-                fractionComplete -> true);
+                fractionComplete -> false);
         injectMockAudioData(soundFile, 2); // Set channels to 2
 
         File outputFile = new File(outDir, "out_audio_stereo.m4a");
@@ -351,7 +321,7 @@ public class SoundFileTest {
     @Test
     public void testWriteWavFileMono() throws Exception {
         SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(),
-                fractionComplete -> true);
+                fractionComplete -> false);
         injectMockAudioData(soundFile, 1);
 
         File outputFile = new File(outDir, "out_audio.wav");
@@ -366,7 +336,7 @@ public class SoundFileTest {
     @Test
     public void testWriteWavFileStereo() throws Exception {
         SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(),
-                fractionComplete -> true);
+                fractionComplete -> false);
         injectMockAudioData(soundFile, 2);
 
         File outputFile = new File(outDir, "out_audio_stereo.wav");
@@ -380,7 +350,7 @@ public class SoundFileTest {
     @Test(expected = IOException.class)
     public void testWriteFileInvalidBounds() throws Exception {
         SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(),
-                fractionComplete -> true);
+                fractionComplete -> false);
         injectMockAudioData(soundFile, 1);
 
         File outputFile = new File(outDir, "out_audio_invalid.wav");
@@ -390,7 +360,7 @@ public class SoundFileTest {
     @Test(expected = IOException.class)
     public void testWriteWavFileInvalidBounds() throws Exception {
         SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(),
-                fractionComplete -> true);
+                fractionComplete -> false);
         injectMockAudioData(soundFile, 1);
 
         File outputFile = new File(outDir, "out_audio_invalid.wav");

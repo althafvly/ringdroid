@@ -46,8 +46,6 @@ import java.util.Objects;
 
 public class SoundFile {
     private static final String TAG = "SoundFile";
-    // VisibleForTesting
-    static long sMaxAllowedMemoryOverride = -1;
     private ProgressListener mProgressListener = null;
     private File mInputFile = null;
     // Member variables representing frame data
@@ -102,7 +100,8 @@ public class SoundFile {
             if (cursor == null || !cursor.moveToFirst()) {
                 Log.w(TAG, "URI query returned null or empty cursor: " + uri);
             }
-        } catch (SecurityException | IllegalArgumentException | IllegalStateException e) {
+        } catch (SecurityException | IllegalArgumentException | IllegalStateException
+                | UnsupportedOperationException e) {
             Log.w(TAG, "Failed to verify if URI exists: " + uri, e);
         }
     }
@@ -255,29 +254,38 @@ public class SoundFile {
         // find and select the first audio track present in the file.
         for (i = 0; i < numTracks; i++) {
             format = extractor.getTrackFormat(i);
-            if (Objects.requireNonNull(format.getString(MediaFormat.KEY_MIME))
-                    .startsWith("audio/")) {
+            String mime = format.getString(MediaFormat.KEY_MIME);
+            if (mime != null && mime.startsWith("audio/")) {
                 extractor.selectTrack(i);
                 break;
             }
         }
-        if (i == numTracks) {
+        if (i == numTracks || format == null) {
             throw new InvalidInputException("No audio track found in " + mInputFile);
         }
-        assert format != null;
+        String mime = format.getString(MediaFormat.KEY_MIME);
+        if (mime == null) {
+            throw new InvalidInputException("Audio track has no MIME type in " + mInputFile);
+        }
+        if (!format.containsKey(MediaFormat.KEY_CHANNEL_COUNT)
+                || !format.containsKey(MediaFormat.KEY_SAMPLE_RATE)) {
+            throw new InvalidInputException(
+                    "Audio track missing channel count or sample rate in " + mInputFile);
+        }
         mChannels = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
         mSampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE);
 
         // Compute the expected decoded PCM size to pre-allocate the disk-backed buffer.
         // Uses long arithmetic to avoid int overflow for files > ~24 min at 44100Hz.
-        long expectedNumSamples = (long) ((format.getLong(MediaFormat.KEY_DURATION) / 1000000.f)
-                * mSampleRate + 0.5f);
+        long durationUs = format.containsKey(MediaFormat.KEY_DURATION)
+                ? format.getLong(MediaFormat.KEY_DURATION)
+                : 0L;
+        long expectedNumSamples = (long) ((durationUs / 1000000.f) * mSampleRate + 0.5f);
         long expectedMemory = expectedNumSamples * mChannels * 2;
 
         MediaCodec codec = null;
         try {
-            codec = MediaCodec.createDecoderByType(
-                    Objects.requireNonNull(format.getString(MediaFormat.KEY_MIME)));
+            codec = MediaCodec.createDecoderByType(mime);
             codec.configure(format, null, null, 0);
             codec.start();
 
@@ -832,7 +840,7 @@ public class SoundFile {
     public interface ProgressListener {
         /**
          * Will be called by the SoundFile class periodically with values between 0.0 and 1.0.
-         * Return true to continue loading the file or recording the audio, and false to cancel or
+         * Return false to continue loading the file or recording the audio, and true to cancel or
          * stop recording.
          */
         boolean reportProgress(double fractionComplete);

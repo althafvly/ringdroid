@@ -156,40 +156,43 @@ public class RingdroidSelectActivity extends ComponentActivity {
             Log.e(TAG, "Failed to initialize cursor adapter", e);
         }
 
-        mAdapter.setViewBinder((view, cursor, columnIndex) -> {
-            if (view.getId() == R.id.row_options_button) {
-                ImageView iv = (ImageView) view;
-                int position = cursor.getPosition();
-                iv.setOnClickListener(v -> showRowOptions(v, position));
-                return true;
-            } else if (view.getId() == R.id.row_icon) {
-                setSoundIconFromCursor((ImageView) view, cursor);
-                return true;
-            } else if (view.getId() == R.id.row_artist) {
-                TextView tv = (TextView) view;
-                String artist = cursor.getString(columnIndex);
-                if (artist == null || artist.isEmpty() || artist.equalsIgnoreCase("<unknown>")) {
-                    tv.setVisibility(View.GONE);
-                } else {
-                    tv.setVisibility(View.VISIBLE);
-                    tv.setText(artist);
+        if (mAdapter != null) {
+            mAdapter.setViewBinder((view, cursor, columnIndex) -> {
+                if (view.getId() == R.id.row_options_button) {
+                    ImageView iv = (ImageView) view;
+                    int position = cursor.getPosition();
+                    iv.setOnClickListener(v -> showRowOptions(v, position));
+                    return true;
+                } else if (view.getId() == R.id.row_icon) {
+                    setSoundIconFromCursor((ImageView) view, cursor);
+                    return true;
+                } else if (view.getId() == R.id.row_artist) {
+                    TextView tv = (TextView) view;
+                    String artist = cursor.getString(columnIndex);
+                    if (artist == null || artist.isEmpty()
+                            || artist.equalsIgnoreCase("<unknown>")) {
+                        tv.setVisibility(View.GONE);
+                    } else {
+                        tv.setVisibility(View.VISIBLE);
+                        tv.setText(artist);
+                    }
+                    return true;
+                } else if (view.getId() == R.id.row_album) {
+                    TextView tv = (TextView) view;
+                    String album = cursor.getString(columnIndex);
+                    if (album == null || album.isEmpty() || album.equals("0")
+                            || album.equalsIgnoreCase("<unknown>")) {
+                        tv.setVisibility(View.GONE);
+                    } else {
+                        tv.setVisibility(View.VISIBLE);
+                        tv.setText(album);
+                    }
+                    return true;
                 }
-                return true;
-            } else if (view.getId() == R.id.row_album) {
-                TextView tv = (TextView) view;
-                String album = cursor.getString(columnIndex);
-                if (album == null || album.isEmpty() || album.equals("0")
-                        || album.equalsIgnoreCase("<unknown>")) {
-                    tv.setVisibility(View.GONE);
-                } else {
-                    tv.setVisibility(View.VISIBLE);
-                    tv.setText(album);
-                }
-                return true;
-            }
 
-            return false;
-        });
+                return false;
+            });
+        }
 
         // Long-press opens row options
         listView.setOnItemLongClickListener((parent, view, position, id) -> {
@@ -234,7 +237,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
                     return;
 
                 mUiHandler.post(() -> updateUiWithCursors(internal, external));
-            } catch (SecurityException | IllegalArgumentException | IllegalStateException e) {
+            } catch (SecurityException | IllegalArgumentException | IllegalStateException
+                    | UnsupportedOperationException e) {
                 Log.e(TAG, "Loader error", e);
             }
         });
@@ -674,7 +678,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
             } else {
                 refreshListView();
             }
-        } catch (SecurityException | IllegalArgumentException e) {
+        } catch (SecurityException | IllegalArgumentException | IllegalStateException
+                | UnsupportedOperationException e) {
             showFinalAlert(getResources().getText(R.string.delete_failed));
         }
     }
