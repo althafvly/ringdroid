@@ -42,7 +42,7 @@ public class SongMetadataReader {
         mTitle = getBasename(filename);
         try {
             ReadMetadata();
-        } catch (Exception e) {
+        } catch (SecurityException | IllegalArgumentException | IllegalStateException e) {
             Log.e(TAG, "Failed to read song metadata", e);
         }
     }
@@ -50,14 +50,15 @@ public class SongMetadataReader {
     private void ReadMetadata() {
         // Get a map from genre ids to names
         HashMap<String, String> genreIdMap = new HashMap<>();
-        Cursor c = mContext.getContentResolver().query(GENRES_URI,
+        try (Cursor c = mContext.getContentResolver().query(GENRES_URI,
                 new String[]{MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME}, null, null,
-                null);
-        assert c != null;
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            genreIdMap.put(c.getString(0), c.getString(1));
+                null)) {
+            if (c != null) {
+                for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+                    genreIdMap.put(c.getString(0), c.getString(1));
+                }
+            }
         }
-        c.close();
         mGenre = "";
         for (String genreId : genreIdMap.keySet()) {
             try (Cursor genreCursor = mContext.getContentResolver().query(makeGenreUri(genreId),
@@ -70,22 +71,12 @@ public class SongMetadataReader {
             }
         }
 
-        Uri uri = RingdroidUtils.getExternalAudioCollectionUri();
-        c = mContext.getContentResolver().query(uri,
-                new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,
-                        MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
-                        MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DATA},
-                MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"", null, null);
+        Cursor c = queryAudio(RingdroidUtils.getExternalAudioCollectionUri());
         if (c == null || c.getCount() == 0) {
             if (c != null) {
                 c.close();
             }
-            uri = RingdroidUtils.getInternalAudioCollectionUri();
-            c = mContext.getContentResolver().query(uri,
-                    new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,
-                            MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
-                            MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DATA},
-                    MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"", null, null);
+            c = queryAudio(RingdroidUtils.getInternalAudioCollectionUri());
         }
         if (c == null || c.getCount() == 0) {
             if (c != null) {
@@ -137,5 +128,13 @@ public class SongMetadataReader {
             return filename.substring(start);
         }
         return filename.substring(start, end);
+    }
+
+    private Cursor queryAudio(Uri uri) {
+        return mContext.getContentResolver().query(uri,
+                new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,
+                        MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
+                        MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DATA},
+                MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"", null, null);
     }
 }
