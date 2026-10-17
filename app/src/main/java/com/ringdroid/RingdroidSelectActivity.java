@@ -17,6 +17,7 @@
 package com.ringdroid;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -233,7 +234,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
                     return;
 
                 mUiHandler.post(() -> updateUiWithCursors(internal, external));
-            } catch (Exception e) {
+            } catch (SecurityException | IllegalArgumentException | IllegalStateException e) {
                 Log.e(TAG, "Loader error", e);
             }
         });
@@ -399,14 +400,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
         }
         popupBinding.menuAboutVersion.setText("v" + versionName);
 
-        int width = (int) (280 * getResources().getDisplayMetrics().density);
-        PopupWindow popupWindow = new PopupWindow(popupBinding.getRoot(), width,
-                ViewGroup.LayoutParams.WRAP_CONTENT, true);
-
-        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setElevation(12 * getResources().getDisplayMetrics().density);
-        popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
+        int widthDp = 280;
+        PopupWindow popupWindow = createPopupWindow(popupBinding.getRoot(), widthDp);
 
         popupBinding.menuItemShowAll.setOnClickListener(v -> {
             mShowAll = !mShowAll;
@@ -419,10 +414,26 @@ public class RingdroidSelectActivity extends ComponentActivity {
             RingdroidEditActivity.onAbout(this);
         });
 
+        showPopupAlignedRight(popupWindow, anchor, widthDp, 8);
+    }
+
+    private PopupWindow createPopupWindow(View contentView, int widthDp) {
+        int width = (int) (widthDp * getResources().getDisplayMetrics().density);
+        PopupWindow popupWindow = new PopupWindow(contentView, width,
+                ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setElevation(12 * getResources().getDisplayMetrics().density);
+        popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
+        return popupWindow;
+    }
+
+    private void showPopupAlignedRight(PopupWindow popup, View anchor, int widthDp, int yOffsetDp) {
+        int width = (int) (widthDp * getResources().getDisplayMetrics().density);
         int xOffset = anchor.getWidth() - width
                 - (int) (8 * getResources().getDisplayMetrics().density);
-        int yOffset = (int) (8 * getResources().getDisplayMetrics().density);
-        popupWindow.showAsDropDown(anchor, xOffset, yOffset);
+        int yOffset = (int) (yOffsetDp * getResources().getDisplayMetrics().density);
+        popup.showAsDropDown(anchor, xOffset, yOffset);
     }
 
     private boolean isProtectedDir(String path) {
@@ -461,14 +472,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
         int isNotification = c
                 .getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_NOTIFICATION));
 
-        int width = (int) (260 * getResources().getDisplayMetrics().density);
-        PopupWindow popupWindow = new PopupWindow(popupBinding.getRoot(), width,
-                ViewGroup.LayoutParams.WRAP_CONTENT, true);
-
-        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setElevation(12 * getResources().getDisplayMetrics().density);
-        popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
+        int widthDp = 260;
+        PopupWindow popupWindow = createPopupWindow(popupBinding.getRoot(), widthDp);
 
         // Edit
         popupBinding.menuItemEdit.setOnClickListener(v -> {
@@ -529,10 +534,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
             popupBinding.menuItemDelete.setVisibility(View.GONE);
         }
 
-        int xOffset = anchor.getWidth() - width
-                - (int) (8 * getResources().getDisplayMetrics().density);
-        int yOffset = (int) (4 * getResources().getDisplayMetrics().density);
-        popupWindow.showAsDropDown(anchor, xOffset, yOffset);
+        showPopupAlignedRight(popupWindow, anchor, widthDp, 4);
     }
 
     private void setAsDefaultRingtoneOrNotification() {
@@ -601,10 +603,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
             if (uri == null)
                 return false;
             // Go to the choose contact activity
-            Intent intent = new Intent(Intent.ACTION_EDIT, uri);
-            intent.setClass(this, ChooseContactActivity.class);
-            startActivity(intent);
-        } catch (Exception e) {
+            startActivity(ChooseContactActivity.createIntent(this, uri));
+        } catch (ActivityNotFoundException | SecurityException e) {
             Log.e(TAG, "Couldn't open Choose Contact window", e);
         }
         return true;
@@ -650,9 +650,10 @@ public class RingdroidSelectActivity extends ComponentActivity {
         if (c == null || c.isClosed())
             return;
 
-        long id = c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
-        Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                id);
+        Uri contentUri = getUri();
+        if (contentUri == null) {
+            return;
+        }
 
         // Legacy direct file delete (Android 9 and below)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -673,7 +674,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
             } else {
                 refreshListView();
             }
-        } catch (Exception e) {
+        } catch (SecurityException | IllegalArgumentException e) {
             showFinalAlert(getResources().getText(R.string.delete_failed));
         }
     }
@@ -689,14 +690,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
     }
 
     private void onRecord() {
-        try {
-            Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse("record"));
-            intent.putExtra("was_get_content_intent", mWasGetContentIntent);
-            intent.setClass(this, RingdroidEditActivity.class);
-            mEditActivityLauncher.launch(intent);
-        } catch (Exception e) {
-            Log.e(TAG, "Couldn't start editor", e);
-        }
+        startRingdroidEditor(Uri.parse("record"));
     }
 
     @SuppressWarnings("deprecation")
@@ -724,17 +718,6 @@ public class RingdroidSelectActivity extends ComponentActivity {
         }
     }
 
-    private void startRingdroidEditor() {
-        Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed())
-            return;
-        int dataIndex = c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
-        String filename = c.getString(dataIndex);
-        if (filename != null) {
-            startRingdroidEditor(Uri.parse(filename));
-        }
-    }
-
     private void startRingdroidEditor(int position) {
         Cursor c = mAdapter.getCursor();
         if (c == null || c.isClosed())
@@ -753,19 +736,12 @@ public class RingdroidSelectActivity extends ComponentActivity {
             intent.putExtra("was_get_content_intent", mWasGetContentIntent);
             intent.setClass(this, RingdroidEditActivity.class);
             mEditActivityLauncher.launch(intent);
-        } catch (Exception e) {
+        } catch (ActivityNotFoundException | SecurityException e) {
             Log.e(TAG, "Couldn't start editor", e);
         }
     }
 
     private void refreshListView() {
-        String filter = null;
-        if (mSearchHelper != null && mSearchHelper.isSearchOpen()) {
-            String query = mSearchHelper.getQuery();
-            if (!query.isEmpty()) {
-                filter = query;
-            }
-        }
-        loadAudioAsync(filter);
+        loadAudioAsync(mSearchHelper != null ? mSearchHelper.getActiveQuery() : null);
     }
 }
