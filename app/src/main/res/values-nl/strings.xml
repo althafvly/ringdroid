@@ -128,4 +128,9 @@
     <string name="icon_ringtone">Beltoon</string>
     <string name="icon_starred">Met ster</string>
     <string name="waveform_description">Audiogolfvorm</string>
+    <string name="confirm_delete_message">Dit audiobestand verwijderen?\n\n“%1$s”</string>
+    <string name="amplify_description">Audiovolume aanpassen</string>
+    <string name="amplify_normal_percentage">100%% (Normaal)</string>
+    <string name="saving_audio_file">Audiobestand wordt geschreven…</string>
+    <string name="decoding_audio_samples">Audiosamples worden gedecodeerd…</string>
 </resources>

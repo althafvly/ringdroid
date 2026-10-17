@@ -128,4 +128,9 @@
     <string name="icon_ringtone">റിംഗ്‌ടോൺ</string>
     <string name="icon_starred">നക്ഷത്രമിട്ടവ</string>
     <string name="waveform_description">ഓഡിയോ തരംഗം</string>
+    <string name="confirm_delete_message">ഈ ഓഡിയോ ഫയൽ ഇല്ലാതാക്കണോ?\n\n“%1$s”</string>
+    <string name="amplify_description">ഓഡിയോ ശബ്ദം ക്രമീകരിക്കുക</string>
+    <string name="amplify_normal_percentage">100%% (സാധാരണം)</string>
+    <string name="saving_audio_file">ഓഡിയോ ഫയൽ എഴുതുന്നു…</string>
+    <string name="decoding_audio_samples">ഓഡിയോ സാമ്പിളുകൾ ഡീകോഡ് ചെയ്യുന്നു…</string>
 </resources>

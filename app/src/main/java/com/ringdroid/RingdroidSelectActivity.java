@@ -402,7 +402,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
         } catch (PackageManager.NameNotFoundException e) {
             versionName = "3.1.0";
         }
-        popupBinding.menuAboutVersion.setText("v" + versionName);
+        popupBinding.menuAboutVersion.setText(getString(R.string.version_label, versionName));
 
         int widthDp = 280;
         PopupWindow popupWindow = createPopupWindow(popupBinding.getRoot(), widthDp);
@@ -629,8 +629,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
                 .inflate(getLayoutInflater());
 
         if (title != null && !title.isEmpty()) {
-            dialogBinding.deleteMessage.setText(
-                    getString(R.string.confirm_delete_ringdroid) + "\n\n\"" + title + "\"");
+            dialogBinding.deleteMessage.setText(getString(R.string.confirm_delete_message, title));
         }
 
         AlertDialog dialog = new AlertDialog.Builder(this).setView(dialogBinding.getRoot())

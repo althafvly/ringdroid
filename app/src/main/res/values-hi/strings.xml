@@ -128,4 +128,9 @@
     <string name="icon_ringtone">रिंगटोन</string>
     <string name="icon_starred">तारांकित</string>
     <string name="waveform_description">ऑडियो वेवफॉर्म</string>
+    <string name="confirm_delete_message">क्या यह ऑडियो फ़ाइल हटानी है?\n\n“%1$s”</string>
+    <string name="amplify_description">ऑडियो की आवाज़ समायोजित करें</string>
+    <string name="amplify_normal_percentage">100%% (सामान्य)</string>
+    <string name="saving_audio_file">ऑडियो फ़ाइल लिखी जा रही है…</string>
+    <string name="decoding_audio_samples">ऑडियो नमूने डिकोड किए जा रहे हैं…</string>
 </resources>

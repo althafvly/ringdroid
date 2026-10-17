@@ -53,8 +53,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/progress_percentage_text"
             android:fontFamily="sans-serif"
-            android:text="Decoding audio samples…"
+            android:text="@string/decoding_audio_samples"
             android:textColor="#64748B"
             android:textSize="12sp" />
 
@@ -64,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:fontFamily="sans-serif-medium"
-            android:text="0%"
+            android:text="@string/progress_initial_percentage"
             android:textColor="#38BDF8"
             android:textSize="13sp" />
     </RelativeLayout>
@@ -83,6 +84,7 @@
     <!-- Cancel Button -->
     <Button
         android:id="@+id/btn_cancel"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="46dp"
         android:layout_marginTop="22dp"

@@ -94,6 +94,7 @@
             android:background="@android:color/transparent"
             android:fontFamily="sans-serif"
             android:gravity="center_vertical"
+            android:importantForAutofill="no"
             android:inputType="text"
             android:paddingStart="14dp"
             android:paddingEnd="14dp"
@@ -113,6 +114,7 @@
 
         <Button
             android:id="@+id/cancel"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="44dp"
             android:layout_marginEnd="8dp"
@@ -127,6 +129,7 @@
 
         <Button
             android:id="@+id/save"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="44dp"
             android:layout_marginStart="8dp"

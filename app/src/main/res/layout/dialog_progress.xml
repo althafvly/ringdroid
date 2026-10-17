@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:fontFamily="sans-serif"
-        android:text="Writing audio file…"
+        android:text="@string/saving_audio_file"
         android:textColor="#94A3B8"
         android:textSize="13sp" />
 

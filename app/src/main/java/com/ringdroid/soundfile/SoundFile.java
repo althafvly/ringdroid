@@ -115,7 +115,7 @@ public class SoundFile {
         if (!f.exists()) {
             throw new java.io.FileNotFoundException(fileName);
         }
-        String name = f.getName().toLowerCase(Locale.getDefault());
+        String name = f.getName().toLowerCase(Locale.ROOT);
         String[] components = name.split("\\.");
         if (components.length < 2) {
             return null;

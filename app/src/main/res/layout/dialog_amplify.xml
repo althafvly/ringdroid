@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:fontFamily="sans-serif"
-        android:text="Adjust audio volume gain"
+        android:text="@string/amplify_description"
         android:textColor="#94A3B8"
         android:textSize="13sp" />
 
@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-bold"
-            android:text="100%"
+            android:text="@string/amplify_default_percentage"
             android:textColor="#38BDF8"
             android:textSize="32sp" />
     </LinearLayout>
@@ -84,10 +84,11 @@
         android:layout_marginEnd="8dp">
 
         <TextView
+            android:id="@+id/amplify_minimum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:text="10%"
+            android:text="@string/amplify_min_percentage"
             android:textColor="#64748B"
             android:textSize="11sp" />
 
@@ -95,15 +96,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="100% (Normal)"
+            android:layout_toEndOf="@id/amplify_minimum"
+            android:layout_toStartOf="@id/amplify_maximum"
+            android:gravity="center"
+            android:text="@string/amplify_normal_percentage"
             android:textColor="#64748B"
             android:textSize="11sp" />
 
         <TextView
+            android:id="@+id/amplify_maximum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:text="400%"
+            android:text="@string/amplify_max_percentage"
             android:textColor="#64748B"
             android:textSize="11sp" />
     </RelativeLayout>
@@ -117,10 +122,12 @@
 
         <Button
             android:id="@+id/btn_cancel"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
             android:background="@drawable/btn_secondary"
+            android:contentDescription="@string/delete_cancel_button"
             android:fontFamily="sans-serif-medium"
             android:text="@string/delete_cancel_button"
             android:textAllCaps="false"
@@ -129,11 +136,13 @@
 
         <Button
             android:id="@+id/btn_apply"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginStart="12dp"
             android:layout_weight="1"
             android:background="@drawable/btn_primary"
+            android:contentDescription="@string/alert_ok_button"
             android:fontFamily="sans-serif-medium"
             android:text="@string/alert_ok_button"
             android:textAllCaps="false"

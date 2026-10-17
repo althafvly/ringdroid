@@ -247,7 +247,7 @@ public class RingdroidEditActivity extends ComponentActivity
         }
 
         AboutDialogBinding binding = AboutDialogBinding.inflate(LayoutInflater.from(context));
-        binding.aboutVersion.setText("v" + versionName);
+        binding.aboutVersion.setText(context.getString(R.string.version_label, versionName));
 
         String html = context.getString(R.string.about_text_html);
         binding.aboutText
@@ -826,7 +826,8 @@ public class RingdroidEditActivity extends ComponentActivity
                     mLoadingProgressBar.setProgress(progress);
                     runOnUiThread(() -> {
                         if (progressBinding.progressPercentageText != null) {
-                            progressBinding.progressPercentageText.setText(progress + "%");
+                            progressBinding.progressPercentageText
+                                    .setText(getString(R.string.progress_percentage, progress));
                         }
                     });
                 }
@@ -848,7 +849,7 @@ public class RingdroidEditActivity extends ComponentActivity
                     if (!mLoadingKeepGoing) {
                         loadingCancelled = true;
                     } else {
-                        String name = mFile.getName().toLowerCase(Locale.getDefault());
+                        String name = mFile.getName().toLowerCase(Locale.ROOT);
                         String[] components = name.split("\\.");
                         String err;
                         if (components.length < 2) {

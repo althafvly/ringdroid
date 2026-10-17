@@ -26,6 +26,7 @@
         android:fontFamily="sans-serif"
         android:gravity="center_vertical"
         android:hint="@string/search_edit_box"
+        android:importantForAutofill="no"
         android:imeOptions="actionSearch|flagNoExtractUi"
         android:inputType="text"
         android:paddingStart="8dp"

@@ -203,4 +203,16 @@
     <string name="icon_ringtone">Ringtone</string>
     <string name="icon_starred">Starred</string>
     <string name="waveform_description">Audio Waveform</string>
+    <string name="version_label" translatable="false">v%1$s</string>
+    <string name="progress_percentage" translatable="false">%1$d%%</string>
+    <string name="confirm_delete_message">Delete this audio file?\n\n“%1$s”</string>
+    <string name="amplify_description">Adjust audio volume gain</string>
+    <string name="amplify_default_percentage" translatable="false">100%%</string>
+    <string name="amplify_min_percentage" translatable="false">10%%</string>
+    <string name="amplify_normal_percentage">100%% (Normal)</string>
+    <string name="amplify_max_percentage" translatable="false">400%%</string>
+    <string name="saving_audio_file">Writing audio file…</string>
+    <string name="decoding_audio_samples">Decoding audio samples…</string>
+    <string name="progress_initial_percentage" translatable="false">0%%</string>
+    <string name="recording_initial_time" translatable="false">0:00.00</string>
 </resources>

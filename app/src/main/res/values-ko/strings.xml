@@ -128,4 +128,9 @@
     <string name="icon_ringtone">벨소리</string>
     <string name="icon_starred">별표 표시됨</string>
     <string name="waveform_description">오디오 파형</string>
+    <string name="confirm_delete_message">이 오디오 파일을 삭제할까요?\n\n“%1$s”</string>
+    <string name="amplify_description">오디오 볼륨 조절</string>
+    <string name="amplify_normal_percentage">100%% (보통)</string>
+    <string name="saving_audio_file">오디오 파일을 쓰는 중…</string>
+    <string name="decoding_audio_samples">오디오 샘플을 디코딩하는 중…</string>
 </resources>

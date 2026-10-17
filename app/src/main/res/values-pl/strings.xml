@@ -128,4 +128,9 @@
     <string name="icon_ringtone">Dzwonek</string>
     <string name="icon_starred">Oznaczone gwiazdką</string>
     <string name="waveform_description">Przebieg audio</string>
+    <string name="confirm_delete_message">Usunąć ten plik audio?\n\n„%1$s”</string>
+    <string name="amplify_description">Dostosuj głośność dźwięku</string>
+    <string name="amplify_normal_percentage">100%% (Normalnie)</string>
+    <string name="saving_audio_file">Zapisywanie pliku audio…</string>
+    <string name="decoding_audio_samples">Dekodowanie próbek audio…</string>
 </resources>
