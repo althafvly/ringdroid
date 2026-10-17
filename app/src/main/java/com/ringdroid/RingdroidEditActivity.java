@@ -64,6 +64,7 @@ import com.ringdroid.databinding.DialogAmplifyBinding;
 import com.ringdroid.databinding.DialogProgressBinding;
 import com.ringdroid.databinding.DialogProgressHorizontalBinding;
 import com.ringdroid.databinding.EditorBinding;
+import com.ringdroid.databinding.EditorToolbarBinding;
 import com.ringdroid.databinding.RecordAudioBinding;
 import com.ringdroid.soundfile.SoundFile;
 
@@ -664,16 +665,17 @@ public class RingdroidEditActivity extends ComponentActivity
         binding = EditorBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        RingdroidUtils.applyStatusBarInsets(binding.toolbarContainer);
+        EditorToolbarBinding toolbarBinding = binding.editorToolbar;
+        RingdroidUtils.applyStatusBarInsets(toolbarBinding.toolbarContainer);
 
-        binding.btnBack.setOnClickListener(v -> finish());
-        binding.btnAmplify.setOnClickListener(v -> onAmplify());
-        binding.btnReset.setOnClickListener(v -> {
+        toolbarBinding.btnBack.setOnClickListener(v -> finish());
+        toolbarBinding.btnAmplify.setOnClickListener(v -> onAmplify());
+        toolbarBinding.btnReset.setOnClickListener(v -> {
             resetPositions();
             mOffsetGoal = 0;
             updateDisplay();
         });
-        binding.btnSave.setOnClickListener(v -> onSave());
+        toolbarBinding.btnSave.setOnClickListener(v -> onSave());
 
         updateToolbarTitle();
 
@@ -751,17 +753,18 @@ public class RingdroidEditActivity extends ComponentActivity
         if (binding == null) {
             return;
         }
+        EditorToolbarBinding toolbarBinding = binding.editorToolbar;
         if (mTitle != null && !mTitle.isEmpty()) {
-            binding.toolbarTitle.setText(mTitle);
+            toolbarBinding.toolbarTitle.setText(mTitle);
             if (mArtist != null && !mArtist.isEmpty()) {
-                binding.toolbarSubtitle.setText(mArtist);
-                binding.toolbarSubtitle.setVisibility(View.VISIBLE);
+                toolbarBinding.toolbarSubtitle.setText(mArtist);
+                toolbarBinding.toolbarSubtitle.setVisibility(View.VISIBLE);
             } else {
-                binding.toolbarSubtitle.setVisibility(View.GONE);
+                toolbarBinding.toolbarSubtitle.setVisibility(View.GONE);
             }
         } else {
-            binding.toolbarTitle.setText(R.string.edit_intent);
-            binding.toolbarSubtitle.setVisibility(View.GONE);
+            toolbarBinding.toolbarTitle.setText(R.string.edit_intent);
+            toolbarBinding.toolbarSubtitle.setVisibility(View.GONE);
         }
     }
 

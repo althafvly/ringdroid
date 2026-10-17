@@ -16,8 +16,18 @@ jobs:
           distribution: 'jetbrains'
           java-version: '21'
 
-      - name: Build with Gradle
-        run: ./gradlew assembleFdroidDebug lint
+      - name: Build and test with Gradle
+        run: >
+          ./gradlew spotlessCheck assembleFdroidDebug assembleFdroidDebugAndroidTest
+          testFdroidDebugUnitTest lintFdroidDebug
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-reports
+          path: |
+            app/build/reports/tests/**
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v7
@@ -28,6 +38,6 @@ jobs:
       - name: Android Lint Report
         uses: yutailang0119/action-android-lint@v6
         with:
-          report-path: app/build/reports/lint-results-debug.xml
+          report-path: app/build/reports/lint-results-fdroidDebug.xml
         continue-on-error: false
 
