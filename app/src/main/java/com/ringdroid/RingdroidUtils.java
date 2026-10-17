@@ -50,7 +50,7 @@ public class RingdroidUtils {
             Toast.makeText(activity,
                     "Unable to set as default ringtone. Your device may not allow this.",
                     Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
+        } catch (SecurityException | IllegalStateException e) {
             Log.e(TAG, "Failed to set default ringtone", e);
             Toast.makeText(activity, "Error setting ringtone: " + e.getMessage(), Toast.LENGTH_LONG)
                     .show();

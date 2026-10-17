@@ -68,6 +68,7 @@ import com.ringdroid.databinding.RecordAudioBinding;
 import com.ringdroid.soundfile.SoundFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Locale;
 
@@ -1286,7 +1287,7 @@ public class RingdroidEditActivity extends ComponentActivity
             mPlayer.start();
             updateDisplay();
             enableDisableButtons();
-        } catch (Exception e) {
+        } catch (IllegalStateException | NullPointerException e) {
             showFinalAlert(e, R.string.play_error);
         }
     }
@@ -1387,10 +1388,9 @@ public class RingdroidEditActivity extends ComponentActivity
             else
                 testPath = parentdir + filename + extension;
 
-            try {
-                RandomAccessFile f = new RandomAccessFile(new File(testPath), "r");
-                f.close();
-            } catch (Exception e) {
+            try (RandomAccessFile f = new RandomAccessFile(new File(testPath), "r")) {
+                // If it opened, the file exists
+            } catch (IOException e) {
                 // Good, the file didn't exist
                 path = testPath;
                 break;
@@ -1456,7 +1456,8 @@ public class RingdroidEditActivity extends ComponentActivity
                     } else {
                         mSoundFile.WriteFile(outFile, startFrame, endFrame - startFrame);
                     }
-                } catch (Exception e) {
+                } catch (IOException | SecurityException | IllegalArgumentException
+                        | IllegalStateException e) {
                     // log the error and try to create a .wav file instead
                     if (outFile.exists()) {
                         boolean status = outFile.delete();
@@ -1488,7 +1489,8 @@ public class RingdroidEditActivity extends ComponentActivity
                         } else {
                             mSoundFile.WriteWAVFile(outFile, startFrame, endFrame - startFrame);
                         }
-                    } catch (Exception e) {
+                    } catch (IOException | SecurityException | IllegalArgumentException
+                            | IllegalStateException e) {
                         // Creating the .wav file also failed. Stop the progress dialog, show an
                         // error message and exit.
                         Exception exception = e;

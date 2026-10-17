@@ -102,7 +102,7 @@ public class SoundFile {
             if (cursor == null || !cursor.moveToFirst()) {
                 Log.w(TAG, "URI query returned null or empty cursor: " + uri);
             }
-        } catch (Exception e) {
+        } catch (SecurityException | IllegalArgumentException | IllegalStateException e) {
             Log.w(TAG, "Failed to verify if URI exists: " + uri, e);
         }
     }
@@ -451,7 +451,7 @@ public class SoundFile {
             if (codec != null) {
                 try {
                     codec.stop();
-                } catch (Exception ignored) {
+                } catch (IllegalStateException ignored) {
                 }
                 codec.release();
             }
