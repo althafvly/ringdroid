@@ -1,37 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- Disabled -->
-    <item android:state_enabled="false">
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#33FFFFFF">
+    <item android:id="@android:id/mask">
         <shape android:shape="rectangle">
-            <corners android:radius="12dp" />
-            <stroke
-                android:width="1dp"
-                android:color="#BDBDBD" />
-            <solid android:color="@android:color/transparent" />
+            <corners android:radius="14dp" />
+            <solid android:color="@android:color/white" />
         </shape>
     </item>
-
-    <!-- Pressed -->
-    <item android:state_pressed="true">
-        <shape android:shape="rectangle">
-            <corners android:radius="12dp" />
-            <solid android:color="#1A73E820" />
-            <stroke
-                android:width="1dp"
-                android:color="?android:attr/colorAccent" />
-        </shape>
-    </item>
-
-    <!-- Normal -->
     <item>
-        <shape android:shape="rectangle">
-            <corners android:radius="12dp" />
-            <stroke
-                android:width="1dp"
-                android:color="?android:attr/colorAccent" />
-            <solid android:color="@android:color/transparent" />
-        </shape>
+        <selector>
+            <item android:state_enabled="false">
+                <shape android:shape="rectangle">
+                    <corners android:radius="14dp" />
+                    <stroke
+                        android:width="1dp"
+                        android:color="#334155" />
+                    <solid android:color="@android:color/transparent" />
+                </shape>
+            </item>
+            <item>
+                <shape android:shape="rectangle">
+                    <corners android:radius="14dp" />
+                    <stroke
+                        android:width="1dp"
+                        android:color="#334155" />
+                    <solid android:color="#1E293B" />
+                </shape>
+            </item>
+        </selector>
     </item>
-
-</selector>
+</ripple>

@@ -102,7 +102,7 @@ public class WaveformView extends View {
         mBorderLinePaint.setPathEffect(new DashPathEffect(new float[]{3.0f, 2.0f}, 0.0f));
         mBorderLinePaint.setColor(ContextCompat.getColor(context, R.color.selection_border));
         mPlaybackLinePaint = new Paint();
-        mPlaybackLinePaint.setAntiAlias(false);
+        mPlaybackLinePaint.setAntiAlias(true);
         mPlaybackLinePaint.setColor(ContextCompat.getColor(context, R.color.playback_indicator));
         mTimecodePaint = new Paint();
         mTimecodePaint.setTextSize(12);
@@ -328,6 +328,7 @@ public class WaveformView extends View {
         mHeightsAtThisZoomLevel = null;
         mDensity = density;
         mTimecodePaint.setTextSize((int) (12 * density));
+        mPlaybackLinePaint.setStrokeWidth(2.5f * density);
 
         invalidate();
     }

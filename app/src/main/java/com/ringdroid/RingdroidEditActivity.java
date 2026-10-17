@@ -1098,10 +1098,10 @@ public class RingdroidEditActivity extends ComponentActivity
 
     private void enableDisableButtons() {
         if (mIsPlaying) {
-            mPlayButton.setImageResource(android.R.drawable.ic_media_pause);
+            mPlayButton.setImageResource(R.drawable.baseline_pause_24);
             mPlayButton.setContentDescription(getResources().getText(R.string.stop));
         } else {
-            mPlayButton.setImageResource(android.R.drawable.ic_media_play);
+            mPlayButton.setImageResource(R.drawable.baseline_play_arrow_24);
             mPlayButton.setContentDescription(getResources().getText(R.string.play));
         }
     }
