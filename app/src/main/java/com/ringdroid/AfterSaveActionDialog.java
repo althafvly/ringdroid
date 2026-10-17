@@ -18,6 +18,8 @@ package com.ringdroid;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Message;
 import android.view.LayoutInflater;
 
@@ -34,7 +36,6 @@ public class AfterSaveActionDialog {
 
     public AfterSaveActionDialog(Context context, Message response) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.alert_title_success);
 
         // Inflate our UI from its XML layout description.
         AfterSaveActionBinding binding = AfterSaveActionBinding
@@ -49,6 +50,9 @@ public class AfterSaveActionDialog {
 
         mResponse = response;
         mDialog = builder.create();
+        if (mDialog.getWindow() != null) {
+            mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
     }
 
     private void closeAndSendResult(int clickedButtonId) {

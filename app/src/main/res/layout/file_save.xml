@@ -19,74 +19,125 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog"
     android:orientation="vertical"
-    android:paddingTop="12dp"
-    android:paddingStart="20dp"
-    android:paddingEnd="20dp"
+    android:paddingStart="24dp"
+    android:paddingTop="24dp"
+    android:paddingEnd="24dp"
     android:paddingBottom="24dp">
 
     <TextView
+        android:id="@+id/dialog_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/file_save_title"
+        android:textColor="#F8FAFC"
+        android:textSize="20sp" />
+
+    <!-- Type Section -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif-medium"
         android:text="@string/ringtone_type_label"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="14sp" />
+        android:textColor="#94A3B8"
+        android:textSize="12sp" />
 
-    <Spinner
-        android:id="@+id/ringtone_type"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp" />
+        android:layout_height="46dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_input_field">
 
+        <Spinner
+            android:id="@+id/ringtone_type"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:paddingStart="14dp"
+            android:paddingEnd="40dp" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="14dp"
+            android:contentDescription="@null"
+            android:src="@drawable/baseline_arrow_drop_down_24"
+            android:tint="#94A3B8" />
+
+    </FrameLayout>
+
+    <!-- Filename Section -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-medium"
         android:labelFor="@+id/filename"
         android:text="@string/ringtone_name_label"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="14sp" />
+        android:textColor="#94A3B8"
+        android:textSize="12sp" />
 
-    <EditText
-        android:id="@+id/filename"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="46dp"
         android:layout_marginTop="6dp"
-        android:inputType="text" />
+        android:background="@drawable/bg_input_field">
 
+        <EditText
+            android:id="@+id/filename"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:textColor="#F8FAFC"
+            android:textColorHint="#64748B"
+            android:textSize="15sp" />
+
+    </FrameLayout>
+
+    <!-- Dialog Action Buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         android:gravity="center"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/save"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/btn_primary"
-            android:minHeight="44dp"
-            android:text="@string/file_save_button_save"
-            android:textColor="#FFFFFF"
-            android:textAllCaps="false"
-            android:textSize="17sp"
-            android:gravity="center" />
-
-        <Button
             android:id="@+id/cancel"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:background="@drawable/btn_secondary"
-            android:minHeight="44dp"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
             android:text="@string/file_save_button_cancel"
-            android:textColor="?android:attr/colorAccent"
             android:textAllCaps="false"
-            android:textSize="17sp"
-            android:gravity="center" />
+            android:textColor="?android:attr/colorAccent"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/save"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_primary"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="@string/file_save_button_save"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
 
     </LinearLayout>
 

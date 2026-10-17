@@ -19,6 +19,8 @@ package com.ringdroid;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +34,7 @@ import com.ringdroid.databinding.FileSaveBinding;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class FileSaveDialog {
 
@@ -54,7 +57,6 @@ public class FileSaveDialog {
             Message response) {
         mContext = context;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.file_save_title);
 
         // Inflate our UI from its XML layout description.
         FileSaveBinding binding = FileSaveBinding.inflate(LayoutInflater.from(context));
@@ -88,6 +90,9 @@ public class FileSaveDialog {
         });
 
         mDialog = builder.create();
+        if (mDialog.getWindow() != null) {
+            mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
 
         binding.save.setOnClickListener(view -> {
             response.obj = mFilename.getText();
@@ -100,9 +105,21 @@ public class FileSaveDialog {
     }
 
     private void setFilenameEditBoxFromName(boolean onlyIfNotEdited) {
+        String baseName = mOriginalName;
+        for (String type : mTypeArray) {
+            if (baseName.toLowerCase(Locale.ROOT).endsWith(" " + type.toLowerCase(Locale.ROOT))) {
+                baseName = baseName.substring(0, baseName.length() - (type.length() + 1));
+                break;
+            } else if (baseName.toLowerCase(Locale.ROOT)
+                    .endsWith("_" + type.toLowerCase(Locale.ROOT))) {
+                baseName = baseName.substring(0, baseName.length() - (type.length() + 1));
+                break;
+            }
+        }
+
         if (onlyIfNotEdited) {
             CharSequence currentText = mFilename.getText();
-            String expectedText = mOriginalName + " " + mTypeArray.get(mPreviousSelection);
+            String expectedText = baseName + " " + mTypeArray.get(mPreviousSelection);
 
             if (!expectedText.contentEquals(currentText)) {
                 return;
@@ -111,8 +128,7 @@ public class FileSaveDialog {
 
         int newSelection = mTypeSpinner.getSelectedItemPosition();
         String newSuffix = mTypeArray.get(newSelection);
-        mFilename.setText(
-                mContext.getString(R.string.filename_with_suffix, mOriginalName, newSuffix));
+        mFilename.setText(mContext.getString(R.string.filename_with_suffix, baseName, newSuffix));
         mPreviousSelection = mTypeSpinner.getSelectedItemPosition();
     }
 
