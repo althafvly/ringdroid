@@ -94,7 +94,9 @@
         <!-- Activity for choosing a contact to assign a ringtone to. -->
         <activity
             android:name=".ChooseContactActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
     </application>
 

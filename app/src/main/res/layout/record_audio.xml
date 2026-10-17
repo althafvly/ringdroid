@@ -18,18 +18,101 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginEnd="10dp"
-    android:layout_marginBottom="10dp"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingTop="28dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="24dp">
 
+    <!-- Top Mic Avatar Badge -->
+    <ImageView
+        android:id="@+id/record_mic_badge"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="@drawable/bg_circle_recording"
+        android:contentDescription="@null"
+        android:padding="14dp"
+        android:src="@drawable/baseline_mic_24"
+        android:tint="#EF4444" />
+
+    <!-- Pulsing Live Recording Status Pill -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/recording_dot"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/bg_dot_recording"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.08"
+            android:text="@string/progress_dialog_recording"
+            android:textColor="#EF4444"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- Digital Timer -->
     <TextView
         android:id="@+id/record_audio_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="sans-serif-medium"
+        android:fontFeatureSettings="'tnum'"
+        android:gravity="center"
+        android:text="0:00.00"
+        android:textColor="#F8FAFC"
+        android:textSize="44sp" />
+
+    <!-- Action Buttons (Cancel / Stop) -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
         android:gravity="center"
-        android:textColor="#ffffffff"
-        android:textSize="50sp" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/record_cancel"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_secondary"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="@string/progress_dialog_cancel"
+            android:textAllCaps="false"
+            android:textColor="?android:attr/colorAccent"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/record_stop"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_record_stop"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="@string/progress_dialog_stop"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
+
+    </LinearLayout>
 
 </LinearLayout>

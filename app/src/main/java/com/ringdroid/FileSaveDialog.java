@@ -105,21 +105,30 @@ public class FileSaveDialog {
     }
 
     private void setFilenameEditBoxFromName(boolean onlyIfNotEdited) {
-        String baseName = mOriginalName;
-        for (String type : mTypeArray) {
-            if (baseName.toLowerCase(Locale.ROOT).endsWith(" " + type.toLowerCase(Locale.ROOT))) {
-                baseName = baseName.substring(0, baseName.length() - (type.length() + 1));
-                break;
-            } else if (baseName.toLowerCase(Locale.ROOT)
-                    .endsWith("_" + type.toLowerCase(Locale.ROOT))) {
-                baseName = baseName.substring(0, baseName.length() - (type.length() + 1));
-                break;
+        String baseName = mOriginalName != null ? mOriginalName : "";
+        boolean trimmed;
+        do {
+            trimmed = false;
+            for (String type : mTypeArray) {
+                if (baseName.toLowerCase(Locale.ROOT)
+                        .endsWith(" " + type.toLowerCase(Locale.ROOT))) {
+                    baseName = baseName.substring(0, baseName.length() - (type.length() + 1));
+                    trimmed = true;
+                    break;
+                } else if (baseName.toLowerCase(Locale.ROOT)
+                        .endsWith("_" + type.toLowerCase(Locale.ROOT))) {
+                    baseName = baseName.substring(0, baseName.length() - (type.length() + 1));
+                    trimmed = true;
+                    break;
+                }
             }
-        }
+        } while (trimmed);
 
         if (onlyIfNotEdited) {
             CharSequence currentText = mFilename.getText();
-            String expectedText = baseName + " " + mTypeArray.get(mPreviousSelection);
+            String expectedText = baseName.isEmpty()
+                    ? mTypeArray.get(mPreviousSelection)
+                    : baseName + " " + mTypeArray.get(mPreviousSelection);
 
             if (!expectedText.contentEquals(currentText)) {
                 return;
@@ -128,7 +137,12 @@ public class FileSaveDialog {
 
         int newSelection = mTypeSpinner.getSelectedItemPosition();
         String newSuffix = mTypeArray.get(newSelection);
-        mFilename.setText(mContext.getString(R.string.filename_with_suffix, baseName, newSuffix));
+        if (baseName.isEmpty()) {
+            mFilename.setText(newSuffix);
+        } else {
+            mFilename.setText(
+                    mContext.getString(R.string.filename_with_suffix, baseName, newSuffix));
+        }
         mPreviousSelection = mTypeSpinner.getSelectedItemPosition();
     }
 

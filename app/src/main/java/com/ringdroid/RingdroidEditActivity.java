@@ -16,12 +16,16 @@
 
 package com.ringdroid;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -844,27 +848,45 @@ public class RingdroidEditActivity extends ComponentActivity
         mRecordingKeepGoing = true;
         mFinishActivity = false;
         AlertDialog.Builder adBuilder = new AlertDialog.Builder(RingdroidEditActivity.this);
-        adBuilder.setTitle(getResources().getText(R.string.progress_dialog_recording));
         adBuilder.setCancelable(true);
-        adBuilder.setNegativeButton(getResources().getText(R.string.progress_dialog_cancel),
-                (dialog, id) -> {
-                    mRecordingKeepGoing = false;
-                    mFinishActivity = true;
-                });
-        adBuilder.setPositiveButton(getResources().getText(R.string.progress_dialog_stop),
-                (dialog, id) -> mRecordingKeepGoing = false);
-        // TODO(nfaralli): try to use a FrameLayout and pass it to the following inflate
-        // call.
-        // Using null, android:layout_width etc. may not work (hence text is at the top
-        // of view).
-        // On the other hand, if the text is big enough, this is good enough.
+        adBuilder.setOnCancelListener(dialog -> {
+            mRecordingKeepGoing = false;
+            mFinishActivity = true;
+        });
+
         RecordAudioBinding recordBinding = RecordAudioBinding.inflate(getLayoutInflater());
         adBuilder.setView(recordBinding.getRoot());
         if (!isFinishing() && !isDestroyed()) {
-            mAlertDialog = adBuilder.show();
+            mAlertDialog = adBuilder.create();
+            if (mAlertDialog.getWindow() != null) {
+                mAlertDialog.getWindow()
+                        .setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
+            mAlertDialog.show();
         } else {
             return;
         }
+
+        final ObjectAnimator pulseAnim = ObjectAnimator.ofFloat(recordBinding.recordingDot, "alpha",
+                1.0f, 0.2f);
+        pulseAnim.setDuration(750);
+        pulseAnim.setRepeatCount(ValueAnimator.INFINITE);
+        pulseAnim.setRepeatMode(ValueAnimator.REVERSE);
+        pulseAnim.start();
+
+        mAlertDialog.setOnDismissListener(dialog -> pulseAnim.cancel());
+
+        recordBinding.recordCancel.setOnClickListener(view -> {
+            mRecordingKeepGoing = false;
+            mFinishActivity = true;
+            mAlertDialog.dismiss();
+        });
+
+        recordBinding.recordStop.setOnClickListener(view -> {
+            mRecordingKeepGoing = false;
+            mAlertDialog.dismiss();
+        });
+
         mTimerTextView = recordBinding.recordAudioTimer;
 
         final SoundFile.ProgressListener listener = elapsedTime -> {

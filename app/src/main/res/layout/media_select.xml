@@ -28,6 +28,7 @@
         android:clipToPadding="false"
         android:divider="@color/list_divider"
         android:dividerHeight="1dp"
+        android:fitsSystemWindows="false"
         android:paddingTop="4dp"
         android:paddingBottom="16dp"
         android:scrollbarStyle="outsideOverlay" />

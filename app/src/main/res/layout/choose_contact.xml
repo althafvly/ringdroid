@@ -16,19 +16,22 @@
      * limitations under the License.
      */
 -->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/window_background"
     android:orientation="vertical">
 
     <ListView
         android:id="@android:id/list"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <requestFocus />
-    </ListView>
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:divider="#1E293B"
+        android:dividerHeight="1dp"
+        android:fitsSystemWindows="false"
+        android:paddingTop="4dp"
+        android:paddingBottom="8dp" />
 
 </LinearLayout>
