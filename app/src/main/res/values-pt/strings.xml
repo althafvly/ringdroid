@@ -92,15 +92,12 @@
     <string name="about_title">Sobre o Ringdroid</string>
     <string name="about_text_html">
         <![CDATA[
-            <b>Ringdroid</b><br><br>
             Use o Ringdroid para editar arquivos de áudio MP3, OGG, WAV, AAC e AMR e criar toques, alarmes e notificações.<br><br>
 
             <b>Dicas:</b><br>
             • Copie arquivos de áudio usando USB<br>
             • Toque em qualquer lugar na forma de onda para reproduzir<br>
             • Toque em Início/Fim durante a reprodução para definir os marcadores<br><br>
-
-            <b>Versão: %s</b><br><br>
 
             <b>Desenvolvedores:</b><br>
             Dominic Mazzoni<br>

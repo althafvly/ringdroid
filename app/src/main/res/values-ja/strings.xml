@@ -92,15 +92,12 @@
     <string name="about_title">Ringdroidについて</string>
     <string name="about_text_html">
         <![CDATA[
-            <b>Ringdroid</b><br><br>
             Ringdroidを使用して、MP3、OGG、WAV、AAC、AMRオーディオファイルを編集し、着信音、アラーム、通知を作成します。<br><br>
 
             <b>ヒント:</b><br>
             • USBを使用してオーディオファイルをコピーします<br>
             • 波形の任意の場所をタップして再生します<br>
             • 再生中に開始/終了をタップしてマーカーを設定します<br><br>
-
-            <b>バージョン: %s</b><br><br>
 
             <b>開発者:</b><br>
             Dominic Mazzoni<br>

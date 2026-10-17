@@ -40,6 +40,7 @@ import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -58,6 +59,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.text.HtmlCompat;
 
+import com.ringdroid.databinding.AboutDialogBinding;
 import com.ringdroid.databinding.DialogProgressBinding;
 import com.ringdroid.databinding.DialogProgressHorizontalBinding;
 import com.ringdroid.databinding.EditorBinding;
@@ -241,23 +243,22 @@ public class RingdroidEditActivity extends ComponentActivity
             versionName = "unknown";
         }
 
-        AlertDialog dialog = getAlertDialog(context, versionName).show();
+        AboutDialogBinding binding = AboutDialogBinding.inflate(LayoutInflater.from(context));
+        binding.aboutVersion.setText("v" + versionName);
 
-        // Make links clickable
-        TextView messageView = dialog.findViewById(android.R.id.message);
-        if (messageView != null) {
-            messageView.setMovementMethod(LinkMovementMethod.getInstance());
+        String html = context.getString(R.string.about_text_html);
+        binding.aboutText
+                .setText(HtmlCompat.fromHtml(html.trim(), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        binding.aboutText.setMovementMethod(LinkMovementMethod.getInstance());
+
+        AlertDialog dialog = new AlertDialog.Builder(context).setView(binding.getRoot()).create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
-    }
 
-    private static AlertDialog.Builder getAlertDialog(Context context, String versionName) {
-        String html = context.getString(R.string.about_text_html, versionName);
-        AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                .setTitle(R.string.about_title).setPositiveButton(R.string.alert_ok_button, null);
-
-        builder.setMessage(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY));
-
-        return builder;
+        binding.buttonAboutOk.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
     }
 
     /**

@@ -92,15 +92,12 @@
     <string name="about_title">Over Ringdroid</string>
     <string name="about_text_html">
         <![CDATA[
-            <b>Ringdroid</b><br><br>
             Gebruik Ringdroid om MP3-, OGG-, WAV-, AAC- en AMR-audiobestanden te bewerken en beltonen, alarmen en meldingen te maken.<br><br>
 
             <b>Tips:</b><br>
             • Kopieer audiobestanden via USB<br>
             • Tik ergens op de golfvorm om af te spelen<br>
             • Tik op Start/Einde tijdens het afspelen om markeringen in te stellen<br><br>
-
-            <b>Versie: %s</b><br><br>
 
             <b>Ontwikkelaars:</b><br>
             Dominic Mazzoni<br>

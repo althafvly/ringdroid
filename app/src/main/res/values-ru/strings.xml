@@ -92,15 +92,12 @@
     <string name="about_title">О Ringdroid</string>
     <string name="about_text_html">
         <![CDATA[
-            <b>Ringdroid</b><br><br>
             Используйте Ringdroid для редактирования аудиофайлов MP3, OGG, WAV, AAC и AMR и создания рингтонов, будильников и уведомлений.<br><br>
 
             <b>Советы:</b><br>
             • Копируйте аудиофайлы через USB<br>
             • Нажмите в любом месте на форму волны, чтобы воспроизвести<br>
             • Нажмите Начало/Конец во время воспроизведения, чтобы установить маркеры<br><br>
-
-            <b>Версия: %s</b><br><br>
 
             <b>Разработчики:</b><br>
             Dominic Mazzoni<br>

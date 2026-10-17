@@ -92,15 +92,12 @@
     <string name="about_title">Ringdroid 정보</string>
     <string name="about_text_html">
         <![CDATA[
-            <b>Ringdroid</b><br><br>
             Ringdroid를 사용하여 MP3, OGG, WAV, AAC 및 AMR 오디오 파일을 편집하고 벨소리, 알람 및 알림을 만드세요.<br><br>
 
             <b>팁:</b><br>
             • USB를 사용하여 오디오 파일을 복사합니다<br>
             • 파형의 아무 곳이나 탭하여 재생합니다<br>
             • 재생 중에 시작/종료를 탭하여 마커를 설정합니다<br><br>
-
-            <b>버전: %s</b><br><br>
 
             <b>개발자:</b><br>
             Dominic Mazzoni<br>

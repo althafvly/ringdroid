@@ -92,15 +92,12 @@
     <string name="about_title">حول Ringdroid</string>
     <string name="about_text_html">
         <![CDATA[
-            <b>Ringdroid</b><br><br>
             استخدم Ringdroid لتعديل ملفات الصوت MP3 و OGG و WAV و AAC و AMR وإنشاء نغمات رنين ومنبهات وإشعارات.<br><br>
 
             <b>نصائح:</b><br>
             • انسخ الملفات الصوتية باستخدام USB<br>
             • انقر في أي مكان على شكل الموجة للتشغيل<br>
             • انقر على البداية/النهاية أثناء التشغيل لتعيين العلامات<br><br>
-
-            <b>الإصدار: %s</b><br><br>
 
             <b>المطورون:</b><br>
             Dominic Mazzoni<br>

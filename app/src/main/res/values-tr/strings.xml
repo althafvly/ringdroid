@@ -92,15 +92,12 @@
     <string name="about_title">Ringdroid Hakkında</string>
     <string name="about_text_html">
         <![CDATA[
-            <b>Ringdroid</b><br><br>
             MP3, OGG, WAV, AAC ve AMR ses dosyalarını düzenlemek ve zil sesleri, alarmlar ve bildirimler oluşturmak için Ringdroid\'i kullanın.<br><br>
 
             <b>İpuçları:</b><br>
             • USB kullanarak ses dosyalarını kopyalayın<br>
             • Oynatmak için dalga formunun herhangi bir yerine dokunun<br>
             • İşaretçileri ayarlamak için oynatılırken Başlangıç/Bitiş\'e dokunun<br><br>
-
-            <b>Sürüm: %s</b><br><br>
 
             <b>Geliştiriciler:</b><br>
             Dominic Mazzoni<br>

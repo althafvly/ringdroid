@@ -92,15 +92,12 @@
     <string name="about_title">關於 Ringdroid</string>
     <string name="about_text_html">
         <![CDATA[
-            <b>Ringdroid</b><br><br>
             使用 Ringdroid 編輯 MP3、OGG、WAV、AAC 和 AMR 音訊檔案，並建立鈴聲、鬧鐘和通知。<br><br>
 
             <b>提示:</b><br>
             • 使用 USB 複製音訊檔案<br>
             • 輕觸波形圖上的任意位置即可播放<br>
             • 播放時輕觸「開始/結束」設定標記<br><br>
-
-            <b>版本: %s</b><br><br>
 
             <b>開發者:</b><br>
             Dominic Mazzoni<br>
