@@ -18,20 +18,41 @@
 -->
 <resources>
 
-    <color name="waveform_selected">#33b5e5</color>
-    <color name="waveform_unselected">#195a72</color>
-    <color name="waveform_unselected_bkgnd_overlay">#0a242d</color>
-    <color name="selection_border">#ffffff</color>
-    <color name="playback_indicator">#ffff66</color>
-    <color name="grid_line">#66ffffff</color>
-    <color name="timecode">#ddffffdd</color>
-    <color name="timecode_shadow">#aa000000</color>
+    <color name="waveform_selected">#38BDF8</color>
+    <color name="waveform_unselected">#1E3A5F</color>
+    <color name="waveform_unselected_bkgnd_overlay">#0F172A</color>
+    <color name="selection_border">#FFFFFF</color>
+    <color name="playback_indicator">#FBBF24</color>
+    <color name="grid_line">#33FFFFFF</color>
+    <color name="timecode">#E2E8F0</color>
+    <color name="timecode_shadow">#80000000</color>
 
+    <!-- Legacy category background tints (kept for backward compatibility) -->
     <color name="type_bkgnd_alarm">#88880000</color>
     <color name="type_bkgnd_ringtone">#88008888</color>
     <color name="type_bkgnd_notification">#88666600</color>
     <color name="type_bkgnd_music">#88000000</color>
     <color name="type_bkgnd_unsupported">#88cccccc</color>
+
+    <!-- Modern category avatar container & icon colors -->
+    <color name="category_container_ringtone">#164E63</color>
+    <color name="category_icon_ringtone">#22D3EE</color>
+
+    <color name="category_container_alarm">#713F12</color>
+    <color name="category_icon_alarm">#FBBF24</color>
+
+    <color name="category_container_notification">#581C87</color>
+    <color name="category_icon_notification">#C084FC</color>
+
+    <color name="category_container_music">#1E3A5F</color>
+    <color name="category_icon_music">#60A5FA</color>
+
+    <color name="category_container_unsupported">#334155</color>
+    <color name="category_icon_unsupported">#94A3B8</color>
+
+    <color name="list_divider">#1E293B</color>
+    <color name="window_background">#0F172A</color>
+    <color name="surface_toolbar">#1E293B</color>
 
     <color name="ic_launcher_background">#FFFFFF</color>
 

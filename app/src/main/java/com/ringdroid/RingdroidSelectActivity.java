@@ -20,6 +20,7 @@ import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.MergeCursor;
 import android.media.RingtoneManager;
@@ -172,6 +173,27 @@ public class RingdroidSelectActivity extends ComponentActivity {
             } else if (view.getId() == R.id.row_icon) {
                 setSoundIconFromCursor((ImageView) view, cursor);
                 return true;
+            } else if (view.getId() == R.id.row_artist) {
+                TextView tv = (TextView) view;
+                String artist = cursor.getString(columnIndex);
+                if (artist == null || artist.isEmpty() || artist.equalsIgnoreCase("<unknown>")) {
+                    tv.setVisibility(View.GONE);
+                } else {
+                    tv.setVisibility(View.VISIBLE);
+                    tv.setText(artist);
+                }
+                return true;
+            } else if (view.getId() == R.id.row_album) {
+                TextView tv = (TextView) view;
+                String album = cursor.getString(columnIndex);
+                if (album == null || album.isEmpty() || album.equals("0")
+                        || album.equalsIgnoreCase("<unknown>")) {
+                    tv.setVisibility(View.GONE);
+                } else {
+                    tv.setVisibility(View.VISIBLE);
+                    tv.setText(album);
+                }
+                return true;
             }
 
             return false;
@@ -301,32 +323,41 @@ public class RingdroidSelectActivity extends ComponentActivity {
     }
 
     private void setSoundIconFromCursor(ImageView view, Cursor cursor) {
+        int iconRes = R.drawable.baseline_music_note_24;
+        int iconColor = ContextCompat.getColor(this, R.color.category_icon_music);
+        int containerColor = ContextCompat.getColor(this, R.color.category_container_music);
+
         if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE))) {
-            view.setImageResource(R.drawable.baseline_call_24);
-            ((View) view.getParent())
-                    .setBackgroundColor(ContextCompat.getColor(this, R.color.type_bkgnd_ringtone));
+            iconRes = R.drawable.baseline_call_24;
+            iconColor = ContextCompat.getColor(this, R.color.category_icon_ringtone);
+            containerColor = ContextCompat.getColor(this, R.color.category_container_ringtone);
         } else if (0 != cursor
                 .getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_ALARM))) {
-            view.setImageResource(R.drawable.baseline_access_alarm_24);
-            ((View) view.getParent())
-                    .setBackgroundColor(ContextCompat.getColor(this, R.color.type_bkgnd_alarm));
+            iconRes = R.drawable.baseline_access_alarm_24;
+            iconColor = ContextCompat.getColor(this, R.color.category_icon_alarm);
+            containerColor = ContextCompat.getColor(this, R.color.category_container_alarm);
         } else if (0 != cursor
                 .getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_NOTIFICATION))) {
-            view.setImageResource(R.drawable.baseline_notifications_24);
-            ((View) view.getParent()).setBackgroundColor(
-                    ContextCompat.getColor(this, R.color.type_bkgnd_notification));
+            iconRes = R.drawable.baseline_notifications_24;
+            iconColor = ContextCompat.getColor(this, R.color.category_icon_notification);
+            containerColor = ContextCompat.getColor(this, R.color.category_container_notification);
         } else if (0 != cursor
                 .getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_MUSIC))) {
-            view.setImageResource(R.drawable.baseline_music_note_24);
-            ((View) view.getParent())
-                    .setBackgroundColor(ContextCompat.getColor(this, R.color.type_bkgnd_music));
+            iconRes = R.drawable.baseline_music_note_24;
+            iconColor = ContextCompat.getColor(this, R.color.category_icon_music);
+            containerColor = ContextCompat.getColor(this, R.color.category_container_music);
         }
+
         String filename = cursor
                 .getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
         if (!SoundFile.isFilenameSupported(filename)) {
-            ((View) view.getParent()).setBackgroundColor(
-                    ContextCompat.getColor(this, R.color.type_bkgnd_unsupported));
+            iconColor = ContextCompat.getColor(this, R.color.category_icon_unsupported);
+            containerColor = ContextCompat.getColor(this, R.color.category_container_unsupported);
         }
+
+        view.setImageResource(iconRes);
+        view.setImageTintList(ColorStateList.valueOf(iconColor));
+        view.setBackgroundTintList(ColorStateList.valueOf(containerColor));
     }
 
     private void onPermissionChanged() {

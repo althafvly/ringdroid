@@ -18,12 +18,19 @@
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/window_background">
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:divider="@color/list_divider"
+        android:dividerHeight="1dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="16dp"
+        android:scrollbarStyle="outsideOverlay" />
 
     <TextView
         android:id="@+id/empty_text"
@@ -33,7 +40,8 @@
         android:layout_marginEnd="24dp"
         android:gravity="center"
         android:text="@string/list_is_empty"
-        android:textSize="18sp"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="16sp"
         android:visibility="gone" />
 
 </FrameLayout>
