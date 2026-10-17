@@ -403,13 +403,9 @@ public class WaveformView extends View {
                 measuredHeight - 30, mBorderLinePaint);
 
         // Draw timecode
-        double timecodeIntervalSecs = 1.0;
-        if (timecodeIntervalSecs / onePixelInSecs < 50) {
-            timecodeIntervalSecs = 5.0;
-        }
-        if (timecodeIntervalSecs / onePixelInSecs < 50) {
-            timecodeIntervalSecs = 15.0;
-        }
+        float minimumTimecodeSpacing = mTimecodePaint.measureText("0:00") + 16 * mDensity;
+        double timecodeIntervalSecs = Math.max(1.0,
+                Math.ceil(minimumTimecodeSpacing * onePixelInSecs));
 
         // Draw grid
         fractionalSecs = mOffset * onePixelInSecs;

@@ -19,6 +19,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#101820"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -52,51 +53,69 @@
         style="@style/AudioFileInfoOverlayText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center" />
+        android:background="#182631"
+        android:gravity="center"
+        android:minHeight="32dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp" />
 
     <LinearLayout
         style="@style/ToolbarBackground"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="64dp"
         android:gravity="center"
         android:orientation="horizontal">
 
-        <TextView
+        <Button
             android:id="@+id/mark_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_width="72dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/btn_secondary"
+            android:gravity="center"
             android:text="@string/start_label"
+            android:textAllCaps="false"
             android:textColor="#ffffffff"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textSize="13sp" />
 
         <EditText
             android:id="@+id/starttext"
-            android:layout_width="70dp"
+            android:layout_width="76dp"
             android:layout_height="40dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/btn_secondary"
             android:gravity="center"
             android:inputType="number|numberDecimal"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:textColor="#ffffffff"
+            android:textColorHint="#99ffffff"
             android:textSize="16sp" />
 
-        <TextView
+        <Button
             android:id="@+id/mark_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="72dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_secondary"
+            android:gravity="center"
             android:text="@string/end_label"
+            android:textAllCaps="false"
             android:textColor="#ffffffff"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textSize="13sp" />
 
         <EditText
             android:id="@+id/endtext"
-            android:layout_width="70dp"
+            android:layout_width="76dp"
             android:layout_height="40dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/btn_secondary"
             android:gravity="center"
             android:inputType="number|numberDecimal"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:textColor="#ffffffff"
+            android:textColorHint="#99ffffff"
             android:textSize="16sp" />
 
         <ImageButton
@@ -104,7 +123,9 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="10dp"
+            android:background="@drawable/btn_secondary"
             android:contentDescription="@string/zoom_out"
+            android:padding="12dp"
             android:src="@drawable/baseline_zoom_out_24" />
 
         <ImageButton
@@ -112,7 +133,9 @@
             android:layout_width="52dp"
             android:layout_height="52dp"
             android:layout_marginStart="10dp"
+            android:background="@drawable/btn_secondary"
             android:contentDescription="@string/rewind"
+            android:padding="14dp"
             android:src="@android:drawable/ic_media_previous" />
 
         <ImageButton
@@ -121,14 +144,18 @@
             android:layout_height="52dp"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
+            android:background="@drawable/btn_primary"
             android:contentDescription="@string/play"
+            android:padding="14dp"
             android:src="@android:drawable/ic_media_play" />
 
         <ImageButton
             android:id="@+id/ffwd"
             android:layout_width="52dp"
             android:layout_height="52dp"
+            android:background="@drawable/btn_secondary"
             android:contentDescription="@string/ffwd"
+            android:padding="14dp"
             android:src="@android:drawable/ic_media_next" />
 
         <ImageButton
@@ -136,7 +163,9 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="10dp"
+            android:background="@drawable/btn_secondary"
             android:contentDescription="@string/zoom_in"
+            android:padding="12dp"
             android:src="@drawable/baseline_zoom_in_24"/>
 
     </LinearLayout>
