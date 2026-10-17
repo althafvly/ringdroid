@@ -715,7 +715,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
         }
 
         if (audioUri != null) {
-            File file = FilesUtil.getFileFromUri(this, audioUri);
+            File file = RingdroidUtils.getFileFromUri(this, audioUri);
             if (file != null) {
                 startRingdroidEditor(Uri.fromFile(file));
             } else {

@@ -1,9 +1,12 @@
 package com.ringdroid;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -13,6 +16,12 @@ import androidx.activity.ComponentActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class RingdroidUtils {
     private static final String TAG = "RingdroidUtils";
@@ -112,6 +121,68 @@ public class RingdroidUtils {
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    public static File getFileFromUri(Context context, Uri uri) {
+        if (context == null || uri == null) {
+            return null;
+        }
+
+        if ("file".equalsIgnoreCase(uri.getScheme())) {
+            String path = uri.getPath();
+            return path != null ? new File(path) : null;
+        }
+
+        // Try direct MediaStore _data if available
+        try (Cursor cursor = context.getContentResolver().query(uri,
+                new String[]{MediaStore.MediaColumns.DATA}, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                int idx = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
+                if (idx >= 0) {
+                    String path = cursor.getString(idx);
+                    if (path != null) {
+                        File file = new File(path);
+                        if (file.exists() && file.canRead()) {
+                            return file;
+                        }
+                    }
+                }
+            }
+        } catch (SecurityException | IllegalArgumentException ignored) {
+        }
+
+        // For all content:// URIs from third-party apps, stream into a cache file
+        String fileName = "shared_audio";
+        try (Cursor cursor = context.getContentResolver().query(uri,
+                new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                int idx = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                if (idx >= 0) {
+                    String name = cursor.getString(idx);
+                    if (name != null && !name.isEmpty()) {
+                        fileName = name;
+                    }
+                }
+            }
+        } catch (SecurityException | IllegalArgumentException ignored) {
+        }
+
+        File cacheFile = new File(context.getCacheDir(), fileName);
+        try (InputStream in = context.getContentResolver().openInputStream(uri);
+                OutputStream out = new FileOutputStream(cacheFile)) {
+            if (in == null) {
+                return null;
+            }
+            byte[] buf = new byte[8192];
+            int len;
+            while ((len = in.read(buf)) != -1) {
+                out.write(buf, 0, len);
+            }
+            return cacheFile;
+        } catch (IOException | SecurityException e) {
+            Log.e(TAG, "Failed to copy content URI to cache: " + uri, e);
+            return null;
         }
     }
 }
