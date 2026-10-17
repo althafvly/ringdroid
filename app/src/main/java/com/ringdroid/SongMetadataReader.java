@@ -22,8 +22,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import java.util.HashMap;
-
 public class SongMetadataReader {
     private static final String TAG = "SongMetadataReader";
 
@@ -42,35 +40,13 @@ public class SongMetadataReader {
         mTitle = getBasename(filename);
         try {
             ReadMetadata();
-        } catch (SecurityException | IllegalArgumentException | IllegalStateException e) {
+        } catch (SecurityException | IllegalArgumentException | IllegalStateException
+                | UnsupportedOperationException e) {
             Log.e(TAG, "Failed to read song metadata", e);
         }
     }
 
     private void ReadMetadata() {
-        // Get a map from genre ids to names
-        HashMap<String, String> genreIdMap = new HashMap<>();
-        try (Cursor c = mContext.getContentResolver().query(GENRES_URI,
-                new String[]{MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME}, null, null,
-                null)) {
-            if (c != null) {
-                for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-                    genreIdMap.put(c.getString(0), c.getString(1));
-                }
-            }
-        }
-        mGenre = "";
-        for (String genreId : genreIdMap.keySet()) {
-            try (Cursor genreCursor = mContext.getContentResolver().query(makeGenreUri(genreId),
-                    new String[]{MediaStore.Audio.Media.DATA},
-                    MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"", null, null)) {
-                if (genreCursor != null && genreCursor.getCount() != 0) {
-                    mGenre = genreIdMap.get(genreId);
-                    break;
-                }
-            }
-        }
-
         Cursor c = queryAudio(RingdroidUtils.getExternalAudioCollectionUri());
         if (c == null || c.getCount() == 0) {
             if (c != null) {
@@ -97,11 +73,6 @@ public class SongMetadataReader {
         mAlbum = getStringFromColumn(c, MediaStore.Audio.Media.ALBUM);
         mYear = getIntegerFromColumn(c);
         c.close();
-    }
-
-    private Uri makeGenreUri(String genreId) {
-        String CONTENTDIR = MediaStore.Audio.Genres.Members.CONTENT_DIRECTORY;
-        return Uri.parse(GENRES_URI.toString() + "/" + genreId + "/" + CONTENTDIR);
     }
 
     private String getStringFromColumn(Cursor c, String columnName) {
@@ -131,10 +102,16 @@ public class SongMetadataReader {
     }
 
     private Cursor queryAudio(Uri uri) {
-        return mContext.getContentResolver().query(uri,
-                new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,
-                        MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
-                        MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DATA},
-                MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"", null, null);
+        try {
+            return mContext.getContentResolver().query(uri,
+                    new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,
+                            MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
+                            MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DATA},
+                    MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"", null, null);
+        } catch (SecurityException | IllegalArgumentException | IllegalStateException
+                | UnsupportedOperationException e) {
+            Log.e(TAG, "Failed to query audio from " + uri, e);
+            return null;
+        }
     }
 }
