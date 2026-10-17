@@ -102,4 +102,12 @@ public class SearchToolbarHelper {
     public String getQuery() {
         return mSearchBinding.searchQueryInput.getText().toString();
     }
+
+    public String getActiveQuery() {
+        if (isSearchOpen()) {
+            String query = getQuery().trim();
+            return query.isEmpty() ? null : query;
+        }
+        return null;
+    }
 }

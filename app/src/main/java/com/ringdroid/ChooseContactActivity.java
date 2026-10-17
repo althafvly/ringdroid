@@ -17,6 +17,7 @@
 package com.ringdroid;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -203,7 +204,7 @@ public class ChooseContactActivity extends ComponentActivity {
 
                 mUiHandler.post(() -> updateContactList(cursor));
 
-            } catch (Exception e) {
+            } catch (SecurityException | IllegalArgumentException | IllegalStateException e) {
                 Log.e(TAG, "Contacts loader failed", e);
             }
         });
@@ -218,14 +219,13 @@ public class ChooseContactActivity extends ComponentActivity {
         mAdapter.swapCursor(data);
     }
 
+    public static Intent createIntent(Context context, Uri ringtoneUri) {
+        Intent intent = new Intent(Intent.ACTION_EDIT, ringtoneUri);
+        intent.setClass(context, ChooseContactActivity.class);
+        return intent;
+    }
+
     public void refreshListView() {
-        String filter = null;
-        if (mSearchHelper != null && mSearchHelper.isSearchOpen()) {
-            String query = mSearchHelper.getQuery();
-            if (!query.isEmpty()) {
-                filter = query;
-            }
-        }
-        loadContactsAsync(filter);
+        loadContactsAsync(mSearchHelper != null ? mSearchHelper.getActiveQuery() : null);
     }
 }
