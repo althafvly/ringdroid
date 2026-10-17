@@ -57,6 +57,17 @@ android {
         includeInApk = true
         includeInBundle = true
     }
+
+    packaging {
+        resources {
+            excludes +=
+                listOf(
+                    "**/*.kotlin_builtins",
+                    "DebugProbesKt.bin",
+                    "META-INF/*.version",
+                )
+        }
+    }
 }
 
 dependencies {

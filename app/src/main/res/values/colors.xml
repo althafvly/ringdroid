@@ -28,11 +28,6 @@
     <color name="timecode_shadow">#80000000</color>
 
     <!-- Legacy category background tints (kept for backward compatibility) -->
-    <color name="type_bkgnd_alarm">#88880000</color>
-    <color name="type_bkgnd_ringtone">#88008888</color>
-    <color name="type_bkgnd_notification">#88666600</color>
-    <color name="type_bkgnd_music">#88000000</color>
-    <color name="type_bkgnd_unsupported">#88cccccc</color>
 
     <!-- Modern category avatar container & icon colors -->
     <color name="category_container_ringtone">#164E63</color>
