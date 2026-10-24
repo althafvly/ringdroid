@@ -140,6 +140,17 @@ public class RingdroidUtils {
         }
     }
 
+    // Strips any path from a file name supplied by another app.
+    static String toSafeFileName(String name, String fallback) {
+        if (name == null) {
+            return fallback;
+        }
+        String safeName = name.substring(name.lastIndexOf('/') + 1);
+        return safeName.isEmpty() || safeName.equals(".") || safeName.equals("..")
+                ? fallback
+                : safeName;
+    }
+
     public static File getFileFromUri(Context context, Uri uri) {
         if (context == null || uri == null) {
             return null;
@@ -176,12 +187,7 @@ public class RingdroidUtils {
                 int idx = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                 if (idx >= 0) {
                     String name = cursor.getString(idx);
-                    String safeName = name != null
-                            ? name.substring(name.lastIndexOf('/') + 1)
-                            : null;
-                    if (safeName != null && !safeName.isEmpty() && !safeName.equals("..")) {
-                        fileName = safeName;
-                    }
+                    fileName = toSafeFileName(name, fileName);
                 }
             }
         } catch (SecurityException | IllegalArgumentException ignored) {

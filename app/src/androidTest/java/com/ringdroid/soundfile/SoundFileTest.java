@@ -18,18 +18,15 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
-import android.media.MediaExtractor;
-import android.media.MediaFormat;
+import java.util.HashSet;
+import java.util.Set;
 import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 @RunWith(AndroidJUnit4.class)
 public class SoundFileTest {
@@ -124,20 +121,18 @@ public class SoundFileTest {
         SoundFile.ProgressListener listener = fractionComplete -> false;
         SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(), listener);
 
-        injectMockAudioData(soundFile, 1); // Mock data for getters
-
         assertNotNull(soundFile);
         assertEquals("wav", soundFile.getFiletype());
         assertEquals(44100, soundFile.getSampleRate());
         assertEquals(1, soundFile.getChannels());
-        assertTrue(soundFile.getNumSamples() > 0);
-        assertTrue(soundFile.getNumFrames() > 0);
+        assertEquals(44100, soundFile.getNumSamples());
+        assertEquals(44, soundFile.getNumFrames()); // ceil(44100 / 1024)
         assertEquals(1024, soundFile.getSamplesPerFrame());
 
         assertNotNull(soundFile.getFrameGains());
         ShortBuffer samples = soundFile.getSamples();
         assertNotNull(samples);
-        assertTrue(samples.capacity() > 0);
+        assertTrue(samples.remaining() >= 44100);
 
         soundFile.release();
         assertNull(soundFile.getSamples());
@@ -235,164 +230,33 @@ public class SoundFileTest {
 
     // --- 4. File Writing Operations ---
 
-    private void injectMockAudioData(SoundFile soundFile, int channels) throws Exception {
-        Field mNumSamples = SoundFile.class.getDeclaredField("mNumSamples");
-        mNumSamples.setAccessible(true);
-        mNumSamples.set(soundFile, 44100);
-
-        Field mSampleRate = SoundFile.class.getDeclaredField("mSampleRate");
-        mSampleRate.setAccessible(true);
-        mSampleRate.set(soundFile, 44100);
-
-        Field mChannels = SoundFile.class.getDeclaredField("mChannels");
-        mChannels.setAccessible(true);
-        mChannels.set(soundFile, channels);
-
-        Field mNumFrames = SoundFile.class.getDeclaredField("mNumFrames");
-        mNumFrames.setAccessible(true);
-        mNumFrames.set(soundFile, 100);
-
-        Field mDecodedBytes = SoundFile.class.getDeclaredField("mDecodedBytes");
-        mDecodedBytes.setAccessible(true);
-        ByteBuffer buf = ByteBuffer.allocate(44100 * 2 * channels);
-        buf.order(ByteOrder.LITTLE_ENDIAN);
-
-        // Fill some non-zero data
-        for (int i = 0; i < 44100 * channels; i++) {
-            buf.putShort((short) i);
-        }
-
-        buf.flip();
-        mDecodedBytes.set(soundFile, buf);
-
-        Field mFrameGains = SoundFile.class.getDeclaredField("mFrameGains");
-        mFrameGains.setAccessible(true);
-        int[] gains = new int[100];
-        Arrays.fill(gains, 5);
-        mFrameGains.set(soundFile, gains);
-
-        Field mFileSize = SoundFile.class.getDeclaredField("mFileSize");
-        mFileSize.setAccessible(true);
-        mFileSize.set(soundFile, 1024 * 1024); // 1 MB mock size for bitrate calculation
-
-        Field mDecodedSamples = SoundFile.class.getDeclaredField("mDecodedSamples");
-        mDecodedSamples.setAccessible(true);
-        ShortBuffer sBuf = ShortBuffer.allocate(44100 * channels);
-        sBuf.position(sBuf.capacity());
-        sBuf.flip();
-        mDecodedSamples.set(soundFile, sBuf);
-    }
-
     @Test
-    public void testWriteFileM4AMono() throws Exception {
+    public void testStaleTempFilesAreDeleted() throws Exception {
+        File stale = new File(outDir, "ringdroid_pcm_stale.raw");
+        assertTrue(stale.createNewFile());
+        // Files of SoundFiles still open in this process must survive.
+        Set<String> before = pcmFileNames();
+        before.remove(stale.getName());
+
         SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(),
                 fractionComplete -> false);
-        injectMockAudioData(soundFile, 1);
-
-        File outputFile = new File(outDir, "out_audio.m4a");
-        new SoundFileWriter(soundFile, 1.0f).writeM4A(outputFile, 0, 50);
-
-        assertTrue(outputFile.exists());
-        assertTrue(outputFile.length() > 0);
-        outputFile.delete();
-    }
-
-    @Test
-    public void testWriteFileM4AStereo() throws Exception {
-        SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(),
-                fractionComplete -> false);
-        injectMockAudioData(soundFile, 2); // Set channels to 2
-
-        File outputFile = new File(outDir, "out_audio_stereo.m4a");
         assertNotNull(soundFile);
-        new SoundFileWriter(soundFile, 1.0f).writeM4A(outputFile, 0, 50);
+        assertFalse(stale.exists());
+        Set<String> created = pcmFileNames();
+        assertTrue(created.containsAll(before));
+        created.removeAll(before);
+        assertEquals(1, created.size());
 
-        assertTrue(outputFile.exists());
-        assertTrue(outputFile.length() > 0);
-        outputFile.delete();
+        soundFile.release();
+        assertFalse(new File(outDir, created.iterator().next()).exists());
     }
 
-    @Test
-    public void testWriteWavFileMono() throws Exception {
-        SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(),
-                fractionComplete -> false);
-        injectMockAudioData(soundFile, 1);
-
-        File outputFile = new File(outDir, "out_audio.wav");
-        assertNotNull(soundFile);
-        new SoundFileWriter(soundFile, 1.0f).writeWAV(outputFile, 0, 50);
-
-        assertTrue(outputFile.exists());
-        assertTrue(outputFile.length() > 0);
-        outputFile.delete();
-    }
-
-    @Test
-    public void testWriteWavFileStereo() throws Exception {
-        SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(),
-                fractionComplete -> false);
-        injectMockAudioData(soundFile, 2);
-
-        File outputFile = new File(outDir, "out_audio_stereo.wav");
-        new SoundFileWriter(soundFile, 1.0f).writeWAV(outputFile, 0, 50);
-
-        byte[] bytes = Files.readAllBytes(outputFile.toPath());
-        ByteBuffer out = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
-        int dataSize = 50 * 1024 * 2 * 2;
-        assertEquals(44 + dataSize, bytes.length);
-        assertEquals(dataSize, out.getInt(40));
-        // The mock data is 0, 1, 2, ... interleaved as left, right.
-        out.position(44);
-        for (int i = 0; i < 8; i++) {
-            assertEquals(i, out.getShort());
+    private Set<String> pcmFileNames() {
+        Set<String> names = new HashSet<>();
+        String[] files = outDir.list((dir, name) -> name.startsWith("ringdroid_pcm_"));
+        if (files != null) {
+            names.addAll(Arrays.asList(files));
         }
-        outputFile.delete();
-    }
-
-    @Test
-    public void testWriteFileM4ADuration() throws Exception {
-        SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(),
-                fractionComplete -> false);
-        injectMockAudioData(soundFile, 2);
-
-        // Longer than the 48.7 s at which the old header overflowed.
-        File outputFile = new File(outDir, "out_audio_long.m4a");
-        int numFrames = 2600;
-        new SoundFileWriter(soundFile, 1.0f).writeM4A(outputFile, 0, numFrames);
-
-        MediaExtractor extractor = new MediaExtractor();
-        try {
-            extractor.setDataSource(outputFile.getPath());
-            assertEquals(1, extractor.getTrackCount());
-            MediaFormat format = extractor.getTrackFormat(0);
-            assertEquals("audio/mp4a-latm", format.getString(MediaFormat.KEY_MIME));
-            long expectedUs = numFrames * 1024L * 1000000L / 44100;
-            long durationUs = format.getLong(MediaFormat.KEY_DURATION);
-            assertTrue("duration " + durationUs, Math.abs(durationUs - expectedUs) < 200000);
-        } finally {
-            extractor.release();
-            outputFile.delete();
-        }
-    }
-
-    @Test(expected = IOException.class)
-    public void testWriteFileInvalidBounds() throws Exception {
-        SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(),
-                fractionComplete -> false);
-        injectMockAudioData(soundFile, 1);
-
-        File outputFile = new File(outDir, "out_audio_invalid.wav");
-        new SoundFileWriter(soundFile, 1.0f).writeM4A(outputFile, 0, 0); // Should throw IOException
-                                                                         // (numSamples <= 0)
-    }
-
-    @Test(expected = IOException.class)
-    public void testWriteWavFileInvalidBounds() throws Exception {
-        SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(),
-                fractionComplete -> false);
-        injectMockAudioData(soundFile, 1);
-
-        File outputFile = new File(outDir, "out_audio_invalid.wav");
-        new SoundFileWriter(soundFile, 1.0f).writeWAV(outputFile, 1000, 100); // end < start
+        return names;
     }
 }

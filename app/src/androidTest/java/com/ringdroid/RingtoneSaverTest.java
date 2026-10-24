@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 
@@ -14,53 +15,74 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.ringdroid.soundfile.SoundFile;
+import com.ringdroid.soundfile.TestAudio;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 
 @RunWith(AndroidJUnit4.class)
 public class RingtoneSaverTest {
+    private Context mContext;
+    private File mInput;
+    private SoundFile mSoundFile;
+
+    @Before
+    public void setUp() throws Exception {
+        mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        mInput = TestAudio.writeWav(new File(mContext.getCacheDir(), "saver_input.wav"), 1,
+                TestAudio.ramp(TestAudio.SAMPLE_RATE));
+        mSoundFile = TestAudio.load(mInput);
+    }
+
+    @After
+    public void tearDown() {
+        mSoundFile.release();
+        mInput.delete();
+    }
+
     @Test
-    public void savesRingtoneToMediaStore() throws Exception {
-        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        File input = new File(context.getCacheDir(), "saver_input.wav");
-        try (InputStream in = InstrumentationRegistry.getInstrumentation().getContext().getAssets()
-                .open("test_audio.wav"); FileOutputStream out = new FileOutputStream(input)) {
-            byte[] buf = new byte[8192];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
+    public void savesEachFileKindWithItsFlagsAndFolder() throws Exception {
+        String[] flags = {MediaStore.Audio.Media.IS_MUSIC, MediaStore.Audio.Media.IS_ALARM,
+                MediaStore.Audio.Media.IS_NOTIFICATION, MediaStore.Audio.Media.IS_RINGTONE};
+        String[] folders = {"music", "alarms", "notifications", "ringtones"};
+        int[] kinds = {FileSaveDialog.FILE_KIND_MUSIC, FileSaveDialog.FILE_KIND_ALARM,
+                FileSaveDialog.FILE_KIND_NOTIFICATION, FileSaveDialog.FILE_KIND_RINGTONE};
+        for (int i = 0; i < kinds.length; i++) {
+            Uri uri = new RingtoneSaver(mContext, mSoundFile, 1.0f, kinds[i])
+                    .save("RingtoneSaverTest" + System.nanoTime(), 0, 20, 464);
+            assertNotNull(uri);
+            try {
+                assertSaved(uri, flags[i], folders[i]);
+            } finally {
+                mContext.getContentResolver().delete(uri, null, null);
             }
         }
-        SoundFile soundFile = SoundFile.create(context.getCacheDir(), input.getPath(),
-                frac -> false);
-        assertNotNull(soundFile);
+    }
 
-        String title = "RingtoneSaverTest" + System.currentTimeMillis();
-        RingtoneSaver saver = new RingtoneSaver(context, soundFile, 1.0f,
-                FileSaveDialog.FILE_KIND_RINGTONE);
-        Uri uri = saver.save(title, 0, 20, 464);
-        assertNotNull(uri);
-        try (Cursor c = context.getContentResolver().query(uri,
-                new String[]{MediaStore.Audio.Media.IS_RINGTONE, MediaStore.MediaColumns.MIME_TYPE},
-                null, null, null)) {
+    private void assertSaved(Uri uri, String flag, String folder) throws Exception {
+        boolean scoped = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
+        String[] projection = scoped
+                ? new String[]{flag, MediaStore.MediaColumns.MIME_TYPE,
+                        MediaStore.MediaColumns.RELATIVE_PATH}
+                : new String[]{flag, MediaStore.MediaColumns.MIME_TYPE};
+        try (Cursor c = mContext.getContentResolver().query(uri, projection, null, null, null)) {
             assertNotNull(c);
             assertTrue(c.moveToFirst());
-            assertEquals(1, c.getInt(0));
+            assertEquals(flag, 1, c.getInt(0));
             assertTrue(c.getString(1).startsWith("audio/"));
-            try (ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(uri,
-                    "r")) {
-                assertNotNull(pfd);
-                assertTrue(pfd.getStatSize() > 512);
+            if (scoped) {
+                // MediaStore only accepts standard top-level folders from Android 10.
+                assertEquals("Ringtones/" + folder + "/", c.getString(2));
             }
-        } finally {
-            context.getContentResolver().delete(uri, null, null);
-            soundFile.release();
-            input.delete();
+        }
+        try (ParcelFileDescriptor pfd = mContext.getContentResolver().openFileDescriptor(uri,
+                "r")) {
+            assertNotNull(pfd);
+            assertTrue(pfd.getStatSize() > 512);
         }
     }
 }
