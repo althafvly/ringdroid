@@ -25,9 +25,11 @@ android {
             )
             isDebuggable = false
             isJniDebuggable = false
+            vcsInfo.include = false
         }
 
         getByName("debug") {
+            applicationIdSuffix = ".dev"
             isDebuggable = true
             isJniDebuggable = true
             isMinifyEnabled = false
@@ -54,7 +56,7 @@ android {
     }
 
     dependenciesInfo {
-        includeInApk = true
+        includeInApk = false
         includeInBundle = true
     }
 
@@ -65,6 +67,7 @@ android {
                     "**/*.kotlin_builtins",
                     "DebugProbesKt.bin",
                     "META-INF/*.version",
+                    "META-INF/**/LICENSE.txt",
                 )
         }
     }
