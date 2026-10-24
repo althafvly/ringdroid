@@ -1,4 +1,7 @@
-package com.ringdroid;
+package com.ringdroid.editor;
+
+import com.ringdroid.soundfile.SoundFile;
+import com.ringdroid.soundfile.TestAudio;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -13,9 +16,6 @@ import android.provider.MediaStore;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
-
-import com.ringdroid.soundfile.SoundFile;
-import com.ringdroid.soundfile.TestAudio;
 
 import org.junit.After;
 import org.junit.Before;

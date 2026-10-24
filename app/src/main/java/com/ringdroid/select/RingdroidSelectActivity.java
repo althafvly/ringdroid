@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package com.ringdroid;
+package com.ringdroid.select;
+
+import com.ringdroid.BuildConfig;
+import com.ringdroid.R;
+import com.ringdroid.editor.RingdroidEditActivity;
+import com.ringdroid.soundfile.SoundFile;
+import com.ringdroid.util.AboutDialog;
+import com.ringdroid.util.ContactRingtonePicker;
+import com.ringdroid.util.PermissionUtils;
+import com.ringdroid.util.RingdroidUtils;
 
 import java.util.List;
-
-import androidx.activity.result.IntentSenderRequest;
-
-import android.app.RecoverableSecurityException;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -30,8 +35,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.MergeCursor;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -44,7 +47,6 @@ import android.os.storage.StorageVolume;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -58,11 +60,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 
-import com.ringdroid.databinding.DialogConfirmDeleteBinding;
 import com.ringdroid.databinding.MediaSelectBinding;
-import com.ringdroid.databinding.RowOptionsPopupBinding;
 import com.ringdroid.databinding.SelectOptionsPopupBinding;
-import com.ringdroid.soundfile.SoundFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -73,36 +72,12 @@ import java.util.Objects;
  * intent to record a new one, and then launches RingdroidEditActivity from here.
  */
 public class RingdroidSelectActivity extends ComponentActivity {
-    private static final String[] AUDIO_PROJECTION = {MediaStore.Audio.Media._ID,
-            MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
-            MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION,
-            MediaStore.Audio.Media.SIZE, MediaStore.Audio.Media.MIME_TYPE,
-
-            // Flags your UI uses:
-            MediaStore.Audio.Media.IS_RINGTONE, MediaStore.Audio.Media.IS_ALARM,
-            MediaStore.Audio.Media.IS_NOTIFICATION, MediaStore.Audio.Media.IS_MUSIC,
-
-            // File path — will be non-null since we use MANAGE_EXTERNAL_STORAGE
-            MediaStore.Audio.Media.DATA};
     private static final String TAG = "RingdroidSelectActivity";
     private final Handler mUiHandler = new Handler(Looper.getMainLooper());
     private final ActivityResultLauncher<Intent> mEditActivityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), this::onEditActivityResult);
     private SimpleCursorAdapter mAdapter;
-    private Uri mPendingDeleteUri;
-    private final ActivityResultLauncher<IntentSenderRequest> mDeleteLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartIntentSenderForResult(), result -> {
-                Uri pending = mPendingDeleteUri;
-                mPendingDeleteUri = null;
-                if (result.getResultCode() != RESULT_OK) {
-                    return;
-                }
-                if (pending != null) {
-                    deleteFromMediaStore(pending);
-                } else {
-                    refreshListView();
-                }
-            });
+    private final AudioDeleter mDeleter = new AudioDeleter(this, this::refreshListView);
     private boolean mWasGetContentIntent;
     private boolean mShowAll = false;
     private final ContactRingtonePicker mContactPicker = new ContactRingtonePicker(this, () -> {
@@ -260,8 +235,12 @@ public class RingdroidSelectActivity extends ComponentActivity {
             Cursor internal = null;
             Cursor external = null;
             try {
-                internal = queryCursor(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, filter);
-                external = queryCursor(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, filter);
+                AudioQuery query = AudioQuery.build(mShowAll, filter,
+                        SoundFile.getSupportedExtensions(), getStorageRoots());
+                internal = query.run(getContentResolver(),
+                        MediaStore.Audio.Media.INTERNAL_CONTENT_URI);
+                external = query.run(getContentResolver(),
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
             } catch (SecurityException | IllegalArgumentException | IllegalStateException
                     | UnsupportedOperationException e) {
                 Log.e(TAG, "Loader error", e);
@@ -282,59 +261,19 @@ public class RingdroidSelectActivity extends ComponentActivity {
         });
     }
 
-    private Cursor queryCursor(Uri baseUri, String filter) {
-        ArrayList<String> selectionArgsList = new ArrayList<>();
-        StringBuilder selection = new StringBuilder();
-
-        if (mShowAll) {
-            selection.append("(_DATA LIKE ?)");
-            selectionArgsList.add("%"); // match everything
-        } else {
-            // Match supported file extensions
-            selection.append("(");
-            for (String ext : SoundFile.getSupportedExtensions()) {
-                if (selection.length() > 1)
-                    selection.append(" OR ");
-                selection.append("(_DATA LIKE ?)");
-                selectionArgsList.add("%." + ext);
-            }
-            selection.append(")");
-
-            // Internal + SD paths
-            String internalPath = Environment.getExternalStorageDirectory().getPath();
-            selection.append(" AND (");
-            selection.append("_DATA LIKE ?");
-            selectionArgsList.add(internalPath + "/%");
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                StorageManager sm = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
-                for (StorageVolume volume : sm.getStorageVolumes()) {
-                    File dir = volume.getDirectory();
-                    if (dir != null) {
-                        String path = dir.getAbsolutePath();
-                        selection.append(" OR _DATA LIKE ?");
-                        selectionArgsList.add(path + "/%");
-                    }
+    private List<String> getStorageRoots() {
+        List<String> roots = new ArrayList<>();
+        roots.add(Environment.getExternalStorageDirectory().getPath());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            StorageManager sm = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
+            for (StorageVolume volume : sm.getStorageVolumes()) {
+                File dir = volume.getDirectory();
+                if (dir != null) {
+                    roots.add(dir.getAbsolutePath());
                 }
             }
-
-            selection.append(")");
         }
-
-        // Apply search filter
-        if (filter != null && !filter.isEmpty()) {
-            String like = "%" + filter + "%";
-            selection = new StringBuilder(
-                    "(" + selection + " AND (TITLE LIKE ? OR ARTIST LIKE ? OR ALBUM LIKE ?))");
-            selectionArgsList.add(like);
-            selectionArgsList.add(like);
-            selectionArgsList.add(like);
-        }
-
-        String[] selectionArgs = selectionArgsList.toArray(new String[0]);
-
-        return getContentResolver().query(baseUri, AUDIO_PROJECTION, selection.toString(),
-                selectionArgs, MediaStore.Audio.Media.TITLE + " ASC");
+        return roots;
     }
 
     private static boolean isFlagSet(Cursor cursor, String column) {
@@ -345,10 +284,6 @@ public class RingdroidSelectActivity extends ComponentActivity {
         if (cursor != null) {
             cursor.close();
         }
-    }
-
-    private boolean moveToRow(Cursor c, int position) {
-        return c == mAdapter.getCursor() && !c.isClosed() && c.moveToPosition(position);
     }
 
     private void updateUiWithCursors(Cursor internal, Cursor external) {
@@ -456,7 +391,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
                 .setText(getString(R.string.version_label, BuildConfig.VERSION_NAME));
 
         int widthDp = 280;
-        PopupWindow popupWindow = createPopupWindow(popupBinding.getRoot(), widthDp);
+        PopupWindow popupWindow = Popups.create(popupBinding.getRoot(), widthDp);
 
         popupBinding.menuItemShowAll.setOnClickListener(v -> {
             mShowAll = !mShowAll;
@@ -466,29 +401,10 @@ public class RingdroidSelectActivity extends ComponentActivity {
 
         popupBinding.menuItemAbout.setOnClickListener(v -> {
             popupWindow.dismiss();
-            RingdroidEditActivity.onAbout(this);
+            AboutDialog.show(this);
         });
 
-        showPopupAlignedRight(popupWindow, anchor, widthDp, 8);
-    }
-
-    private PopupWindow createPopupWindow(View contentView, int widthDp) {
-        int width = (int) (widthDp * getResources().getDisplayMetrics().density);
-        PopupWindow popupWindow = new PopupWindow(contentView, width,
-                ViewGroup.LayoutParams.WRAP_CONTENT, true);
-        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setElevation(12 * getResources().getDisplayMetrics().density);
-        popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
-        return popupWindow;
-    }
-
-    private void showPopupAlignedRight(PopupWindow popup, View anchor, int widthDp, int yOffsetDp) {
-        int width = (int) (widthDp * getResources().getDisplayMetrics().density);
-        int xOffset = anchor.getWidth() - width
-                - (int) (8 * getResources().getDisplayMetrics().density);
-        int yOffset = (int) (yOffsetDp * getResources().getDisplayMetrics().density);
-        popup.showAsDropDown(anchor, xOffset, yOffset);
+        Popups.showAlignedRight(popupWindow, anchor, widthDp, 8);
     }
 
     private boolean isProtectedDir(String path) {
@@ -508,103 +424,47 @@ public class RingdroidSelectActivity extends ComponentActivity {
 
     private void showRowOptions(View anchor, int position) {
         Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed()) {
+        if (c == null || c.isClosed() || !c.moveToPosition(position)) {
             return;
         }
-        if (!c.moveToPosition(position)) {
-            return;
-        }
-
-        RowOptionsPopupBinding popupBinding = RowOptionsPopupBinding.inflate(getLayoutInflater());
-
         String title = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
-        popupBinding.rowMenuTitle.setText(title != null ? title : "");
-
-        String filename = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
-        boolean canDelete = !isProtectedDir(filename);
-
+        String path = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
         boolean isRingtone = isFlagSet(c, MediaStore.Audio.Media.IS_RINGTONE);
         boolean isNotification = isFlagSet(c, MediaStore.Audio.Media.IS_NOTIFICATION);
+        Uri uri = getUri();
 
-        int widthDp = 260;
-        PopupWindow popupWindow = createPopupWindow(popupBinding.getRoot(), widthDp);
+        RowOptionsPopup.show(anchor, title, isRingtone, isNotification, !isProtectedDir(path),
+                new RowOptionsPopup.Actions() {
+                    @Override
+                    public void onEdit() {
+                        if (path != null) {
+                            startRingdroidEditor(Uri.parse(path));
+                        }
+                    }
 
-        // Edit
-        popupBinding.menuItemEdit.setOnClickListener(v -> {
-            popupWindow.dismiss();
-            startRingdroidEditor(position);
-        });
+                    @Override
+                    public void onSetDefault() {
+                        RingdroidUtils.setDefaultRingTone(RingdroidSelectActivity.this,
+                                isRingtone
+                                        ? RingtoneManager.TYPE_RINGTONE
+                                        : RingtoneManager.TYPE_NOTIFICATION,
+                                uri, false);
+                    }
 
-        // Default Ringtone / Notification
-        if (isRingtone) {
-            popupBinding.menuItemDefault.setVisibility(View.VISIBLE);
-            popupBinding.menuDefaultIcon.setImageResource(R.drawable.baseline_call_24);
-            popupBinding.menuDefaultText.setText(R.string.context_menu_default_ringtone);
-            popupBinding.menuItemDefault.setOnClickListener(v -> {
-                popupWindow.dismiss();
-                if (moveToRow(c, position)) {
-                    setAsDefaultRingtoneOrNotification();
-                }
-            });
-        } else if (isNotification) {
-            popupBinding.menuItemDefault.setVisibility(View.VISIBLE);
-            popupBinding.menuDefaultIcon.setImageResource(R.drawable.baseline_notifications_24);
-            popupBinding.menuDefaultText.setText(R.string.context_menu_default_notification);
-            popupBinding.menuItemDefault.setOnClickListener(v -> {
-                popupWindow.dismiss();
-                if (moveToRow(c, position)) {
-                    setAsDefaultRingtoneOrNotification();
-                }
-            });
-        } else {
-            popupBinding.menuItemDefault.setVisibility(View.GONE);
-        }
+                    @Override
+                    public void onAssignContact() {
+                        try {
+                            mContactPicker.pick(uri);
+                        } catch (ActivityNotFoundException e) {
+                            Log.e(TAG, "Couldn't open the contact picker", e);
+                        }
+                    }
 
-        // Contact
-        if (isRingtone) {
-            popupBinding.menuItemContact.setVisibility(View.VISIBLE);
-            popupBinding.menuItemContact.setOnClickListener(v -> {
-                popupWindow.dismiss();
-                if (moveToRow(c, position)) {
-                    chooseContactForRingtone();
-                }
-            });
-        } else {
-            popupBinding.menuItemContact.setVisibility(View.GONE);
-        }
-
-        // Delete
-        if (canDelete) {
-            popupBinding.deleteDivider.setVisibility(View.VISIBLE);
-            popupBinding.menuItemDelete.setVisibility(View.VISIBLE);
-            popupBinding.menuItemDelete.setOnClickListener(v -> {
-                popupWindow.dismiss();
-                if (moveToRow(c, position)) {
-                    confirmDelete();
-                }
-            });
-        } else {
-            popupBinding.deleteDivider.setVisibility(View.GONE);
-            popupBinding.menuItemDelete.setVisibility(View.GONE);
-        }
-
-        showPopupAlignedRight(popupWindow, anchor, widthDp, 4);
-    }
-
-    private void setAsDefaultRingtoneOrNotification() {
-        Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed())
-            return;
-
-        // If the item is a ringtone then set the default ringtone,
-        // otherwise it has to be a notification so set the default notification sound
-        if (isFlagSet(c, MediaStore.Audio.Media.IS_RINGTONE)) {
-            RingdroidUtils.setDefaultRingTone(RingdroidSelectActivity.this,
-                    RingtoneManager.TYPE_RINGTONE, getUri(), false);
-        } else {
-            RingdroidUtils.setDefaultRingTone(RingdroidSelectActivity.this,
-                    RingtoneManager.TYPE_NOTIFICATION, getUri(), false);
-        }
+                    @Override
+                    public void onDelete() {
+                        mDeleter.delete(uri, path, title);
+                    }
+                });
     }
 
     private Uri getUri() {
@@ -618,118 +478,6 @@ public class RingdroidSelectActivity extends ComponentActivity {
                 ? MediaStore.Audio.Media.INTERNAL_CONTENT_URI
                 : MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         return ContentUris.withAppendedId(collection, id);
-    }
-
-    private void chooseContactForRingtone() {
-        Uri uri = getUri();
-        if (uri == null) {
-            return;
-        }
-        try {
-            mContactPicker.pick(uri);
-        } catch (ActivityNotFoundException e) {
-            Log.e(TAG, "Couldn't open the contact picker", e);
-        }
-    }
-
-    private void confirmDelete() {
-        Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed()) {
-            return;
-        }
-
-        if (isFinishing() || isDestroyed()) {
-            return;
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            onDelete();
-            return;
-        }
-
-        String title = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
-        DialogConfirmDeleteBinding dialogBinding = DialogConfirmDeleteBinding
-                .inflate(getLayoutInflater());
-
-        if (title != null && !title.isEmpty()) {
-            dialogBinding.deleteMessage.setText(getString(R.string.confirm_delete_message, title));
-        }
-
-        AlertDialog dialog = new AlertDialog.Builder(this).setView(dialogBinding.getRoot())
-                .setCancelable(true).create();
-
-        RingdroidUtils.setTransparentBackground(dialog);
-
-        dialogBinding.btnCancel.setOnClickListener(v -> dialog.dismiss());
-        dialogBinding.btnConfirmDelete.setOnClickListener(v -> {
-            dialog.dismiss();
-            onDelete();
-        });
-
-        dialog.show();
-    }
-
-    private void onDelete() {
-        Cursor c = mAdapter.getCursor();
-        if (c == null || c.isClosed())
-            return;
-
-        Uri contentUri = getUri();
-        if (contentUri == null) {
-            return;
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            try {
-                mDeleteLauncher.launch(new IntentSenderRequest.Builder(
-                        MediaStore.createDeleteRequest(getContentResolver(), List.of(contentUri)))
-                        .build());
-            } catch (IllegalArgumentException | SecurityException e) {
-                Log.e(TAG, "Failed to request delete of " + contentUri, e);
-                showDeleteFailed();
-            }
-            return;
-        }
-
-        // Legacy direct file delete (Android 9 and below)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            int dataIndex = c.getColumnIndex(MediaStore.Audio.Media.DATA);
-            if (dataIndex != -1) {
-                String filePath = c.getString(dataIndex);
-                if (filePath != null) {
-                    File file = new File(filePath);
-                    boolean status = file.delete();
-                    Log.d(TAG, "Delete file: " + file + " status: " + status);
-                }
-            }
-        }
-        deleteFromMediaStore(contentUri);
-    }
-
-    private void deleteFromMediaStore(Uri uri) {
-        try {
-            if (getContentResolver().delete(uri, null, null) == 0) {
-                showDeleteFailed();
-            } else {
-                refreshListView();
-            }
-        } catch (SecurityException e) {
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q
-                    && e instanceof RecoverableSecurityException) {
-                mPendingDeleteUri = uri;
-                mDeleteLauncher.launch(new IntentSenderRequest.Builder(
-                        ((RecoverableSecurityException) e).getUserAction().getActionIntent())
-                        .build());
-            } else {
-                showDeleteFailed();
-            }
-        } catch (IllegalArgumentException | IllegalStateException
-                | UnsupportedOperationException e) {
-            showDeleteFailed();
-        }
-    }
-
-    private void showDeleteFailed() {
-        Toast.makeText(this, R.string.delete_failed, Toast.LENGTH_SHORT).show();
     }
 
     private void showFinalAlert(CharSequence message) {

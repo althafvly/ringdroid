@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package com.ringdroid;
+package com.ringdroid.editor;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+import com.ringdroid.R;
+import com.ringdroid.soundfile.SoundFile;
+import com.ringdroid.soundfile.SoundRecorder;
+import com.ringdroid.util.ContactRingtonePicker;
+import com.ringdroid.util.PermissionUtils;
+import com.ringdroid.util.RingdroidUtils;
+
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.RingtoneManager;
@@ -30,35 +34,25 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.text.HtmlCompat;
 
-import com.ringdroid.databinding.AboutDialogBinding;
-import com.ringdroid.databinding.DialogAmplifyBinding;
 import com.ringdroid.databinding.DialogProgressBinding;
-import com.ringdroid.databinding.DialogProgressHorizontalBinding;
 import com.ringdroid.databinding.EditorBinding;
 import com.ringdroid.databinding.EditorToolbarBinding;
-import com.ringdroid.databinding.RecordAudioBinding;
-import com.ringdroid.soundfile.SoundFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,16 +70,12 @@ public class RingdroidEditActivity extends ComponentActivity
     private static final String TAG = "RingdroidEditActivity";
     private final ContactRingtonePicker mContactPicker = new ContactRingtonePicker(this,
             this::finish);
-    private long mLoadingLastUpdateTime;
     private volatile boolean mLoadingKeepGoing;
-    private long mRecordingLastUpdateTime;
     private volatile boolean mRecordingKeepGoing;
-    private double mRecordingTime;
     private volatile boolean mFinishActivity;
-    private TextView mTimerTextView;
-    private AlertDialog mAlertDialog;
+    private LoadingDialog mLoadingDialog;
+    private RecordingDialog mRecordingDialog;
     private AlertDialog mProgressDialog;
-    private ProgressBar mLoadingProgressBar;
     private SoundFile mSoundFile;
     private File mFile;
     private String mFilename;
@@ -222,24 +212,6 @@ public class RingdroidEditActivity extends ComponentActivity
                 }
             });
 
-    public static void onAbout(final Context context) {
-        AboutDialogBinding binding = AboutDialogBinding.inflate(LayoutInflater.from(context));
-        binding.aboutVersion
-                .setText(context.getString(R.string.version_label, BuildConfig.VERSION_NAME));
-
-        String html = context.getString(R.string.about_text_html);
-        binding.aboutText
-                .setText(HtmlCompat.fromHtml(html.trim(), HtmlCompat.FROM_HTML_MODE_LEGACY));
-        binding.aboutText.setMovementMethod(LinkMovementMethod.getInstance());
-
-        AlertDialog dialog = new AlertDialog.Builder(context).setView(binding.getRoot()).create();
-
-        RingdroidUtils.setTransparentBackground(dialog);
-
-        binding.buttonAboutOk.setOnClickListener(v -> dialog.dismiss());
-        dialog.show();
-    }
-
     /**
      * Called when the activity is first created.
      */
@@ -251,7 +223,6 @@ public class RingdroidEditActivity extends ComponentActivity
         mPlayer = null;
         mIsPlaying = false;
 
-        mAlertDialog = null;
         mProgressDialog = null;
 
         Intent intent = getIntent();
@@ -317,9 +288,11 @@ public class RingdroidEditActivity extends ComponentActivity
             mProgressDialog.dismiss();
             mProgressDialog = null;
         }
-        if (mAlertDialog != null) {
-            mAlertDialog.dismiss();
-            mAlertDialog = null;
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss();
+        }
+        if (mRecordingDialog != null) {
+            mRecordingDialog.dismiss();
         }
 
         if (mPlayer != null) {
@@ -746,64 +719,27 @@ public class RingdroidEditActivity extends ComponentActivity
         setTitle(titleLabel);
         updateToolbarTitle();
 
-        mLoadingLastUpdateTime = getCurrentTime();
         mLoadingKeepGoing = true;
         mFinishActivity = false;
-        DialogProgressHorizontalBinding progressBinding = DialogProgressHorizontalBinding
-                .inflate(getLayoutInflater());
-        mLoadingProgressBar = progressBinding.progressBar;
-        mLoadingProgressBar.setMax(100);
-        if (mTitle != null && !mTitle.isEmpty()) {
-            progressBinding.loadingSubtitle.setText(mTitle);
-            progressBinding.loadingSubtitle.setVisibility(View.VISIBLE);
-        } else {
-            progressBinding.loadingSubtitle.setVisibility(View.GONE);
-        }
-
-        mProgressDialog = new AlertDialog.Builder(this).setView(progressBinding.getRoot())
-                .setCancelable(true).setOnCancelListener(dialog -> {
-                    mLoadingKeepGoing = false;
-                    mFinishActivity = true;
-                }).create();
-        RingdroidUtils.setTransparentBackground(mProgressDialog);
-        mProgressDialog.setCanceledOnTouchOutside(false);
-
-        progressBinding.btnCancel.setOnClickListener(v -> {
+        LoadingDialog loadingDialog = new LoadingDialog(this, mTitle, () -> {
             mLoadingKeepGoing = false;
             mFinishActivity = true;
-            if (mProgressDialog != null) {
-                mProgressDialog.dismiss();
-            }
         });
-
+        mLoadingDialog = loadingDialog;
         if (!isFinishing() && !isDestroyed()) {
-            mProgressDialog.show();
+            loadingDialog.show();
         }
 
-        final SoundFile.ProgressListener listener = fractionComplete -> {
-            long now = getCurrentTime();
-            if (now - mLoadingLastUpdateTime > 100) {
-                if (mLoadingProgressBar != null) {
-                    int progress = (int) (fractionComplete * 100);
-                    mLoadingProgressBar.setProgress(progress);
-                    runOnUiThread(() -> {
-                        if (progressBinding.progressPercentageText != null) {
-                            progressBinding.progressPercentageText
-                                    .setText(getString(R.string.progress_percentage, progress));
-                        }
-                    });
-                }
-                mLoadingLastUpdateTime = now;
-            }
+        final SoundFile.ProgressListener listener = fraction -> {
+            loadingDialog.setProgress(fraction);
             return !mLoadingKeepGoing;
         };
 
-        final AlertDialog progressDialog = mProgressDialog;
         RingdroidUtils.BACKGROUND.execute(() -> {
             SoundFile soundFile = null;
             try {
                 soundFile = SoundFile.create(getCacheDir(), mFile.getAbsolutePath(), listener);
-                progressDialog.dismiss();
+                loadingDialog.dismiss();
                 if (soundFile == null) {
                     if (mLoadingKeepGoing) {
                         String name = mFile.getName().toLowerCase(Locale.ROOT);
@@ -832,7 +768,7 @@ public class RingdroidEditActivity extends ComponentActivity
                 if (soundFile != null) {
                     soundFile.release();
                 }
-                progressDialog.dismiss();
+                loadingDialog.dismiss();
                 postError(e, R.string.read_error);
                 return;
             }
@@ -847,69 +783,28 @@ public class RingdroidEditActivity extends ComponentActivity
         mTitle = null;
         mArtist = null;
 
-        mRecordingLastUpdateTime = getCurrentTime();
         mRecordingKeepGoing = true;
         mFinishActivity = false;
-        AlertDialog.Builder adBuilder = new AlertDialog.Builder(RingdroidEditActivity.this);
-        adBuilder.setCancelable(true);
-        adBuilder.setOnCancelListener(dialog -> {
-            mRecordingKeepGoing = false;
-            mFinishActivity = true;
-        });
-
-        RecordAudioBinding recordBinding = RecordAudioBinding.inflate(getLayoutInflater());
-        adBuilder.setView(recordBinding.getRoot());
-        if (!isFinishing() && !isDestroyed()) {
-            mAlertDialog = adBuilder.create();
-            RingdroidUtils.setTransparentBackground(mAlertDialog);
-            mAlertDialog.show();
-        } else {
+        if (isFinishing() || isDestroyed()) {
             return;
         }
-
-        final ObjectAnimator pulseAnim = ObjectAnimator.ofFloat(recordBinding.recordingDot, "alpha",
-                1.0f, 0.2f);
-        pulseAnim.setDuration(750);
-        pulseAnim.setRepeatCount(ValueAnimator.INFINITE);
-        pulseAnim.setRepeatMode(ValueAnimator.REVERSE);
-        pulseAnim.start();
-
-        mAlertDialog.setOnDismissListener(dialog -> pulseAnim.cancel());
-
-        recordBinding.recordCancel.setOnClickListener(view -> {
-            mRecordingKeepGoing = false;
-            mFinishActivity = true;
-            mAlertDialog.dismiss();
-        });
-
-        recordBinding.recordStop.setOnClickListener(view -> {
-            mRecordingKeepGoing = false;
-            mAlertDialog.dismiss();
-        });
-
-        mTimerTextView = recordBinding.recordAudioTimer;
-
-        final SoundFile.ProgressListener listener = elapsedTime -> {
-            long now = getCurrentTime();
-            if (now - mRecordingLastUpdateTime > 5) {
-                mRecordingTime = elapsedTime;
-                // Only UI thread can update Views such as TextViews.
-                runOnUiThread(() -> {
-                    int min = (int) (mRecordingTime / 60);
-                    float sec = (float) (mRecordingTime - 60 * min);
-                    mTimerTextView
-                            .setText(String.format(Locale.getDefault(), "%d:%05.2f", min, sec));
+        RecordingDialog recordDialog = new RecordingDialog(this, () -> mRecordingKeepGoing = false,
+                () -> {
+                    mRecordingKeepGoing = false;
+                    mFinishActivity = true;
                 });
-                mRecordingLastUpdateTime = now;
-            }
+        mRecordingDialog = recordDialog;
+        recordDialog.show();
+
+        final SoundFile.ProgressListener listener = elapsedSeconds -> {
+            recordDialog.setElapsedSeconds(elapsedSeconds);
             return !mRecordingKeepGoing;
         };
 
-        final AlertDialog recordDialog = mAlertDialog;
         RingdroidUtils.BACKGROUND.execute(() -> {
             SoundFile soundFile = null;
             try {
-                soundFile = SoundFile.record(listener);
+                soundFile = SoundRecorder.record(listener);
                 if (soundFile == null) {
                     recordDialog.dismiss();
                     postError(null, R.string.record_error);
@@ -1364,48 +1259,7 @@ public class RingdroidEditActivity extends ComponentActivity
     }
 
     private void onAmplify() {
-        DialogAmplifyBinding amplifyBinding = DialogAmplifyBinding.inflate(getLayoutInflater());
-        int currentProgress = (int) (mAmplifyFactor * 100);
-        if (currentProgress < 10) {
-            currentProgress = 10;
-        }
-        amplifyBinding.amplifySeekbar.setProgress(currentProgress);
-        amplifyBinding.amplifyPercentageText
-                .setText(String.format(Locale.getDefault(), "%d%%", currentProgress));
-
-        AlertDialog dialog = new AlertDialog.Builder(this).setView(amplifyBinding.getRoot())
-                .setCancelable(true).create();
-
-        RingdroidUtils.setTransparentBackground(dialog);
-
-        amplifyBinding.amplifySeekbar
-                .setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        if (progress < 10) {
-                            seekBar.setProgress(10);
-                            progress = 10;
-                        }
-                        amplifyBinding.amplifyPercentageText
-                                .setText(String.format(Locale.getDefault(), "%d%%", progress));
-                    }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-                    }
-                });
-
-        amplifyBinding.btnCancel.setOnClickListener(v -> dialog.dismiss());
-        amplifyBinding.btnApply.setOnClickListener(v -> {
-            mAmplifyFactor = amplifyBinding.amplifySeekbar.getProgress() / 100.0f;
-            dialog.dismiss();
-        });
-
-        dialog.show();
+        AmplifyDialog.show(this, mAmplifyFactor, factor -> mAmplifyFactor = factor);
     }
 
     /**

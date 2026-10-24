@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package com.ringdroid;
+package com.ringdroid.editor;
+
+import com.ringdroid.R;
+import com.ringdroid.util.RingdroidUtils;
 
 import android.app.AlertDialog;
 import android.content.Context;

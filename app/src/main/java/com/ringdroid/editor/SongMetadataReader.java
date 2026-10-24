@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ringdroid;
+package com.ringdroid.editor;
 
 import android.media.MediaMetadataRetriever;
 import android.util.Log;

@@ -16,13 +16,9 @@
 
 package com.ringdroid.soundfile;
 
-import android.annotation.SuppressLint;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
 import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
-import android.media.MediaRecorder;
 import android.util.Log;
 
 import java.io.File;
@@ -130,17 +126,17 @@ public class SoundFile {
         }
     }
 
-    // Create and return a SoundFile object by recording a mono audio stream.
-    public static SoundFile record(ProgressListener progressListener) {
-        if (progressListener == null) {
-            // must have a progessListener to stop the recording.
-            return null;
-        }
+    // Wraps mono 16-bit little-endian PCM recorded from the microphone.
+    static SoundFile fromRecording(ByteBuffer pcm, int sampleRate, int numSamples) {
         SoundFile soundFile = new SoundFile();
-        soundFile.setProgressListener(progressListener);
-        if (!soundFile.recordAudio()) {
-            return null;
-        }
+        soundFile.mFileType = "raw";
+        soundFile.mSampleRate = sampleRate;
+        soundFile.mChannels = 1;
+        soundFile.mNumSamples = numSamples;
+        soundFile.mAvgBitRate = sampleRate * 16 / 1000;
+        soundFile.mDecodedBytes = pcm.order(ByteOrder.LITTLE_ENDIAN);
+        soundFile.mDecodedSamples = soundFile.mDecodedBytes.asShortBuffer();
+        soundFile.computeFrameGains();
         return soundFile;
     }
 
@@ -444,93 +440,6 @@ public class SoundFile {
                 codec.release();
             }
             extractor.release();
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private boolean recordAudio() {
-        if (mProgressListener == null) {
-            // A progress listener is mandatory here, as it will let us know when to stop
-            // recording.
-            return false;
-        }
-        mInputFile = null;
-        mFileType = "raw";
-        mFileSize = 0;
-        mSampleRate = 44100;
-        mChannels = 1; // record mono audio.
-        int minBufferSize = AudioRecord.getMinBufferSize(mSampleRate, AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT);
-        // make sure minBufferSize can contain at least 1 second of audio (16 bits
-        // sample).
-        if (minBufferSize < mSampleRate * 2) {
-            minBufferSize = mSampleRate * 2;
-        }
-        AudioRecord audioRecord = new AudioRecord(MediaRecorder.AudioSource.DEFAULT, mSampleRate,
-                AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, minBufferSize);
-        if (audioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
-            audioRecord.release();
-            return false;
-        }
-
-        // Allocate memory for 20 seconds first. Reallocate later if more is needed.
-        mDecodedBytes = ByteBuffer.allocate(20 * mSampleRate * 2);
-        mDecodedBytes.order(ByteOrder.LITTLE_ENDIAN);
-        mDecodedSamples = mDecodedBytes.asShortBuffer();
-        try {
-            audioRecord.startRecording();
-            recordLoop(audioRecord);
-        } finally {
-            try {
-                audioRecord.stop();
-            } catch (IllegalStateException ignored) {
-            }
-            audioRecord.release();
-        }
-        mNumSamples = mDecodedSamples.position();
-        mDecodedSamples.rewind();
-        mDecodedBytes.rewind();
-        mAvgBitRate = mSampleRate * 16 / 1000;
-
-        computeFrameGains();
-        return true;
-    }
-
-    private void recordLoop(AudioRecord audioRecord) {
-        short[] buffer = new short[1024]; // 1 mono frame of 1024 16-bit samples
-        while (true) {
-            // check if mDecodedSamples can contain 1024 additional samples.
-            if (mDecodedSamples.remaining() < 1024) {
-                // Try to allocate memory for 10 additional seconds.
-                int newCapacity = mDecodedBytes.capacity() + 10 * mSampleRate * 2;
-                ByteBuffer newDecodedBytes;
-                try {
-                    newDecodedBytes = ByteBuffer.allocate(newCapacity);
-                } catch (OutOfMemoryError oome) {
-                    break;
-                }
-                int position = mDecodedSamples.position();
-                mDecodedBytes.rewind();
-                newDecodedBytes.put(mDecodedBytes);
-                mDecodedBytes = newDecodedBytes;
-                mDecodedBytes.order(ByteOrder.LITTLE_ENDIAN);
-                mDecodedBytes.rewind();
-                mDecodedSamples = mDecodedBytes.asShortBuffer();
-                mDecodedSamples.position(position);
-            }
-            // TODO(nfaralli): maybe use the read method that takes a direct ByteBuffer
-            // argument.
-            int numRead = audioRecord.read(buffer, 0, buffer.length);
-            if (numRead < 0) {
-                break;
-            }
-            mDecodedSamples.put(buffer, 0, numRead);
-            // Let the progress listener know how many seconds have been recorded.
-            // The returned value tells us if we should keep recording or stop.
-            if (mProgressListener
-                    .reportProgress((float) (mDecodedSamples.position()) / mSampleRate)) {
-                break;
-            }
         }
     }
 

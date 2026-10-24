@@ -1,4 +1,9 @@
-package com.ringdroid;
+package com.ringdroid.editor;
+
+import com.ringdroid.R;
+import com.ringdroid.soundfile.SoundFile;
+import com.ringdroid.soundfile.SoundFileWriter;
+import com.ringdroid.util.RingdroidUtils;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -10,9 +15,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
-
-import com.ringdroid.soundfile.SoundFile;
-import com.ringdroid.soundfile.SoundFileWriter;
 
 import java.io.File;
 import java.io.IOException;

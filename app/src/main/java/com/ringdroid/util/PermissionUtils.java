@@ -1,4 +1,4 @@
-package com.ringdroid;
+package com.ringdroid.util;
 
 import android.Manifest;
 import android.content.Context;

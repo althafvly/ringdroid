@@ -1,4 +1,6 @@
-package com.ringdroid;
+package com.ringdroid.util;
+
+import com.ringdroid.R;
 
 import android.Manifest;
 import android.content.ContentUris;
@@ -18,7 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
  * Lets the user pick a contact with the system contact picker and assigns a ringtone to it. Must be
  * created while the activity is being initialized.
  */
-final class ContactRingtonePicker {
+public final class ContactRingtonePicker {
     private static final String TAG = "ContactRingtonePicker";
     private final ComponentActivity mActivity;
     private final Runnable mOnDone;
@@ -26,7 +28,7 @@ final class ContactRingtonePicker {
     private final ActivityResultLauncher<String> mPermissionLauncher;
     private Uri mRingtoneUri;
 
-    ContactRingtonePicker(ComponentActivity activity, Runnable onDone) {
+    public ContactRingtonePicker(ComponentActivity activity, Runnable onDone) {
         mActivity = activity;
         mOnDone = onDone;
         mPickLauncher = activity.registerForActivityResult(
@@ -43,7 +45,7 @@ final class ContactRingtonePicker {
                 });
     }
 
-    void pick(Uri ringtoneUri) {
+    public void pick(Uri ringtoneUri) {
         mRingtoneUri = ringtoneUri;
         if (mActivity.checkSelfPermission(
                 Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED) {

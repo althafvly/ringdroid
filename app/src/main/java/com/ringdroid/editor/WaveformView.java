@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package com.ringdroid;
+package com.ringdroid.editor;
+
+import com.ringdroid.R;
+import com.ringdroid.soundfile.SoundFile;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -28,8 +31,6 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import androidx.core.content.ContextCompat;
-
-import com.ringdroid.soundfile.SoundFile;
 
 /**
  * WaveformView is an Android view that displays a visual representation of an audio waveform. It
@@ -60,12 +61,9 @@ public class WaveformView extends View {
     private final GestureDetector mGestureDetector;
     private final ScaleGestureDetector mScaleGestureDetector;
     private SoundFile mSoundFile;
-    private int[] mLenByZoomLevel;
-    private double[][] mValuesByZoomLevel;
-    private double[] mZoomFactorByZoomLevel;
+    private WaveformData mData;
     private int[] mHeightsAtThisZoomLevel;
     private int mZoomLevel;
-    private int mNumZoomLevels;
     private int mSampleRate;
     private int mSamplesPerFrame;
     private int mOffset;
@@ -147,8 +145,6 @@ public class WaveformView extends View {
                 });
 
         mSoundFile = null;
-        mLenByZoomLevel = null;
-        mValuesByZoomLevel = null;
         mHeightsAtThisZoomLevel = null;
         mOffset = 0;
         mPlaybackPos = -1;
@@ -195,7 +191,9 @@ public class WaveformView extends View {
         if (soundFile != null) {
             mSampleRate = mSoundFile.getSampleRate();
             mSamplesPerFrame = mSoundFile.getSamplesPerFrame();
-            computeDoublesForAllZoomLevels();
+            mData = new WaveformData(soundFile.getFrameGains());
+            mZoomLevel = mData.getInitialZoomLevel();
+            mInitialized = true;
         }
         mHeightsAtThisZoomLevel = null;
     }
@@ -237,7 +235,7 @@ public class WaveformView extends View {
     }
 
     public boolean canZoomOut() {
-        return (mZoomLevel < mNumZoomLevels - 1);
+        return mData != null && mZoomLevel < WaveformData.NUM_ZOOM_LEVELS - 1;
     }
 
     public void zoomOut() {
@@ -256,10 +254,7 @@ public class WaveformView extends View {
     }
 
     public int maxPos() {
-        if (mLenByZoomLevel == null) {
-            return 0;
-        }
-        return mLenByZoomLevel[mZoomLevel];
+        return mData != null ? mData.getLength(mZoomLevel) : 0;
     }
 
     public int secondsToFrames(double seconds) {
@@ -267,34 +262,34 @@ public class WaveformView extends View {
     }
 
     public int secondsToPixels(double seconds) {
-        if (mZoomFactorByZoomLevel == null) {
+        if (mData == null) {
             return 0;
         }
-        double z = mZoomFactorByZoomLevel[mZoomLevel];
+        double z = mData.getZoomFactor(mZoomLevel);
         return (int) (z * seconds * mSampleRate / mSamplesPerFrame + 0.5);
     }
 
     public double pixelsToSeconds(int pixels) {
-        if (mZoomFactorByZoomLevel == null) {
+        if (mData == null) {
             return 0.0;
         }
-        double z = mZoomFactorByZoomLevel[mZoomLevel];
+        double z = mData.getZoomFactor(mZoomLevel);
         return (pixels * (double) mSamplesPerFrame / (mSampleRate * z));
     }
 
     public int millisecsToPixels(int msecs) {
-        if (mZoomFactorByZoomLevel == null) {
+        if (mData == null) {
             return 0;
         }
-        double z = mZoomFactorByZoomLevel[mZoomLevel];
+        double z = mData.getZoomFactor(mZoomLevel);
         return (int) ((msecs * 1.0 * mSampleRate * z) / (1000.0 * mSamplesPerFrame) + 0.5);
     }
 
     public int pixelsToMillisecs(int pixels) {
-        if (mZoomFactorByZoomLevel == null) {
+        if (mData == null) {
             return 0;
         }
-        double z = mZoomFactorByZoomLevel[mZoomLevel];
+        double z = mData.getZoomFactor(mZoomLevel);
         return (int) (pixels * (1000.0 * mSamplesPerFrame) / (mSampleRate * z) + 0.5);
     }
 
@@ -438,141 +433,15 @@ public class WaveformView extends View {
     }
 
     /**
-     * Called once when a new sound file is added
-     */
-    private void computeDoublesForAllZoomLevels() {
-        int numFrames = mSoundFile.getNumFrames();
-        int[] frameGains = mSoundFile.getFrameGains();
-        double[] smoothedGains = new double[numFrames];
-        if (numFrames == 1) {
-            smoothedGains[0] = frameGains[0];
-        } else if (numFrames == 2) {
-            smoothedGains[0] = frameGains[0];
-            smoothedGains[1] = frameGains[1];
-        } else if (numFrames > 2) {
-            smoothedGains[0] = (frameGains[0] / 2.0) + (frameGains[1] / 2.0);
-            for (int i = 1; i < numFrames - 1; i++) {
-                smoothedGains[i] = (frameGains[i - 1] / 3.0) + (frameGains[i] / 3.0)
-                        + (frameGains[i + 1] / 3.0);
-            }
-            smoothedGains[numFrames - 1] = (frameGains[numFrames - 2] / 2.0)
-                    + (frameGains[numFrames - 1] / 2.0);
-        }
-
-        // Make sure the range is no more than 0 - 255
-        double maxGain = 1.0;
-        for (int i = 0; i < numFrames; i++) {
-            if (smoothedGains[i] > maxGain) {
-                maxGain = smoothedGains[i];
-            }
-        }
-        double scaleFactor = 1.0;
-        if (maxGain > 255.0) {
-            scaleFactor = 255 / maxGain;
-        }
-
-        // Build histogram of 256 bins and figure out the new scaled max
-        maxGain = 0;
-        int[] gainHist = new int[256];
-        for (int i = 0; i < numFrames; i++) {
-            int smoothedGain = (int) (smoothedGains[i] * scaleFactor);
-            if (smoothedGain < 0)
-                smoothedGain = 0;
-            if (smoothedGain > 255)
-                smoothedGain = 255;
-
-            if (smoothedGain > maxGain)
-                maxGain = smoothedGain;
-
-            gainHist[smoothedGain]++;
-        }
-
-        // Re-calibrate the min to be 5%
-        double minGain = 0;
-        int sum = 0;
-        while (minGain < 255 && sum < numFrames / 20) {
-            sum += gainHist[(int) minGain];
-            minGain++;
-        }
-
-        // Re-calibrate the max to be 99%
-        sum = 0;
-        while (maxGain > 2 && sum < numFrames / 100) {
-            sum += gainHist[(int) maxGain];
-            maxGain--;
-        }
-
-        // Compute the heights
-        double[] heights = new double[numFrames];
-        double range = maxGain - minGain;
-        for (int i = 0; i < numFrames; i++) {
-            double scaledGain = smoothedGains[i] * scaleFactor;
-            // With no range (constant level) draw sound at full height and silence flat.
-            double value = range > 0 ? (scaledGain - minGain) / range : (scaledGain > 0 ? 1 : 0);
-            if (value < 0.0)
-                value = 0.0;
-            if (value > 1.0)
-                value = 1.0;
-            heights[i] = value * value;
-        }
-
-        mNumZoomLevels = 5;
-        mLenByZoomLevel = new int[5];
-        mZoomFactorByZoomLevel = new double[5];
-        mValuesByZoomLevel = new double[5][];
-
-        // Level 0 is doubled, with interpolated values
-        mLenByZoomLevel[0] = numFrames * 2;
-        mZoomFactorByZoomLevel[0] = 2.0;
-        mValuesByZoomLevel[0] = new double[mLenByZoomLevel[0]];
-        if (numFrames > 0) {
-            mValuesByZoomLevel[0][0] = 0.5 * heights[0];
-            mValuesByZoomLevel[0][1] = heights[0];
-        }
-        for (int i = 1; i < numFrames; i++) {
-            mValuesByZoomLevel[0][2 * i] = 0.5 * (heights[i - 1] + heights[i]);
-            mValuesByZoomLevel[0][2 * i + 1] = heights[i];
-        }
-
-        // Level 1 is normal
-        mLenByZoomLevel[1] = numFrames;
-        mValuesByZoomLevel[1] = new double[mLenByZoomLevel[1]];
-        mZoomFactorByZoomLevel[1] = 1.0;
-        System.arraycopy(heights, 0, mValuesByZoomLevel[1], 0, mLenByZoomLevel[1]);
-
-        // 3 more levels are each halved
-        for (int j = 2; j < 5; j++) {
-            mLenByZoomLevel[j] = mLenByZoomLevel[j - 1] / 2;
-            mValuesByZoomLevel[j] = new double[mLenByZoomLevel[j]];
-            mZoomFactorByZoomLevel[j] = mZoomFactorByZoomLevel[j - 1] / 2.0;
-            for (int i = 0; i < mLenByZoomLevel[j]; i++) {
-                mValuesByZoomLevel[j][i] = 0.5
-                        * (mValuesByZoomLevel[j - 1][2 * i] + mValuesByZoomLevel[j - 1][2 * i + 1]);
-            }
-        }
-
-        if (numFrames > 5000) {
-            mZoomLevel = 3;
-        } else if (numFrames > 1000) {
-            mZoomLevel = 2;
-        } else if (numFrames > 300) {
-            mZoomLevel = 1;
-        } else {
-            mZoomLevel = 0;
-        }
-
-        mInitialized = true;
-    }
-
-    /**
      * Called the first time we need to draw when the zoom level has changed or the screen is
      * resized
      */
     private void computeIntsForThisZoomLevel() {
         int halfHeight = (getMeasuredHeight() / 2) - 1;
-        mHeightsAtThisZoomLevel = new int[mLenByZoomLevel[mZoomLevel]];
-        for (int i = 0; i < mLenByZoomLevel[mZoomLevel]; i++) {
-            mHeightsAtThisZoomLevel[i] = (int) (mValuesByZoomLevel[mZoomLevel][i] * halfHeight);
+        double[] values = mData.getValues(mZoomLevel);
+        mHeightsAtThisZoomLevel = new int[values.length];
+        for (int i = 0; i < values.length; i++) {
+            mHeightsAtThisZoomLevel[i] = (int) (values[i] * halfHeight);
         }
     }
 

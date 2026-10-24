@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.ringdroid;
+package com.ringdroid.editor;
+
+import com.ringdroid.util.RingdroidUtils;
 
 import java.util.function.IntConsumer;
 

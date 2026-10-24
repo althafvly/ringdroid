@@ -211,23 +211,6 @@ public class SoundFileTest {
 
     // --- 3. Audio Recording ---
 
-    @Test
-    public void testRecordAudioNullListener() {
-        SoundFile soundFile = SoundFile.record(null);
-        assertNull("Should return null if progress listener is missing", soundFile);
-    }
-
-    @Test
-    public void testRecordAudioCancellation() {
-        // Record and cancel immediately
-        SoundFile.ProgressListener listener = fractionComplete -> true; // stop immediately
-        SoundFile soundFile = SoundFile.record(listener);
-        // Null when the microphone is unavailable or the permission is missing.
-        if (soundFile != null) {
-            assertEquals("raw", soundFile.getFiletype());
-        }
-    }
-
     // --- 4. File Writing Operations ---
 
     @Test

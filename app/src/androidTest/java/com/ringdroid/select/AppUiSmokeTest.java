@@ -1,4 +1,6 @@
-package com.ringdroid;
+package com.ringdroid.select;
+
+import com.ringdroid.R;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

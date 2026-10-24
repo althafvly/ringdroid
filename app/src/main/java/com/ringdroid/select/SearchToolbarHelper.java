@@ -1,4 +1,6 @@
-package com.ringdroid;
+package com.ringdroid.select;
+
+import com.ringdroid.util.RingdroidUtils;
 
 import android.text.Editable;
 import android.text.TextWatcher;

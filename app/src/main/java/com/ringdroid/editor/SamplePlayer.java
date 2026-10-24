@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.ringdroid;
+package com.ringdroid.editor;
+
+import com.ringdroid.soundfile.SoundFile;
 
 import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioTrack;
-
-import com.ringdroid.soundfile.SoundFile;
 
 import java.nio.ShortBuffer;
 

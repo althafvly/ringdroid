@@ -30,20 +30,20 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <com.ringdroid.WaveformView
+        <com.ringdroid.editor.WaveformView
             android:id="@+id/waveform"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/waveform_description" />
 
-        <com.ringdroid.MarkerView
+        <com.ringdroid.editor.MarkerView
             android:id="@+id/startmarker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/start_marker"
             android:src="@drawable/marker_left" />
 
-        <com.ringdroid.MarkerView
+        <com.ringdroid.editor.MarkerView
             android:id="@+id/endmarker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

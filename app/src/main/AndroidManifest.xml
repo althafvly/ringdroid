@@ -54,14 +54,10 @@
 
         <!-- Main activity that's launched when the user opens Ringdroid. -->
         <activity
-            android:name=".RingdroidSelectActivity"
+            android:name=".select.RingdroidSelectActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:exported="true"
             android:label="@string/main_activity_label">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
                 <action android:name="android.intent.action.VIEW" />
@@ -75,12 +71,23 @@
 
         </activity>
 
+        <!-- Keeps the original launcher component name so existing shortcuts keep working. -->
+        <activity-alias
+            android:name=".RingdroidSelectActivity"
+            android:exported="true"
+            android:targetActivity=".select.RingdroidSelectActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
         <!-- Activity for actually editing a particular audio file.
         Controls viewing the waveform, setting the start and end
         positions, playback, and triggering saving of the output
         file. -->
         <activity
-            android:name=".RingdroidEditActivity"
+            android:name=".editor.RingdroidEditActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:exported="true"
             android:hardwareAccelerated="true"

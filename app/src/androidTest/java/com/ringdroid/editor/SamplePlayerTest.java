@@ -1,4 +1,4 @@
-package com.ringdroid;
+package com.ringdroid.editor;
 
 import static org.junit.Assert.assertTrue;
 
