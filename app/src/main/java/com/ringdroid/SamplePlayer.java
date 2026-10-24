@@ -47,17 +47,24 @@ class SamplePlayer {
         mNumSamples = numSamples;
         mPlaybackStart = 0;
 
-        int channelMask = mChannels == 1
-                ? AudioFormat.CHANNEL_OUT_MONO
-                : AudioFormat.CHANNEL_OUT_STEREO;
-        int bufferSize = Math.max(AudioTrack.getMinBufferSize(mSampleRate, channelMask,
-                AudioFormat.ENCODING_PCM_16BIT), mChannels * mSampleRate * 2);
+        int channelMask = getChannelMask(mChannels);
+        int bufferSize = mChannels * mSampleRate * 2;
+        if (channelMask != AudioFormat.CHANNEL_INVALID) {
+            bufferSize = Math.max(AudioTrack.getMinBufferSize(mSampleRate, channelMask,
+                    AudioFormat.ENCODING_PCM_16BIT), bufferSize);
+        }
         mBuffer = new short[bufferSize / 2]; // bufferSize is in Bytes.
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build();
-        AudioFormat audioFormat = new AudioFormat.Builder().setSampleRate(mSampleRate)
-                .setEncoding(AudioFormat.ENCODING_PCM_16BIT).setChannelMask(channelMask).build();
+        AudioFormat.Builder formatBuilder = new AudioFormat.Builder().setSampleRate(mSampleRate)
+                .setEncoding(AudioFormat.ENCODING_PCM_16BIT);
+        if (channelMask != AudioFormat.CHANNEL_INVALID) {
+            formatBuilder.setChannelMask(channelMask);
+        } else {
+            formatBuilder.setChannelIndexMask((1 << mChannels) - 1);
+        }
+        AudioFormat audioFormat = formatBuilder.build();
 
         mAudioTrack = new AudioTrack.Builder().setAudioAttributes(audioAttributes)
                 .setAudioFormat(audioFormat).setTransferMode(AudioTrack.MODE_STREAM)
@@ -83,6 +90,24 @@ class SamplePlayer {
         mPlayThread = null;
         mKeepPlaying = true;
         mListener = null;
+    }
+
+    // Positional masks let AudioTrack downmix to the device's outputs.
+    private static int getChannelMask(int channels) {
+        switch (channels) {
+            case 1 :
+                return AudioFormat.CHANNEL_OUT_MONO;
+            case 2 :
+                return AudioFormat.CHANNEL_OUT_STEREO;
+            case 4 :
+                return AudioFormat.CHANNEL_OUT_QUAD;
+            case 6 :
+                return AudioFormat.CHANNEL_OUT_5POINT1;
+            case 8 :
+                return AudioFormat.CHANNEL_OUT_7POINT1_SURROUND;
+            default :
+                return AudioFormat.CHANNEL_INVALID;
+        }
     }
 
     public SamplePlayer(SoundFile sf) {

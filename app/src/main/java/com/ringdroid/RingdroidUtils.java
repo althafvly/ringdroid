@@ -1,5 +1,10 @@
 package com.ringdroid;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.view.Window;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.media.RingtoneManager;
@@ -58,6 +63,13 @@ public class RingdroidUtils {
 
         if (shouldFinish) {
             activity.finish();
+        }
+    }
+
+    public static void setTransparentBackground(Dialog dialog) {
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
     }
 

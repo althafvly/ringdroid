@@ -123,8 +123,6 @@
 
     <string name="menu_amplify">Wzmocnij</string>
     <string name="icon_media">Multimedia</string>
-    <string name="icon_ringtone">Dzwonek</string>
-    <string name="icon_starred">Oznaczone gwiazdką</string>
     <string name="waveform_description">Przebieg audio</string>
     <string name="confirm_delete_message">Usunąć ten plik audio?\n\n„%1$s”</string>
     <string name="amplify_description">Dostosuj głośność dźwięku</string>

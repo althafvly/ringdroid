@@ -16,12 +16,17 @@
 
 package com.ringdroid;
 
+import java.util.List;
+
+import androidx.activity.result.IntentSenderRequest;
+
+import android.app.RecoverableSecurityException;
+
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.MergeCursor;
@@ -84,6 +89,20 @@ public class RingdroidSelectActivity extends ComponentActivity {
     private final ActivityResultLauncher<Intent> mEditActivityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), this::onEditActivityResult);
     private SimpleCursorAdapter mAdapter;
+    private Uri mPendingDeleteUri;
+    private final ActivityResultLauncher<IntentSenderRequest> mDeleteLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartIntentSenderForResult(), result -> {
+                Uri pending = mPendingDeleteUri;
+                mPendingDeleteUri = null;
+                if (result.getResultCode() != RESULT_OK) {
+                    return;
+                }
+                if (pending != null) {
+                    deleteFromMediaStore(pending);
+                } else {
+                    refreshListView();
+                }
+            });
     private boolean mWasGetContentIntent;
     private boolean mShowAll = false;
     private final ContactRingtonePicker mContactPicker = new ContactRingtonePicker(this, () -> {
@@ -107,7 +126,9 @@ public class RingdroidSelectActivity extends ComponentActivity {
             mStoragePermissionLauncher.launch(PermissionUtils.getStoragePermission());
         }
 
-        handleIncoming(getIntent());
+        if (icicle == null) {
+            handleIncoming(getIntent());
+        }
 
         String status = Environment.getExternalStorageState();
         if (status.equals(Environment.MEDIA_MOUNTED_READ_ONLY)) {
@@ -307,6 +328,10 @@ public class RingdroidSelectActivity extends ComponentActivity {
                 selectionArgs, MediaStore.Audio.Media.TITLE + " ASC");
     }
 
+    private static boolean isFlagSet(Cursor cursor, String column) {
+        return cursor.getInt(cursor.getColumnIndexOrThrow(column)) != 0;
+    }
+
     private static void closeCursor(Cursor cursor) {
         if (cursor != null) {
             cursor.close();
@@ -355,22 +380,19 @@ public class RingdroidSelectActivity extends ComponentActivity {
         int iconColor = ContextCompat.getColor(this, R.color.category_icon_music);
         int containerColor = ContextCompat.getColor(this, R.color.category_container_music);
 
-        if (0 != cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE))) {
+        if (isFlagSet(cursor, MediaStore.Audio.Media.IS_RINGTONE)) {
             iconRes = R.drawable.baseline_call_24;
             iconColor = ContextCompat.getColor(this, R.color.category_icon_ringtone);
             containerColor = ContextCompat.getColor(this, R.color.category_container_ringtone);
-        } else if (0 != cursor
-                .getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_ALARM))) {
+        } else if (isFlagSet(cursor, MediaStore.Audio.Media.IS_ALARM)) {
             iconRes = R.drawable.baseline_access_alarm_24;
             iconColor = ContextCompat.getColor(this, R.color.category_icon_alarm);
             containerColor = ContextCompat.getColor(this, R.color.category_container_alarm);
-        } else if (0 != cursor
-                .getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_NOTIFICATION))) {
+        } else if (isFlagSet(cursor, MediaStore.Audio.Media.IS_NOTIFICATION)) {
             iconRes = R.drawable.baseline_notifications_24;
             iconColor = ContextCompat.getColor(this, R.color.category_icon_notification);
             containerColor = ContextCompat.getColor(this, R.color.category_container_notification);
-        } else if (0 != cursor
-                .getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_MUSIC))) {
+        } else if (isFlagSet(cursor, MediaStore.Audio.Media.IS_MUSIC)) {
             iconRes = R.drawable.baseline_music_note_24;
             iconColor = ContextCompat.getColor(this, R.color.category_icon_music);
             containerColor = ContextCompat.getColor(this, R.color.category_container_music);
@@ -421,13 +443,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
 
         popupBinding.switchShowAll.setChecked(mShowAll);
 
-        String versionName;
-        try {
-            versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            versionName = "3.1.0";
-        }
-        popupBinding.menuAboutVersion.setText(getString(R.string.version_label, versionName));
+        popupBinding.menuAboutVersion
+                .setText(getString(R.string.version_label, BuildConfig.VERSION_NAME));
 
         int widthDp = 280;
         PopupWindow popupWindow = createPopupWindow(popupBinding.getRoot(), widthDp);
@@ -497,9 +514,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
         String filename = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
         boolean canDelete = !isProtectedDir(filename);
 
-        int isRingtone = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE));
-        int isNotification = c
-                .getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_NOTIFICATION));
+        boolean isRingtone = isFlagSet(c, MediaStore.Audio.Media.IS_RINGTONE);
+        boolean isNotification = isFlagSet(c, MediaStore.Audio.Media.IS_NOTIFICATION);
 
         int widthDp = 260;
         PopupWindow popupWindow = createPopupWindow(popupBinding.getRoot(), widthDp);
@@ -511,7 +527,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
         });
 
         // Default Ringtone / Notification
-        if (isRingtone != 0) {
+        if (isRingtone) {
             popupBinding.menuItemDefault.setVisibility(View.VISIBLE);
             popupBinding.menuDefaultIcon.setImageResource(R.drawable.baseline_call_24);
             popupBinding.menuDefaultText.setText(R.string.context_menu_default_ringtone);
@@ -521,7 +537,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
                     setAsDefaultRingtoneOrNotification();
                 }
             });
-        } else if (isNotification != 0) {
+        } else if (isNotification) {
             popupBinding.menuItemDefault.setVisibility(View.VISIBLE);
             popupBinding.menuDefaultIcon.setImageResource(R.drawable.baseline_notifications_24);
             popupBinding.menuDefaultText.setText(R.string.context_menu_default_notification);
@@ -536,7 +552,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
         }
 
         // Contact
-        if (isRingtone != 0) {
+        if (isRingtone) {
             popupBinding.menuItemContact.setVisibility(View.VISIBLE);
             popupBinding.menuItemContact.setOnClickListener(v -> {
                 popupWindow.dismiss();
@@ -573,7 +589,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
 
         // If the item is a ringtone then set the default ringtone,
         // otherwise it has to be a notification so set the default notification sound
-        if (0 != c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE))) {
+        if (isFlagSet(c, MediaStore.Audio.Media.IS_RINGTONE)) {
             RingdroidUtils.setDefaultRingTone(RingdroidSelectActivity.this,
                     RingtoneManager.TYPE_RINGTONE, getUri(), false);
         } else {
@@ -616,6 +632,10 @@ public class RingdroidSelectActivity extends ComponentActivity {
         if (isFinishing() || isDestroyed()) {
             return;
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            onDelete();
+            return;
+        }
 
         String title = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
         DialogConfirmDeleteBinding dialogBinding = DialogConfirmDeleteBinding
@@ -628,9 +648,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
         AlertDialog dialog = new AlertDialog.Builder(this).setView(dialogBinding.getRoot())
                 .setCancelable(true).create();
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
+        RingdroidUtils.setTransparentBackground(dialog);
 
         dialogBinding.btnCancel.setOnClickListener(v -> dialog.dismiss());
         dialogBinding.btnConfirmDelete.setOnClickListener(v -> {
@@ -651,6 +669,18 @@ public class RingdroidSelectActivity extends ComponentActivity {
             return;
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            try {
+                mDeleteLauncher.launch(new IntentSenderRequest.Builder(
+                        MediaStore.createDeleteRequest(getContentResolver(), List.of(contentUri)))
+                        .build());
+            } catch (IllegalArgumentException | SecurityException e) {
+                Log.e(TAG, "Failed to request delete of " + contentUri, e);
+                showDeleteFailed();
+            }
+            return;
+        }
+
         // Legacy direct file delete (Android 9 and below)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             int dataIndex = c.getColumnIndex(MediaStore.Audio.Media.DATA);
@@ -663,17 +693,34 @@ public class RingdroidSelectActivity extends ComponentActivity {
                 }
             }
         }
+        deleteFromMediaStore(contentUri);
+    }
 
+    private void deleteFromMediaStore(Uri uri) {
         try {
-            if (getContentResolver().delete(contentUri, null, null) == 0) {
-                showFinalAlert(getResources().getText(R.string.delete_failed));
+            if (getContentResolver().delete(uri, null, null) == 0) {
+                showDeleteFailed();
             } else {
                 refreshListView();
             }
-        } catch (SecurityException | IllegalArgumentException | IllegalStateException
+        } catch (SecurityException e) {
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q
+                    && e instanceof RecoverableSecurityException) {
+                mPendingDeleteUri = uri;
+                mDeleteLauncher.launch(new IntentSenderRequest.Builder(
+                        ((RecoverableSecurityException) e).getUserAction().getActionIntent())
+                        .build());
+            } else {
+                showDeleteFailed();
+            }
+        } catch (IllegalArgumentException | IllegalStateException
                 | UnsupportedOperationException e) {
-            showFinalAlert(getResources().getText(R.string.delete_failed));
+            showDeleteFailed();
         }
+    }
+
+    private void showDeleteFailed() {
+        Toast.makeText(this, R.string.delete_failed, Toast.LENGTH_SHORT).show();
     }
 
     private void showFinalAlert(CharSequence message) {
@@ -706,12 +753,17 @@ public class RingdroidSelectActivity extends ComponentActivity {
         }
 
         if (audioUri != null) {
-            File file = RingdroidUtils.getFileFromUri(this, audioUri);
-            if (file != null) {
-                startRingdroidEditor(Uri.fromFile(file));
-            } else {
-                Log.e(TAG, "Could not resolve file: " + audioUri);
-            }
+            Uri uri = audioUri;
+            new Thread(() -> {
+                File file = RingdroidUtils.getFileFromUri(this, uri);
+                mUiHandler.post(() -> {
+                    if (file == null) {
+                        Log.e(TAG, "Could not resolve file: " + uri);
+                    } else if (!isDestroyed()) {
+                        startRingdroidEditor(Uri.fromFile(file));
+                    }
+                });
+            }).start();
         }
     }
 

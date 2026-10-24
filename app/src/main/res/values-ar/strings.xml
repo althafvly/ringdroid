@@ -123,8 +123,6 @@
 
     <string name="menu_amplify">تضخيم</string>
     <string name="icon_media">وسائط</string>
-    <string name="icon_ringtone">نغمة رنين</string>
-    <string name="icon_starred">مميز بنجمة</string>
     <string name="waveform_description">شكل الموجة الصوتية</string>
     <string name="confirm_delete_message">هل تريد حذف هذا الملف الصوتي؟\n\n“%1$s”</string>
     <string name="amplify_description">اضبط مستوى صوت الملف</string>

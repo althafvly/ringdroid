@@ -123,8 +123,6 @@
 
     <string name="menu_amplify">増幅</string>
     <string name="icon_media">メディア</string>
-    <string name="icon_ringtone">着信音</string>
-    <string name="icon_starred">スター付き</string>
     <string name="waveform_description">音声波形</string>
     <string name="confirm_delete_message">この音声ファイルを削除しますか？\n\n「%1$s」</string>
     <string name="amplify_description">音量を調整</string>

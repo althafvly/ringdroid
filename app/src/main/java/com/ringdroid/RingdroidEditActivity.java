@@ -23,10 +23,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -34,7 +31,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -70,7 +66,6 @@ import com.ringdroid.soundfile.SoundFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.Locale;
 
 /**
@@ -108,7 +103,6 @@ public class RingdroidEditActivity extends ComponentActivity
     private TextView mStartText;
     private TextView mEndText;
     private TextView mInfo;
-    private String mInfoContent;
     private ImageButton mPlayButton;
     private boolean mKeyDown;
     private String mCaption = "";
@@ -237,17 +231,9 @@ public class RingdroidEditActivity extends ComponentActivity
     private Thread mSaveSoundFileThread;
 
     public static void onAbout(final Context context) {
-        String versionName;
-        try {
-            PackageManager packageManager = context.getPackageManager();
-            String packageName = context.getPackageName();
-            versionName = packageManager.getPackageInfo(packageName, 0).versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            versionName = "unknown";
-        }
-
         AboutDialogBinding binding = AboutDialogBinding.inflate(LayoutInflater.from(context));
-        binding.aboutVersion.setText(context.getString(R.string.version_label, versionName));
+        binding.aboutVersion
+                .setText(context.getString(R.string.version_label, BuildConfig.VERSION_NAME));
 
         String html = context.getString(R.string.about_text_html);
         binding.aboutText
@@ -256,9 +242,7 @@ public class RingdroidEditActivity extends ComponentActivity
 
         AlertDialog dialog = new AlertDialog.Builder(context).setView(binding.getRoot()).create();
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
+        RingdroidUtils.setTransparentBackground(dialog);
 
         binding.buttonAboutOk.setOnClickListener(v -> dialog.dismiss());
         dialog.show();
@@ -806,9 +790,7 @@ public class RingdroidEditActivity extends ComponentActivity
                     mLoadingKeepGoing = false;
                     mFinishActivity = true;
                 }).create();
-        if (mProgressDialog.getWindow() != null) {
-            mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
+        RingdroidUtils.setTransparentBackground(mProgressDialog);
         mProgressDialog.setCanceledOnTouchOutside(false);
 
         progressBinding.btnCancel.setOnClickListener(v -> {
@@ -843,17 +825,14 @@ public class RingdroidEditActivity extends ComponentActivity
 
         // Load the sound file in a background thread
         mLoadSoundFileThread = new Thread(() -> {
-            boolean loadingCancelled = false;
+            SoundFile soundFile = null;
             try {
-                mSoundFile = SoundFile.create(getCacheDir(), mFile.getAbsolutePath(), listener);
-
-                if (mSoundFile == null) {
-                    if (mProgressDialog != null) {
-                        mProgressDialog.dismiss();
-                    }
-                    if (!mLoadingKeepGoing) {
-                        loadingCancelled = true;
-                    } else {
+                soundFile = SoundFile.create(getCacheDir(), mFile.getAbsolutePath(), listener);
+                if (mProgressDialog != null) {
+                    mProgressDialog.dismiss();
+                }
+                if (soundFile == null) {
+                    if (mLoadingKeepGoing) {
                         String name = mFile.getName().toLowerCase(Locale.ROOT);
                         String[] components = name.split("\\.");
                         String err;
@@ -863,39 +842,31 @@ public class RingdroidEditActivity extends ComponentActivity
                             err = getResources().getString(R.string.bad_extension_error) + " "
                                     + components[components.length - 1];
                         }
-                        final String finalErr = err;
-                        Runnable runnable = () -> showFinalAlert(new Exception(), finalErr);
-                        mHandler.post(runnable);
+                        mHandler.post(() -> showFinalAlert(null, err));
                         return;
                     }
-                } else if (!mLoadingKeepGoing) {
-                    loadingCancelled = true;
-                } else if (mSoundFile.getSamples() == null) {
-                    throw new IllegalStateException("Decoded samples are unavailable");
+                } else if (mLoadingKeepGoing) {
+                    if (soundFile.getSamples() == null) {
+                        throw new IllegalStateException("Decoded samples are unavailable");
+                    }
+                    postSoundFile(soundFile, new SamplePlayer(soundFile));
+                    return;
                 } else {
-                    mPlayer = new SamplePlayer(mSoundFile);
+                    soundFile.release();
                 }
-            } catch (final Exception e) {
+            } catch (IOException | SoundFile.InvalidInputException | IllegalArgumentException
+                    | IllegalStateException | UnsupportedOperationException | SecurityException e) {
+                if (soundFile != null) {
+                    soundFile.release();
+                }
                 if (mProgressDialog != null) {
                     mProgressDialog.dismiss();
                 }
-                Log.e(TAG, "Unexpected error", e);
-                mInfoContent = e.toString();
-                runOnUiThread(() -> setSafeText(mInfo, mInfoContent));
-
-                Runnable runnable = () -> showFinalAlert(e,
-                        getResources().getText(R.string.read_error));
-                mHandler.post(runnable);
+                postError(e, R.string.read_error);
                 return;
             }
-            if (mProgressDialog != null) {
-                mProgressDialog.dismiss();
-            }
-            if (mLoadingKeepGoing && !loadingCancelled) {
-                Runnable runnable = this::finishOpeningSoundFile;
-                mHandler.post(runnable);
-            } else if (mFinishActivity) {
-                RingdroidEditActivity.this.finish();
+            if (mFinishActivity) {
+                finish();
             }
         });
         mLoadSoundFileThread.start();
@@ -920,10 +891,7 @@ public class RingdroidEditActivity extends ComponentActivity
         adBuilder.setView(recordBinding.getRoot());
         if (!isFinishing() && !isDestroyed()) {
             mAlertDialog = adBuilder.create();
-            if (mAlertDialog.getWindow() != null) {
-                mAlertDialog.getWindow()
-                        .setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            }
+            RingdroidUtils.setTransparentBackground(mAlertDialog);
             mAlertDialog.show();
         } else {
             return;
@@ -969,42 +937,53 @@ public class RingdroidEditActivity extends ComponentActivity
 
         // Record the audio stream in a background thread
         mRecordAudioThread = new Thread(() -> {
+            SoundFile soundFile = null;
             try {
-                mSoundFile = SoundFile.record(listener);
-                if (mSoundFile == null) {
+                soundFile = SoundFile.record(listener);
+                if (soundFile == null) {
                     if (mAlertDialog != null) {
                         mAlertDialog.dismiss();
                     }
-                    Runnable runnable = () -> showFinalAlert(new Exception(),
-                            getResources().getText(R.string.record_error));
-                    mHandler.post(runnable);
+                    postError(null, R.string.record_error);
                     return;
                 }
-                mPlayer = new SamplePlayer(mSoundFile);
-            } catch (final Exception e) {
+                SamplePlayer player = new SamplePlayer(soundFile);
                 if (mAlertDialog != null) {
                     mAlertDialog.dismiss();
                 }
-                Log.e(TAG, "Unexpected error", e);
-                mInfoContent = e.toString();
-                runOnUiThread(() -> mInfo.setText(mInfoContent));
-
-                Runnable runnable = () -> showFinalAlert(e,
-                        getResources().getText(R.string.record_error));
-                mHandler.post(runnable);
-                return;
-            }
-            if (mAlertDialog != null) {
-                mAlertDialog.dismiss();
-            }
-            if (mFinishActivity) {
-                RingdroidEditActivity.this.finish();
-            } else {
-                Runnable runnable = this::finishOpeningSoundFile;
-                mHandler.post(runnable);
+                if (mFinishActivity) {
+                    player.release();
+                    soundFile.release();
+                    finish();
+                } else {
+                    postSoundFile(soundFile, player);
+                }
+            } catch (IllegalArgumentException | IllegalStateException
+                    | UnsupportedOperationException | SecurityException e) {
+                if (soundFile != null) {
+                    soundFile.release();
+                }
+                if (mAlertDialog != null) {
+                    mAlertDialog.dismiss();
+                }
+                postError(e, R.string.record_error);
             }
         });
         mRecordAudioThread.start();
+    }
+
+    // Hands a loaded sound file to the UI thread, or releases it if the editor is gone.
+    private void postSoundFile(SoundFile soundFile, SamplePlayer player) {
+        mHandler.post(() -> {
+            if (isDestroyed()) {
+                player.release();
+                soundFile.release();
+                return;
+            }
+            mSoundFile = soundFile;
+            mPlayer = player;
+            finishOpeningSoundFile();
+        });
     }
 
     private void finishOpeningSoundFile() {
@@ -1243,21 +1222,7 @@ public class RingdroidEditActivity extends ComponentActivity
     }
 
     private String formatDecimal(double x) {
-        int xWhole = (int) x;
-        int xFrac = (int) (100 * (x - xWhole) + 0.5);
-
-        if (xFrac >= 100) {
-            xWhole++; // Round up
-            xFrac -= 100; // Now we need the remainder after the round up
-            if (xFrac < 10) {
-                xFrac *= 10; // we need a fraction that is 2 digits long
-            }
-        }
-
-        if (xFrac < 10)
-            return xWhole + ".0" + xFrac;
-        else
-            return xWhole + "." + xFrac;
+        return String.format(Locale.US, "%.2f", x);
     }
 
     private synchronized void handlePause() {
@@ -1302,27 +1267,15 @@ public class RingdroidEditActivity extends ComponentActivity
     }
 
     /**
-     * Show a "final" alert dialog that will exit the activity after the user clicks on the OK
-     * button. If an exception is passed, it's assumed to be an error condition, and the dialog is
-     * presented as an error, and the stack trace is logged. If there's no exception, it's a success
-     * message.
+     * Shows an error dialog that closes the activity when dismissed. The cause, if any, is logged.
      */
-    private void showFinalAlert(Exception e, CharSequence message) {
-        CharSequence title;
-        if (e != null) {
-            Log.e(TAG, "Error: " + message, e);
-            title = getResources().getText(R.string.alert_title_failure);
-            setResult(RESULT_CANCELED, new Intent());
-        } else {
-            Log.v(TAG, "Success: " + message);
-            title = getResources().getText(R.string.alert_title_success);
-        }
-
+    private void showFinalAlert(Exception cause, CharSequence message) {
+        Log.e(TAG, "Error: " + message, cause);
+        setResult(RESULT_CANCELED, new Intent());
         if (isFinishing() || isDestroyed()) {
             return;
         }
-
-        new AlertDialog.Builder(RingdroidEditActivity.this).setTitle(title).setMessage(message)
+        new AlertDialog.Builder(this).setTitle(R.string.alert_title_failure).setMessage(message)
                 .setPositiveButton(R.string.alert_ok_button, (dialog, whichButton) -> finish())
                 .setCancelable(false).show();
     }
@@ -1397,10 +1350,7 @@ public class RingdroidEditActivity extends ComponentActivity
             else
                 testPath = parentdir + filename + extension;
 
-            try (RandomAccessFile f = new RandomAccessFile(new File(testPath), "r")) {
-                // If it opened, the file exists
-            } catch (IOException e) {
-                // Good, the file didn't exist
+            if (!new File(testPath).exists()) {
                 path = testPath;
                 break;
             }
@@ -1424,158 +1374,132 @@ public class RingdroidEditActivity extends ComponentActivity
 
         mProgressDialog = new AlertDialog.Builder(this).setView(progressBinding.getRoot())
                 .setCancelable(false).create();
-        if (mProgressDialog.getWindow() != null) {
-            mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
+        RingdroidUtils.setTransparentBackground(mProgressDialog);
         if (!isFinishing() && !isDestroyed()) {
             mProgressDialog.show();
         }
 
         ContentValues values = new ContentValues();
+        putFileKind(values);
+        values.put(MediaStore.Audio.Media.RELATIVE_PATH, getSubDir());
+
+        mSaveSoundFileThread = new Thread(() -> {
+            Uri outUri = null;
+            File outFile = null;
+            Exception error = null;
+            // Try AAC first, then fall back to WAV.
+            for (boolean wav : new boolean[]{false, true}) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    String outPath = makeRingtoneFilename(title, wav ? ".wav" : ".m4a");
+                    if (outPath == null) {
+                        mProgressDialog.dismiss();
+                        postError(null, R.string.no_unique_filename);
+                        return;
+                    }
+                    outFile = new File(outPath);
+                }
+                try {
+                    outUri = writeSelection(wav, title, values, outFile, startFrame,
+                            endFrame - startFrame);
+                    error = null;
+                    break;
+                } catch (IOException | SecurityException | IllegalArgumentException
+                        | IllegalStateException e) {
+                    Log.e(TAG, "Failed to save " + (wav ? "WAV" : "M4A"), e);
+                    error = e;
+                }
+            }
+            if (error != null) {
+                mProgressDialog.dismiss();
+                if ("No space left on device".equals(error.getMessage())) {
+                    postError(null, R.string.no_space_error);
+                } else {
+                    postError(error, R.string.write_error);
+                }
+                return;
+            }
+
+            // Try to load the new file to make sure it worked
+            try {
+                if (outUri != null) {
+                    SoundFile.uriExists(mContext, outUri);
+                } else {
+                    SoundFile saved = SoundFile.create(mContext.getCacheDir(), outFile.getPath(),
+                            frac -> false);
+                    if (saved != null) {
+                        saved.release();
+                    }
+                }
+            } catch (IOException | SoundFile.InvalidInputException | IllegalArgumentException
+                    | IllegalStateException | SecurityException e) {
+                mProgressDialog.dismiss();
+                postError(e, R.string.write_error);
+                return;
+            }
+
+            mProgressDialog.dismiss();
+            final String outPath = outFile != null ? outFile.getPath() : null;
+            final Uri savedUri = outUri;
+            mHandler.post(() -> afterSavingRingtone(title, outPath, savedUri, durationMs));
+        });
+        mSaveSoundFileThread.start();
+    }
+
+    private Uri writeSelection(boolean wav, CharSequence title, ContentValues values, File outFile,
+            int startFrame, int numFrames) throws IOException {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Audio.Media.DISPLAY_NAME, title + (wav ? ".wav" : ".m4a"));
+            values.put(MediaStore.Audio.Media.MIME_TYPE, wav ? "audio/wav" : "audio/mp4a-latm");
+            Uri uri = getContentResolver().insert(RingdroidUtils.getExternalAudioCollectionUri(),
+                    values);
+            if (uri == null) {
+                throw new IOException("MediaStore insert failed");
+            }
+            try {
+                if (wav) {
+                    mSoundFile.WriteWAVFile(mContext, uri, startFrame, numFrames);
+                } else {
+                    mSoundFile.WriteFile(mContext, uri, startFrame, numFrames);
+                }
+            } catch (IOException | SecurityException | IllegalArgumentException
+                    | IllegalStateException e) {
+                deleteFailedEntry(uri);
+                throw e;
+            }
+            return uri;
+        }
+        try {
+            if (wav) {
+                mSoundFile.WriteWAVFile(outFile, startFrame, numFrames);
+            } else {
+                mSoundFile.WriteFile(outFile, startFrame, numFrames);
+            }
+        } catch (IOException | SecurityException | IllegalArgumentException
+                | IllegalStateException e) {
+            if (outFile.exists() && !outFile.delete()) {
+                Log.w(TAG, "Failed to delete " + outFile);
+            }
+            throw e;
+        }
+        return null;
+    }
+
+    private void putFileKind(ContentValues values) {
         values.put(MediaStore.Audio.Media.IS_RINGTONE,
                 mNewFileKind == FileSaveDialog.FILE_KIND_RINGTONE);
         values.put(MediaStore.Audio.Media.IS_NOTIFICATION,
                 mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION);
         values.put(MediaStore.Audio.Media.IS_ALARM, mNewFileKind == FileSaveDialog.FILE_KIND_ALARM);
         values.put(MediaStore.Audio.Media.IS_MUSIC, mNewFileKind == FileSaveDialog.FILE_KIND_MUSIC);
-        values.put(MediaStore.Audio.Media.RELATIVE_PATH, getSubDir());
+    }
 
-        // Save the sound file in a background thread
-        mSaveSoundFileThread = new Thread() {
-            public void run() {
-                // Try AAC first.
-                String outPath = makeRingtoneFilename(title, ".m4a");
-                Uri outUri = null;
-                if (outPath == null) {
-                    Runnable runnable = () -> showFinalAlert(new Exception(),
-                            R.string.no_unique_filename);
-                    mHandler.post(runnable);
-                    return;
-                }
-                File outFile = new File(outPath);
-                boolean fallbackToWAV = false;
-                try {
-                    // Write the new file
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        values.put(MediaStore.Audio.Media.DISPLAY_NAME, title + ".m4a");
-                        values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/mp4a-latm");
-                        outUri = getContentResolver()
-                                .insert(RingdroidUtils.getExternalAudioCollectionUri(), values);
-                        if (outUri == null) {
-                            throw new IOException("MediaStore insert failed");
-                        }
-                        mSoundFile.WriteFile(mContext, outUri, startFrame, endFrame - startFrame);
-                    } else {
-                        mSoundFile.WriteFile(outFile, startFrame, endFrame - startFrame);
-                    }
-                } catch (IOException | SecurityException | IllegalArgumentException
-                        | IllegalStateException e) {
-                    // log the error and try to create a .wav file instead
-                    deleteFailedEntry(outUri);
-                    outUri = null;
-                    if (outFile.exists()) {
-                        boolean status = outFile.delete();
-                        Log.d(TAG, "Delete file: " + outPath + " status: " + status);
-                    }
-                    Log.e(TAG, "Error: Failed to create " + outPath, e);
-                    fallbackToWAV = true;
-                }
-
-                // Try to create a .wav file if creating a .m4a file failed.
-                if (fallbackToWAV) {
-                    outPath = makeRingtoneFilename(title, ".wav");
-                    if (outPath == null) {
-                        Runnable runnable = () -> showFinalAlert(new Exception(),
-                                R.string.no_unique_filename);
-                        mHandler.post(runnable);
-                        return;
-                    }
-                    outFile = new File(outPath);
-                    try {
-                        // create the .wav file
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            values.put(MediaStore.Audio.Media.DISPLAY_NAME, title + ".wav");
-                            values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/wav");
-                            outUri = getContentResolver()
-                                    .insert(RingdroidUtils.getExternalAudioCollectionUri(), values);
-                            if (outUri == null) {
-                                throw new IOException("MediaStore insert failed");
-                            }
-                            mSoundFile.WriteWAVFile(mContext, outUri, startFrame,
-                                    endFrame - startFrame);
-                        } else {
-                            mSoundFile.WriteWAVFile(outFile, startFrame, endFrame - startFrame);
-                        }
-                    } catch (IOException | SecurityException | IllegalArgumentException
-                            | IllegalStateException e) {
-                        // Creating the .wav file also failed. Stop the progress dialog, show an
-                        // error message and exit.
-                        Exception exception = e;
-                        mProgressDialog.dismiss();
-                        deleteFailedEntry(outUri);
-                        if (outFile.exists()) {
-                            boolean status = outFile.delete();
-                            Log.d(TAG, "Delete file: " + outPath + "status:" + status);
-                        }
-                        mInfoContent = exception.toString();
-                        runOnUiThread(() -> mInfo.setText(mInfoContent));
-
-                        CharSequence errorMessage;
-                        if (exception.getMessage() != null
-                                && exception.getMessage().equals("No space left on device")) {
-                            errorMessage = getResources().getText(R.string.no_space_error);
-                            exception = null;
-                        } else {
-                            errorMessage = getResources().getText(R.string.write_error);
-                        }
-                        final CharSequence finalErrorMessage = errorMessage;
-                        final Exception finalException = exception;
-                        Runnable runnable = () -> showFinalAlert(finalException, finalErrorMessage);
-                        mHandler.post(runnable);
-                        return;
-                    }
-                }
-
-                // Try to load the new file to make sure it worked
-                try {
-                    final SoundFile.ProgressListener listener = frac -> {
-                        // Do nothing - we're not going to try to
-                        // estimate when reloading a saved sound
-                        // since it's usually fast, but hard to
-                        // estimate anyway.
-                        return false; // Keep going
-                    };
-                    if (outUri != null) {
-                        SoundFile.uriExists(mContext, outUri);
-                    } else {
-                        SoundFile saved = SoundFile.create(mContext.getCacheDir(), outPath,
-                                listener);
-                        if (saved != null) {
-                            saved.release();
-                        }
-                    }
-                } catch (final Exception e) {
-                    mProgressDialog.dismiss();
-                    Log.e(TAG, "Unexpected error: " + e.getMessage(), e);
-                    mInfoContent = e.toString();
-                    runOnUiThread(() -> mInfo.setText(mInfoContent));
-
-                    Runnable runnable = () -> showFinalAlert(e,
-                            getResources().getText(R.string.write_error));
-                    mHandler.post(runnable);
-                    return;
-                }
-
-                mProgressDialog.dismiss();
-
-                final String finalOutPath = outPath;
-                final Uri finalOutUri = outUri;
-                Runnable runnable = () -> afterSavingRingtone(title, finalOutPath, finalOutUri,
-                        durationMs);
-                mHandler.post(runnable);
+    private void postError(Exception e, int messageId) {
+        mHandler.post(() -> {
+            if (e != null) {
+                setSafeText(mInfo, e.toString());
             }
-        };
-        mSaveSoundFileThread.start();
+            showFinalAlert(e, messageId);
+        });
     }
 
     private void deleteFailedEntry(Uri uri) {
@@ -1629,14 +1553,7 @@ public class RingdroidEditActivity extends ComponentActivity
             values.put(MediaStore.Audio.Media.ARTIST, artist);
             values.put(MediaStore.Audio.Media.DURATION, durationMs);
 
-            values.put(MediaStore.Audio.Media.IS_RINGTONE,
-                    mNewFileKind == FileSaveDialog.FILE_KIND_RINGTONE);
-            values.put(MediaStore.Audio.Media.IS_NOTIFICATION,
-                    mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION);
-            values.put(MediaStore.Audio.Media.IS_ALARM,
-                    mNewFileKind == FileSaveDialog.FILE_KIND_ALARM);
-            values.put(MediaStore.Audio.Media.IS_MUSIC,
-                    mNewFileKind == FileSaveDialog.FILE_KIND_MUSIC);
+            putFileKind(values);
 
             // Insert it into the database
             Uri uri = RingdroidUtils.getExternalAudioCollectionUri();
@@ -1680,22 +1597,16 @@ public class RingdroidEditActivity extends ComponentActivity
         // three choices: make this your default ringtone, assign it to a
         // contact, or do nothing.
 
-        final Handler handler = new Handler(Looper.getMainLooper()) {
-            public void handleMessage(Message response) {
-                int actionId = response.arg1;
-                if (actionId == AfterSaveActionDialog.ACTION_MAKE_DEFAULT) {
-                    RingdroidUtils.setDefaultRingTone(RingdroidEditActivity.this,
-                            RingtoneManager.TYPE_RINGTONE, newUri, true);
-                } else if (actionId == AfterSaveActionDialog.ACTION_CHOOSE_CONTACT) {
-                    chooseContactForRingtone(newUri);
-                } else {
-                    finish();
-                }
+        new AfterSaveActionDialog(this, actionId -> {
+            if (actionId == AfterSaveActionDialog.ACTION_MAKE_DEFAULT) {
+                RingdroidUtils.setDefaultRingTone(this, RingtoneManager.TYPE_RINGTONE, newUri,
+                        true);
+            } else if (actionId == AfterSaveActionDialog.ACTION_CHOOSE_CONTACT) {
+                chooseContactForRingtone(newUri);
+            } else {
+                finish();
             }
-        };
-        Message message = Message.obtain(handler);
-        AfterSaveActionDialog dialog = new AfterSaveActionDialog(this, message);
-        dialog.show();
+        }).show();
     }
 
     private void chooseContactForRingtone(Uri uri) {
@@ -1711,16 +1622,10 @@ public class RingdroidEditActivity extends ComponentActivity
             handlePause();
         }
 
-        final Handler handler = new Handler(Looper.getMainLooper()) {
-            public void handleMessage(Message response) {
-                CharSequence newTitle = (CharSequence) response.obj;
-                mNewFileKind = response.arg1;
-                saveRingtone(newTitle);
-            }
-        };
-        Message message = Message.obtain(handler);
-        FileSaveDialog dlog = new FileSaveDialog(this, getResources(), mTitle, message);
-        dlog.show();
+        new FileSaveDialog(this, mTitle, (title, fileKind) -> {
+            mNewFileKind = fileKind;
+            saveRingtone(title);
+        }).show();
     }
 
     private long getCurrentTime() {
@@ -1740,9 +1645,7 @@ public class RingdroidEditActivity extends ComponentActivity
         AlertDialog dialog = new AlertDialog.Builder(this).setView(amplifyBinding.getRoot())
                 .setCancelable(true).create();
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
+        RingdroidUtils.setTransparentBackground(dialog);
 
         amplifyBinding.amplifySeekbar
                 .setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

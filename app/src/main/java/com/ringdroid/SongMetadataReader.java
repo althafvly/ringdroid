@@ -35,7 +35,7 @@ final class SongMetadataReader {
             retriever.setDataSource(filename);
             title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
             artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             Log.w(TAG, "Failed to read metadata from " + filename, e);
         } finally {
             try {

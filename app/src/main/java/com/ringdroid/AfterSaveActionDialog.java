@@ -16,11 +16,10 @@
 
 package com.ringdroid;
 
+import java.util.function.IntConsumer;
+
 import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Message;
 import android.view.LayoutInflater;
 
 import com.ringdroid.databinding.AfterSaveActionBinding;
@@ -31,10 +30,10 @@ public class AfterSaveActionDialog {
     public static final int ACTION_CHOOSE_CONTACT = 2;
     public static final int ACTION_DO_NOTHING = 3;
 
-    private final Message mResponse;
+    private final IntConsumer mListener;
     private final AlertDialog mDialog;
 
-    public AfterSaveActionDialog(Context context, Message response) {
+    public AfterSaveActionDialog(Context context, IntConsumer listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         // Inflate our UI from its XML layout description.
@@ -48,17 +47,14 @@ public class AfterSaveActionDialog {
                 .setOnClickListener(view -> closeAndSendResult(ACTION_CHOOSE_CONTACT));
         binding.buttonDoNothing.setOnClickListener(view -> closeAndSendResult(ACTION_DO_NOTHING));
 
-        mResponse = response;
+        mListener = listener;
         mDialog = builder.create();
-        if (mDialog.getWindow() != null) {
-            mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
+        RingdroidUtils.setTransparentBackground(mDialog);
     }
 
     private void closeAndSendResult(int clickedButtonId) {
-        mResponse.arg1 = clickedButtonId;
-        mResponse.sendToTarget();
         mDialog.dismiss();
+        mListener.accept(clickedButtonId);
     }
 
     public void show() {

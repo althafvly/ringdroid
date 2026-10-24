@@ -46,12 +46,18 @@ import java.nio.MappedByteBuffer;
 import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Objects;
 import java.io.FileNotFoundException;
 
 public class SoundFile {
     private static final String TAG = "SoundFile";
+    private static final String PCM_PREFIX = "ringdroid_pcm_";
+    // Temp files in use by this process; any other ones were left behind by a killed process.
+    private static final Set<File> sActivePcmFiles = Collections.synchronizedSet(new HashSet<>());
     private ProgressListener mProgressListener = null;
     private File mInputFile = null;
     // Member variables representing frame data
@@ -239,11 +245,24 @@ public class SoundFile {
             mPcmRaf = null;
         }
         if (mPcmTempFile != null) {
+            sActivePcmFiles.remove(mPcmTempFile);
             if (!mPcmTempFile.delete() && mPcmTempFile.exists()) {
                 Log.w(TAG,
                         "Failed to delete temporary PCM file: " + mPcmTempFile.getAbsolutePath());
             }
             mPcmTempFile = null;
+        }
+    }
+
+    private static void deleteStalePcmFiles(File dir) {
+        File[] files = dir.listFiles((d, name) -> name.startsWith(PCM_PREFIX));
+        if (files == null) {
+            return;
+        }
+        for (File file : files) {
+            if (!sActivePcmFiles.contains(file) && !file.delete()) {
+                Log.w(TAG, "Failed to delete stale PCM file: " + file);
+            }
         }
     }
 
@@ -311,8 +330,9 @@ public class SoundFile {
             if (pcmParentDir == null) {
                 throw new IOException("Cannot determine app cache directory for PCM temp buffer");
             }
-            mPcmTempFile = File.createTempFile("ringdroid_pcm_", ".raw", pcmParentDir);
-            mPcmTempFile.deleteOnExit();
+            deleteStalePcmFiles(pcmParentDir);
+            mPcmTempFile = File.createTempFile(PCM_PREFIX, ".raw", pcmParentDir);
+            sActivePcmFiles.add(mPcmTempFile);
             long initialSize = Math.max(expectedMemory, 1L << 20); // at least 1MB
             mPcmRaf = new RandomAccessFile(mPcmTempFile, "rw");
             mPcmRaf.setLength(initialSize);

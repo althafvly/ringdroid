@@ -19,9 +19,6 @@ package com.ringdroid;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -53,8 +50,12 @@ public class FileSaveDialog {
     private int mPreviousSelection;
     private AlertDialog mDialog;
 
-    public FileSaveDialog(Context context, Resources resources, String originalName,
-            Message response) {
+    public interface Listener {
+        void onSave(CharSequence title, int fileKind);
+    }
+
+    public FileSaveDialog(Context context, String originalName, Listener listener) {
+        Resources resources = context.getResources();
         mContext = context;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -90,15 +91,11 @@ public class FileSaveDialog {
         });
 
         mDialog = builder.create();
-        if (mDialog.getWindow() != null) {
-            mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
+        RingdroidUtils.setTransparentBackground(mDialog);
 
         binding.save.setOnClickListener(view -> {
-            response.obj = mFilename.getText();
-            response.arg1 = mTypeSpinner.getSelectedItemPosition();
-            response.sendToTarget();
             mDialog.dismiss();
+            listener.onSave(mFilename.getText(), mTypeSpinner.getSelectedItemPosition());
         });
 
         binding.cancel.setOnClickListener(view -> mDialog.dismiss());
