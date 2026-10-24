@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 26 December 2025_
+_Last updated: 24 October 2026_
 
 ## Introduction
 
@@ -42,11 +42,12 @@ The App **does not request or use internet access**.
 
 ## Permissions
 
-The App may request permissions required for core functionality, such as:
-- Access to local media files (to select and edit audio)
-- Modify audio files saved by the user (to create ringtones)
-- To set as default ringtone.
-- Contacts permission to set contact specific ringtone.
+The App asks for each permission only when you first use the feature that needs it:
+- **Audio files** (media or storage access): to list and open the audio files on your device for editing.
+- **Storage write access** (Android 9 and below only): to save the ringtones you create. On newer Android versions, ringtones are saved through the system media library without this permission.
+- **Microphone**: to record new audio in the App. Recordings stay on your device and are saved only if you choose to save them.
+- **Modify system settings**: to set a saved sound as your default ringtone or notification sound, only when you choose to.
+- **Contacts (write only)**: to assign a ringtone to a contact you pick in the system contact picker. The App does not read your contact list; it reads only the name of the contact you pick, to confirm the change.
 
 These permissions are used **only for the ringtone editing features** and nothing else.
 

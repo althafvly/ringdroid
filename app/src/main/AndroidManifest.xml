@@ -30,11 +30,15 @@
         tools:ignore="ProtectedPermissions" />
 
     <!-- Storage / Audio File Access -->
-    <!-- For Android SDK 26–32 -->
+    <!-- Android 9 and below write saved files directly to storage. -->
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"
-        tools:ignore="ScopedStorage" />
+        android:maxSdkVersion="28" />
+
+    <!-- Android 10–12 only need to read other apps' audio; saving goes through MediaStore. -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
     <!-- Android SDK 33+ audio file access -->
     <uses-permission
@@ -49,6 +53,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/ringdroid_app_name"
         android:largeHeap="true"
+        android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
 

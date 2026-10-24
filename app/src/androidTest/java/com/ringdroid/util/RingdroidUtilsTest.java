@@ -1,5 +1,6 @@
 package com.ringdroid.util;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -7,6 +8,7 @@ import static org.junit.Assert.assertNull;
 import android.Manifest;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -22,13 +24,24 @@ public class RingdroidUtilsTest {
     @Test
     public void permissionContractsExposeExpectedPermissions() {
         assertEquals(Manifest.permission.RECORD_AUDIO, PermissionUtils.getMicPermission());
-        assertEquals(Manifest.permission.READ_MEDIA_AUDIO, PermissionUtils.getStoragePermission());
+        String[] storagePermissions;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            storagePermissions = new String[]{Manifest.permission.READ_MEDIA_AUDIO};
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            storagePermissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+        } else {
+            storagePermissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        }
+        assertArrayEquals(storagePermissions, PermissionUtils.getStoragePermissions());
     }
 
     @Test
     public void collectionUrisAreAvailable() {
-        assertEquals(MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY),
-                RingdroidUtils.getExternalAudioCollectionUri());
+        Uri external = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+                ? MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+                : MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        assertEquals(external, RingdroidUtils.getExternalAudioCollectionUri());
         assertEquals(MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_INTERNAL),
                 RingdroidUtils.getInternalAudioCollectionUri());
     }

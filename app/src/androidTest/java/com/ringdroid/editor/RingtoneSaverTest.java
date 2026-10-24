@@ -7,11 +7,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import android.Manifest;
+import android.app.UiAutomation;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -26,6 +30,9 @@ import java.io.File;
 
 @RunWith(AndroidJUnit4.class)
 public class RingtoneSaverTest {
+    private static final long GRANT_TIMEOUT_MS = 5000;
+    private static final long GRANT_POLL_MS = 100;
+
     private Context mContext;
     private File mInput;
     private SoundFile mSoundFile;
@@ -33,6 +40,27 @@ public class RingtoneSaverTest {
     @Before
     public void setUp() throws Exception {
         mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        // Before Android 10 the saver writes shared storage itself, which needs both storage
+        // permissions; the grant reaches this process asynchronously.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation()
+                    .getUiAutomation();
+            for (String permission : new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE}) {
+                try (ParcelFileDescriptor.AutoCloseInputStream in = new ParcelFileDescriptor.AutoCloseInputStream(
+                        uiAutomation.executeShellCommand(
+                                "pm grant " + mContext.getPackageName() + " " + permission))) {
+                    while (in.read() != -1) {
+                        // Wait for the command to finish.
+                    }
+                }
+            }
+            long deadline = SystemClock.uptimeMillis() + GRANT_TIMEOUT_MS;
+            while (!Environment.getExternalStorageDirectory().canWrite()
+                    && SystemClock.uptimeMillis() < deadline) {
+                SystemClock.sleep(GRANT_POLL_MS);
+            }
+        }
         mInput = TestAudio.writeWav(new File(mContext.getCacheDir(), "saver_input.wav"), 1,
                 TestAudio.ramp(TestAudio.SAMPLE_RATE));
         mSoundFile = TestAudio.load(mInput);

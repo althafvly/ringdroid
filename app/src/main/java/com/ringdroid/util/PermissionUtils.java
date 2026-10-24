@@ -16,11 +16,16 @@ public final class PermissionUtils {
         return Manifest.permission.RECORD_AUDIO;
     }
 
-    public static String getStoragePermission() {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-            return Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    /** Before Android 10 the app writes shared storage itself, which needs read access too. */
+    public static String[] getStoragePermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return new String[]{Manifest.permission.READ_MEDIA_AUDIO};
         }
-        return Manifest.permission.READ_MEDIA_AUDIO;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+        }
+        return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
     }
 
     public static boolean hasMicPermissions(Context context) {
@@ -28,8 +33,12 @@ public final class PermissionUtils {
     }
 
     public static boolean hasStoragePermission(Context context) {
-        return context
-                .checkSelfPermission(getStoragePermission()) == PackageManager.PERMISSION_GRANTED;
+        for (String permission : getStoragePermissions()) {
+            if (context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static boolean hasWriteSettingsPermission(Context context) {

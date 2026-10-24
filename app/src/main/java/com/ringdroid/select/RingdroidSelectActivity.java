@@ -84,8 +84,9 @@ public class RingdroidSelectActivity extends ComponentActivity {
     });
     private int mInternalRowCount = 0;
     private int mLoadGeneration;
-    private final ActivityResultLauncher<String> mStoragePermissionLauncher = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(), granted -> onPermissionChanged());
+    private final ActivityResultLauncher<String[]> mStoragePermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            granted -> onPermissionChanged());
     private MediaSelectBinding binding;
     private SearchToolbarHelper mSearchHelper;
     private boolean mSettingsPermissionRequested = false;
@@ -98,7 +99,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
         super.onCreate(icicle);
 
         if (!PermissionUtils.hasStoragePermission(this)) {
-            mStoragePermissionLauncher.launch(PermissionUtils.getStoragePermission());
+            mStoragePermissionLauncher.launch(PermissionUtils.getStoragePermissions());
         }
 
         if (icicle == null) {
