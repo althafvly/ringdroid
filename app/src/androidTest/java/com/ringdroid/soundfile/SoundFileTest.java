@@ -27,7 +27,6 @@ import java.nio.ShortBuffer;
 import java.util.Arrays;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
-import android.net.Uri;
 import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -156,13 +155,6 @@ public class SoundFileTest {
     public void testInvalidInputException() {
         SoundFile.InvalidInputException e = new SoundFile.InvalidInputException("Test message");
         assertEquals("Test message", e.getMessage());
-    }
-
-    @Test
-    public void testUriExists() {
-        // Just verify it doesn't crash on null or empty Uri
-        Uri uri = Uri.parse("content://dummy");
-        SoundFile.uriExists(context, uri);
     }
 
     @Test
@@ -298,7 +290,7 @@ public class SoundFileTest {
         injectMockAudioData(soundFile, 1);
 
         File outputFile = new File(outDir, "out_audio.m4a");
-        soundFile.WriteFile(outputFile, 0, 50);
+        new SoundFileWriter(soundFile, 1.0f).writeM4A(outputFile, 0, 50);
 
         assertTrue(outputFile.exists());
         assertTrue(outputFile.length() > 0);
@@ -313,7 +305,7 @@ public class SoundFileTest {
 
         File outputFile = new File(outDir, "out_audio_stereo.m4a");
         assertNotNull(soundFile);
-        soundFile.WriteFile(outputFile, 0, 50);
+        new SoundFileWriter(soundFile, 1.0f).writeM4A(outputFile, 0, 50);
 
         assertTrue(outputFile.exists());
         assertTrue(outputFile.length() > 0);
@@ -328,7 +320,7 @@ public class SoundFileTest {
 
         File outputFile = new File(outDir, "out_audio.wav");
         assertNotNull(soundFile);
-        soundFile.WriteWAVFile(outputFile, 0, 50);
+        new SoundFileWriter(soundFile, 1.0f).writeWAV(outputFile, 0, 50);
 
         assertTrue(outputFile.exists());
         assertTrue(outputFile.length() > 0);
@@ -342,7 +334,7 @@ public class SoundFileTest {
         injectMockAudioData(soundFile, 2);
 
         File outputFile = new File(outDir, "out_audio_stereo.wav");
-        soundFile.WriteWAVFile(outputFile, 0, 50);
+        new SoundFileWriter(soundFile, 1.0f).writeWAV(outputFile, 0, 50);
 
         byte[] bytes = Files.readAllBytes(outputFile.toPath());
         ByteBuffer out = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
@@ -366,7 +358,7 @@ public class SoundFileTest {
         // Longer than the 48.7 s at which the old header overflowed.
         File outputFile = new File(outDir, "out_audio_long.m4a");
         int numFrames = 2600;
-        soundFile.WriteFile(outputFile, 0, numFrames);
+        new SoundFileWriter(soundFile, 1.0f).writeM4A(outputFile, 0, numFrames);
 
         MediaExtractor extractor = new MediaExtractor();
         try {
@@ -390,7 +382,8 @@ public class SoundFileTest {
         injectMockAudioData(soundFile, 1);
 
         File outputFile = new File(outDir, "out_audio_invalid.wav");
-        soundFile.WriteFile(outputFile, 0, 0); // Should throw IOException (numSamples <= 0)
+        new SoundFileWriter(soundFile, 1.0f).writeM4A(outputFile, 0, 0); // Should throw IOException
+                                                                         // (numSamples <= 0)
     }
 
     @Test(expected = IOException.class)
@@ -400,6 +393,6 @@ public class SoundFileTest {
         injectMockAudioData(soundFile, 1);
 
         File outputFile = new File(outDir, "out_audio_invalid.wav");
-        soundFile.WriteWAVFile(outputFile, 1000, 100); // end < start
+        new SoundFileWriter(soundFile, 1.0f).writeWAV(outputFile, 1000, 100); // end < start
     }
 }

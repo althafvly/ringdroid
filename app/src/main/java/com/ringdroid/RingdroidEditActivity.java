@@ -20,18 +20,14 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
@@ -119,7 +115,6 @@ public class RingdroidEditActivity extends ComponentActivity
     private int mFlingVelocity;
     private int mPlayStartMsec;
     private int mPlayEndMsec;
-    private Context mContext;
     private Handler mHandler;
     private boolean mIsPlaying;
     private SamplePlayer mPlayer;
@@ -258,7 +253,6 @@ public class RingdroidEditActivity extends ComponentActivity
 
         mPlayer = null;
         mIsPlaying = false;
-        mContext = this.getApplicationContext();
 
         mAlertDialog = null;
         mProgressDialog = null;
@@ -1269,7 +1263,7 @@ public class RingdroidEditActivity extends ComponentActivity
     /**
      * Shows an error dialog that closes the activity when dismissed. The cause, if any, is logged.
      */
-    private void showFinalAlert(Exception cause, CharSequence message) {
+    private void showFinalAlert(Throwable cause, CharSequence message) {
         Log.e(TAG, "Error: " + message, cause);
         setResult(RESULT_CANCELED, new Intent());
         if (isFinishing() || isDestroyed()) {
@@ -1280,98 +1274,18 @@ public class RingdroidEditActivity extends ComponentActivity
                 .setCancelable(false).show();
     }
 
-    private void showFinalAlert(Exception e, int messageResourceId) {
+    private void showFinalAlert(Throwable e, int messageResourceId) {
         showFinalAlert(e, getResources().getText(messageResourceId));
     }
 
-    private String getSubDir() {
-        String saveDir = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-                ? Environment.DIRECTORY_RINGTONES
-                : "media/audio";
-        StringBuilder subdir = new StringBuilder(saveDir);
-        switch (mNewFileKind) {
-            case FileSaveDialog.FILE_KIND_MUSIC :
-                subdir.append("/music/");
-                break;
-
-            case FileSaveDialog.FILE_KIND_ALARM :
-                subdir.append("/alarms/");
-                break;
-
-            case FileSaveDialog.FILE_KIND_NOTIFICATION :
-                subdir.append("/notifications/");
-                break;
-
-            case FileSaveDialog.FILE_KIND_RINGTONE :
-                subdir.append("/ringtones/");
-                break;
-
-            default :
-                subdir.append("/others/");
-                break;
-        }
-
-        return subdir.toString();
-    }
-
-    private String makeRingtoneFilename(CharSequence title, String extension) {
-        String externalRootDir = Environment.getExternalStorageDirectory().getPath();
-        if (!externalRootDir.endsWith("/")) {
-            externalRootDir += "/";
-        }
-
-        String parentdir = externalRootDir + getSubDir();
-
-        // Create the parent directory
-        File parentDirFile = new File(parentdir);
-        boolean status = parentDirFile.mkdirs();
-        Log.d(TAG, "Created folder: " + parentdir + " status: " + status);
-
-        // If we can't write to that special path, try just writing
-        // directly to the sdcard
-        if (!parentDirFile.isDirectory()) {
-            parentdir = externalRootDir;
-        }
-
-        // Turn the title into a filename
-        StringBuilder filename = new StringBuilder();
-        for (int i = 0; i < title.length(); i++) {
-            if (Character.isLetterOrDigit(title.charAt(i))) {
-                filename.append(title.charAt(i));
-            }
-        }
-
-        // Try to make the filename unique
-        String path = null;
-        for (int i = 0; i < 100; i++) {
-            String testPath;
-            if (i > 0)
-                testPath = parentdir + filename + i + extension;
-            else
-                testPath = parentdir + filename + extension;
-
-            if (!new File(testPath).exists()) {
-                path = testPath;
-                break;
-            }
-        }
-
-        return path;
-    }
-
     private void saveRingtone(final CharSequence title) {
-        if (mSoundFile != null) {
-            mSoundFile.setGain(mAmplifyFactor);
-        }
         double startTime = mWaveformView.pixelsToSeconds(mStartPos);
         double endTime = mWaveformView.pixelsToSeconds(mEndPos);
         final int startFrame = mWaveformView.secondsToFrames(startTime);
         final int endFrame = mWaveformView.secondsToFrames(endTime);
         final int durationMs = (int) ((endTime - startTime) * 1000 + 0.5);
 
-        // Create an indeterminate progress dialog
         DialogProgressBinding progressBinding = DialogProgressBinding.inflate(getLayoutInflater());
-
         mProgressDialog = new AlertDialog.Builder(this).setView(progressBinding.getRoot())
                 .setCancelable(false).create();
         RingdroidUtils.setTransparentBackground(mProgressDialog);
@@ -1379,121 +1293,27 @@ public class RingdroidEditActivity extends ComponentActivity
             mProgressDialog.show();
         }
 
-        ContentValues values = new ContentValues();
-        putFileKind(values);
-        values.put(MediaStore.Audio.Media.RELATIVE_PATH, getSubDir());
-
+        RingtoneSaver saver = new RingtoneSaver(this, mSoundFile, mAmplifyFactor, mNewFileKind);
         mSaveSoundFileThread = new Thread(() -> {
-            Uri outUri = null;
-            File outFile = null;
-            Exception error = null;
-            // Try AAC first, then fall back to WAV.
-            for (boolean wav : new boolean[]{false, true}) {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    String outPath = makeRingtoneFilename(title, wav ? ".wav" : ".m4a");
-                    if (outPath == null) {
-                        mProgressDialog.dismiss();
-                        postError(null, R.string.no_unique_filename);
-                        return;
-                    }
-                    outFile = new File(outPath);
-                }
-                try {
-                    outUri = writeSelection(wav, title, values, outFile, startFrame,
-                            endFrame - startFrame);
-                    error = null;
-                    break;
-                } catch (IOException | SecurityException | IllegalArgumentException
-                        | IllegalStateException e) {
-                    Log.e(TAG, "Failed to save " + (wav ? "WAV" : "M4A"), e);
-                    error = e;
-                }
-            }
-            if (error != null) {
-                mProgressDialog.dismiss();
-                if ("No space left on device".equals(error.getMessage())) {
-                    postError(null, R.string.no_space_error);
-                } else {
-                    postError(error, R.string.write_error);
-                }
-                return;
-            }
-
-            // Try to load the new file to make sure it worked
             try {
-                if (outUri != null) {
-                    SoundFile.uriExists(mContext, outUri);
-                } else {
-                    SoundFile saved = SoundFile.create(mContext.getCacheDir(), outFile.getPath(),
-                            frac -> false);
-                    if (saved != null) {
-                        saved.release();
-                    }
-                }
-            } catch (IOException | SoundFile.InvalidInputException | IllegalArgumentException
-                    | IllegalStateException | SecurityException e) {
+                Uri uri = saver.save(title, startFrame, endFrame - startFrame, durationMs);
                 mProgressDialog.dismiss();
-                postError(e, R.string.write_error);
-                return;
+                mHandler.post(() -> afterSavingRingtone(uri));
+            } catch (RingtoneSaver.SaveException e) {
+                mProgressDialog.dismiss();
+                if (e.messageId == R.string.too_small_error) {
+                    mHandler.post(() -> new AlertDialog.Builder(this)
+                            .setTitle(R.string.alert_title_failure).setMessage(e.messageId)
+                            .setPositiveButton(R.string.alert_ok_button, null).show());
+                } else {
+                    postError(e.getCause(), e.messageId);
+                }
             }
-
-            mProgressDialog.dismiss();
-            final String outPath = outFile != null ? outFile.getPath() : null;
-            final Uri savedUri = outUri;
-            mHandler.post(() -> afterSavingRingtone(title, outPath, savedUri, durationMs));
         });
         mSaveSoundFileThread.start();
     }
 
-    private Uri writeSelection(boolean wav, CharSequence title, ContentValues values, File outFile,
-            int startFrame, int numFrames) throws IOException {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            values.put(MediaStore.Audio.Media.DISPLAY_NAME, title + (wav ? ".wav" : ".m4a"));
-            values.put(MediaStore.Audio.Media.MIME_TYPE, wav ? "audio/wav" : "audio/mp4a-latm");
-            Uri uri = getContentResolver().insert(RingdroidUtils.getExternalAudioCollectionUri(),
-                    values);
-            if (uri == null) {
-                throw new IOException("MediaStore insert failed");
-            }
-            try {
-                if (wav) {
-                    mSoundFile.WriteWAVFile(mContext, uri, startFrame, numFrames);
-                } else {
-                    mSoundFile.WriteFile(mContext, uri, startFrame, numFrames);
-                }
-            } catch (IOException | SecurityException | IllegalArgumentException
-                    | IllegalStateException e) {
-                deleteFailedEntry(uri);
-                throw e;
-            }
-            return uri;
-        }
-        try {
-            if (wav) {
-                mSoundFile.WriteWAVFile(outFile, startFrame, numFrames);
-            } else {
-                mSoundFile.WriteFile(outFile, startFrame, numFrames);
-            }
-        } catch (IOException | SecurityException | IllegalArgumentException
-                | IllegalStateException e) {
-            if (outFile.exists() && !outFile.delete()) {
-                Log.w(TAG, "Failed to delete " + outFile);
-            }
-            throw e;
-        }
-        return null;
-    }
-
-    private void putFileKind(ContentValues values) {
-        values.put(MediaStore.Audio.Media.IS_RINGTONE,
-                mNewFileKind == FileSaveDialog.FILE_KIND_RINGTONE);
-        values.put(MediaStore.Audio.Media.IS_NOTIFICATION,
-                mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION);
-        values.put(MediaStore.Audio.Media.IS_ALARM, mNewFileKind == FileSaveDialog.FILE_KIND_ALARM);
-        values.put(MediaStore.Audio.Media.IS_MUSIC, mNewFileKind == FileSaveDialog.FILE_KIND_MUSIC);
-    }
-
-    private void postError(Exception e, int messageId) {
+    private void postError(Throwable e, int messageId) {
         mHandler.post(() -> {
             if (e != null) {
                 setSafeText(mInfo, e.toString());
@@ -1502,66 +1322,8 @@ public class RingdroidEditActivity extends ComponentActivity
         });
     }
 
-    private void deleteFailedEntry(Uri uri) {
-        if (uri == null) {
-            return;
-        }
-        try {
-            getContentResolver().delete(uri, null, null);
-        } catch (SecurityException | IllegalArgumentException | UnsupportedOperationException e) {
-            Log.w(TAG, "Failed to delete incomplete entry: " + uri, e);
-        }
-    }
-
-    private void afterSavingRingtone(CharSequence title, String outPath, Uri outUri,
-            int durationMs) {
-        Uri newUri;
-        if (outUri == null) {
-            File outFile = new File(outPath);
-            long fileSize = outFile.length();
-            if (fileSize <= 512) {
-                boolean status = outFile.delete();
-                if (status) {
-                    new AlertDialog.Builder(this).setTitle(R.string.alert_title_failure)
-                            .setMessage(R.string.too_small_error)
-                            .setPositiveButton(R.string.alert_ok_button, null).setCancelable(false)
-                            .show();
-                }
-                return;
-            }
-
-            // Create the database record, pointing to the existing file path
-            String mimeType;
-            if (outPath.endsWith(".m4a")) {
-                mimeType = "audio/mp4a-latm";
-            } else if (outPath.endsWith(".wav")) {
-                mimeType = "audio/wav";
-            } else {
-                // This should never happen.
-                mimeType = "audio/mpeg";
-            }
-
-            String artist = "" + getResources().getText(R.string.artist_name);
-
-            ContentValues values = new ContentValues();
-            values.put(MediaStore.MediaColumns.DATA, outPath);
-            values.put(MediaStore.MediaColumns.DISPLAY_NAME, title.toString());
-            values.put(MediaStore.MediaColumns.SIZE, fileSize);
-            values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
-
-            values.put(MediaStore.Audio.Media.TITLE, title.toString());
-            values.put(MediaStore.Audio.Media.ARTIST, artist);
-            values.put(MediaStore.Audio.Media.DURATION, durationMs);
-
-            putFileKind(values);
-
-            // Insert it into the database
-            Uri uri = RingdroidUtils.getExternalAudioCollectionUri();
-            newUri = getContentResolver().insert(uri, values);
-            setResult(RESULT_OK, new Intent().setData(newUri));
-        } else {
-            newUri = outUri;
-        }
+    private void afterSavingRingtone(Uri newUri) {
+        setResult(RESULT_OK, new Intent().setData(newUri));
 
         // If Ringdroid was launched to get content, just return
         if (mWasGetContentIntent) {
