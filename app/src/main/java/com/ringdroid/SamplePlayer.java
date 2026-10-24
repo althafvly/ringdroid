@@ -34,7 +34,7 @@ class SamplePlayer {
     private final short[] mBuffer;
     private int mPlaybackStart; // Start offset, in samples.
     private Thread mPlayThread;
-    private boolean mKeepPlaying;
+    private volatile boolean mKeepPlaying;
     private OnCompletionListener mListener;
 
     public SamplePlayer(ShortBuffer samples, int sampleRate, int channels, int numSamples) {

@@ -25,6 +25,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
+import android.net.Uri;
+import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 @RunWith(AndroidJUnit4.class)
 public class SoundFileTest {
@@ -96,7 +102,7 @@ public class SoundFileTest {
 
     // --- 2. File Creation / Reading ---
 
-    @Test(expected = java.io.FileNotFoundException.class)
+    @Test(expected = FileNotFoundException.class)
     public void testCreateFileNotFound() throws Exception {
         SoundFile.create(outDir, "/path/to/nonexistent/file.wav", null);
     }
@@ -155,7 +161,7 @@ public class SoundFileTest {
     @Test
     public void testUriExists() {
         // Just verify it doesn't crash on null or empty Uri
-        android.net.Uri uri = android.net.Uri.parse("content://dummy");
+        Uri uri = Uri.parse("content://dummy");
         SoundFile.uriExists(context, uri);
     }
 
@@ -176,11 +182,11 @@ public class SoundFileTest {
             int dataSize = numSamples * blockAlign;
             int chunkSize = 36 + dataSize;
 
-            out.write("RIFF".getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+            out.write("RIFF".getBytes(StandardCharsets.US_ASCII));
             out.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(chunkSize)
                     .array());
-            out.write("WAVE".getBytes(java.nio.charset.StandardCharsets.US_ASCII));
-            out.write("fmt ".getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+            out.write("WAVE".getBytes(StandardCharsets.US_ASCII));
+            out.write("fmt ".getBytes(StandardCharsets.US_ASCII));
             out.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(16).array());
             out.write(ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort((short) 1)
                     .array());
@@ -194,7 +200,7 @@ public class SoundFileTest {
                     .array());
             out.write(ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(bitsPerSample)
                     .array());
-            out.write("data".getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+            out.write("data".getBytes(StandardCharsets.US_ASCII));
             out.write(
                     ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(dataSize).array());
 
@@ -228,14 +234,10 @@ public class SoundFileTest {
     public void testRecordAudioCancellation() {
         // Record and cancel immediately
         SoundFile.ProgressListener listener = fractionComplete -> true; // stop immediately
-        try {
-            SoundFile soundFile = SoundFile.record(listener);
-            assertNotNull(soundFile);
+        SoundFile soundFile = SoundFile.record(listener);
+        // Null when the microphone is unavailable or the permission is missing.
+        if (soundFile != null) {
             assertEquals("raw", soundFile.getFiletype());
-        } catch (Exception e) {
-            // Emulators might lack mic access / permission and throw IllegalStateException.
-            // That's acceptable for this test context.
-            assertTrue(e instanceof IllegalStateException || e instanceof SecurityException);
         }
     }
 
@@ -342,9 +344,43 @@ public class SoundFileTest {
         File outputFile = new File(outDir, "out_audio_stereo.wav");
         soundFile.WriteWAVFile(outputFile, 0, 50);
 
-        assertTrue(outputFile.exists());
-        assertTrue(outputFile.length() > 0);
+        byte[] bytes = Files.readAllBytes(outputFile.toPath());
+        ByteBuffer out = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
+        int dataSize = 50 * 1024 * 2 * 2;
+        assertEquals(44 + dataSize, bytes.length);
+        assertEquals(dataSize, out.getInt(40));
+        // The mock data is 0, 1, 2, ... interleaved as left, right.
+        out.position(44);
+        for (int i = 0; i < 8; i++) {
+            assertEquals(i, out.getShort());
+        }
         outputFile.delete();
+    }
+
+    @Test
+    public void testWriteFileM4ADuration() throws Exception {
+        SoundFile soundFile = SoundFile.create(outDir, testWavFile.getAbsolutePath(),
+                fractionComplete -> false);
+        injectMockAudioData(soundFile, 2);
+
+        // Longer than the 48.7 s at which the old header overflowed.
+        File outputFile = new File(outDir, "out_audio_long.m4a");
+        int numFrames = 2600;
+        soundFile.WriteFile(outputFile, 0, numFrames);
+
+        MediaExtractor extractor = new MediaExtractor();
+        try {
+            extractor.setDataSource(outputFile.getPath());
+            assertEquals(1, extractor.getTrackCount());
+            MediaFormat format = extractor.getTrackFormat(0);
+            assertEquals("audio/mp4a-latm", format.getString(MediaFormat.KEY_MIME));
+            long expectedUs = numFrames * 1024L * 1000000L / 44100;
+            long durationUs = format.getLong(MediaFormat.KEY_DURATION);
+            assertTrue("duration " + durationUs, Math.abs(durationUs - expectedUs) < 200000);
+        } finally {
+            extractor.release();
+            outputFile.delete();
+        }
     }
 
     @Test(expected = IOException.class)

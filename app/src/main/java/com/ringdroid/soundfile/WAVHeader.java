@@ -16,74 +16,21 @@
 
 package com.ringdroid.soundfile;
 
-public class WAVHeader {
-    private final int mSampleRate; // sampling frequency in Hz (e.g. 44100).
-    private final int mChannels; // number of channels.
-    private final int mNumSamples; // total number of samples per channel.
-    private final int mNumBytesPerSample; // number of bytes per sample, all channels included.
-    private byte[] mHeader; // the complete header.
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
-    public WAVHeader(int sampleRate, int numChannels, int numSamples) {
-        mSampleRate = sampleRate;
-        mChannels = numChannels;
-        mNumSamples = numSamples;
-        mNumBytesPerSample = 2 * mChannels; // assuming 2 bytes per sample (for 1 channel)
-        mHeader = null;
-        setHeader();
+public final class WAVHeader {
+    private WAVHeader() {
     }
 
     public static byte[] getWAVHeader(int sampleRate, int numChannels, int numSamples) {
-        return new WAVHeader(sampleRate, numChannels, numSamples).mHeader;
-    }
-
-    private void setHeader() {
-        byte[] header = new byte[46];
-        int offset = 0;
-        int size;
-
-        // set the RIFF chunk
-        System.arraycopy(new byte[]{'R', 'I', 'F', 'F'}, 0, header, offset, 4);
-        offset += 4;
-        size = 36 + mNumSamples * mNumBytesPerSample;
-        header[offset++] = (byte) (size & 0xFF);
-        header[offset++] = (byte) ((size >> 8) & 0xFF);
-        header[offset++] = (byte) ((size >> 16) & 0xFF);
-        header[offset++] = (byte) ((size >> 24) & 0xFF);
-        System.arraycopy(new byte[]{'W', 'A', 'V', 'E'}, 0, header, offset, 4);
-        offset += 4;
-
-        // set the fmt chunk
-        System.arraycopy(new byte[]{'f', 'm', 't', ' '}, 0, header, offset, 4);
-        offset += 4;
-        System.arraycopy(new byte[]{0x10, 0, 0, 0}, 0, header, offset, 4); // chunk size = 16
-        offset += 4;
-        System.arraycopy(new byte[]{1, 0}, 0, header, offset, 2); // format = 1 for PCM
-        offset += 2;
-        header[offset++] = (byte) (mChannels & 0xFF);
-        header[offset++] = (byte) ((mChannels >> 8) & 0xFF);
-        header[offset++] = (byte) (mSampleRate & 0xFF);
-        header[offset++] = (byte) ((mSampleRate >> 8) & 0xFF);
-        header[offset++] = (byte) ((mSampleRate >> 16) & 0xFF);
-        header[offset++] = (byte) ((mSampleRate >> 24) & 0xFF);
-        int byteRate = mSampleRate * mNumBytesPerSample;
-        header[offset++] = (byte) (byteRate & 0xFF);
-        header[offset++] = (byte) ((byteRate >> 8) & 0xFF);
-        header[offset++] = (byte) ((byteRate >> 16) & 0xFF);
-        header[offset++] = (byte) ((byteRate >> 24) & 0xFF);
-        header[offset++] = (byte) (mNumBytesPerSample & 0xFF);
-        header[offset++] = (byte) ((mNumBytesPerSample >> 8) & 0xFF);
-        System.arraycopy(new byte[]{0x10, 0}, 0, header, offset, 2);
-        offset += 2;
-
-        // set the beginning of the data chunk
-        System.arraycopy(new byte[]{'d', 'a', 't', 'a'}, 0, header, offset, 4);
-        offset += 4;
-        size = mNumSamples * mNumBytesPerSample;
-        header[offset++] = (byte) (size & 0xFF);
-        header[offset++] = (byte) ((size >> 8) & 0xFF);
-        header[offset++] = (byte) ((size >> 16) & 0xFF);
-        header[offset++] = (byte) ((size >> 24) & 0xFF);
-
-        mHeader = header;
+        int bytesPerFrame = 2 * numChannels;
+        int dataSize = numSamples * bytesPerFrame;
+        return ByteBuffer.allocate(44).order(ByteOrder.LITTLE_ENDIAN)
+                .put(new byte[]{'R', 'I', 'F', 'F'}).putInt(36 + dataSize)
+                .put(new byte[]{'W', 'A', 'V', 'E', 'f', 'm', 't', ' '}).putInt(16)
+                .putShort((short) 1).putShort((short) numChannels).putInt(sampleRate)
+                .putInt(sampleRate * bytesPerFrame).putShort((short) bytesPerFrame)
+                .putShort((short) 16).put(new byte[]{'d', 'a', 't', 'a'}).putInt(dataSize).array();
     }
 }

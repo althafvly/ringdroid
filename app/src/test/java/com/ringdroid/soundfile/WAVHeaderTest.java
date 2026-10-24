@@ -1,5 +1,8 @@
 package com.ringdroid.soundfile;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -14,7 +17,7 @@ public class WAVHeaderTest {
         byte[] header = WAVHeader.getWAVHeader(sampleRate, numChannels, numSamples);
 
         assertNotNull(header);
-        assertEquals(46, header.length);
+        assertEquals(44, header.length);
 
         // Check "RIFF"
         assertEquals('R', header[0]);
@@ -39,5 +42,12 @@ public class WAVHeaderTest {
         assertEquals('a', header[37]);
         assertEquals('t', header[38]);
         assertEquals('a', header[39]);
+
+        ByteBuffer buf = ByteBuffer.wrap(header).order(ByteOrder.LITTLE_ENDIAN);
+        int dataSize = numSamples * numChannels * 2;
+        assertEquals(36 + dataSize, buf.getInt(4));
+        assertEquals(numChannels, buf.getShort(22));
+        assertEquals(sampleRate, buf.getInt(24));
+        assertEquals(dataSize, buf.getInt(40));
     }
 }
