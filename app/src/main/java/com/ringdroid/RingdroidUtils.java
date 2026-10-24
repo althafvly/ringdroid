@@ -1,5 +1,8 @@
 package com.ringdroid;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -30,6 +33,7 @@ import java.io.OutputStream;
 
 public class RingdroidUtils {
     private static final String TAG = "RingdroidUtils";
+    static final ExecutorService BACKGROUND = Executors.newCachedThreadPool();
 
     public static void setDefaultRingTone(ComponentActivity activity, int type, Uri ringtoneUri,
             boolean shouldFinish) {

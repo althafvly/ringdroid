@@ -211,8 +211,6 @@ public class RingdroidEditActivity extends ComponentActivity
     };
     private EditorBinding binding;
     private float mAmplifyFactor = 1.0f;
-    private Thread mLoadSoundFileThread;
-    private Thread mRecordAudioThread;
     private final ActivityResultLauncher<String> mMicPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(), granted -> {
                 if (PermissionUtils.hasMicPermissions(this)) {
@@ -223,7 +221,6 @@ public class RingdroidEditActivity extends ComponentActivity
                     finish();
                 }
             });
-    private Thread mSaveSoundFileThread;
 
     public static void onAbout(final Context context) {
         AboutDialogBinding binding = AboutDialogBinding.inflate(LayoutInflater.from(context));
@@ -256,10 +253,6 @@ public class RingdroidEditActivity extends ComponentActivity
 
         mAlertDialog = null;
         mProgressDialog = null;
-
-        mLoadSoundFileThread = null;
-        mRecordAudioThread = null;
-        mSaveSoundFileThread = null;
 
         Intent intent = getIntent();
 
@@ -301,12 +294,6 @@ public class RingdroidEditActivity extends ComponentActivity
         }
     }
 
-    private void closeThread(Thread thread) {
-        if (thread != null && thread.isAlive()) {
-            thread.interrupt();
-        }
-    }
-
     //
     // WaveformListener
     //
@@ -326,12 +313,6 @@ public class RingdroidEditActivity extends ComponentActivity
 
         mLoadingKeepGoing = false;
         mRecordingKeepGoing = false;
-        closeThread(mLoadSoundFileThread);
-        closeThread(mRecordAudioThread);
-        closeThread(mSaveSoundFileThread);
-        mLoadSoundFileThread = null;
-        mRecordAudioThread = null;
-        mSaveSoundFileThread = null;
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
             mProgressDialog = null;
@@ -817,14 +798,12 @@ public class RingdroidEditActivity extends ComponentActivity
             return !mLoadingKeepGoing;
         };
 
-        // Load the sound file in a background thread
-        mLoadSoundFileThread = new Thread(() -> {
+        final AlertDialog progressDialog = mProgressDialog;
+        RingdroidUtils.BACKGROUND.execute(() -> {
             SoundFile soundFile = null;
             try {
                 soundFile = SoundFile.create(getCacheDir(), mFile.getAbsolutePath(), listener);
-                if (mProgressDialog != null) {
-                    mProgressDialog.dismiss();
-                }
+                progressDialog.dismiss();
                 if (soundFile == null) {
                     if (mLoadingKeepGoing) {
                         String name = mFile.getName().toLowerCase(Locale.ROOT);
@@ -853,9 +832,7 @@ public class RingdroidEditActivity extends ComponentActivity
                 if (soundFile != null) {
                     soundFile.release();
                 }
-                if (mProgressDialog != null) {
-                    mProgressDialog.dismiss();
-                }
+                progressDialog.dismiss();
                 postError(e, R.string.read_error);
                 return;
             }
@@ -863,7 +840,6 @@ public class RingdroidEditActivity extends ComponentActivity
                 finish();
             }
         });
-        mLoadSoundFileThread.start();
     }
 
     private void recordAudio() {
@@ -929,22 +905,18 @@ public class RingdroidEditActivity extends ComponentActivity
             return !mRecordingKeepGoing;
         };
 
-        // Record the audio stream in a background thread
-        mRecordAudioThread = new Thread(() -> {
+        final AlertDialog recordDialog = mAlertDialog;
+        RingdroidUtils.BACKGROUND.execute(() -> {
             SoundFile soundFile = null;
             try {
                 soundFile = SoundFile.record(listener);
                 if (soundFile == null) {
-                    if (mAlertDialog != null) {
-                        mAlertDialog.dismiss();
-                    }
+                    recordDialog.dismiss();
                     postError(null, R.string.record_error);
                     return;
                 }
                 SamplePlayer player = new SamplePlayer(soundFile);
-                if (mAlertDialog != null) {
-                    mAlertDialog.dismiss();
-                }
+                recordDialog.dismiss();
                 if (mFinishActivity) {
                     player.release();
                     soundFile.release();
@@ -957,13 +929,10 @@ public class RingdroidEditActivity extends ComponentActivity
                 if (soundFile != null) {
                     soundFile.release();
                 }
-                if (mAlertDialog != null) {
-                    mAlertDialog.dismiss();
-                }
+                recordDialog.dismiss();
                 postError(e, R.string.record_error);
             }
         });
-        mRecordAudioThread.start();
     }
 
     // Hands a loaded sound file to the UI thread, or releases it if the editor is gone.
@@ -1293,14 +1262,15 @@ public class RingdroidEditActivity extends ComponentActivity
             mProgressDialog.show();
         }
 
+        final AlertDialog progressDialog = mProgressDialog;
         RingtoneSaver saver = new RingtoneSaver(this, mSoundFile, mAmplifyFactor, mNewFileKind);
-        mSaveSoundFileThread = new Thread(() -> {
+        RingdroidUtils.BACKGROUND.execute(() -> {
             try {
                 Uri uri = saver.save(title, startFrame, endFrame - startFrame, durationMs);
-                mProgressDialog.dismiss();
+                progressDialog.dismiss();
                 mHandler.post(() -> afterSavingRingtone(uri));
             } catch (RingtoneSaver.SaveException e) {
-                mProgressDialog.dismiss();
+                progressDialog.dismiss();
                 if (e.messageId == R.string.too_small_error) {
                     mHandler.post(() -> new AlertDialog.Builder(this)
                             .setTitle(R.string.alert_title_failure).setMessage(e.messageId)
@@ -1310,7 +1280,6 @@ public class RingdroidEditActivity extends ComponentActivity
                 }
             }
         });
-        mSaveSoundFileThread.start();
     }
 
     private void postError(Throwable e, int messageId) {

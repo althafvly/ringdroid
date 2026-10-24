@@ -108,7 +108,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
     private final ContactRingtonePicker mContactPicker = new ContactRingtonePicker(this, () -> {
     });
     private int mInternalRowCount = 0;
-    private Thread mLoaderThread;
+    private int mLoadGeneration;
     private final ActivityResultLauncher<String> mStoragePermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(), granted -> onPermissionChanged());
     private MediaSelectBinding binding;
@@ -233,6 +233,14 @@ public class RingdroidSelectActivity extends ComponentActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        if (mAdapter != null) {
+            mAdapter.changeCursor(null);
+        }
+        super.onDestroy();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
@@ -247,30 +255,31 @@ public class RingdroidSelectActivity extends ComponentActivity {
     }
 
     private void loadAudioAsync(String filter) {
-        // Cancel previous load
-        if (mLoaderThread != null && mLoaderThread.isAlive()) {
-            mLoaderThread.interrupt();
-        }
-
-        mLoaderThread = new Thread(() -> {
+        int generation = ++mLoadGeneration;
+        RingdroidUtils.BACKGROUND.execute(() -> {
+            Cursor internal = null;
+            Cursor external = null;
             try {
-                Cursor internal = queryCursor(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, filter);
-                Cursor external = queryCursor(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, filter);
-
-                if (Thread.interrupted()) {
-                    closeCursor(internal);
-                    closeCursor(external);
-                    return;
-                }
-
-                mUiHandler.post(() -> updateUiWithCursors(internal, external));
+                internal = queryCursor(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, filter);
+                external = queryCursor(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, filter);
             } catch (SecurityException | IllegalArgumentException | IllegalStateException
                     | UnsupportedOperationException e) {
                 Log.e(TAG, "Loader error", e);
+                closeCursor(internal);
+                closeCursor(external);
+                return;
             }
+            Cursor internalResult = internal;
+            Cursor externalResult = external;
+            mUiHandler.post(() -> {
+                if (generation != mLoadGeneration) {
+                    closeCursor(internalResult);
+                    closeCursor(externalResult);
+                    return;
+                }
+                updateUiWithCursors(internalResult, externalResult);
+            });
         });
-
-        mLoaderThread.start();
     }
 
     private Cursor queryCursor(Uri baseUri, String filter) {
@@ -754,7 +763,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
 
         if (audioUri != null) {
             Uri uri = audioUri;
-            new Thread(() -> {
+            RingdroidUtils.BACKGROUND.execute(() -> {
                 File file = RingdroidUtils.getFileFromUri(this, uri);
                 mUiHandler.post(() -> {
                     if (file == null) {
@@ -763,7 +772,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
                         startRingdroidEditor(Uri.fromFile(file));
                     }
                 });
-            }).start();
+            });
         }
     }
 

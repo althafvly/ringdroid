@@ -506,7 +506,9 @@ public class WaveformView extends View {
         double[] heights = new double[numFrames];
         double range = maxGain - minGain;
         for (int i = 0; i < numFrames; i++) {
-            double value = range > 0 ? (smoothedGains[i] * scaleFactor - minGain) / range : 0;
+            double scaledGain = smoothedGains[i] * scaleFactor;
+            // With no range (constant level) draw sound at full height and silence flat.
+            double value = range > 0 ? (scaledGain - minGain) / range : (scaledGain > 0 ? 1 : 0);
             if (value < 0.0)
                 value = 0.0;
             if (value > 1.0)

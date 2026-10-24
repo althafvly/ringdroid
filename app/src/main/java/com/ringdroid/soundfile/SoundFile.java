@@ -306,9 +306,11 @@ public class SoundFile {
             if (pcmParentDir == null) {
                 throw new IOException("Cannot determine app cache directory for PCM temp buffer");
             }
-            deleteStalePcmFiles(pcmParentDir);
-            mPcmTempFile = File.createTempFile(PCM_PREFIX, ".raw", pcmParentDir);
-            sActivePcmFiles.add(mPcmTempFile);
+            synchronized (sActivePcmFiles) {
+                deleteStalePcmFiles(pcmParentDir);
+                mPcmTempFile = File.createTempFile(PCM_PREFIX, ".raw", pcmParentDir);
+                sActivePcmFiles.add(mPcmTempFile);
+            }
             long initialSize = Math.max(expectedMemory, 1L << 20); // at least 1MB
             mPcmRaf = new RandomAccessFile(mPcmTempFile, "rw");
             mPcmRaf.setLength(initialSize);
@@ -457,7 +459,6 @@ public class SoundFile {
         mFileSize = 0;
         mSampleRate = 44100;
         mChannels = 1; // record mono audio.
-        short[] buffer = new short[1024]; // buffer contains 1 mono frame of 1024 16 bits samples
         int minBufferSize = AudioRecord.getMinBufferSize(mSampleRate, AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT);
         // make sure minBufferSize can contain at least 1 second of audio (16 bits
@@ -476,7 +477,27 @@ public class SoundFile {
         mDecodedBytes = ByteBuffer.allocate(20 * mSampleRate * 2);
         mDecodedBytes.order(ByteOrder.LITTLE_ENDIAN);
         mDecodedSamples = mDecodedBytes.asShortBuffer();
-        audioRecord.startRecording();
+        try {
+            audioRecord.startRecording();
+            recordLoop(audioRecord);
+        } finally {
+            try {
+                audioRecord.stop();
+            } catch (IllegalStateException ignored) {
+            }
+            audioRecord.release();
+        }
+        mNumSamples = mDecodedSamples.position();
+        mDecodedSamples.rewind();
+        mDecodedBytes.rewind();
+        mAvgBitRate = mSampleRate * 16 / 1000;
+
+        computeFrameGains();
+        return true;
+    }
+
+    private void recordLoop(AudioRecord audioRecord) {
+        short[] buffer = new short[1024]; // 1 mono frame of 1024 16-bit samples
         while (true) {
             // check if mDecodedSamples can contain 1024 additional samples.
             if (mDecodedSamples.remaining() < 1024) {
@@ -511,15 +532,6 @@ public class SoundFile {
                 break;
             }
         }
-        audioRecord.stop();
-        audioRecord.release();
-        mNumSamples = mDecodedSamples.position();
-        mDecodedSamples.rewind();
-        mDecodedBytes.rewind();
-        mAvgBitRate = mSampleRate * 16 / 1000;
-
-        computeFrameGains();
-        return true;
     }
 
     private void computeFrameGains() {
