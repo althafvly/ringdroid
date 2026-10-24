@@ -86,8 +86,6 @@
 
     <string name="bad_extension_error">Sorry, Ringdroid is nog niet in staat om bestanden van het type</string>
     <string name="no_extension_error">Sorry, Ringdroid kan een bestand niet bewerken als het geen extensie heeft zoals .mp3 of .wav</string>
-
-    <string name="choose_contact_title">Beltoon toewijzen aan welke contactpersoon?</string>
     <string name="success_contact_ringtone">Beltoon succesvol toegewezen aan:</string>
 
     <string name="about_title">Over Ringdroid</string>

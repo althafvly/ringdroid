@@ -1,6 +1,5 @@
 package com.ringdroid;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -22,9 +21,6 @@ import java.io.File;
 public class RingdroidUtilsTest {
     @Test
     public void permissionContractsExposeExpectedPermissions() {
-        assertArrayEquals(
-                new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS},
-                PermissionUtils.getContactPermissions());
         assertEquals(Manifest.permission.RECORD_AUDIO, PermissionUtils.getMicPermission());
         assertEquals(Manifest.permission.READ_MEDIA_AUDIO, PermissionUtils.getStoragePermission());
     }

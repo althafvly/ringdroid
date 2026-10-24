@@ -86,8 +86,6 @@
 
     <string name="bad_extension_error">Desculpe, o Ringdroid ainda não é capaz de editar arquivos do tipo</string>
     <string name="no_extension_error">Desculpe, o Ringdroid não pode editar um arquivo se ele não tiver uma extensão como .mp3 ou .wav</string>
-
-    <string name="choose_contact_title">Atribuir toque a qual contato?</string>
     <string name="success_contact_ringtone">Toque atribuído com sucesso a:</string>
 
     <string name="about_title">Sobre o Ringdroid</string>

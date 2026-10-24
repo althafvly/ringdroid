@@ -86,8 +86,6 @@
 
     <string name="bad_extension_error">क्षमा करें, Ringdroid अभी इस प्रकार की फ़ाइलों को संपादित करने में सक्षम नहीं है</string>
     <string name="no_extension_error">क्षमा करें, यदि किसी फ़ाइल में .mp3 या .wav जैसा कोई एक्सटेंशन नहीं है तो Ringdroid उसे संपादित नहीं कर सकता</string>
-
-    <string name="choose_contact_title">रिंगटोन किस संपर्क को असाइन करना है?</string>
     <string name="success_contact_ringtone">रिंगटोन सफलतापूर्वक असाइन किया गया:</string>
 
     <string name="about_title">Ringdroid के बारे में</string>

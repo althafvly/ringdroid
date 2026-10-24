@@ -3,11 +3,8 @@ package com.ringdroid;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.SystemClock;
 import android.view.View;
 import android.widget.EditText;
@@ -15,7 +12,6 @@ import android.widget.EditText;
 import androidx.activity.ComponentActivity;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,23 +38,6 @@ public class AppUiSmokeTest {
                 assertEquals("", query.getText().toString());
                 activity.findViewById(R.id.btn_search_back).performClick();
                 assertVisible(activity.findViewById(R.id.toolbar_normal));
-            });
-            rotateToLandscape(scenario);
-            scenario.onActivity(
-                    activity -> assertVisible(activity.findViewById(R.id.toolbar_container)));
-        }
-    }
-
-    @Test
-    public void contactSelectorToolbarAndRotationDoNotCrash() {
-        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        Intent intent = new Intent(context, ChooseContactActivity.class)
-                .setData(Uri.parse("content://media/external/audio/media/1"));
-        try (ActivityScenario<ChooseContactActivity> scenario = ActivityScenario.launch(intent)) {
-            scenario.onActivity(activity -> {
-                assertVisible(activity.findViewById(R.id.toolbar_container));
-                assertVisible(activity.findViewById(R.id.btn_back));
-                assertVisible(activity.findViewById(R.id.btn_search));
             });
             rotateToLandscape(scenario);
             scenario.onActivity(

@@ -86,8 +86,6 @@
 
     <string name="bad_extension_error">抱歉，Ringdroid 尚不能编辑此类型文件</string>
     <string name="no_extension_error">抱歉，如果文件没有 .mp3 或 .wav 等扩展名，Ringdroid 无法编辑它</string>
-
-    <string name="choose_contact_title">将铃声分配给哪个联系人?</string>
     <string name="success_contact_ringtone">成功将铃声分配给:</string>
 
     <string name="about_title">关于 Ringdroid</string>

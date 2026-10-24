@@ -86,8 +86,6 @@
 
     <string name="bad_extension_error">죄송합니다. Ringdroid는 아직 이 유형의 파일을 편집할 수 없습니다</string>
     <string name="no_extension_error">죄송합니다. 파일에 .mp3 또는 .wav와 같은 확장자가 없으면 Ringdroid는 편집할 수 없습니다</string>
-
-    <string name="choose_contact_title">벨소리를 어떤 연락처에 할당하시겠습니까?</string>
     <string name="success_contact_ringtone">벨소리가 성공적으로 할당되었습니다:</string>
 
     <string name="about_title">Ringdroid 정보</string>

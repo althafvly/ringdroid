@@ -86,8 +86,6 @@
 
     <string name="bad_extension_error">К сожалению, Ringdroid еще не может редактировать файлы типа</string>
     <string name="no_extension_error">К сожалению, Ringdroid не может редактировать файл, если у него нет расширения, например .mp3 или .wav</string>
-
-    <string name="choose_contact_title">Назначить рингтон какому контакту?</string>
     <string name="success_contact_ringtone">Рингтон успешно назначен контакту:</string>
 
     <string name="about_title">О Ringdroid</string>

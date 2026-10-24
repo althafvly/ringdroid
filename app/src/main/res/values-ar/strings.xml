@@ -86,8 +86,6 @@
 
     <string name="bad_extension_error">عذراً، Ringdroid غير قادر بعد على تعديل ملفات من نوع</string>
     <string name="no_extension_error">عذراً، لا يمكن لـ Ringdroid تعديل ملف إذا لم يكن له امتداد مثل .mp3 أو .wav</string>
-
-    <string name="choose_contact_title">تعيين نغمة الرنين لأي جهة اتصال؟</string>
     <string name="success_contact_ringtone">تم تعيين نغمة الرنين بنجاح لـ:</string>
 
     <string name="about_title">حول Ringdroid</string>

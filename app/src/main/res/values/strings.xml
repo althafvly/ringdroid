@@ -154,8 +154,6 @@
     <!--
      Choose Contact Activity
      -->
-
-    <string name="choose_contact_title">Assign ringtone to which contact?</string>
     <string name="success_contact_ringtone">Successfully assigned ringtone to:</string>
 
     <!--

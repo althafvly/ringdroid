@@ -86,8 +86,6 @@
 
     <string name="bad_extension_error">Désolé, Ringdroid n\'est pas encore capable de modifier les fichiers de type</string>
     <string name="no_extension_error">Désolé, Ringdroid ne peut pas modifier un fichier s\'il n\'a pas d\'extension comme .mp3 ou .wav</string>
-
-    <string name="choose_contact_title">Attribuer une sonnerie à quel contact?</string>
     <string name="success_contact_ringtone">Sonnerie attribuée avec succès à:</string>
 
     <string name="about_title">À propos de Ringdroid</string>

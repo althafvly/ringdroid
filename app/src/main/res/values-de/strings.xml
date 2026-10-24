@@ -86,8 +86,6 @@
 
     <string name="bad_extension_error">Entschuldigung, Ringdroid kann Dateien dieses Typs noch nicht bearbeiten</string>
     <string name="no_extension_error">Entschuldigung, Ringdroid kann eine Datei nicht bearbeiten, wenn sie keine Erweiterung wie .mp3 oder .wav hat</string>
-
-    <string name="choose_contact_title">Wem soll der Klingelton zugewiesen werden?</string>
     <string name="success_contact_ringtone">Klingelton erfolgreich zugewiesen an:</string>
 
     <string name="about_title">Über Ringdroid</string>

@@ -86,6 +86,9 @@ public class RingdroidSelectActivity extends ComponentActivity {
     private SimpleCursorAdapter mAdapter;
     private boolean mWasGetContentIntent;
     private boolean mShowAll = false;
+    private final ContactRingtonePicker mContactPicker = new ContactRingtonePicker(this, () -> {
+    });
+    private int mInternalRowCount = 0;
     private Thread mLoaderThread;
     private final ActivityResultLauncher<String> mStoragePermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(), granted -> onPermissionChanged());
@@ -233,8 +236,11 @@ public class RingdroidSelectActivity extends ComponentActivity {
                 Cursor internal = queryCursor(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, filter);
                 Cursor external = queryCursor(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, filter);
 
-                if (Thread.interrupted())
+                if (Thread.interrupted()) {
+                    closeCursor(internal);
+                    closeCursor(external);
                     return;
+                }
 
                 mUiHandler.post(() -> updateUiWithCursors(internal, external));
             } catch (SecurityException | IllegalArgumentException | IllegalStateException
@@ -301,7 +307,22 @@ public class RingdroidSelectActivity extends ComponentActivity {
                 selectionArgs, MediaStore.Audio.Media.TITLE + " ASC");
     }
 
+    private static void closeCursor(Cursor cursor) {
+        if (cursor != null) {
+            cursor.close();
+        }
+    }
+
+    private boolean moveToRow(Cursor c, int position) {
+        return c == mAdapter.getCursor() && !c.isClosed() && c.moveToPosition(position);
+    }
+
     private void updateUiWithCursors(Cursor internal, Cursor external) {
+        if (isDestroyed()) {
+            closeCursor(internal);
+            closeCursor(external);
+            return;
+        }
         TextView emptyView = binding.emptyText;
 
         int internalCount = internal != null ? internal.getCount() : 0;
@@ -309,7 +330,10 @@ public class RingdroidSelectActivity extends ComponentActivity {
 
         if (internalCount == 0 && externalCount == 0 && !mShowAll) {
             emptyView.setVisibility(View.VISIBLE);
-            mAdapter.swapCursor(null);
+            closeCursor(internal);
+            closeCursor(external);
+            mInternalRowCount = 0;
+            mAdapter.changeCursor(null);
             return;
         } else {
             emptyView.setVisibility(View.GONE);
@@ -322,7 +346,8 @@ public class RingdroidSelectActivity extends ComponentActivity {
             cursors.add(external);
 
         Cursor merged = new MergeCursor(cursors.toArray(new Cursor[0]));
-        mAdapter.swapCursor(merged);
+        mInternalRowCount = internalCount;
+        mAdapter.changeCursor(merged);
     }
 
     private void setSoundIconFromCursor(ImageView view, Cursor cursor) {
@@ -492,7 +517,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
             popupBinding.menuDefaultText.setText(R.string.context_menu_default_ringtone);
             popupBinding.menuItemDefault.setOnClickListener(v -> {
                 popupWindow.dismiss();
-                if (c.moveToPosition(position)) {
+                if (moveToRow(c, position)) {
                     setAsDefaultRingtoneOrNotification();
                 }
             });
@@ -502,7 +527,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
             popupBinding.menuDefaultText.setText(R.string.context_menu_default_notification);
             popupBinding.menuItemDefault.setOnClickListener(v -> {
                 popupWindow.dismiss();
-                if (c.moveToPosition(position)) {
+                if (moveToRow(c, position)) {
                     setAsDefaultRingtoneOrNotification();
                 }
             });
@@ -515,7 +540,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
             popupBinding.menuItemContact.setVisibility(View.VISIBLE);
             popupBinding.menuItemContact.setOnClickListener(v -> {
                 popupWindow.dismiss();
-                if (c.moveToPosition(position)) {
+                if (moveToRow(c, position)) {
                     chooseContactForRingtone();
                 }
             });
@@ -529,7 +554,7 @@ public class RingdroidSelectActivity extends ComponentActivity {
             popupBinding.menuItemDelete.setVisibility(View.VISIBLE);
             popupBinding.menuItemDelete.setOnClickListener(v -> {
                 popupWindow.dismiss();
-                if (c.moveToPosition(position)) {
+                if (moveToRow(c, position)) {
                     confirmDelete();
                 }
             });
@@ -557,61 +582,29 @@ public class RingdroidSelectActivity extends ComponentActivity {
         }
     }
 
-    private int getUriIndex(Cursor c) {
-        int uriIndex;
-        String[] columnNames = {MediaStore.Audio.Media.INTERNAL_CONTENT_URI.toString(),
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString()};
-
-        for (String columnName : columnNames) {
-            uriIndex = c.getColumnIndex(columnName);
-            if (uriIndex >= 0) {
-                return uriIndex;
-            }
-            // On some phones and/or Android versions, the column name includes the double
-            // quotes.
-            uriIndex = c.getColumnIndex("\"" + columnName + "\"");
-            if (uriIndex >= 0) {
-                return uriIndex;
-            }
-        }
-        return -1;
-    }
-
     private Uri getUri() {
         // Get the uri of the item that is in the row
         Cursor c = mAdapter.getCursor();
         if (c == null || c.isClosed())
             return null;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            int idCol = c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID);
-            long id = c.getLong(idCol);
-
-            return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
-        }
-
-        int uriIndex = getUriIndex(c);
-        if (uriIndex == -1) {
-            return null;
-        }
-
-        String itemUri = c.getString(uriIndex) + "/"
-                + c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
-
-        return Uri.parse(itemUri);
+        long id = c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID));
+        Uri collection = c.getPosition() < mInternalRowCount
+                ? MediaStore.Audio.Media.INTERNAL_CONTENT_URI
+                : MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        return ContentUris.withAppendedId(collection, id);
     }
 
-    private boolean chooseContactForRingtone() {
-        try {
-            Uri uri = getUri();
-            if (uri == null)
-                return false;
-            // Go to the choose contact activity
-            startActivity(ChooseContactActivity.createIntent(this, uri));
-        } catch (ActivityNotFoundException | SecurityException e) {
-            Log.e(TAG, "Couldn't open Choose Contact window", e);
+    private void chooseContactForRingtone() {
+        Uri uri = getUri();
+        if (uri == null) {
+            return;
         }
-        return true;
+        try {
+            mContactPicker.pick(uri);
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "Couldn't open the contact picker", e);
+        }
     }
 
     private void confirmDelete() {

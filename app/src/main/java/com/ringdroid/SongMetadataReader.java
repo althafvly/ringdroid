@@ -16,102 +16,42 @@
 
 package com.ringdroid;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore;
+import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
-public class SongMetadataReader {
+import java.io.IOException;
+
+final class SongMetadataReader {
     private static final String TAG = "SongMetadataReader";
 
-    public Uri GENRES_URI = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
-    public Context mContext;
-    public String mFilename;
-    public String mTitle = "";
-    public String mArtist = "";
-    public String mAlbum = "";
-    public String mGenre = "";
-    public int mYear = -1;
+    final String mTitle;
+    final String mArtist;
 
-    SongMetadataReader(Context context, String filename) {
-        mContext = context;
-        mFilename = filename;
-        mTitle = getBasename(filename);
+    SongMetadataReader(String filename) {
+        String title = null;
+        String artist = null;
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
-            ReadMetadata();
-        } catch (SecurityException | IllegalArgumentException | IllegalStateException
-                | UnsupportedOperationException e) {
-            Log.e(TAG, "Failed to read song metadata", e);
-        }
-    }
-
-    private void ReadMetadata() {
-        Cursor c = queryAudio(RingdroidUtils.getExternalAudioCollectionUri());
-        if (c == null || c.getCount() == 0) {
-            if (c != null) {
-                c.close();
+            retriever.setDataSource(filename);
+            title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+            artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+        } catch (RuntimeException e) {
+            Log.w(TAG, "Failed to read metadata from " + filename, e);
+        } finally {
+            try {
+                retriever.release();
+            } catch (IOException ignored) {
             }
-            c = queryAudio(RingdroidUtils.getInternalAudioCollectionUri());
         }
-        if (c == null || c.getCount() == 0) {
-            if (c != null) {
-                c.close();
-            }
-            mTitle = getBasename(mFilename);
-            mArtist = "";
-            mAlbum = "";
-            mYear = -1;
-            return;
-        }
-        c.moveToFirst();
-        mTitle = getStringFromColumn(c, MediaStore.Audio.Media.TITLE);
-        if (mTitle == null || mTitle.isEmpty()) {
-            mTitle = getBasename(mFilename);
-        }
-        mArtist = getStringFromColumn(c, MediaStore.Audio.Media.ARTIST);
-        mAlbum = getStringFromColumn(c, MediaStore.Audio.Media.ALBUM);
-        mYear = getIntegerFromColumn(c);
-        c.close();
+        mTitle = title != null && !title.isEmpty() ? title : getBasename(filename);
+        mArtist = artist;
     }
 
-    private String getStringFromColumn(Cursor c, String columnName) {
-        int index = c.getColumnIndexOrThrow(columnName);
-        String value = c.getString(index);
-        if (value != null && !value.isEmpty()) {
-            return value;
-        } else {
-            return null;
-        }
-    }
-
-    private int getIntegerFromColumn(Cursor c) {
-        int index = c.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.YEAR);
-        return c.getInt(index);
-    }
-
-    private String getBasename(String filename) {
+    private static String getBasename(String filename) {
         int slashIndex = filename.lastIndexOf('/');
         int dotIndex = filename.lastIndexOf('.');
-        int start = (slashIndex == -1) ? 0 : slashIndex + 1;
-        int end = (dotIndex == -1 || dotIndex <= slashIndex) ? filename.length() : dotIndex;
-        if (start >= end) {
-            return filename.substring(start);
-        }
-        return filename.substring(start, end);
-    }
-
-    private Cursor queryAudio(Uri uri) {
-        try {
-            return mContext.getContentResolver().query(uri,
-                    new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,
-                            MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
-                            MediaStore.Audio.Media.YEAR, MediaStore.Audio.Media.DATA},
-                    MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"", null, null);
-        } catch (SecurityException | IllegalArgumentException | IllegalStateException
-                | UnsupportedOperationException e) {
-            Log.e(TAG, "Failed to query audio from " + uri, e);
-            return null;
-        }
+        int start = slashIndex + 1;
+        int end = dotIndex > slashIndex ? dotIndex : filename.length();
+        return filename.substring(start, Math.max(start, end));
     }
 }

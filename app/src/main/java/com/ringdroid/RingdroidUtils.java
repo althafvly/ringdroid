@@ -160,8 +160,11 @@ public class RingdroidUtils {
                 int idx = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                 if (idx >= 0) {
                     String name = cursor.getString(idx);
-                    if (name != null && !name.isEmpty()) {
-                        fileName = name;
+                    String safeName = name != null
+                            ? name.substring(name.lastIndexOf('/') + 1)
+                            : null;
+                    if (safeName != null && !safeName.isEmpty() && !safeName.equals("..")) {
+                        fileName = safeName;
                     }
                 }
             }

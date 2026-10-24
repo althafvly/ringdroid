@@ -86,8 +86,6 @@
 
     <string name="bad_extension_error">Üzgünüz, Ringdroid henüz bu türdeki dosyaları düzenleyemiyor</string>
     <string name="no_extension_error">Üzgünüz, Ringdroid, .mp3 veya .wav gibi bir uzantısı olmayan bir dosyayı düzenleyemez</string>
-
-    <string name="choose_contact_title">Zil sesini hangi kişiye atayalım?</string>
     <string name="success_contact_ringtone">Zil sesi başarıyla atandı:</string>
 
     <string name="about_title">Ringdroid Hakkında</string>

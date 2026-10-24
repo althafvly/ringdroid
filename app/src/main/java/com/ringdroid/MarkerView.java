@@ -122,7 +122,7 @@ public class MarkerView extends ImageView {
         mVelocity = 0;
         if (mListener != null)
             mListener.markerKeyUp();
-        return super.onKeyDown(keyCode, event);
+        return super.onKeyUp(keyCode, event);
     }
 
     public interface MarkerListener {

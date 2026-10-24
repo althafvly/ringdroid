@@ -22,7 +22,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Contacts -->
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
 
     <!-- Change system settings (user must approve via special screen) -->
@@ -91,13 +90,6 @@
                 <data android:mimeType="audio/*" />
             </intent-filter>
         </activity>
-
-        <!-- Activity for choosing a contact to assign a ringtone to. -->
-        <activity
-            android:name=".ChooseContactActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
 
     </application>
 

@@ -86,8 +86,6 @@
 
     <string name="bad_extension_error">Spiacenti, Ringdroid non è ancora in grado di modificare file di tipo</string>
     <string name="no_extension_error">Spiacenti, Ringdroid non può modificare un file se non ha un\'estensione come .mp3 o .wav</string>
-
-    <string name="choose_contact_title">Assegna la suoneria a quale contatto?</string>
     <string name="success_contact_ringtone">Suoneria assegnata con successo a:</string>
 
     <string name="about_title">Informazioni su Ringdroid</string>

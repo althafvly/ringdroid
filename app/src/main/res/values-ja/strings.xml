@@ -86,8 +86,6 @@
 
     <string name="bad_extension_error">申し訳ありませんが、Ringdroidはまだこの種類のファイルを編集できません</string>
     <string name="no_extension_error">申し訳ありませんが、ファイルに.mp3や.wavなどの拡張子がない場合、Ringdroidは編集できません</string>
-
-    <string name="choose_contact_title">着信音をどの連絡先に割り当てますか？</string>
     <string name="success_contact_ringtone">着信音が正常に割り当てられました:</string>
 
     <string name="about_title">Ringdroidについて</string>
