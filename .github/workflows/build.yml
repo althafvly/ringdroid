@@ -18,8 +18,8 @@ jobs:
 
       - name: Build and test with Gradle
         run: >
-          ./gradlew spotlessCheck assembleFdroidDebug assembleFdroidDebugAndroidTest
-          testFdroidDebugUnitTest lintFdroidDebug
+          ./gradlew spotlessCheck detekt detektMain detektTest assembleFdroidDebug
+          assembleFdroidDebugAndroidTest testFdroidDebugUnitTest lintFdroidDebug
 
       - name: Upload test reports
         if: always()
@@ -28,6 +28,14 @@ jobs:
           name: test-reports
           path: |
             app/build/reports/tests/**
+
+      - name: Upload detekt reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: detekt-reports
+          path: |
+            app/build/reports/detekt/**
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v7
