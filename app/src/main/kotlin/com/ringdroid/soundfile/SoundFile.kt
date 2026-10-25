@@ -23,9 +23,7 @@ class SoundFile private constructor() {
         fun reportProgress(fractionComplete: Double): Boolean
     }
 
-    class InvalidInputException(
-        message: String,
-    ) : Exception(message)
+    class InvalidInputException(message: String) : Exception(message)
 
     var filetype: String? = null
         private set
@@ -69,10 +67,7 @@ class SoundFile private constructor() {
         pcmFile = null
     }
 
-    private fun readFile(
-        cacheDir: File,
-        inputFile: File,
-    ) {
+    private fun readFile(cacheDir: File, inputFile: File) {
         filetype = inputFile.path.substringAfterLast('.')
         val fileSize = inputFile.length()
         val extractor = MediaExtractor()
@@ -96,10 +91,12 @@ class SoundFile private constructor() {
                 } else {
                     0L
                 }
-            val expectedBytes = durationUs * sampleRate / MICROS_PER_SECOND * channels * Short.SIZE_BYTES
+            val expectedBytes =
+                durationUs * sampleRate / MICROS_PER_SECOND * channels * Short.SIZE_BYTES
             val pcm = PcmFile.create(cacheDir, maxOf(expectedBytes, MIN_PCM_BYTES))
             pcmFile = pcm
-            val decoder = AudioDecoder(extractor, codec, mime == AAC_MIME, fileSize, progressListener, pcm)
+            val decoder =
+                AudioDecoder(extractor, codec, mime == AAC_MIME, fileSize, progressListener, pcm)
             if (decoder.run()) {
                 decoder.outputFormat?.let {
                     sampleRate = it.getInteger(MediaFormat.KEY_SAMPLE_RATE)
@@ -119,10 +116,7 @@ class SoundFile private constructor() {
         }
     }
 
-    private fun useDecoded(
-        output: ByteBuffer,
-        fileSize: Long,
-    ) {
+    private fun useDecoded(output: ByteBuffer, fileSize: Long) {
         numSamples = output.position() / (channels * Short.SIZE_BYTES)
         output.rewind()
         output.order(ByteOrder.LITTLE_ENDIAN)
@@ -130,7 +124,13 @@ class SoundFile private constructor() {
         val shorts = output.asShortBuffer()
         decodedSamples = shorts
         avgBitrateKbps =
-            if (numSamples > 0) (fileSize * Byte.SIZE_BITS * sampleRate / numSamples / BITS_PER_KILOBIT).toInt() else 0
+            if (numSamples >
+                0
+            ) {
+                (fileSize * Byte.SIZE_BITS * sampleRate / numSamples / BITS_PER_KILOBIT).toInt()
+            } else {
+                0
+            }
         computeFrameGains(shorts)
     }
 
@@ -163,11 +163,26 @@ class SoundFile private constructor() {
         private const val MIN_PCM_BYTES = 1L shl 20
         private const val BITS_PER_KILOBIT = 1000
         private val SUPPORTED_EXTENSIONS =
-            arrayOf("mp3", "wav", "3gpp", "3gp", "amr", "aac", "m4a", "ogg", "flac", "opus", "wma", "mkv")
+            arrayOf(
+                "mp3",
+                "wav",
+                "3gpp",
+                "3gp",
+                "amr",
+                "aac",
+                "m4a",
+                "ogg",
+                "flac",
+                "opus",
+                "wma",
+                "mkv",
+            )
 
         fun getSupportedExtensions(): Array<String> = SUPPORTED_EXTENSIONS.copyOf()
 
-        fun isFilenameSupported(filename: String): Boolean = SUPPORTED_EXTENSIONS.any { filename.endsWith(".$it") }
+        fun isFilenameSupported(filename: String): Boolean = SUPPORTED_EXTENSIONS.any {
+            filename.endsWith(".$it")
+        }
 
         /**
          * Decodes [fileName]. Returns null if the extension is unsupported or the listener
@@ -201,11 +216,7 @@ class SoundFile private constructor() {
         }
 
         /** Wraps mono 16-bit little-endian PCM recorded from the microphone. */
-        internal fun fromRecording(
-            pcm: ByteBuffer,
-            sampleRate: Int,
-            numSamples: Int,
-        ): SoundFile {
+        internal fun fromRecording(pcm: ByteBuffer, sampleRate: Int, numSamples: Int): SoundFile {
             val soundFile = SoundFile()
             soundFile.filetype = "raw"
             soundFile.sampleRate = sampleRate
@@ -219,15 +230,17 @@ class SoundFile private constructor() {
             return soundFile
         }
 
-        // Selects the first audio track and returns its format, which must have the decoder's basics.
-        private fun selectAudioTrack(
-            extractor: MediaExtractor,
-            inputFile: File,
-        ): MediaFormat {
+        // Selects the first audio track and returns its format, which must be decodable.
+        private fun selectAudioTrack(extractor: MediaExtractor, inputFile: File): MediaFormat {
             extractor.setDataSource(inputFile.path)
             val trackIndex =
                 (0 until extractor.trackCount).firstOrNull {
-                    extractor.getTrackFormat(it).getString(MediaFormat.KEY_MIME)?.startsWith("audio/") == true
+                    extractor
+                        .getTrackFormat(
+                            it,
+                        ).getString(MediaFormat.KEY_MIME)
+                        ?.startsWith("audio/") ==
+                        true
                 } ?: throw InvalidInputException("No audio track found in $inputFile")
             extractor.selectTrack(trackIndex)
             val format = extractor.getTrackFormat(trackIndex)

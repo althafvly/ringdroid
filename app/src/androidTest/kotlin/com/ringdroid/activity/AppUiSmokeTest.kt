@@ -32,10 +32,15 @@ class AppUiSmokeTest {
                 activity.findViewById<View>(R.id.btn_search_back).performClick()
                 assertVisible(activity.findViewById(R.id.toolbar_normal))
             }
-            scenario.onActivity { it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE }
+            scenario.onActivity {
+                it.requestedOrientation =
+                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            }
             val deadline = SystemClock.elapsedRealtime() + 5_000
             var orientation = -1
-            while (SystemClock.elapsedRealtime() < deadline && orientation != Configuration.ORIENTATION_LANDSCAPE) {
+            while (SystemClock.elapsedRealtime() < deadline &&
+                orientation != Configuration.ORIENTATION_LANDSCAPE
+            ) {
                 scenario.onActivity { orientation = it.resources.configuration.orientation }
                 SystemClock.sleep(100)
             }

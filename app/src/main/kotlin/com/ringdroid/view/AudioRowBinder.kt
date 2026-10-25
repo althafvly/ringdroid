@@ -14,14 +14,9 @@ import com.ringdroid.data.AudioRow.Companion.isFlagSet
 import com.ringdroid.soundfile.SoundFile
 
 /** Binds a list row: the kind icon, optional artist and album, and the options button. */
-internal class AudioRowBinder(
-    private val onOptions: (anchor: View, position: Int) -> Unit,
-) : SimpleCursorAdapter.ViewBinder {
-    override fun setViewValue(
-        view: View,
-        cursor: Cursor,
-        columnIndex: Int,
-    ): Boolean {
+internal class AudioRowBinder(private val onOptions: (anchor: View, position: Int) -> Unit) :
+    SimpleCursorAdapter.ViewBinder {
+    override fun setViewValue(view: View, cursor: Cursor, columnIndex: Int): Boolean {
         when (view.id) {
             R.id.row_options_button -> {
                 val position = cursor.position
@@ -48,22 +43,17 @@ internal class AudioRowBinder(
     }
 
     // MediaStore reports missing tags as "<unknown>" (and a missing album as "0").
-    private fun bindOptionalText(
-        view: TextView,
-        text: String?,
-        hideZero: Boolean,
-    ) {
-        val hidden = text.isNullOrEmpty() || text.equals("<unknown>", ignoreCase = true) || (hideZero && text == "0")
+    private fun bindOptionalText(view: TextView, text: String?, hideZero: Boolean) {
+        val hidden =
+            text.isNullOrEmpty() || text.equals("<unknown>", ignoreCase = true) ||
+                (hideZero && text == "0")
         view.isVisible = !hidden
         if (!hidden) {
             view.text = text
         }
     }
 
-    private fun setSoundIcon(
-        view: ImageView,
-        cursor: Cursor,
-    ) {
+    private fun setSoundIcon(view: ImageView, cursor: Cursor) {
         val (iconRes, iconColorRes, containerColorRes) =
             when {
                 cursor.isFlagSet(MediaStore.Audio.Media.IS_RINGTONE) -> {
@@ -104,7 +94,10 @@ internal class AudioRowBinder(
         view.setImageResource(iconRes)
         view.imageTintList =
             ColorStateList.valueOf(
-                ContextCompat.getColor(context, if (supported) iconColorRes else R.color.category_icon_unsupported),
+                ContextCompat.getColor(
+                    context,
+                    if (supported) iconColorRes else R.color.category_icon_unsupported,
+                ),
             )
         view.backgroundTintList =
             ColorStateList.valueOf(

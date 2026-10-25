@@ -5,10 +5,8 @@ import android.media.MediaMetadataRetriever
 import android.util.Log
 import java.io.IOException
 
-/** Reads the title and artist tags of an audio file, falling back to the file name for the title. */
-internal class SongMetadataReader(
-    filename: String,
-) {
+/** Reads the title and artist tags of an audio file; the title falls back to the file name. */
+internal class SongMetadataReader(filename: String) {
     val title: String
     val artist: String?
 
@@ -46,11 +44,10 @@ internal class SongMetadataReader(
     private companion object {
         const val TAG = "SongMetadataReader"
 
-        fun basename(filename: String): String =
-            filename.substringAfterLast('/').let { name ->
-                name.substringBeforeLast('.', name).ifEmpty {
-                    name
-                }
+        fun basename(filename: String): String = filename.substringAfterLast('/').let { name ->
+            name.substringBeforeLast('.', name).ifEmpty {
+                name
             }
+        }
     }
 }

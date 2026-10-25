@@ -7,20 +7,31 @@ plugins {
     alias(libs.plugins.detekt) apply false
 }
 
+val ktlintOverrides = mapOf("max_line_length" to 100)
+
 spotless {
     format("xml") {
         target("app/src/**/*.xml")
         targetExclude("**/build/", ".idea/")
         trimTrailingWhitespace()
         leadingTabsToSpaces()
+        endWithNewline()
     }
     kotlin {
         target("app/src/**/*.kt")
-        ktlint()
+        targetExclude("**/build/**")
+        ktlint().editorConfigOverride(ktlintOverrides)
+        trimTrailingWhitespace()
+        leadingTabsToSpaces()
+        endWithNewline()
     }
     kotlinGradle {
         target("*.gradle.kts", "**/build.gradle.kts")
-        ktlint()
+        targetExclude("**/build/**")
+        ktlint().editorConfigOverride(ktlintOverrides)
+        trimTrailingWhitespace()
+        leadingTabsToSpaces()
+        endWithNewline()
     }
 }
 

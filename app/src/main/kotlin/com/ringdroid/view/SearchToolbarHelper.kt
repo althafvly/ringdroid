@@ -20,7 +20,11 @@ class SearchToolbarHelper(
     init {
         searchTriggerButton?.setOnClickListener { openSearch() }
         searchBinding.btnSearchBack.setOnClickListener { closeSearch() }
-        searchBinding.btnSearchClear.setOnClickListener { searchBinding.searchQueryInput.setText("") }
+        searchBinding.btnSearchClear.setOnClickListener {
+            searchBinding.searchQueryInput.setText(
+                "",
+            )
+        }
         searchBinding.searchQueryInput.doOnTextChanged { text, _, _, _ ->
             searchBinding.btnSearchClear.isVisible = !text.isNullOrEmpty()
             onQueryChanged(text?.toString().orEmpty())

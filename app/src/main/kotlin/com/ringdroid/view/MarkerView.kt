@@ -12,34 +12,19 @@ import kotlin.math.sqrt
  * A start or end marker in the waveform editor. It passes touch, focus and key events to its
  * listener, and accelerates while the left or right arrow is held.
  */
-class MarkerView(
-    context: Context,
-    attrs: AttributeSet?,
-) : ImageView(context, attrs) {
+class MarkerView(context: Context, attrs: AttributeSet?) : ImageView(context, attrs) {
     interface MarkerListener {
-        fun markerTouchStart(
-            marker: MarkerView,
-            pos: Float,
-        )
+        fun markerTouchStart(marker: MarkerView, pos: Float)
 
-        fun markerTouchMove(
-            marker: MarkerView,
-            pos: Float,
-        )
+        fun markerTouchMove(marker: MarkerView, pos: Float)
 
         fun markerTouchEnd(marker: MarkerView)
 
         fun markerFocus(marker: MarkerView)
 
-        fun markerLeft(
-            marker: MarkerView,
-            velocity: Int,
-        )
+        fun markerLeft(marker: MarkerView, velocity: Int)
 
-        fun markerRight(
-            marker: MarkerView,
-            velocity: Int,
-        )
+        fun markerRight(marker: MarkerView, velocity: Int)
 
         fun markerKeyUp()
     }
@@ -76,21 +61,14 @@ class MarkerView(
         return true
     }
 
-    override fun onFocusChanged(
-        gainFocus: Boolean,
-        direction: Int,
-        previouslyFocusedRect: Rect?,
-    ) {
+    override fun onFocusChanged(gainFocus: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
         if (gainFocus) {
             listener?.markerFocus(this)
         }
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
     }
 
-    override fun onKeyDown(
-        keyCode: Int,
-        event: KeyEvent,
-    ): Boolean {
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         velocity++
         val step = sqrt(1 + velocity / 2.0).toInt()
         val l = listener
@@ -114,10 +92,7 @@ class MarkerView(
         return handled || super.onKeyDown(keyCode, event)
     }
 
-    override fun onKeyUp(
-        keyCode: Int,
-        event: KeyEvent,
-    ): Boolean {
+    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
         velocity = 0
         listener?.markerKeyUp()
         return super.onKeyUp(keyCode, event)

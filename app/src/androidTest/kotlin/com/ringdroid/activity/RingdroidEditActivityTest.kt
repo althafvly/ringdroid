@@ -23,13 +23,25 @@ class RingdroidEditActivityTest {
     fun editorKeepsToolbarAndControlsWhenRotated() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val audioFile = TestAudio.copyAsset(File(context.cacheDir, "editor-rotation-test.wav"))
-        val intent = Intent(context, RingdroidEditActivity::class.java).setData(Uri.fromFile(audioFile))
+        val intent =
+            Intent(
+                context,
+                RingdroidEditActivity::class.java,
+            ).setData(Uri.fromFile(audioFile))
         try {
             ActivityScenario.launch<RingdroidEditActivity>(intent).use { scenario ->
                 assertToolbarAndControlsPresent(scenario)
-                rotate(scenario, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE, Configuration.ORIENTATION_LANDSCAPE)
+                rotate(
+                    scenario,
+                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
+                    Configuration.ORIENTATION_LANDSCAPE,
+                )
                 assertToolbarAndControlsPresent(scenario)
-                rotate(scenario, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, Configuration.ORIENTATION_PORTRAIT)
+                rotate(
+                    scenario,
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,
+                    Configuration.ORIENTATION_PORTRAIT,
+                )
                 assertToolbarAndControlsPresent(scenario)
             }
         } finally {

@@ -20,7 +20,10 @@ internal class EditorToolbar(
         RingdroidUtils.applyStatusBarInsets(toolbar.toolbarContainer)
         toolbar.btnBack.setOnClickListener { activity.finish() }
         toolbar.btnAmplify.setOnClickListener {
-            AmplifyDialog.show(activity, viewModel.amplifyFactor) { factor -> viewModel.amplifyFactor = factor }
+            AmplifyDialog.show(activity, viewModel.amplifyFactor) { factor ->
+                viewModel.amplifyFactor =
+                    factor
+            }
         }
         toolbar.btnReset.setOnClickListener { onReset() }
         toolbar.btnSave.setOnClickListener { onSave() }

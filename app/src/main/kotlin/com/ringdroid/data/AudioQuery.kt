@@ -10,10 +10,13 @@ internal class AudioQuery private constructor(
     val selection: String,
     val selectionArgs: Array<String>,
 ) {
-    fun run(
-        resolver: ContentResolver,
-        collection: Uri,
-    ): Cursor? = resolver.query(collection, PROJECTION, selection, selectionArgs, MediaStore.Audio.Media.TITLE + " ASC")
+    fun run(resolver: ContentResolver, collection: Uri): Cursor? = resolver.query(
+        collection,
+        PROJECTION,
+        selection,
+        selectionArgs,
+        MediaStore.Audio.Media.TITLE + " ASC",
+    )
 
     companion object {
         private val SEARCH_COLUMNS = listOf("TITLE", "ARTIST", "ALBUM")
@@ -52,11 +55,21 @@ internal class AudioQuery private constructor(
             } else {
                 selection.append(extensions.joinToString(" OR ", "(", ")") { "(_DATA LIKE ?)" })
                 extensions.mapTo(args) { "%.$it" }
-                selection.append(storageRoots.joinToString(" OR ", " AND (", ")") { "_DATA LIKE ?" })
+                selection.append(
+                    storageRoots.joinToString(" OR ", " AND (", ")") { "_DATA LIKE ?" },
+                )
                 storageRoots.mapTo(args) { "$it/%" }
             }
             if (!filter.isNullOrEmpty()) {
-                selection.insert(0, '(').append(SEARCH_COLUMNS.joinToString(" OR ", " AND (", "))") { "$it LIKE ?" })
+                selection
+                    .insert(
+                        0,
+                        '(',
+                    ).append(
+                        SEARCH_COLUMNS.joinToString(" OR ", " AND (", "))") {
+                            "$it LIKE ?"
+                        },
+                    )
                 repeat(SEARCH_COLUMNS.size) { args.add("%$filter%") }
             }
             return AudioQuery(selection.toString(), args.toTypedArray())

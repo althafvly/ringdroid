@@ -14,10 +14,7 @@ internal class EditorSelection {
     private var touchInitialEndPos = 0
 
     /** Starts over at the beginning with the markers at [start] and [end]. */
-    fun reset(
-        start: Int,
-        end: Int,
-    ) {
+    fun reset(start: Int, end: Int) {
         scroll.fling(0f)
         scroll.jumpTo(0)
         startPos = start
@@ -25,12 +22,7 @@ internal class EditorSelection {
     }
 
     /** Takes over the positions after the waveform view rescaled them for a new zoom level. */
-    fun syncZoom(
-        start: Int,
-        end: Int,
-        newMaxPos: Int,
-        newOffset: Int,
-    ) {
+    fun syncZoom(start: Int, end: Int, newMaxPos: Int, newOffset: Int) {
         startPos = start
         endPos = end
         scroll.maxPos = newMaxPos
@@ -46,10 +38,7 @@ internal class EditorSelection {
         touchInitialEndPos = endPos
     }
 
-    fun markerTouchMove(
-        isStart: Boolean,
-        x: Float,
-    ) {
+    fun markerTouchMove(isStart: Boolean, x: Float) {
         val delta = x - touchStart
         if (isStart) {
             startPos = scroll.trap((touchInitialStartPos + delta).toInt())
@@ -66,10 +55,7 @@ internal class EditorSelection {
 
     // Arrow keys nudge a focused marker by [velocity] pixels.
 
-    fun nudgeLeft(
-        isStart: Boolean,
-        velocity: Int,
-    ) {
+    fun nudgeLeft(isStart: Boolean, velocity: Int) {
         scroll.keyDown = true
         if (isStart) {
             val saveStart = startPos
@@ -87,10 +73,7 @@ internal class EditorSelection {
         }
     }
 
-    fun nudgeRight(
-        isStart: Boolean,
-        velocity: Int,
-    ) {
+    fun nudgeRight(isStart: Boolean, velocity: Int) {
         scroll.keyDown = true
         if (isStart) {
             val saveStart = startPos

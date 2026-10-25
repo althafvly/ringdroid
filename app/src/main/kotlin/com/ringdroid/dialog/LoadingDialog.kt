@@ -9,10 +9,7 @@ import com.ringdroid.databinding.DialogProgressHorizontalBinding
 import com.ringdroid.util.createDialog
 
 /** Cancelable progress dialog shown while a sound file is decoded. */
-internal class LoadingDialog(
-    context: Context,
-    onCancel: () -> Unit,
-) {
+internal class LoadingDialog(context: Context, onCancel: () -> Unit) {
     private val binding = DialogProgressHorizontalBinding.inflate(LayoutInflater.from(context))
     private val dialog: AlertDialog
 
@@ -45,7 +42,8 @@ internal class LoadingDialog(
     fun setProgress(fraction: Double) {
         val progress = (fraction * PROGRESS_MAX).toInt()
         binding.progressBar.progress = progress
-        binding.progressPercentageText.text = binding.root.context.getString(R.string.progress_percentage, progress)
+        binding.progressPercentageText.text =
+            binding.root.context.getString(R.string.progress_percentage, progress)
     }
 
     private companion object {

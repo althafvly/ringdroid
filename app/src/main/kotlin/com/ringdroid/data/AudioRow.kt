@@ -29,11 +29,8 @@ internal data class AudioRow(
     }
 
     companion object {
-        /** Reads the cursor's current row; [isInternal] tells which MediaStore volume it is from. */
-        fun from(
-            cursor: Cursor,
-            isInternal: Boolean,
-        ): AudioRow {
+        /** Reads the cursor's current row; [isInternal] tells which MediaStore volume it's from. */
+        fun from(cursor: Cursor, isInternal: Boolean): AudioRow {
             val collection =
                 if (isInternal) {
                     MediaStore.Audio.Media.INTERNAL_CONTENT_URI
@@ -43,8 +40,14 @@ internal data class AudioRow(
             val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
             return AudioRow(
                 uri = ContentUris.withAppendedId(collection, id),
-                title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)),
-                path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)),
+                title =
+                cursor.getString(
+                    cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE),
+                ),
+                path =
+                cursor.getString(
+                    cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA),
+                ),
                 isRingtone = cursor.isFlagSet(MediaStore.Audio.Media.IS_RINGTONE),
                 isNotification = cursor.isFlagSet(MediaStore.Audio.Media.IS_NOTIFICATION),
                 isInternal = isInternal,

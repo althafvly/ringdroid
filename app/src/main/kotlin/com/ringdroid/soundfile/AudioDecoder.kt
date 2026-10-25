@@ -42,7 +42,8 @@ internal class AudioDecoder(
 
     private fun feedInput() {
         val inputIndex = codec.dequeueInputBuffer(TIMEOUT_US)
-        val inputBuffer = (if (inputIndex >= 0) codec.getInputBuffer(inputIndex) else null) ?: return
+        val inputBuffer =
+            (if (inputIndex >= 0) codec.getInputBuffer(inputIndex) else null) ?: return
         inputBuffer.clear()
         val sampleSize = extractor.readSampleData(inputBuffer, 0)
         when {
@@ -114,7 +115,11 @@ internal class AudioDecoder(
         if (output.remaining() < info.size) {
             // Estimate the final size from the share of input read so far.
             val position = output.position()
-            val estimate = (position * (fileSize.toDouble() / maxOf(totalSizeRead, 1L)) * GROWTH_MARGIN).toLong()
+            val estimate =
+                (
+                    position * (fileSize.toDouble() / maxOf(totalSizeRead, 1L)) *
+                        GROWTH_MARGIN
+                    ).toLong()
             output = pcm.grow(maxOf(estimate, position + info.size + MIN_GROWTH_BYTES))
         }
         output.put(chunk, 0, info.size)

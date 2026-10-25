@@ -26,8 +26,21 @@ internal class PositionLabels(
         object : Runnable {
             override fun run() {
                 shownStart =
-                    show(selection.startPos, shownStart, binding.starttext, binding.startmarker, R.string.start_marker)
-                shownEnd = show(selection.endPos, shownEnd, binding.endtext, binding.endmarker, R.string.end_marker)
+                    show(
+                        selection.startPos,
+                        shownStart,
+                        binding.starttext,
+                        binding.startmarker,
+                        R.string.start_marker,
+                    )
+                shownEnd =
+                    show(
+                        selection.endPos,
+                        shownEnd,
+                        binding.endtext,
+                        binding.endmarker,
+                        R.string.end_marker,
+                    )
                 handler.postDelayed(this, REFRESH_INTERVAL_MS)
             }
         }
@@ -47,18 +60,13 @@ internal class PositionLabels(
         shownEnd = -1
     }
 
-    fun format(pixels: Int): String =
-        if (binding.waveform.isInitialized) {
-            "%.2f".format(Locale.US, binding.waveform.scale.pixelsToSeconds(pixels))
-        } else {
-            ""
-        }
+    fun format(pixels: Int): String = if (binding.waveform.isInitialized) {
+        "%.2f".format(Locale.US, binding.waveform.scale.pixelsToSeconds(pixels))
+    } else {
+        ""
+    }
 
-    private fun onTyped(
-        text: Editable?,
-        field: TextView,
-        isStart: Boolean,
-    ) {
+    private fun onTyped(text: Editable?, field: TextView, isStart: Boolean) {
         val waveform = binding.waveform
         val seconds = text?.toString()?.toDoubleOrNull()
         if (!waveform.isInitialized || seconds == null || !field.hasFocus()) {

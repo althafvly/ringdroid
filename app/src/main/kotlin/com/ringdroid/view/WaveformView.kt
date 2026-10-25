@@ -17,10 +17,7 @@ import kotlin.math.abs
  * the playback position. Touches, flings and pinch zooms are passed to the listener; selection is
  * handled by the embedding activity.
  */
-internal class WaveformView(
-    context: Context,
-    attrs: AttributeSet?,
-) : View(context, attrs) {
+internal class WaveformView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     interface WaveformListener {
         fun waveformTouchStart(x: Float)
 
@@ -197,11 +194,7 @@ internal class WaveformView(
         }
     }
 
-    fun setSelection(
-        start: Int,
-        end: Int,
-        offset: Int,
-    ) {
+    fun setSelection(start: Int, end: Int, offset: Int) {
         selectionStart = start
         selectionEnd = end
         this.offset = offset
@@ -218,7 +211,10 @@ internal class WaveformView(
     private fun computeHeightsForThisZoomLevel(): IntArray {
         val halfHeight = measuredHeight / 2 - 1
         val values = data?.getValues(level) ?: DoubleArray(0)
-        return IntArray(values.size) { (values[it] * halfHeight).toInt() }.also { heightsAtThisZoomLevel = it }
+        return IntArray(values.size) { (values[it] * halfHeight).toInt() }.also {
+            heightsAtThisZoomLevel =
+                it
+        }
     }
 
     private companion object {

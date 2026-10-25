@@ -34,7 +34,11 @@ class SaveViewModelTest {
     fun setUp() {
         TestPermissions.grantStorage()
         input =
-            TestAudio.writeWav(File(context.cacheDir, "save_vm_input.wav"), 1, TestAudio.ramp(TestAudio.SAMPLE_RATE))
+            TestAudio.writeWav(
+                File(context.cacheDir, "save_vm_input.wav"),
+                1,
+                TestAudio.ramp(TestAudio.SAMPLE_RATE),
+            )
         soundFile = TestAudio.load(input)
     }
 
@@ -63,10 +67,7 @@ class SaveViewModelTest {
         assertNull(viewModel.takeError())
     }
 
-    private fun save(
-        clip: Clip,
-        whileSaving: () -> Unit = {},
-    ) {
+    private fun save(clip: Clip, whileSaving: () -> Unit = {}) {
         val done = CountDownLatch(1)
         instrumentation.runOnMainSync {
             viewModel.events.listener = SaveViewModel.Listener { done.countDown() }

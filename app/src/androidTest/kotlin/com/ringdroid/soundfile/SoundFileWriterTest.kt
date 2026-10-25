@@ -31,10 +31,7 @@ class SoundFileWriterTest {
 
     private fun file(name: String) = File(dir, name).also { files.add(it) }
 
-    private fun load(
-        channels: Int,
-        samples: ShortArray,
-    ): SoundFile {
+    private fun load(channels: Int, samples: ShortArray): SoundFile {
         val wav = TestAudio.writeWav(file("writer_input_$channels.wav"), channels, samples)
         return TestAudio.load(wav).also { soundFiles.add(it) }
     }
@@ -102,7 +99,10 @@ class SoundFileWriterTest {
             val decoded = TestAudio.load(out).also { soundFiles.add(it) }
             assertEquals(channels, decoded.channels)
             assertEquals(SAMPLE_RATE, decoded.sampleRate)
-            assertTrue("samples ${decoded.numSamples}", decoded.numSamples in 40 * FRAME..44 * FRAME)
+            assertTrue(
+                "samples ${decoded.numSamples}",
+                decoded.numSamples in 40 * FRAME..44 * FRAME,
+            )
         }
     }
 
@@ -129,12 +129,18 @@ class SoundFileWriterTest {
 
     @Test(expected = IOException::class)
     fun emptyRangeThrows() {
-        SoundFileWriter(load(1, TestAudio.ramp(SAMPLE_RATE)), 1.0f).writeM4A(file("writer_empty.m4a"), 0, 0)
+        SoundFileWriter(
+            load(1, TestAudio.ramp(SAMPLE_RATE)),
+            1.0f,
+        ).writeM4A(file("writer_empty.m4a"), 0, 0)
     }
 
     @Test(expected = IOException::class)
     fun startPastEndThrows() {
-        SoundFileWriter(load(1, TestAudio.ramp(SAMPLE_RATE)), 1.0f).writeWAV(file("writer_past_end.wav"), 1000, 100)
+        SoundFileWriter(
+            load(1, TestAudio.ramp(SAMPLE_RATE)),
+            1.0f,
+        ).writeWAV(file("writer_past_end.wav"), 1000, 100)
     }
 
     @Test(expected = IllegalStateException::class)

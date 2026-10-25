@@ -19,8 +19,12 @@ class FileSaveDialog(
 ) {
     // In the order shown in the spinner, matching the FILE_KIND constants.
     private val typeNames =
-        listOf(R.string.type_music, R.string.type_alarm, R.string.type_notification, R.string.type_ringtone)
-            .map { context.getString(it) }
+        listOf(
+            R.string.type_music,
+            R.string.type_alarm,
+            R.string.type_notification,
+            R.string.type_ringtone,
+        ).map { context.getString(it) }
     private val binding = FileSaveBinding.inflate(LayoutInflater.from(context))
     private val baseName = stripTypeSuffixes(originalName.orEmpty())
     private var previousSelection = FILE_KIND_RINGTONE
@@ -70,7 +74,15 @@ class FileSaveDialog(
 
     private fun nameFor(kind: Int): String {
         val suffix = typeNames[kind]
-        return if (baseName.isEmpty()) suffix else context.getString(R.string.filename_with_suffix, baseName, suffix)
+        return if (baseName.isEmpty()) {
+            suffix
+        } else {
+            context.getString(
+                R.string.filename_with_suffix,
+                baseName,
+                suffix,
+            )
+        }
     }
 
     // Keeps the name in sync with the chosen kind unless the user edited it.

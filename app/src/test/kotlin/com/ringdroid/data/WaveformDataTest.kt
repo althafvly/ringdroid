@@ -5,10 +5,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class WaveformDataTest {
-    private fun gains(
-        numFrames: Int,
-        value: Int,
-    ) = IntArray(numFrames) { value }
+    private fun gains(numFrames: Int, value: Int) = IntArray(numFrames) { value }
 
     @Test
     fun silenceIsFlat() {

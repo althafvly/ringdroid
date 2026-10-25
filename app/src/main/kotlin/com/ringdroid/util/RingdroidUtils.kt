@@ -51,10 +51,7 @@ object RingdroidUtils {
         }
     }
 
-    fun applyNavigationBarInsets(
-        view: View?,
-        extraPaddingBottomDp: Int,
-    ) {
+    fun applyNavigationBarInsets(view: View?, extraPaddingBottomDp: Int) {
         if (view == null) return
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
@@ -78,10 +75,7 @@ object RingdroidUtils {
     }
 
     // Strips any path from a file name supplied by another app.
-    fun toSafeFileName(
-        name: String?,
-        fallback: String,
-    ): String {
+    fun toSafeFileName(name: String?, fallback: String): String {
         val safeName = name?.substringAfterLast('/') ?: return fallback
         return if (safeName.isEmpty() || safeName == "." || safeName == "..") fallback else safeName
     }
@@ -90,10 +84,7 @@ object RingdroidUtils {
      * Returns a readable file for [uri]: the file itself for file:// and MediaStore URIs, otherwise
      * a copy in the cache. Only the latest shared copy is kept.
      */
-    fun getFileFromUri(
-        context: Context?,
-        uri: Uri?,
-    ): File? {
+    fun getFileFromUri(context: Context?, uri: Uri?): File? {
         if (context == null || uri == null) return null
         return if ("file".equals(uri.scheme, ignoreCase = true)) {
             uri.path?.let { File(it) }
@@ -103,23 +94,25 @@ object RingdroidUtils {
     }
 
     // Only MediaStore is trusted to report a real file path.
-    private fun mediaStoreFile(
-        resolver: ContentResolver,
-        uri: Uri,
-    ): File? =
-        queryString(resolver, uri.takeIf { it.authority == MediaStore.AUTHORITY }, MediaStore.MediaColumns.DATA)
-            ?.let { File(it) }
-            ?.takeIf { it.exists() && it.canRead() }
+    private fun mediaStoreFile(resolver: ContentResolver, uri: Uri): File? = queryString(
+        resolver,
+        uri.takeIf {
+            it.authority == MediaStore.AUTHORITY
+        },
+        MediaStore.MediaColumns.DATA,
+    )?.let { File(it) }
+        ?.takeIf { it.exists() && it.canRead() }
 
     // Copies [uri] into the cache, keeping only the latest shared copy.
-    private fun copyToCache(
-        context: Context,
-        uri: Uri,
-    ): File? {
+    private fun copyToCache(context: Context, uri: Uri): File? {
         val resolver = context.contentResolver
-        var fileName = toSafeFileName(queryString(resolver, uri, OpenableColumns.DISPLAY_NAME), "shared_audio")
+        var fileName =
+            toSafeFileName(queryString(resolver, uri, OpenableColumns.DISPLAY_NAME), "shared_audio")
         if (!fileName.contains('.')) {
-            MimeTypeMap.getSingleton().getExtensionFromMimeType(resolver.getType(uri))?.let { fileName += ".$it" }
+            MimeTypeMap.getSingleton().getExtensionFromMimeType(resolver.getType(uri))?.let {
+                fileName +=
+                    ".$it"
+            }
         }
 
         val sharedDir = File(context.cacheDir, "shared")
@@ -141,19 +134,14 @@ object RingdroidUtils {
     }
 
     // The first row's value of [column], or null.
-    private fun queryString(
-        resolver: ContentResolver,
-        uri: Uri?,
-        column: String,
-    ): String? =
-        try {
-            uri?.let { resolver.query(it, arrayOf(column), null, null, null) }?.use { cursor ->
-                val idx = cursor.getColumnIndex(column)
-                if (cursor.moveToFirst() && idx >= 0) cursor.getString(idx) else null
-            }
-        } catch (ignored: SecurityException) {
-            null
-        } catch (ignored: IllegalArgumentException) {
-            null
+    private fun queryString(resolver: ContentResolver, uri: Uri?, column: String): String? = try {
+        uri?.let { resolver.query(it, arrayOf(column), null, null, null) }?.use { cursor ->
+            val idx = cursor.getColumnIndex(column)
+            if (cursor.moveToFirst() && idx >= 0) cursor.getString(idx) else null
         }
+    } catch (ignored: SecurityException) {
+        null
+    } catch (ignored: IllegalArgumentException) {
+        null
+    }
 }

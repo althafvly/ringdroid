@@ -27,7 +27,12 @@ class ContactRingtonePicker(
             if (granted) {
                 pickLauncher.launch(null)
             } else {
-                Toast.makeText(activity, R.string.require_contacts_permission, Toast.LENGTH_LONG).show()
+                Toast
+                    .makeText(
+                        activity,
+                        R.string.require_contacts_permission,
+                        Toast.LENGTH_LONG,
+                    ).show()
                 onDone.run()
             }
         }
@@ -37,7 +42,9 @@ class ContactRingtonePicker(
 
     fun pick(ringtoneUri: Uri) {
         pending.uri = ringtoneUri
-        if (activity.checkSelfPermission(Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+        if (activity.checkSelfPermission(Manifest.permission.WRITE_CONTACTS) ==
+            PackageManager.PERMISSION_GRANTED
+        ) {
             pickLauncher.launch(null)
         } else {
             permissionLauncher.launch(Manifest.permission.WRITE_CONTACTS)
@@ -59,17 +66,21 @@ class ContactRingtonePicker(
         onDone.run()
     }
 
-    private fun assign(
-        contactUri: Uri,
-        ringtone: Uri,
-    ) {
+    private fun assign(contactUri: Uri, ringtone: Uri) {
         val projection = arrayOf(Contacts._ID, Contacts.DISPLAY_NAME)
         activity.contentResolver.query(contactUri, projection, null, null, null)?.use { c ->
             if (c.moveToFirst()) {
                 val uri = ContentUris.withAppendedId(Contacts.CONTENT_URI, c.getLong(0))
-                val values = ContentValues().apply { put(Contacts.CUSTOM_RINGTONE, ringtone.toString()) }
+                val values =
+                    ContentValues().apply {
+                        put(
+                            Contacts.CUSTOM_RINGTONE,
+                            ringtone.toString(),
+                        )
+                    }
                 activity.contentResolver.update(uri, values, null, null)
-                val message = activity.getString(R.string.success_contact_ringtone) + " " + c.getString(1)
+                val message =
+                    activity.getString(R.string.success_contact_ringtone) + " " + c.getString(1)
                 Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
             }
         }

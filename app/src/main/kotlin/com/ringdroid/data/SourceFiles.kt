@@ -18,10 +18,7 @@ internal object SourceFiles {
      * copy of another content:// URI. The app's own private files (other than shared copies in the
      * cache) are refused.
      */
-    fun resolve(
-        context: Context,
-        data: Uri,
-    ): File? {
+    fun resolve(context: Context, data: Uri): File? {
         val file =
             when (data.scheme) {
                 "content" -> RingdroidUtils.getFileFromUri(context, data)
@@ -39,10 +36,7 @@ internal object SourceFiles {
         }
     }
 
-    fun unsupportedMessage(
-        context: Context,
-        file: File?,
-    ): String {
+    fun unsupportedMessage(context: Context, file: File?): String {
         val name = file?.name.orEmpty().lowercase(Locale.ROOT)
         return if (!name.contains('.')) {
             context.getString(R.string.no_extension_error)

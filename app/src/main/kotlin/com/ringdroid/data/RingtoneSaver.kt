@@ -16,27 +16,19 @@ import com.ringdroid.util.RingdroidUtils
 import java.io.File
 import java.io.IOException
 
-/** Saves a selection of a sound file as M4A, falling back to WAV, and registers it in MediaStore. */
+/** Saves part of a sound file as M4A, falling back to WAV, and registers it in MediaStore. */
 internal class RingtoneSaver(
     context: Context,
     soundFile: SoundFile,
     gain: Float,
     private val fileKind: Int,
 ) {
-    class SaveException(
-        val messageId: Int,
-        cause: Throwable?,
-    ) : IOException(cause)
+    class SaveException(val messageId: Int, cause: Throwable?) : IOException(cause)
 
     private val context = context.applicationContext
     private val writer = SoundFileWriter(soundFile, gain)
 
-    fun save(
-        title: CharSequence,
-        startFrame: Int,
-        numFrames: Int,
-        durationMs: Int,
-    ): Uri {
+    fun save(title: CharSequence, startFrame: Int, numFrames: Int, durationMs: Int): Uri {
         var error: Exception? = null
         for (wav in booleanArrayOf(false, true)) {
             fun failed(e: Exception) {
@@ -76,7 +68,10 @@ internal class RingtoneSaver(
         val values =
             fileKindValues().apply {
                 put(MediaStore.MediaColumns.RELATIVE_PATH, subDir)
-                put(MediaStore.MediaColumns.DISPLAY_NAME, title.toString() + if (wav) ".wav" else ".m4a")
+                put(
+                    MediaStore.MediaColumns.DISPLAY_NAME,
+                    title.toString() + if (wav) ".wav" else ".m4a",
+                )
                 put(MediaStore.MediaColumns.MIME_TYPE, mimeType(wav))
                 // Hidden from other apps until the file is complete.
                 put(MediaStore.MediaColumns.IS_PENDING, 1)
@@ -92,7 +87,14 @@ internal class RingtoneSaver(
             } else {
                 writer.writeM4A(context, uri, startFrame, numFrames)
             }
-            resolver.update(uri, ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 0) }, null, null)
+            resolver.update(
+                uri,
+                ContentValues().apply {
+                    put(MediaStore.MediaColumns.IS_PENDING, 0)
+                },
+                null,
+                null,
+            )
             written = true
         } finally {
             if (!written) {
@@ -143,12 +145,7 @@ internal class RingtoneSaver(
         }
     }
 
-    private fun insertFile(
-        file: File,
-        title: CharSequence,
-        wav: Boolean,
-        durationMs: Int,
-    ): Uri {
+    private fun insertFile(file: File, title: CharSequence, wav: Boolean, durationMs: Int): Uri {
         val values =
             fileKindValues().apply {
                 put(MediaStore.MediaColumns.DATA, file.path)
@@ -174,13 +171,15 @@ internal class RingtoneSaver(
         }
     }
 
-    private fun fileKindValues() =
-        ContentValues().apply {
-            put(MediaStore.Audio.Media.IS_RINGTONE, fileKind == FileSaveDialog.FILE_KIND_RINGTONE)
-            put(MediaStore.Audio.Media.IS_NOTIFICATION, fileKind == FileSaveDialog.FILE_KIND_NOTIFICATION)
-            put(MediaStore.Audio.Media.IS_ALARM, fileKind == FileSaveDialog.FILE_KIND_ALARM)
-            put(MediaStore.Audio.Media.IS_MUSIC, fileKind == FileSaveDialog.FILE_KIND_MUSIC)
-        }
+    private fun fileKindValues() = ContentValues().apply {
+        put(MediaStore.Audio.Media.IS_RINGTONE, fileKind == FileSaveDialog.FILE_KIND_RINGTONE)
+        put(
+            MediaStore.Audio.Media.IS_NOTIFICATION,
+            fileKind == FileSaveDialog.FILE_KIND_NOTIFICATION,
+        )
+        put(MediaStore.Audio.Media.IS_ALARM, fileKind == FileSaveDialog.FILE_KIND_ALARM)
+        put(MediaStore.Audio.Media.IS_MUSIC, fileKind == FileSaveDialog.FILE_KIND_MUSIC)
+    }
 
     // MediaStore only accepts standard top-level folders such as Ringtones from Android 10.
     private val subDir: String
@@ -204,10 +203,7 @@ internal class RingtoneSaver(
             return "$saveDir/$kindDir/"
         }
 
-    private fun makeRingtoneFilename(
-        title: CharSequence,
-        extension: String,
-    ): String? {
+    private fun makeRingtoneFilename(title: CharSequence, extension: String): String? {
         var externalRootDir = Environment.getExternalStorageDirectory().path
         if (!externalRootDir.endsWith("/")) {
             externalRootDir += "/"

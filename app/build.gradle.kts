@@ -100,11 +100,13 @@ kotlin {
 
 detekt {
     buildUponDefaultConfig = true
+    config.setFrom(rootProject.file("config/detekt/detekt.yml"))
 }
 
 // Type resolution needs the generated view binding, R and BuildConfig classes.
 tasks.withType<Detekt>().configureEach {
-    val javac = tasks.findByName(name.replaceFirst("detekt", "compile") + "JavaWithJavac") as? JavaCompile
+    val javacName = name.replaceFirst("detekt", "compile") + "JavaWithJavac"
+    val javac = tasks.findByName(javacName) as? JavaCompile
     if (javac != null) {
         classpath.from(javac.classpath, javac.destinationDirectory)
     }

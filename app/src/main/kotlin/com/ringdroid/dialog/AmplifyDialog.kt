@@ -12,11 +12,7 @@ internal object AmplifyDialog {
     private const val MIN_PERCENT = 10
     private const val PERCENT = 100f
 
-    fun show(
-        context: Context,
-        currentFactor: Float,
-        onApply: (Float) -> Unit,
-    ) {
+    fun show(context: Context, currentFactor: Float, onApply: (Float) -> Unit) {
         val binding = DialogAmplifyBinding.inflate(LayoutInflater.from(context))
         val current = maxOf(MIN_PERCENT, (currentFactor * PERCENT).toInt())
         binding.amplifySeekbar.progress = current

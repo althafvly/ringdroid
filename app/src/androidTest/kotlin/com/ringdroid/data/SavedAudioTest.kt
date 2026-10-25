@@ -33,7 +33,12 @@ class SavedAudioTest {
     @Before
     fun setUp() {
         TestPermissions.grantStorage()
-        input = TestAudio.writeWav(File(context.cacheDir, "saved_input.wav"), 1, TestAudio.ramp(TestAudio.SAMPLE_RATE))
+        input =
+            TestAudio.writeWav(
+                File(context.cacheDir, "saved_input.wav"),
+                1,
+                TestAudio.ramp(TestAudio.SAMPLE_RATE),
+            )
         soundFile = TestAudio.load(input)
     }
 

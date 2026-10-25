@@ -20,7 +20,11 @@ class SoundRecorder private constructor() {
         val bufferSize =
             maxOf(
                 SAMPLE_RATE * 2,
-                AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT),
+                AudioRecord.getMinBufferSize(
+                    SAMPLE_RATE,
+                    AudioFormat.CHANNEL_IN_MONO,
+                    AudioFormat.ENCODING_PCM_16BIT,
+                ),
             )
         val audioRecord =
             AudioRecord(
@@ -49,20 +53,20 @@ class SoundRecorder private constructor() {
         return SoundFile.fromRecording(bytes, SAMPLE_RATE, numSamples)
     }
 
-    private fun recordLoop(
-        audioRecord: AudioRecord,
-        listener: SoundFile.ProgressListener,
-    ) {
+    private fun recordLoop(audioRecord: AudioRecord, listener: SoundFile.ProgressListener) {
         val buffer = ShortArray(CHUNK_SAMPLES)
         var done = false
         while (!done) {
             // Grow by 10 seconds when the next chunk would not fit.
-            val hasRoom = samples.remaining() >= CHUNK_SAMPLES || grow(GROW_SECONDS * SAMPLE_RATE * Short.SIZE_BYTES)
+            val hasRoom =
+                samples.remaining() >= CHUNK_SAMPLES ||
+                    grow(GROW_SECONDS * SAMPLE_RATE * Short.SIZE_BYTES)
             val numRead = if (hasRoom) audioRecord.read(buffer, 0, buffer.size) else -1
             if (numRead >= 0) {
                 samples.put(buffer, 0, numRead)
             }
-            done = numRead < 0 || listener.reportProgress(samples.position().toDouble() / SAMPLE_RATE)
+            done =
+                numRead < 0 || listener.reportProgress(samples.position().toDouble() / SAMPLE_RATE)
         }
     }
 
@@ -91,7 +95,8 @@ class SoundRecorder private constructor() {
         private const val GROW_SECONDS = 10
         private const val TAG = "SoundRecorder"
 
-        private fun allocate(capacity: Int): ByteBuffer = ByteBuffer.allocate(capacity).order(ByteOrder.LITTLE_ENDIAN)
+        private fun allocate(capacity: Int): ByteBuffer =
+            ByteBuffer.allocate(capacity).order(ByteOrder.LITTLE_ENDIAN)
 
         /**
          * Records until the listener asks to stop. The listener receives the elapsed time in

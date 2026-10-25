@@ -12,10 +12,7 @@ import androidx.lifecycle.LifecycleOwner
  * must survive the activity being recreated or the process being killed. Must be created while
  * the activity is being initialized; values are restored when the activity is created.
  */
-internal class PendingAction(
-    activity: ComponentActivity,
-    key: String,
-) {
+internal class PendingAction(activity: ComponentActivity, key: String) {
     var uri: Uri? = null
     var type = 0
 

@@ -12,9 +12,7 @@ import com.ringdroid.util.ListenerEvents
 import com.ringdroid.util.RingdroidUtils
 
 /** Saves the editor's selection in the background and keeps the result across recreation. */
-internal class SaveViewModel(
-    application: Application,
-) : AndroidViewModel(application) {
+internal class SaveViewModel(application: Application) : AndroidViewModel(application) {
     fun interface Listener {
         fun onSaveStateChanged()
     }
@@ -33,13 +31,7 @@ internal class SaveViewModel(
     /** Returns the message of a failed save once, or null. */
     fun takeError(): Int? = errorId.takeIf { it != 0 }?.also { errorId = 0 }
 
-    fun save(
-        soundFile: SoundFile,
-        title: CharSequence,
-        gain: Float,
-        kind: Int,
-        clip: Clip,
-    ) {
+    fun save(soundFile: SoundFile, title: CharSequence, gain: Float, kind: Int, clip: Clip) {
         isSaving = true
         fileKind = kind
         savedUri = null

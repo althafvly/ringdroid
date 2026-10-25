@@ -6,12 +6,11 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class EditorSelectionTest {
-    private fun selection() =
-        EditorSelection().apply {
-            scroll.maxPos = 1000
-            scroll.width = 200
-            reset(100, 300)
-        }
+    private fun selection() = EditorSelection().apply {
+        scroll.maxPos = 1000
+        scroll.width = 200
+        reset(100, 300)
+    }
 
     @Test
     fun resetClampsTheEndToTheLength() {

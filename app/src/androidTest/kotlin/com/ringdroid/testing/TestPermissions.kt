@@ -19,7 +19,9 @@ object TestPermissions {
         for (permission in permissions) {
             ParcelFileDescriptor
                 .AutoCloseInputStream(
-                    instrumentation.uiAutomation.executeShellCommand("pm grant $packageName $permission"),
+                    instrumentation.uiAutomation.executeShellCommand(
+                        "pm grant $packageName $permission",
+                    ),
                 ).use { it.readBytes() }
         }
     }
@@ -31,7 +33,9 @@ object TestPermissions {
         }
         grant(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE)
         val deadline = SystemClock.uptimeMillis() + GRANT_TIMEOUT_MS
-        while (!Environment.getExternalStorageDirectory().canWrite() && SystemClock.uptimeMillis() < deadline) {
+        while (!Environment.getExternalStorageDirectory().canWrite() &&
+            SystemClock.uptimeMillis() < deadline
+        ) {
             SystemClock.sleep(GRANT_POLL_MS)
         }
     }

@@ -34,10 +34,22 @@ internal class SamplePlayer(
         var bufferSize = channels * sampleRate * 2
         if (channelMask != AudioFormat.CHANNEL_INVALID) {
             bufferSize =
-                maxOf(AudioTrack.getMinBufferSize(sampleRate, channelMask, AudioFormat.ENCODING_PCM_16BIT), bufferSize)
+                maxOf(
+                    AudioTrack.getMinBufferSize(
+                        sampleRate,
+                        channelMask,
+                        AudioFormat.ENCODING_PCM_16BIT,
+                    ),
+                    bufferSize,
+                )
         }
         buffer = ShortArray(bufferSize / 2)
-        val formatBuilder = AudioFormat.Builder().setSampleRate(sampleRate).setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+        val formatBuilder =
+            AudioFormat
+                .Builder()
+                .setSampleRate(
+                    sampleRate,
+                ).setEncoding(AudioFormat.ENCODING_PCM_16BIT)
         if (channelMask != AudioFormat.CHANNEL_INVALID) {
             formatBuilder.setChannelMask(channelMask)
         } else {
@@ -131,7 +143,11 @@ internal class SamplePlayer(
     }
 
     val currentPosition: Int
-        get() = ((playbackStart + audioTrack.playbackHeadPosition) * (MILLIS_PER_SECOND / sampleRate)).toInt()
+        get() =
+            (
+                (playbackStart + audioTrack.playbackHeadPosition) *
+                    (MILLIS_PER_SECOND / sampleRate)
+                ).toInt()
 
     private companion object {
         const val MILLIS_PER_SECOND = 1000.0
@@ -140,14 +156,13 @@ internal class SamplePlayer(
         const val SURROUND_7_1_CHANNELS = 8
 
         // Positional masks let AudioTrack downmix to the device's outputs.
-        fun getChannelMask(channels: Int): Int =
-            when (channels) {
-                1 -> AudioFormat.CHANNEL_OUT_MONO
-                2 -> AudioFormat.CHANNEL_OUT_STEREO
-                QUAD_CHANNELS -> AudioFormat.CHANNEL_OUT_QUAD
-                SURROUND_5_1_CHANNELS -> AudioFormat.CHANNEL_OUT_5POINT1
-                SURROUND_7_1_CHANNELS -> AudioFormat.CHANNEL_OUT_7POINT1_SURROUND
-                else -> AudioFormat.CHANNEL_INVALID
-            }
+        fun getChannelMask(channels: Int): Int = when (channels) {
+            1 -> AudioFormat.CHANNEL_OUT_MONO
+            2 -> AudioFormat.CHANNEL_OUT_STEREO
+            QUAD_CHANNELS -> AudioFormat.CHANNEL_OUT_QUAD
+            SURROUND_5_1_CHANNELS -> AudioFormat.CHANNEL_OUT_5POINT1
+            SURROUND_7_1_CHANNELS -> AudioFormat.CHANNEL_OUT_7POINT1_SURROUND
+            else -> AudioFormat.CHANNEL_INVALID
+        }
     }
 }

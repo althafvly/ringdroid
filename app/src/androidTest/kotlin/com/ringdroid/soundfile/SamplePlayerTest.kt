@@ -12,7 +12,13 @@ class SamplePlayerTest {
     fun playsCommonChannelCounts() {
         for (channels in intArrayOf(1, 2, 3, 4, 6, 8)) {
             val numSamples = SAMPLE_RATE / 10
-            val player = SamplePlayer(ShortBuffer.allocate(numSamples * channels), SAMPLE_RATE, channels, numSamples)
+            val player =
+                SamplePlayer(
+                    ShortBuffer.allocate(numSamples * channels),
+                    SAMPLE_RATE,
+                    channels,
+                    numSamples,
+                )
             try {
                 player.start()
                 assertTrue("$channels channels", player.isPlaying)

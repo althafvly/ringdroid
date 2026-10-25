@@ -45,7 +45,7 @@ internal class EditorPlayback(
         showState()
     }
 
-    /** Seeks to a tapped position within the playing range, stops outside it, or plays from there. */
+    /** Seeks to a tapped position while playing, stops outside the range, or plays from there. */
     fun tap(pos: Int) {
         if (!isPlaying) {
             play(pos)
@@ -104,10 +104,7 @@ internal class EditorPlayback(
     }
 
     // While playing, skips within the playing range; otherwise moves the focus to [marker].
-    private fun skip(
-        deltaMsec: Int,
-        marker: MarkerView,
-    ) {
+    private fun skip(deltaMsec: Int, marker: MarkerView) {
         val player = viewModel.player
         if (isPlaying && player != null) {
             val target = player.currentPosition + deltaMsec
@@ -135,7 +132,8 @@ internal class EditorPlayback(
         binding.play.setImageResource(
             if (isPlaying) R.drawable.baseline_pause_24 else R.drawable.baseline_play_arrow_24,
         )
-        binding.play.contentDescription = binding.root.context.getText(if (isPlaying) R.string.stop else R.string.play)
+        binding.play.contentDescription =
+            binding.root.context.getText(if (isPlaying) R.string.stop else R.string.play)
     }
 
     private companion object {

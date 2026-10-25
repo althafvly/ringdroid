@@ -11,16 +11,13 @@ internal object OptionsPopup {
     private const val WIDTH_DP = 280
     private const val Y_OFFSET_DP = 8
 
-    fun show(
-        anchor: View,
-        showAll: Boolean,
-        onShowAllChanged: (Boolean) -> Unit,
-    ) {
+    fun show(anchor: View, showAll: Boolean, onShowAllChanged: (Boolean) -> Unit) {
         val context = anchor.context
         val binding = SelectOptionsPopupBinding.inflate(LayoutInflater.from(context))
         var checked = showAll
         binding.switchShowAll.isChecked = checked
-        binding.menuAboutVersion.text = context.getString(R.string.version_label, BuildConfig.VERSION_NAME)
+        binding.menuAboutVersion.text =
+            context.getString(R.string.version_label, BuildConfig.VERSION_NAME)
         val popup = Popups.create(binding.root, WIDTH_DP)
         binding.menuItemShowAll.setOnClickListener {
             checked = !checked

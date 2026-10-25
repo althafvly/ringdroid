@@ -28,7 +28,9 @@ internal class AudioDeleter(
     // The file waiting for the user's consent on Android 10.
     private val pending = PendingAction(activity, "AudioDeleter")
     private val consentLauncher =
-        activity.registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+        activity.registerForActivityResult(
+            ActivityResultContracts.StartIntentSenderForResult(),
+        ) { result ->
             val pendingUri = pending.uri
             pending.uri = null
             if (result.resultCode == Activity.RESULT_OK) {
@@ -36,11 +38,7 @@ internal class AudioDeleter(
             }
         }
 
-    fun delete(
-        uri: Uri,
-        filePath: String?,
-        title: String?,
-    ) {
+    fun delete(uri: Uri, filePath: String?, title: String?) {
         if (activity.isFinishing || activity.isDestroyed) {
             return
         }
@@ -85,7 +83,13 @@ internal class AudioDeleter(
                 onDeleted()
             }
         } catch (e: SecurityException) {
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) requestConsent(uri, e) else showFailed(e)
+            if (Build.VERSION.SDK_INT ==
+                Build.VERSION_CODES.Q
+            ) {
+                requestConsent(uri, e)
+            } else {
+                showFailed(e)
+            }
         } catch (e: IllegalArgumentException) {
             showFailed(e)
         } catch (e: IllegalStateException) {
@@ -97,14 +101,13 @@ internal class AudioDeleter(
 
     // On Android 10 the user can allow deleting another app's file.
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun requestConsent(
-        uri: Uri,
-        e: SecurityException,
-    ) {
+    private fun requestConsent(uri: Uri, e: SecurityException) {
         val recoverable = e as? RecoverableSecurityException
         if (recoverable != null) {
             pending.uri = uri
-            consentLauncher.launch(IntentSenderRequest.Builder(recoverable.userAction.actionIntent).build())
+            consentLauncher.launch(
+                IntentSenderRequest.Builder(recoverable.userAction.actionIntent).build(),
+            )
         } else {
             showFailed(e)
         }

@@ -25,7 +25,8 @@ class SoundFileTest {
     @Before
     fun setUp() {
         testWavFile = TestAudio.copyAsset(File(outDir, "test_audio.wav"))
-        corruptFile = File(outDir, "corrupt_audio.wav").apply { writeBytes(byteArrayOf(0, 1, 2, 3)) }
+        corruptFile =
+            File(outDir, "corrupt_audio.wav").apply { writeBytes(byteArrayOf(0, 1, 2, 3)) }
     }
 
     @After

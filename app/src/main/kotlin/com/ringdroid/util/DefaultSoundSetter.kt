@@ -36,10 +36,7 @@ class DefaultSoundSetter(
     }
 
     /** [type] is RingtoneManager.TYPE_RINGTONE or TYPE_NOTIFICATION. */
-    fun set(
-        type: Int,
-        uri: Uri,
-    ) {
+    fun set(type: Int, uri: Uri) {
         if (PermissionUtils.hasWriteSettingsPermission(activity)) {
             apply(type, uri)
             onDone()
@@ -47,14 +44,16 @@ class DefaultSoundSetter(
         }
         pending.type = type
         pending.uri = uri
-        Toast.makeText(activity, R.string.required_system_modify_permission, Toast.LENGTH_SHORT).show()
+        Toast
+            .makeText(
+                activity,
+                R.string.required_system_modify_permission,
+                Toast.LENGTH_SHORT,
+            ).show()
         PermissionUtils.requestWriteSettingsPermission(activity)
     }
 
-    private fun apply(
-        type: Int,
-        uri: Uri,
-    ) {
+    private fun apply(type: Int, uri: Uri) {
         val error =
             try {
                 RingtoneManager.setActualDefaultRingtoneUri(activity, type, uri)
@@ -68,7 +67,12 @@ class DefaultSoundSetter(
             }
         if (error != null) {
             Log.e(TAG, "Failed to set default sound", error)
-            Toast.makeText(activity, "Error setting ringtone: " + error.message, Toast.LENGTH_LONG).show()
+            Toast
+                .makeText(
+                    activity,
+                    "Error setting ringtone: " + error.message,
+                    Toast.LENGTH_LONG,
+                ).show()
             return
         }
         val message =

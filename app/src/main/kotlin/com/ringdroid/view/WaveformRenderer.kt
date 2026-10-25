@@ -8,10 +8,8 @@ import androidx.core.content.ContextCompat
 import com.ringdroid.R
 import kotlin.math.ceil
 
-/** Draws the time grid, the waveform with its selection and playback position, and the timecodes. */
-internal class WaveformRenderer(
-    private val context: Context,
-) {
+/** Draws the time grid, the waveform with its selection and playback line, and the timecodes. */
+internal class WaveformRenderer(private val context: Context) {
     private val gridPaint = paint(R.color.grid_line, false)
     private val selectedLinePaint = paint(R.color.waveform_selected, false)
     private val unselectedLinePaint = paint(R.color.waveform_unselected, false)
@@ -35,11 +33,7 @@ internal class WaveformRenderer(
             playbackLinePaint.strokeWidth = PLAYBACK_LINE_WIDTH * value
         }
 
-    fun draw(
-        canvas: Canvas,
-        view: WaveformView,
-        heights: IntArray,
-    ) {
+    fun draw(canvas: Canvas, view: WaveformView, heights: IntArray) {
         val secondsPerPixel = view.scale.pixelsToSeconds(1)
         val width = minOf(heights.size - view.offset, view.measuredWidth)
         drawGrid(canvas, view, width, secondsPerPixel)
@@ -49,12 +43,7 @@ internal class WaveformRenderer(
     }
 
     // Grid lines every second, or every five seconds when zoomed out.
-    private fun drawGrid(
-        canvas: Canvas,
-        view: WaveformView,
-        width: Int,
-        secondsPerPixel: Double,
-    ) {
+    private fun drawGrid(canvas: Canvas, view: WaveformView, width: Int, secondsPerPixel: Double) {
         val height = view.measuredHeight.toFloat()
         val zoomedOut = secondsPerPixel * MIN_PIXELS_PER_SECOND > 1
         var seconds = view.offset * secondsPerPixel
@@ -70,12 +59,7 @@ internal class WaveformRenderer(
         }
     }
 
-    private fun drawWaveform(
-        canvas: Canvas,
-        view: WaveformView,
-        heights: IntArray,
-        width: Int,
-    ) {
+    private fun drawWaveform(canvas: Canvas, view: WaveformView, heights: IntArray, width: Int) {
         val height = view.measuredHeight.toFloat()
         val center = (view.measuredHeight / 2).toFloat()
         val start = view.offset
@@ -100,10 +84,7 @@ internal class WaveformRenderer(
         }
     }
 
-    private fun drawBorders(
-        canvas: Canvas,
-        view: WaveformView,
-    ) {
+    private fun drawBorders(canvas: Canvas, view: WaveformView) {
         val height = view.measuredHeight.toFloat()
         val startX = view.selectionStart - view.offset + HALF_PIXEL
         val endX = view.selectionEnd - view.offset + HALF_PIXEL
@@ -112,12 +93,7 @@ internal class WaveformRenderer(
     }
 
     // Timecodes, spaced so that they don't overlap.
-    private fun drawTimecodes(
-        canvas: Canvas,
-        offset: Int,
-        width: Int,
-        secondsPerPixel: Double,
-    ) {
+    private fun drawTimecodes(canvas: Canvas, offset: Int, width: Int, secondsPerPixel: Double) {
         val minimumSpacing = timecodePaint.measureText("0:00") + TIMECODE_SPACING * density
         val intervalSecs = maxOf(1.0, ceil(minimumSpacing * secondsPerPixel))
         var seconds = offset * secondsPerPixel
@@ -129,17 +105,17 @@ internal class WaveformRenderer(
                 val wholeSeconds = seconds.toInt()
                 // e.g. 67 seconds -> "1:07"
                 val minutes = wholeSeconds / SECONDS_PER_MINUTE
-                val timecode = "$minutes:${(wholeSeconds % SECONDS_PER_MINUTE).toString().padStart(2, '0')}"
+                val timecode = "$minutes:${(wholeSeconds % SECONDS_PER_MINUTE).toString().padStart(
+                    2,
+                    '0',
+                )}"
                 val halfWidth = timecodePaint.measureText(timecode) / 2
                 canvas.drawText(timecode, i - halfWidth, timecodePaint.textSize, timecodePaint)
             }
         }
     }
 
-    private fun paint(
-        colorRes: Int,
-        antiAlias: Boolean,
-    ) = Paint().apply {
+    private fun paint(colorRes: Int, antiAlias: Boolean) = Paint().apply {
         isAntiAlias = antiAlias
         color = ContextCompat.getColor(context, colorRes)
     }

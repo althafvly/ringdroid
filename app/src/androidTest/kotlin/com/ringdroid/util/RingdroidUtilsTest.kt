@@ -21,9 +21,24 @@ class RingdroidUtilsTest {
         assertEquals(Manifest.permission.RECORD_AUDIO, PermissionUtils.micPermission)
         val storagePermissions =
             when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> listOf(Manifest.permission.READ_MEDIA_AUDIO)
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                else -> listOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+                    listOf(
+                        Manifest.permission.READ_MEDIA_AUDIO,
+                    )
+                }
+
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+                    listOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                    )
+                }
+
+                else -> {
+                    listOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    )
+                }
             }
         assertEquals(storagePermissions, PermissionUtils.storagePermissions.toList())
     }
@@ -48,7 +63,10 @@ class RingdroidUtilsTest {
         val source = File(context.cacheDir, "audio.wav")
         assertNull(RingdroidUtils.getFileFromUri(null, Uri.fromFile(source)))
         assertNull(RingdroidUtils.getFileFromUri(context, null))
-        assertEquals(source.absolutePath, RingdroidUtils.getFileFromUri(context, Uri.fromFile(source))?.absolutePath)
+        assertEquals(
+            source.absolutePath,
+            RingdroidUtils.getFileFromUri(context, Uri.fromFile(source))?.absolutePath,
+        )
     }
 
     @Test

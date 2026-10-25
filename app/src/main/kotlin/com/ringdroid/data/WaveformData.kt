@@ -1,9 +1,7 @@
 package com.ringdroid.data
 
 /** Normalized waveform heights (0..1) for each zoom level, computed from per-frame gains. */
-internal class WaveformData(
-    frameGains: IntArray,
-) {
+internal class WaveformData(frameGains: IntArray) {
     private val values = ArrayList<DoubleArray>(NUM_ZOOM_LEVELS)
 
     val initialZoomLevel = INITIAL_ZOOM_THRESHOLDS.count { frameGains.size > it }
@@ -25,7 +23,12 @@ internal class WaveformData(
         // The remaining levels are each halved.
         while (values.size < NUM_ZOOM_LEVELS) {
             val previous = values.last()
-            values.add(DoubleArray(previous.size / 2) { i -> (previous[2 * i] + previous[2 * i + 1]) / 2 })
+            values.add(
+                DoubleArray(previous.size / 2) { i ->
+                    (previous[2 * i] + previous[2 * i + 1]) /
+                        2
+                },
+            )
         }
     }
 
@@ -52,9 +55,18 @@ internal class WaveformData(
             }
             return DoubleArray(n) { i ->
                 when (i) {
-                    0 -> gains[0] / 2.0 + gains[1] / 2.0
-                    n - 1 -> gains[n - 2] / 2.0 + gains[n - 1] / 2.0
-                    else -> gains[i - 1] / NEIGHBORS + gains[i] / NEIGHBORS + gains[i + 1] / NEIGHBORS
+                    0 -> {
+                        gains[0] / 2.0 + gains[1] / 2.0
+                    }
+
+                    n - 1 -> {
+                        gains[n - 2] / 2.0 + gains[n - 1] / 2.0
+                    }
+
+                    else -> {
+                        gains[i - 1] / NEIGHBORS + gains[i] / NEIGHBORS +
+                            gains[i + 1] / NEIGHBORS
+                    }
                 }
             }
         }

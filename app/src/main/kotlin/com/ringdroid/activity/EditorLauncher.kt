@@ -13,14 +13,14 @@ import androidx.core.content.IntentCompat
  * Opens the editor from the list screen. When the list was opened to pick content for another app,
  * the saved file is handed straight back. Must be created while the activity is being initialized.
  */
-internal class EditorLauncher(
-    private val activity: ComponentActivity,
-) {
+internal class EditorLauncher(private val activity: ComponentActivity) {
     private val wasGetContentIntent: Boolean
         get() = activity.intent.action == Intent.ACTION_GET_CONTENT
 
     private val launcher =
-        activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        activity.registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+        ) { result ->
             if (result.resultCode == Activity.RESULT_OK && wasGetContentIntent) {
                 activity.setResult(Activity.RESULT_OK, result.data)
                 activity.finish()
@@ -38,13 +38,25 @@ internal class EditorLauncher(
         }
     }
 
-    /** Opens the editor for audio viewed or shared from another app; the editor copies it if needed. */
+    /** Opens the editor for audio viewed or shared from another app. */
     fun openIncoming(intent: Intent) {
         val uri =
             when (intent.action) {
-                Intent.ACTION_VIEW -> intent.data
-                Intent.ACTION_SEND -> IntentCompat.getParcelableExtra(intent, Intent.EXTRA_STREAM, Uri::class.java)
-                else -> null
+                Intent.ACTION_VIEW -> {
+                    intent.data
+                }
+
+                Intent.ACTION_SEND -> {
+                    IntentCompat.getParcelableExtra(
+                        intent,
+                        Intent.EXTRA_STREAM,
+                        Uri::class.java,
+                    )
+                }
+
+                else -> {
+                    null
+                }
             }
         if (uri != null) {
             open(uri)

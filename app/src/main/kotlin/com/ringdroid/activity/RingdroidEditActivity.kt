@@ -54,10 +54,7 @@ class RingdroidEditActivity : ComponentActivity() {
                     updateDisplay()
                 }
 
-                override fun onFatalError(
-                    cause: Throwable?,
-                    message: CharSequence,
-                ) {
+                override fun onFatalError(cause: Throwable?, message: CharSequence) {
                     if (cause != null) {
                         binding.info.text = cause.toString().take(MAX_INFO_LENGTH)
                     }
@@ -107,10 +104,7 @@ class RingdroidEditActivity : ComponentActivity() {
         super.onDestroy()
     }
 
-    override fun onKeyDown(
-        keyCode: Int,
-        event: KeyEvent,
-    ): Boolean {
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_SPACE) {
             playback.toggle(selection.startPos)
             return true
@@ -154,16 +148,18 @@ class RingdroidEditActivity : ComponentActivity() {
             marker.isFocusableInTouchMode = true
         }
         markerLayout =
-            MarkerLayout(binding.startmarker, binding.endmarker, waveformView, resources.displayMetrics.density)
+            MarkerLayout(
+                binding.startmarker,
+                binding.endmarker,
+                waveformView,
+                resources.displayMetrics.density,
+            )
         // The markers are placed relative to the waveform's size, which is only known after layout.
         waveformView.doOnLayout { it.post(::updateDisplay) }
     }
 
     /** Shows [sound] at [zoomLevel], or at the zoom level that fits its length. */
-    private fun showSound(
-        sound: SoundFile,
-        zoomLevel: Int?,
-    ) {
+    private fun showSound(sound: SoundFile, zoomLevel: Int?) {
         waveformView.setSoundFile(sound)
         zoomLevel?.let { waveformView.zoomLevel = it }
         waveformView.density = resources.displayMetrics.density
@@ -187,14 +183,14 @@ class RingdroidEditActivity : ComponentActivity() {
 
     private fun resetPositions() {
         val scale = waveformView.scale
-        selection.reset(scale.secondsToPixels(0.0), scale.secondsToPixels(DEFAULT_SELECTION_SECONDS))
+        selection.reset(
+            scale.secondsToPixels(0.0),
+            scale.secondsToPixels(DEFAULT_SELECTION_SECONDS),
+        )
     }
 
     /** Shows an error that closes the editor when dismissed. The cause, if any, is logged. */
-    private fun closeWithError(
-        cause: Throwable?,
-        message: CharSequence,
-    ) {
+    private fun closeWithError(cause: Throwable?, message: CharSequence) {
         Log.e(TAG, "Error: $message", cause)
         setResult(RESULT_CANCELED)
         showFinalAlert(this, message)
@@ -227,12 +223,15 @@ class RingdroidEditActivity : ComponentActivity() {
         const val EXTRA_WAS_GET_CONTENT_INTENT = "was_get_content_intent"
 
         /** Opens [data] in the editor, or starts a recording when it's null. */
-        fun newIntent(
-            context: Context,
-            data: Uri?,
-            wasGetContentIntent: Boolean,
-        ): Intent {
-            val action = if (data == null) MediaStore.Audio.Media.RECORD_SOUND_ACTION else Intent.ACTION_EDIT
+        fun newIntent(context: Context, data: Uri?, wasGetContentIntent: Boolean): Intent {
+            val action =
+                if (data ==
+                    null
+                ) {
+                    MediaStore.Audio.Media.RECORD_SOUND_ACTION
+                } else {
+                    Intent.ACTION_EDIT
+                }
             return Intent(action, data, context, RingdroidEditActivity::class.java)
                 .putExtra(EXTRA_WAS_GET_CONTENT_INTENT, wasGetContentIntent)
                 // Passes on access to a content URI shared with the list screen.

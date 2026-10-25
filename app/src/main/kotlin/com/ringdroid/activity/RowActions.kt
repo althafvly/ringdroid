@@ -24,10 +24,7 @@ internal class RowActions(
     private val contactPicker = ContactRingtonePicker(activity) {}
     private val defaultSoundSetter = DefaultSoundSetter(activity)
 
-    fun show(
-        anchor: View,
-        position: Int,
-    ) {
+    fun show(anchor: View, position: Int) {
         val row = rowAt(position) ?: return
         RowOptionsPopup.show(
             anchor,
@@ -38,7 +35,12 @@ internal class RowActions(
                 }
 
                 override fun onSetDefault() {
-                    val type = if (row.isRingtone) RingtoneManager.TYPE_RINGTONE else RingtoneManager.TYPE_NOTIFICATION
+                    val type =
+                        if (row.isRingtone) {
+                            RingtoneManager.TYPE_RINGTONE
+                        } else {
+                            RingtoneManager.TYPE_NOTIFICATION
+                        }
                     defaultSoundSetter.set(type, row.uri)
                 }
 

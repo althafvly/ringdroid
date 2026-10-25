@@ -36,12 +36,7 @@ internal class SaveFlow(
     private var progressDialog: AlertDialog? = null
     private var followUpShown = false
 
-    fun start(
-        soundFile: SoundFile,
-        title: String?,
-        gain: Float,
-        clip: Clip,
-    ) {
+    fun start(soundFile: SoundFile, title: String?, gain: Float, clip: Clip) {
         FileSaveDialog(activity, title) { newTitle, kind ->
             viewModel.save(soundFile, newTitle, gain, kind, clip)
             onSaveStateChanged()
@@ -87,9 +82,16 @@ internal class SaveFlow(
     }
 
     private fun showFollowUp(uri: Uri) {
-        activity.setResult(Activity.RESULT_OK, Intent().setData(uri).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION))
+        activity.setResult(
+            Activity.RESULT_OK,
+            Intent().setData(uri).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION),
+        )
         // When picking content for another app, just return the file.
-        if (activity.intent.getBooleanExtra(RingdroidEditActivity.EXTRA_WAS_GET_CONTENT_INTENT, false)) {
+        if (activity.intent.getBooleanExtra(
+                RingdroidEditActivity.EXTRA_WAS_GET_CONTENT_INTENT,
+                false,
+            )
+        ) {
             activity.finish()
             return
         }

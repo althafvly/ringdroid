@@ -23,11 +23,7 @@ internal object RowOptionsPopup {
         fun onDelete()
     }
 
-    fun show(
-        anchor: View,
-        row: AudioRow,
-        actions: Actions,
-    ) {
+    fun show(anchor: View, row: AudioRow, actions: Actions) {
         val isRingtone = row.isRingtone
         val isNotification = row.isNotification
         val canDelete = row.canDelete()
@@ -52,12 +48,7 @@ internal object RowOptionsPopup {
         Popups.showAlignedRight(popup, anchor, WIDTH_DP, Y_OFFSET_DP)
     }
 
-    private fun bind(
-        item: View,
-        visible: Boolean,
-        popup: PopupWindow,
-        action: () -> Unit,
-    ) {
+    private fun bind(item: View, visible: Boolean, popup: PopupWindow, action: () -> Unit) {
         item.isVisible = visible
         item.setOnClickListener {
             popup.dismiss()

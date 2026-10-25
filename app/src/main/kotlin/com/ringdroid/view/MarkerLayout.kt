@@ -24,17 +24,21 @@ internal class MarkerLayout(
         endMarker.alpha = 1f
     }
 
-    fun place(
-        startPos: Int,
-        endPos: Int,
-        offset: Int,
-    ) {
+    fun place(startPos: Int, endPos: Int, offset: Int) {
         startVisible = updateVisibility(startMarker, startVisible, startPos - offset - leftInset)
-        endVisible = updateVisibility(endMarker, endVisible, endPos - offset - endMarker.width + rightInset)
+        endVisible =
+            updateVisibility(endMarker, endVisible, endPos - offset - endMarker.width + rightInset)
         val startX = if (startVisible) startPos - offset - leftInset else 0
         val endX = if (endVisible) endPos - offset - endMarker.width + rightInset else 0
         startMarker.layoutParams =
-            params().apply { setMargins(startX, topOffset, -startMarker.width, -startMarker.height) }
+            params().apply {
+                setMargins(
+                    startX,
+                    topOffset,
+                    -startMarker.width,
+                    -startMarker.height,
+                )
+            }
         endMarker.layoutParams =
             params().apply {
                 setMargins(
@@ -46,11 +50,7 @@ internal class MarkerLayout(
             }
     }
 
-    private fun updateVisibility(
-        marker: MarkerView,
-        visible: Boolean,
-        x: Int,
-    ): Boolean {
+    private fun updateVisibility(marker: MarkerView, visible: Boolean, x: Int): Boolean {
         val onScreen = x + marker.width >= 0
         if (onScreen && !visible) {
             // Shown on the next frame to avoid flicker.
@@ -61,8 +61,10 @@ internal class MarkerLayout(
         return onScreen
     }
 
-    private fun params() =
-        RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
+    private fun params() = RelativeLayout.LayoutParams(
+        RelativeLayout.LayoutParams.WRAP_CONTENT,
+        RelativeLayout.LayoutParams.WRAP_CONTENT,
+    )
 
     private companion object {
         const val LEFT_INSET_DP = 46

@@ -11,11 +11,7 @@ import java.nio.ByteOrder
 object TestAudio {
     const val SAMPLE_RATE = 44100
 
-    fun writeWav(
-        file: File,
-        channels: Int,
-        interleaved: ShortArray,
-    ): File {
+    fun writeWav(file: File, channels: Int, interleaved: ShortArray): File {
         val data = ByteBuffer.allocate(interleaved.size * 2).order(ByteOrder.LITTLE_ENDIAN)
         data.asShortBuffer().put(interleaved)
         FileOutputStream(file).use { out ->
@@ -46,11 +42,8 @@ object TestAudio {
         return soundFile!!
     }
 
-    /** Copies the bundled test_audio.wav (1 s of mono audio at 44.1 kHz) or another asset to [file]. */
-    fun copyAsset(
-        file: File,
-        asset: String = "test_audio.wav",
-    ): File {
+    /** Copies a bundled asset, by default test_audio.wav (1 s, mono, 44.1 kHz), to [file]. */
+    fun copyAsset(file: File, asset: String = "test_audio.wav"): File {
         InstrumentationRegistry.getInstrumentation().context.assets.open(asset).use { input ->
             FileOutputStream(file).use { input.copyTo(it) }
         }

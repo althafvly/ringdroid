@@ -8,10 +8,7 @@ import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 
 /** A temporary file holding decoded PCM, memory-mapped and grown as decoding needs more room. */
-internal class PcmFile private constructor(
-    private val file: File,
-    initialSize: Long,
-) {
+internal class PcmFile private constructor(private val file: File, initialSize: Long) {
     private val raf = RandomAccessFile(file, "rw")
 
     var buffer: MappedByteBuffer
@@ -50,10 +47,7 @@ internal class PcmFile private constructor(
         // Temp files in use by this process; any other ones were left behind by a killed process.
         private val activeFiles = mutableSetOf<File>()
 
-        fun create(
-            cacheDir: File,
-            initialSize: Long,
-        ): PcmFile {
+        fun create(cacheDir: File, initialSize: Long): PcmFile {
             val file =
                 synchronized(activeFiles) {
                     deleteStaleFiles(cacheDir)

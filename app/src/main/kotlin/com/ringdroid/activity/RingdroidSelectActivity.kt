@@ -28,7 +28,9 @@ class RingdroidSelectActivity :
     private val viewModel: SelectViewModel by viewModels()
     private val editorLauncher = EditorLauncher(this)
     private val storagePermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { onPermissionChanged() }
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            onPermissionChanged()
+        }
     private val rowActions = RowActions(this, editorLauncher, ::rowAt) { refreshListView() }
 
     private var binding: MediaSelectBinding? = null
@@ -113,7 +115,13 @@ class RingdroidSelectActivity :
     private fun setupToolbar(b: MediaSelectBinding) {
         RingdroidUtils.applyStatusBarInsets(b.toolbarContainer)
         RingdroidUtils.applyNavigationBarInsets(b.list, LIST_BOTTOM_PADDING_DP)
-        searchHelper = SearchToolbarHelper(this, b.toolbarNormal, b.toolbarSearch, b.btnSearch) { refreshListView() }
+        searchHelper =
+            SearchToolbarHelper(
+                this,
+                b.toolbarNormal,
+                b.toolbarSearch,
+                b.btnSearch,
+            ) { refreshListView() }
         b.btnRecord.setOnClickListener { editorLauncher.open(null) }
         b.btnMore.setOnClickListener { anchor ->
             OptionsPopup.show(anchor, viewModel.showAll) { showAll ->
@@ -136,14 +144,27 @@ class RingdroidSelectActivity :
                     MediaStore.Audio.Media._ID,
                     MediaStore.Audio.Media._ID,
                 ),
-                intArrayOf(R.id.row_artist, R.id.row_album, R.id.row_title, R.id.row_icon, R.id.row_options_button),
+                intArrayOf(
+                    R.id.row_artist,
+                    R.id.row_album,
+                    R.id.row_title,
+                    R.id.row_icon,
+                    R.id.row_options_button,
+                ),
                 0,
             )
         cursorAdapter.viewBinder = AudioRowBinder(rowActions::show)
         adapter = cursorAdapter
         b.list.adapter = cursorAdapter
         b.list.itemsCanFocus = true
-        b.list.setOnItemClickListener { _, _, position, _ -> rowAt(position)?.let { editorLauncher.open(it.uri) } }
+        b.list.setOnItemClickListener {
+                _,
+                _,
+                position,
+                _,
+            ->
+            rowAt(position)?.let { editorLauncher.open(it.uri) }
+        }
         b.list.setOnItemLongClickListener { _, view, position, _ ->
             rowActions.show(view.findViewById(R.id.row_options_button) ?: view, position)
             true
@@ -151,11 +172,10 @@ class RingdroidSelectActivity :
     }
 
     /** The row at [position] of the list, or null if the list changed. */
-    private fun rowAt(position: Int): AudioRow? =
-        adapter
-            ?.cursor
-            ?.takeIf { !it.isClosed && it.moveToPosition(position) }
-            ?.let { AudioRow.from(it, isInternal = position < viewModel.internalRowCount) }
+    private fun rowAt(position: Int): AudioRow? = adapter
+        ?.cursor
+        ?.takeIf { !it.isClosed && it.moveToPosition(position) }
+        ?.let { AudioRow.from(it, isInternal = position < viewModel.internalRowCount) }
 
     private companion object {
         const val STATE_SEARCH_OPEN = "search_open"

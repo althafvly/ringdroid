@@ -11,8 +11,14 @@ class AudioQueryTest {
     @Test
     fun supportedFilesOnStorageRoots() {
         val query = AudioQuery.build(false, null, extensions, roots)
-        assertEquals("((_DATA LIKE ?) OR (_DATA LIKE ?)) AND (_DATA LIKE ? OR _DATA LIKE ?)", query.selection)
-        assertArrayEquals(arrayOf("%.mp3", "%.wav", "/sdcard/%", "/storage/1234/%"), query.selectionArgs)
+        assertEquals(
+            "((_DATA LIKE ?) OR (_DATA LIKE ?)) AND (_DATA LIKE ? OR _DATA LIKE ?)",
+            query.selection,
+        )
+        assertArrayEquals(
+            arrayOf("%.mp3", "%.wav", "/sdcard/%", "/storage/1234/%"),
+            query.selectionArgs,
+        )
     }
 
     @Test
@@ -25,7 +31,10 @@ class AudioQueryTest {
     @Test
     fun filterMatchesTitleArtistAndAlbum() {
         val query = AudioQuery.build(true, "rock", extensions, roots)
-        assertEquals("((_DATA LIKE ?) AND (TITLE LIKE ? OR ARTIST LIKE ? OR ALBUM LIKE ?))", query.selection)
+        assertEquals(
+            "((_DATA LIKE ?) AND (TITLE LIKE ? OR ARTIST LIKE ? OR ALBUM LIKE ?))",
+            query.selection,
+        )
         assertArrayEquals(arrayOf("%", "%rock%", "%rock%", "%rock%"), query.selectionArgs)
     }
 

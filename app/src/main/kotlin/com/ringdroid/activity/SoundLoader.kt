@@ -26,10 +26,7 @@ internal class SoundLoader(
         fun onLoaded()
 
         /** Shows [message] and closes the editor. */
-        fun onFatalError(
-            cause: Throwable?,
-            message: CharSequence,
-        )
+        fun onFatalError(cause: Throwable?, message: CharSequence)
     }
 
     private val viewModel by viewModelLazy
@@ -46,7 +43,7 @@ internal class SoundLoader(
             }
         }
 
-    /** Starts loading [data] (or recording when it's null), or reconnects to a job started before recreation. */
+    /** Loads [data], or records when it's null, or reconnects to a job from before recreation. */
     fun start(data: Uri?) {
         viewModel.events.listener = this
         if (!viewModel.started) {
@@ -87,8 +84,11 @@ internal class SoundLoader(
 
             Task.RECORDING -> {
                 recordingDialog =
-                    RecordingDialog(activity, onStop = { viewModel.stopRecording() }, onCancel = { viewModel.cancel() })
-                        .also { it.show() }
+                    RecordingDialog(
+                        activity,
+                        onStop = { viewModel.stopRecording() },
+                        onCancel = { viewModel.cancel() },
+                    ).also { it.show() }
             }
 
             Task.IDLE -> {}
@@ -117,10 +117,7 @@ internal class SoundLoader(
         callbacks.onLoaded()
     }
 
-    override fun onFailed(
-        cause: Throwable?,
-        message: CharSequence,
-    ) {
+    override fun onFailed(cause: Throwable?, message: CharSequence) {
         dismissDialogs()
         callbacks.onFatalError(cause, message)
     }

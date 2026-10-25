@@ -13,7 +13,8 @@ import java.io.File
 class SongMetadataReaderTest {
     @Test
     fun untaggedFileUsesFileName() {
-        val wav = File(InstrumentationRegistry.getInstrumentation().targetContext.cacheDir, "My Song.wav")
+        val wav =
+            File(InstrumentationRegistry.getInstrumentation().targetContext.cacheDir, "My Song.wav")
         TestAudio.writeWav(wav, 1, ShortArray(TestAudio.SAMPLE_RATE))
         try {
             val reader = SongMetadataReader(wav.path)
@@ -26,7 +27,8 @@ class SongMetadataReaderTest {
 
     @Test
     fun corruptFilesFallBackToFileName() {
-        val file = File(InstrumentationRegistry.getInstrumentation().targetContext.cacheDir, "Broken.wav")
+        val file =
+            File(InstrumentationRegistry.getInstrumentation().targetContext.cacheDir, "Broken.wav")
         file.writeBytes(ByteArray(64) { it.toByte() })
         try {
             val reader = SongMetadataReader(file.path)

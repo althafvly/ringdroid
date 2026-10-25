@@ -64,7 +64,12 @@ class EditorViewModelTest {
 
     @Test
     fun cancelingStopsLoading() {
-        val file = TestAudio.writeWav(cacheFile("long.wav"), 1, TestAudio.ramp(TestAudio.SAMPLE_RATE * LONG_SECONDS))
+        val file =
+            TestAudio.writeWav(
+                cacheFile("long.wav"),
+                1,
+                TestAudio.ramp(TestAudio.SAMPLE_RATE * LONG_SECONDS),
+            )
         val events = Events(cancelOnProgress = viewModel)
         events.await(viewModel) { viewModel.load(Uri.fromFile(file)) }
         assertEquals("canceled", events.names.last())
@@ -74,17 +79,13 @@ class EditorViewModelTest {
     private fun cacheFile(name: String) = File(context.cacheDir, name).also { files.add(it) }
 
     /** Records the view model's events until it finishes a job. */
-    private class Events(
-        private val cancelOnProgress: EditorViewModel? = null,
-    ) : EditorViewModel.Listener {
+    private class Events(private val cancelOnProgress: EditorViewModel? = null) :
+        EditorViewModel.Listener {
         val names = mutableListOf<String>()
         var message: CharSequence? = null
         private val done = CountDownLatch(1)
 
-        fun await(
-            viewModel: EditorViewModel,
-            start: () -> Unit,
-        ) {
+        fun await(viewModel: EditorViewModel, start: () -> Unit) {
             InstrumentationRegistry.getInstrumentation().runOnMainSync {
                 viewModel.events.listener = this
                 start()
@@ -105,10 +106,7 @@ class EditorViewModelTest {
             done.countDown()
         }
 
-        override fun onFailed(
-            cause: Throwable?,
-            message: CharSequence,
-        ) {
+        override fun onFailed(cause: Throwable?, message: CharSequence) {
             names.add("failed")
             this.message = message
             done.countDown()

@@ -23,7 +23,10 @@ class SourceFilesTest {
     fun fileUrisResolveToTheFile() {
         val file = TestAudio.copyAsset(File(context.cacheDir, "source_file.wav"))
         try {
-            assertEquals(file.canonicalPath, SourceFiles.resolve(context, Uri.fromFile(file))?.canonicalPath)
+            assertEquals(
+                file.canonicalPath,
+                SourceFiles.resolve(context, Uri.fromFile(file))?.canonicalPath,
+            )
         } finally {
             file.delete()
         }

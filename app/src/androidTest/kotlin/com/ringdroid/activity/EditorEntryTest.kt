@@ -29,7 +29,11 @@ import org.junit.runner.RunWith
 class EditorEntryTest {
     private val instrumentation = InstrumentationRegistry.getInstrumentation()
     private val context = instrumentation.targetContext
-    private val sharedUri = SharedAudioProvider.uri(instrumentation.context.packageName, "Entry tone.wav")
+    private val sharedUri =
+        SharedAudioProvider.uri(
+            instrumentation.context.packageName,
+            "Entry tone.wav",
+        )
     private val monitors = mutableListOf<Instrumentation.ActivityMonitor>()
 
     @After
@@ -42,7 +46,9 @@ class EditorEntryTest {
         val intent = RingdroidEditActivity.newIntent(context, sharedUri, wasGetContentIntent = true)
         assertEquals(Intent.ACTION_EDIT, intent.action)
         assertEquals(sharedUri, intent.data)
-        assertTrue(intent.getBooleanExtra(RingdroidEditActivity.EXTRA_WAS_GET_CONTENT_INTENT, false))
+        assertTrue(
+            intent.getBooleanExtra(RingdroidEditActivity.EXTRA_WAS_GET_CONTENT_INTENT, false),
+        )
         assertTrue(intent.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION != 0)
         assertEquals(RingdroidEditActivity::class.java.name, intent.component?.className)
     }
@@ -52,7 +58,9 @@ class EditorEntryTest {
         val intent = RingdroidEditActivity.newIntent(context, null, wasGetContentIntent = false)
         assertEquals(MediaStore.Audio.Media.RECORD_SOUND_ACTION, intent.action)
         assertNull(intent.data)
-        assertFalse(intent.getBooleanExtra(RingdroidEditActivity.EXTRA_WAS_GET_CONTENT_INTENT, true))
+        assertFalse(
+            intent.getBooleanExtra(RingdroidEditActivity.EXTRA_WAS_GET_CONTENT_INTENT, true),
+        )
     }
 
     @Test
@@ -65,10 +73,17 @@ class EditorEntryTest {
 
     @Test
     fun editorOpensAudioSharedByAnotherApp() {
-        val intent = RingdroidEditActivity.newIntent(context, sharedUri, wasGetContentIntent = false)
+        val intent =
+            RingdroidEditActivity.newIntent(
+                context,
+                sharedUri,
+                wasGetContentIntent = false,
+            )
         ActivityScenario.launch<RingdroidEditActivity>(intent).use { scenario ->
             waitForSound(scenario)
-            scenario.onActivity { assertEquals("Entry tone", it.findViewById<TextView>(R.id.toolbar_title).text) }
+            scenario.onActivity {
+                assertEquals("Entry tone", it.findViewById<TextView>(R.id.toolbar_title).text)
+            }
         }
     }
 
@@ -80,13 +95,20 @@ class EditorEntryTest {
     @Test
     fun sharedAudioOpensInTheEditor() {
         assertForwardedToEditor(
-            Intent(Intent.ACTION_SEND).setType("audio/x-wav").putExtra(Intent.EXTRA_STREAM, sharedUri),
+            Intent(
+                Intent.ACTION_SEND,
+            ).setType("audio/x-wav").putExtra(Intent.EXTRA_STREAM, sharedUri),
         )
     }
 
     @Test
     fun selectionSurvivesRecreation() {
-        val intent = RingdroidEditActivity.newIntent(context, sharedUri, wasGetContentIntent = false)
+        val intent =
+            RingdroidEditActivity.newIntent(
+                context,
+                sharedUri,
+                wasGetContentIntent = false,
+            )
         ActivityScenario.launch<RingdroidEditActivity>(intent).use { scenario ->
             waitForSound(scenario)
             scenario.onActivity { activity ->
@@ -103,12 +125,26 @@ class EditorEntryTest {
     }
 
     private fun assertForwardedToEditor(intent: Intent) {
-        val selectMonitor = instrumentation.addMonitor(RingdroidSelectActivity::class.java.name, null, false)
-        val editorMonitor = instrumentation.addMonitor(RingdroidEditActivity::class.java.name, null, false)
+        val selectMonitor =
+            instrumentation.addMonitor(
+                RingdroidSelectActivity::class.java.name,
+                null,
+                false,
+            )
+        val editorMonitor =
+            instrumentation.addMonitor(
+                RingdroidEditActivity::class.java.name,
+                null,
+                false,
+            )
         monitors.add(selectMonitor)
         monitors.add(editorMonitor)
         context.startActivity(
-            intent.setClass(context, RingdroidSelectActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+            intent
+                .setClass(
+                    context,
+                    RingdroidSelectActivity::class.java,
+                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
         )
         val editor: Activity? = instrumentation.waitForMonitorWithTimeout(editorMonitor, TIMEOUT_MS)
         val select: Activity? = instrumentation.waitForMonitorWithTimeout(selectMonitor, TIMEOUT_MS)
@@ -125,7 +161,10 @@ class EditorEntryTest {
     private fun waitForSound(scenario: ActivityScenario<RingdroidEditActivity>) {
         waitUntil {
             var loaded = false
-            scenario.onActivity { loaded = it.findViewById<WaveformView>(R.id.waveform).isInitialized }
+            scenario.onActivity {
+                loaded =
+                    it.findViewById<WaveformView>(R.id.waveform).isInitialized
+            }
             loaded
         }
     }

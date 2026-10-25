@@ -20,9 +20,7 @@ import java.io.IOException
  * The editor's state, kept across activity recreation: the loaded sound and its player, the song
  * tags, the selection and zoom, and the load or record job in progress.
  */
-internal class EditorViewModel(
-    application: Application,
-) : AndroidViewModel(application) {
+internal class EditorViewModel(application: Application) : AndroidViewModel(application) {
     /** Receives job results on the main thread. Results are queued while no listener is set. */
     interface Listener {
         /** Fraction loaded (0..1), or seconds recorded. */
@@ -32,10 +30,7 @@ internal class EditorViewModel(
 
         fun onLoaded()
 
-        fun onFailed(
-            cause: Throwable?,
-            message: CharSequence,
-        )
+        fun onFailed(cause: Throwable?, message: CharSequence)
 
         fun onCanceled()
     }
@@ -181,10 +176,7 @@ internal class EditorViewModel(
         return !keepGoing
     }
 
-    private fun deliver(
-        loaded: SoundFile,
-        newPlayer: SamplePlayer,
-    ) {
+    private fun deliver(loaded: SoundFile, newPlayer: SamplePlayer) {
         events.runOnMain {
             if (cleared) {
                 newPlayer.release()
@@ -198,10 +190,7 @@ internal class EditorViewModel(
         events.post { it.onLoaded() }
     }
 
-    private fun fail(
-        cause: Throwable?,
-        message: CharSequence,
-    ) {
+    private fun fail(cause: Throwable?, message: CharSequence) {
         events.post {
             task = Task.IDLE
             it.onFailed(cause, message)

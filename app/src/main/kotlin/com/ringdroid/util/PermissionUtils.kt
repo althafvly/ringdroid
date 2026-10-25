@@ -15,14 +15,31 @@ object PermissionUtils {
     val storagePermissions: Array<String>
         get() =
             when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> arrayOf(Manifest.permission.READ_MEDIA_AUDIO)
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                else -> arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+                    arrayOf(
+                        Manifest.permission.READ_MEDIA_AUDIO,
+                    )
+                }
+
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+                    arrayOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                    )
+                }
+
+                else -> {
+                    arrayOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    )
+                }
             }
 
     fun hasMicPermissions(context: Context): Boolean = context.isGranted(micPermission)
 
-    fun hasStoragePermission(context: Context): Boolean = storagePermissions.all { context.isGranted(it) }
+    fun hasStoragePermission(context: Context): Boolean = storagePermissions.all {
+        context.isGranted(it)
+    }
 
     fun hasWriteSettingsPermission(context: Context): Boolean = Settings.System.canWrite(context)
 

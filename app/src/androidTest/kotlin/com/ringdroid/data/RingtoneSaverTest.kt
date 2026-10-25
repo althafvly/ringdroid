@@ -28,7 +28,12 @@ class RingtoneSaverTest {
     @Before
     fun setUp() {
         TestPermissions.grantStorage()
-        input = TestAudio.writeWav(File(context.cacheDir, "saver_input.wav"), 1, TestAudio.ramp(TestAudio.SAMPLE_RATE))
+        input =
+            TestAudio.writeWav(
+                File(context.cacheDir, "saver_input.wav"),
+                1,
+                TestAudio.ramp(TestAudio.SAMPLE_RATE),
+            )
         soundFile = TestAudio.load(input)
     }
 
@@ -44,8 +49,16 @@ class RingtoneSaverTest {
             listOf(
                 Triple(FileSaveDialog.FILE_KIND_MUSIC, MediaStore.Audio.Media.IS_MUSIC, "music"),
                 Triple(FileSaveDialog.FILE_KIND_ALARM, MediaStore.Audio.Media.IS_ALARM, "alarms"),
-                Triple(FileSaveDialog.FILE_KIND_NOTIFICATION, MediaStore.Audio.Media.IS_NOTIFICATION, "notifications"),
-                Triple(FileSaveDialog.FILE_KIND_RINGTONE, MediaStore.Audio.Media.IS_RINGTONE, "ringtones"),
+                Triple(
+                    FileSaveDialog.FILE_KIND_NOTIFICATION,
+                    MediaStore.Audio.Media.IS_NOTIFICATION,
+                    "notifications",
+                ),
+                Triple(
+                    FileSaveDialog.FILE_KIND_RINGTONE,
+                    MediaStore.Audio.Media.IS_RINGTONE,
+                    "ringtones",
+                ),
             )
         for ((kind, flag, folder) in kinds) {
             val uri =
@@ -63,11 +76,7 @@ class RingtoneSaverTest {
         }
     }
 
-    private fun assertSaved(
-        uri: Uri,
-        flag: String,
-        folder: String,
-    ) {
+    private fun assertSaved(uri: Uri, flag: String, folder: String) {
         val scoped = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
         val projection =
             if (scoped) {

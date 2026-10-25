@@ -6,11 +6,10 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class EditorScrollTest {
-    private fun scroll() =
-        EditorScroll().apply {
-            maxPos = 1000
-            width = 200
-        }
+    private fun scroll() = EditorScroll().apply {
+        maxPos = 1000
+        width = 200
+    }
 
     @Test
     fun trapKeepsPositionsInRange() {

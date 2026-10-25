@@ -7,10 +7,7 @@ import com.ringdroid.databinding.AfterSaveActionBinding
 import com.ringdroid.util.createDialog
 
 /** Offers to make a saved ringtone the default, assign it to a contact, or do nothing. */
-class AfterSaveActionDialog(
-    context: Context,
-    private val listener: (Int) -> Unit,
-) {
+class AfterSaveActionDialog(context: Context, private val listener: (Int) -> Unit) {
     private val dialog: AlertDialog
 
     init {

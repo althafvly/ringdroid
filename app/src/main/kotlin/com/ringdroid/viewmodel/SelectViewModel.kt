@@ -16,9 +16,7 @@ import com.ringdroid.util.ListenerEvents
 import com.ringdroid.util.RingdroidUtils
 
 /** Queries the audio list in the background and owns the resulting cursor across recreation. */
-internal class SelectViewModel(
-    application: Application,
-) : AndroidViewModel(application) {
+internal class SelectViewModel(application: Application) : AndroidViewModel(application) {
     fun interface Listener {
         fun onAudioLoaded()
     }
@@ -27,7 +25,7 @@ internal class SelectViewModel(
 
     var showAll = false
 
-    /** Internal sounds followed by external ones; null before the first load or when nothing matched. */
+    /** Internal sounds, then external ones; null before the first load or when nothing matched. */
     var cursor: Cursor? = null
         private set
     var internalRowCount = 0
@@ -40,7 +38,13 @@ internal class SelectViewModel(
 
     fun load(filter: String?) {
         val loadGeneration = ++generation
-        val query = AudioQuery.build(showAll, filter, SoundFile.getSupportedExtensions(), storageRoots())
+        val query =
+            AudioQuery.build(
+                showAll,
+                filter,
+                SoundFile.getSupportedExtensions(),
+                storageRoots(),
+            )
         val showingAll = showAll
         val resolver = getApplication<Application>().contentResolver
         RingdroidUtils.BACKGROUND.execute {
@@ -82,11 +86,7 @@ internal class SelectViewModel(
         }
     }
 
-    private fun show(
-        internal: Cursor?,
-        external: Cursor?,
-        showingAll: Boolean,
-    ) {
+    private fun show(internal: Cursor?, external: Cursor?, showingAll: Boolean) {
         val old = cursor
         val internalCount = internal?.count ?: 0
         if (internalCount == 0 && (external?.count ?: 0) == 0 && !showingAll) {
@@ -106,9 +106,14 @@ internal class SelectViewModel(
     private fun storageRoots(): List<String> {
         val roots = mutableListOf(Environment.getExternalStorageDirectory().path)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            getApplication<Application>().getSystemService<StorageManager>()?.storageVolumes?.mapNotNullTo(roots) {
-                it.directory?.absolutePath
-            }
+            getApplication<Application>()
+                .getSystemService<StorageManager>()
+                ?.storageVolumes
+                ?.mapNotNullTo(
+                    roots,
+                ) {
+                    it.directory?.absolutePath
+                }
         }
         return roots
     }

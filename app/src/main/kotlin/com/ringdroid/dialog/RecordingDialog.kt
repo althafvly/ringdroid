@@ -10,11 +10,7 @@ import com.ringdroid.databinding.RecordAudioBinding
 import com.ringdroid.util.createDialog
 
 /** Dialog shown while recording, with an elapsed-time counter and stop / cancel buttons. */
-internal class RecordingDialog(
-    context: Context,
-    onStop: () -> Unit,
-    onCancel: () -> Unit,
-) {
+internal class RecordingDialog(context: Context, onStop: () -> Unit, onCancel: () -> Unit) {
     private val binding = RecordAudioBinding.inflate(LayoutInflater.from(context))
     private val dialog: AlertDialog
 
@@ -49,7 +45,14 @@ internal class RecordingDialog(
     fun setElapsedSeconds(seconds: Double) {
         val min = (seconds / SECONDS_PER_MINUTE).toInt()
         binding.recordAudioTimer.text =
-            binding.root.context.getString(R.string.recording_time, min, (seconds - SECONDS_PER_MINUTE * min).toFloat())
+            binding.root.context.getString(
+                R.string.recording_time,
+                min,
+                (
+                    seconds -
+                        SECONDS_PER_MINUTE * min
+                    ).toFloat(),
+            )
     }
 
     private companion object {

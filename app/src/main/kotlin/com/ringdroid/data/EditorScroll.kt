@@ -52,7 +52,14 @@ internal class EditorScroll {
         if (flingVelocity == 0) {
             // Ease towards the goal: a tenth of the distance, at least one pixel.
             val delta = offsetGoal - offset
-            offset += if (delta > EASE_DIVISOR || delta < -EASE_DIVISOR) delta / EASE_DIVISOR else delta.coerceIn(-1, 1)
+            offset +=
+                if (delta > EASE_DIVISOR ||
+                    delta < -EASE_DIVISOR
+                ) {
+                    delta / EASE_DIVISOR
+                } else {
+                    delta.coerceIn(-1, 1)
+                }
             return
         }
         offset += flingVelocity / FLING_DIVISOR

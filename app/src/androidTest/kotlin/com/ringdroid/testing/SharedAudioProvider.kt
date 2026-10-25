@@ -20,28 +20,18 @@ class SharedAudioProvider : ContentProvider() {
         selection: String?,
         selectionArgs: Array<out String>?,
         sortOrder: String?,
-    ): Cursor =
-        MatrixCursor(arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE)).apply {
-            addRow(arrayOf<Any?>(uri.lastPathSegment, audioFile().length()))
-        }
+    ): Cursor = MatrixCursor(arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE)).apply {
+        addRow(arrayOf<Any?>(uri.lastPathSegment, audioFile().length()))
+    }
 
     override fun getType(uri: Uri) = "audio/x-wav"
 
-    override fun openFile(
-        uri: Uri,
-        mode: String,
-    ): ParcelFileDescriptor = ParcelFileDescriptor.open(audioFile(), ParcelFileDescriptor.MODE_READ_ONLY)
+    override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor =
+        ParcelFileDescriptor.open(audioFile(), ParcelFileDescriptor.MODE_READ_ONLY)
 
-    override fun insert(
-        uri: Uri,
-        values: ContentValues?,
-    ): Uri? = null
+    override fun insert(uri: Uri, values: ContentValues?): Uri? = null
 
-    override fun delete(
-        uri: Uri,
-        selection: String?,
-        selectionArgs: Array<out String>?,
-    ) = 0
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?) = 0
 
     override fun update(
         uri: Uri,
@@ -77,9 +67,7 @@ class SharedAudioProvider : ContentProvider() {
     companion object {
         private const val BUFFER_SIZE = 8192
 
-        fun uri(
-            testPackage: String,
-            displayName: String,
-        ): Uri = Uri.parse("content://$testPackage.sharedaudio/$displayName")
+        fun uri(testPackage: String, displayName: String): Uri =
+            Uri.parse("content://$testPackage.sharedaudio/$displayName")
     }
 }

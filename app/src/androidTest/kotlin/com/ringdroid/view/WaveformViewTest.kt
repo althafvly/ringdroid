@@ -38,7 +38,11 @@ class WaveformViewTest {
 
                 view.zoomOut()
                 assertEquals(87, view.maxPos)
-                assertEquals(1000.0, view.scale.pixelsToMillisecs(view.scale.millisecsToPixels(1000)).toDouble(), 30.0)
+                assertEquals(
+                    1000.0,
+                    view.scale.pixelsToMillisecs(view.scale.millisecsToPixels(1000)).toDouble(),
+                    30.0,
+                )
 
                 // Restoring a zoom level after rotation.
                 view.zoomLevel = 0

@@ -10,11 +10,7 @@ object WAVHeader {
     private const val BITS_PER_SAMPLE = 16
     private const val PCM_FORMAT: Short = 1
 
-    fun getWAVHeader(
-        sampleRate: Int,
-        numChannels: Int,
-        numSamples: Int,
-    ): ByteArray {
+    fun getWAVHeader(sampleRate: Int, numChannels: Int, numSamples: Int): ByteArray {
         val bytesPerFrame = Short.SIZE_BYTES * numChannels
         val dataSize = numSamples * bytesPerFrame
         return ByteBuffer

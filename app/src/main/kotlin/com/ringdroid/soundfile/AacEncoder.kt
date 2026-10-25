@@ -4,7 +4,7 @@ import android.media.MediaCodec
 import android.media.MediaMuxer
 import java.io.IOException
 
-/** Feeds PCM through a started AAC encoder into a muxer, which it starts once the format is known. */
+/** Feeds PCM through a started AAC encoder into a muxer, starting it once the format is known. */
 internal class AacEncoder(
     private val codec: MediaCodec,
     private val muxer: MediaMuxer,
@@ -40,11 +40,19 @@ internal class AacEncoder(
         val inputBuffer = codec.getInputBuffer(inputIndex)
         // Queue whole sample frames only, however large the input buffer is.
         val capacity = inputBuffer?.capacity() ?: 0
-        val length = minOf(buffer.size, capacity, samplesLeft * bytesPerFrame) / bytesPerFrame * bytesPerFrame
+        val length =
+            minOf(buffer.size, capacity, samplesLeft * bytesPerFrame) / bytesPerFrame *
+                bytesPerFrame
         val presentationTimeUs = samplesQueued * MICROS_PER_SECOND / sampleRate
         if (inputBuffer == null || length == 0) {
             // Some encoders stamp their last frame with this time; the muxer rejects going back.
-            codec.queueInputBuffer(inputIndex, 0, 0, presentationTimeUs, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
+            codec.queueInputBuffer(
+                inputIndex,
+                0,
+                0,
+                presentationTimeUs,
+                MediaCodec.BUFFER_FLAG_END_OF_STREAM,
+            )
             doneReading = true
         } else {
             inputBuffer.clear()
@@ -74,7 +82,8 @@ internal class AacEncoder(
         return info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0
     }
 
-    private fun isMediaData() = track >= 0 && info.size > 0 && info.flags and MediaCodec.BUFFER_FLAG_CODEC_CONFIG == 0
+    private fun isMediaData() =
+        track >= 0 && info.size > 0 && info.flags and MediaCodec.BUFFER_FLAG_CODEC_CONFIG == 0
 
     companion object {
         /** Samples per channel in one AAC frame. */
