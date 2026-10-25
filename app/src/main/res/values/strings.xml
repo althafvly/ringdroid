@@ -78,7 +78,6 @@
      Menu items
      -->
 
-    <string name="menu_save" translatable="false">@string/save_button</string>
     <string name="menu_reset">Reset</string>
     <string name="menu_about">About</string>
     <string name="menu_show_all_audio">Show All Audio</string>

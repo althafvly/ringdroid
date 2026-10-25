@@ -83,3 +83,14 @@ dependencies {
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.runner)
 }
+
+kotlin {
+    compilerOptions {
+        // Skip runtime null checks on parameters and platform calls to keep the APK small.
+        freeCompilerArgs.addAll(
+            "-Xno-param-assertions",
+            "-Xno-call-assertions",
+            "-Xno-receiver-assertions",
+        )
+    }
+}

@@ -7,12 +7,6 @@ plugins {
 }
 
 spotless {
-    java {
-        removeUnusedImports()
-        eclipse().configFile(rootProject.file("eclipse-formatter.xml"))
-        leadingTabsToSpaces(4)
-        target("app/src/**/*.java")
-    }
     format("xml") {
         target("app/src/**/*.xml")
         targetExclude("**/build/", ".idea/")

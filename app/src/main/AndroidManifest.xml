@@ -93,7 +93,7 @@
         file. -->
         <activity
             android:name=".editor.RingdroidEditActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|uiMode|keyboard|keyboardHidden|navigation|density|fontScale|locale|layoutDirection"
             android:exported="true"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
