@@ -4,7 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import com.ringdroid.databinding.AfterSaveActionBinding
-import com.ringdroid.util.RingdroidUtils
+import com.ringdroid.util.createDialog
 
 /** Offers to make a saved ringtone the default, assign it to a contact, or do nothing. */
 class AfterSaveActionDialog(
@@ -18,8 +18,7 @@ class AfterSaveActionDialog(
         binding.buttonMakeDefault.setOnClickListener { closeAndSendResult(ACTION_MAKE_DEFAULT) }
         binding.buttonChooseContact.setOnClickListener { closeAndSendResult(ACTION_CHOOSE_CONTACT) }
         binding.buttonDoNothing.setOnClickListener { closeAndSendResult(ACTION_DO_NOTHING) }
-        dialog = AlertDialog.Builder(context).setView(binding.root).create()
-        RingdroidUtils.setTransparentBackground(dialog)
+        dialog = createDialog(context, binding.root)
     }
 
     private fun closeAndSendResult(action: Int) {

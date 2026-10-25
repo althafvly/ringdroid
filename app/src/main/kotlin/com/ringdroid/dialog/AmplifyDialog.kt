@@ -1,11 +1,10 @@
 package com.ringdroid.dialog
 
-import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.widget.SeekBar
 import com.ringdroid.databinding.DialogAmplifyBinding
-import com.ringdroid.util.RingdroidUtils
+import com.ringdroid.util.createDialog
 import java.util.Locale
 
 /** Lets the user pick an output volume between 10% and the seek bar maximum. */
@@ -23,12 +22,7 @@ internal object AmplifyDialog {
         binding.amplifyPercentageText.text = formatPercent(current)
 
         val dialog =
-            AlertDialog
-                .Builder(context)
-                .setView(binding.root)
-                .setCancelable(true)
-                .create()
-        RingdroidUtils.setTransparentBackground(dialog)
+            createDialog(context, binding.root)
         binding.amplifySeekbar.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(

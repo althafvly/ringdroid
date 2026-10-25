@@ -1,7 +1,6 @@
 package com.ringdroid.activity
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.RecoverableSecurityException
 import android.net.Uri
 import android.os.Build
@@ -13,7 +12,8 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import com.ringdroid.R
 import com.ringdroid.databinding.DialogConfirmDeleteBinding
-import com.ringdroid.util.RingdroidUtils
+import com.ringdroid.util.PendingAction
+import com.ringdroid.util.createDialog
 import java.io.File
 
 /**
@@ -24,13 +24,14 @@ internal class AudioDeleter(
     private val activity: ComponentActivity,
     private val onDeleted: () -> Unit,
 ) {
-    private var pendingUri: Uri? = null
+    // The file waiting for the user's consent on Android 10.
+    private val pending = PendingAction(activity, "AudioDeleter")
     private val consentLauncher =
         activity.registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-            val pending = pendingUri
-            pendingUri = null
+            val pendingUri = pending.uri
+            pending.uri = null
             if (result.resultCode == Activity.RESULT_OK) {
-                if (pending != null) deleteFromMediaStore(pending) else onDeleted()
+                if (pendingUri != null) deleteFromMediaStore(pendingUri) else onDeleted()
             }
         }
 
@@ -62,12 +63,7 @@ internal class AudioDeleter(
             binding.deleteMessage.text = activity.getString(R.string.confirm_delete_message, title)
         }
         val dialog =
-            AlertDialog
-                .Builder(activity)
-                .setView(binding.root)
-                .setCancelable(true)
-                .create()
-        RingdroidUtils.setTransparentBackground(dialog)
+            createDialog(activity, binding.root)
         binding.btnCancel.setOnClickListener { dialog.dismiss() }
         binding.btnConfirmDelete.setOnClickListener {
             dialog.dismiss()
@@ -91,7 +87,7 @@ internal class AudioDeleter(
             }
         } catch (e: SecurityException) {
             if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q && e is RecoverableSecurityException) {
-                pendingUri = uri
+                pending.uri = uri
                 consentLauncher.launch(IntentSenderRequest.Builder(e.userAction.actionIntent).build())
             } else {
                 showFailed()

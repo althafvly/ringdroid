@@ -1,43 +1,29 @@
 package com.ringdroid.activity
 
 import android.net.Uri
-import android.os.Handler
-import android.os.Looper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import com.ringdroid.R
-import com.ringdroid.data.SongMetadataReader
 import com.ringdroid.dialog.LoadingDialog
 import com.ringdroid.dialog.RecordingDialog
-import com.ringdroid.soundfile.SamplePlayer
-import com.ringdroid.soundfile.SoundFile
-import com.ringdroid.soundfile.SoundRecorder
 import com.ringdroid.util.PermissionUtils
-import com.ringdroid.util.RingdroidUtils
-import java.io.File
-import java.io.IOException
-import java.util.Locale
+import com.ringdroid.viewmodel.EditorViewModel
+import com.ringdroid.viewmodel.EditorViewModel.Task
 
 /**
- * Opens the editor's sound: decodes a file or records from the microphone on a background
- * thread, with a progress dialog that can cancel. Must be created while the activity is being
- * initialized.
+ * Shows the progress of the view model's load or record job and asks for the microphone
+ * permission. Must be created while the activity is being initialized.
  */
 internal class SoundLoader(
     private val activity: ComponentActivity,
-    private val listener: Listener,
-) {
-    interface Listener {
-        fun onMetadata(
-            title: String,
-            artist: String?,
-        )
+    viewModelLazy: Lazy<EditorViewModel>,
+    private val callbacks: Callbacks,
+) : EditorViewModel.Listener {
+    interface Callbacks {
+        fun onMetadata()
 
-        fun onLoaded(
-            soundFile: SoundFile,
-            player: SamplePlayer,
-        )
+        fun onLoaded()
 
         /** Shows [message] and closes the editor. */
         fun onFatalError(
@@ -46,215 +32,101 @@ internal class SoundLoader(
         )
     }
 
-    private val handler = Handler(Looper.getMainLooper())
+    private val viewModel by viewModelLazy
+    private var loadingDialog: LoadingDialog? = null
+    private var recordingDialog: RecordingDialog? = null
     private val micPermissionLauncher =
         activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (PermissionUtils.hasMicPermissions(activity)) {
-                startRecording()
+                viewModel.record()
+                showDialog()
             } else {
                 Toast.makeText(activity, R.string.required_mic_permission, Toast.LENGTH_LONG).show()
                 activity.finish()
             }
         }
 
-    @Volatile private var keepGoing = false
-
-    @Volatile private var finishRequested = false
-    private var loadingDialog: LoadingDialog? = null
-    private var recordingDialog: RecordingDialog? = null
-
-    /** Stops any loading or recording; called when the editor is destroyed. */
-    fun cancel() {
-        keepGoing = false
-        loadingDialog?.dismiss()
-        recordingDialog?.dismiss()
-    }
-
-    /** Resolves [data] to a file, reads its tags and decodes it, all off the main thread. */
-    fun load(data: Uri) {
-        keepGoing = true
-        finishRequested = false
-        val dialog = LoadingDialog(activity) { requestFinish() }
-        loadingDialog = dialog
-        if (!activity.isFinishing && !activity.isDestroyed) {
-            dialog.show()
-        }
-        val progressListener =
-            SoundFile.ProgressListener { fraction ->
-                dialog.setProgress(fraction)
-                !keepGoing
-            }
-        RingdroidUtils.BACKGROUND.execute {
-            val file = resolveFile(data)
-            if (file == null) {
-                dialog.dismiss()
-                fail(null, activity.getText(R.string.read_error))
-                return@execute
-            }
-            val metadata = SongMetadataReader(file.path)
-            dialog.setSubtitle(metadata.title)
-            handler.post { listener.onMetadata(metadata.title, metadata.artist) }
-
-            var loaded: SoundFile? = null
-
-            fun failed(e: Exception) {
-                loaded?.release()
-                dialog.dismiss()
-                fail(e, activity.getText(R.string.read_error))
-            }
-            try {
-                loaded = SoundFile.create(activity.cacheDir, file.absolutePath, progressListener)
-                dialog.dismiss()
-                when {
-                    loaded == null && keepGoing -> {
-                        fail(null, unsupportedMessage(file))
-                    }
-
-                    loaded != null && keepGoing -> {
-                        deliver(loaded, SamplePlayer(loaded))
-                    }
-
-                    else -> {
-                        loaded?.release()
-                        if (finishRequested) {
-                            handler.post { activity.finish() }
-                        }
-                    }
+    /** Starts loading [data] (or recording when it's null), or reconnects to a job started before recreation. */
+    fun start(data: Uri?) {
+        viewModel.events.listener = this
+        if (!viewModel.started) {
+            if (data == null) {
+                if (!PermissionUtils.hasMicPermissions(activity)) {
+                    micPermissionLauncher.launch(PermissionUtils.micPermission)
+                    return
                 }
-            } catch (e: IOException) {
-                failed(e)
-            } catch (e: SoundFile.InvalidInputException) {
-                failed(e)
-            } catch (e: IllegalArgumentException) {
-                failed(e)
-            } catch (e: IllegalStateException) {
-                failed(e)
-            } catch (e: UnsupportedOperationException) {
-                failed(e)
-            } catch (e: SecurityException) {
-                failed(e)
+                viewModel.record()
+            } else {
+                viewModel.load(data)
             }
         }
+        showDialog()
     }
 
-    /** Records from the microphone, asking for the permission first if needed. */
-    fun record() {
-        if (PermissionUtils.hasMicPermissions(activity)) {
-            startRecording()
-        } else {
-            micPermissionLauncher.launch(PermissionUtils.micPermission)
+    /** Disconnects from the view model; a finishing editor also cancels the job. */
+    fun detach() {
+        if (activity.isFinishing) {
+            viewModel.cancel()
         }
+        viewModel.events.listener = null
+        dismissDialogs()
     }
 
-    private fun startRecording() {
+    private fun showDialog() {
         if (activity.isFinishing || activity.isDestroyed) {
             return
         }
-        keepGoing = true
-        finishRequested = false
-        val dialog =
-            RecordingDialog(
-                activity,
-                onStop = { keepGoing = false },
-                onCancel = { requestFinish() },
-            )
-        recordingDialog = dialog
-        dialog.show()
-        val progressListener =
-            SoundFile.ProgressListener { elapsedSeconds ->
-                dialog.setElapsedSeconds(elapsedSeconds)
-                !keepGoing
+        when (viewModel.task) {
+            Task.LOADING -> {
+                loadingDialog =
+                    LoadingDialog(activity) { viewModel.cancel() }.also {
+                        it.setSubtitle(viewModel.songTitle)
+                        it.show()
+                    }
             }
-        RingdroidUtils.BACKGROUND.execute {
-            var recorded: SoundFile? = null
 
-            fun failed(e: Exception?) {
-                recorded?.release()
-                dialog.dismiss()
-                fail(e, activity.getText(R.string.record_error))
+            Task.RECORDING -> {
+                recordingDialog =
+                    RecordingDialog(activity, onStop = { viewModel.stopRecording() }, onCancel = { viewModel.cancel() })
+                        .also { it.show() }
             }
-            try {
-                recorded = SoundRecorder.record(progressListener)
-                if (recorded == null) {
-                    failed(null)
-                    return@execute
-                }
-                val player = SamplePlayer(recorded)
-                dialog.dismiss()
-                if (finishRequested) {
-                    player.release()
-                    recorded.release()
-                    handler.post { activity.finish() }
-                } else {
-                    deliver(recorded, player)
-                }
-            } catch (e: IllegalArgumentException) {
-                failed(e)
-            } catch (e: IllegalStateException) {
-                failed(e)
-            } catch (e: UnsupportedOperationException) {
-                failed(e)
-            } catch (e: SecurityException) {
-                failed(e)
-            }
+
+            Task.IDLE -> {}
         }
     }
 
-    private fun requestFinish() {
-        keepGoing = false
-        finishRequested = true
+    private fun dismissDialogs() {
+        loadingDialog?.dismiss()
+        loadingDialog = null
+        recordingDialog?.dismiss()
+        recordingDialog = null
     }
 
-    /** Hands the sound to the UI thread, or releases it if the editor is gone. */
-    private fun deliver(
-        soundFile: SoundFile,
-        player: SamplePlayer,
-    ) {
-        handler.post {
-            if (activity.isDestroyed) {
-                player.release()
-                soundFile.release()
-            } else {
-                listener.onLoaded(soundFile, player)
-            }
-        }
+    override fun onProgress(value: Double) {
+        loadingDialog?.setProgress(value)
+        recordingDialog?.setElapsedSeconds(value)
     }
 
-    private fun fail(
+    override fun onMetadata() {
+        loadingDialog?.setSubtitle(viewModel.songTitle)
+        callbacks.onMetadata()
+    }
+
+    override fun onLoaded() {
+        dismissDialogs()
+        callbacks.onLoaded()
+    }
+
+    override fun onFailed(
         cause: Throwable?,
         message: CharSequence,
     ) {
-        handler.post { listener.onFatalError(cause, message) }
+        dismissDialogs()
+        callbacks.onFatalError(cause, message)
     }
 
-    private fun unsupportedMessage(file: File): String {
-        val name = file.name.lowercase(Locale.ROOT)
-        return if (!name.contains('.')) {
-            activity.getString(R.string.no_extension_error)
-        } else {
-            activity.getString(R.string.bad_extension_error) + " " + name.substringAfterLast('.')
-        }
-    }
-
-    /**
-     * Returns the file for an editor URI: plain paths from the list screen, file:// URIs, or a
-     * copy of a content:// URI. The app's own private files (other than shared copies in the
-     * cache) are refused.
-     */
-    private fun resolveFile(data: Uri): File? {
-        val file =
-            when (data.scheme) {
-                "content" -> RingdroidUtils.getFileFromUri(activity, data)
-                "file" -> data.path?.let { File(it) }
-                else -> File(data.toString())
-            } ?: return null
-        return try {
-            val path = file.canonicalPath
-            val dataDir = File(activity.applicationInfo.dataDir).canonicalPath + "/"
-            val cache = activity.cacheDir.canonicalPath + "/"
-            if (path.startsWith(dataDir) && !path.startsWith(cache)) null else file
-        } catch (e: IOException) {
-            null
-        }
+    override fun onCanceled() {
+        dismissDialogs()
+        activity.finish()
     }
 }

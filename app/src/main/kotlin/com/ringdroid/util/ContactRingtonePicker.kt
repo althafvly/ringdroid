@@ -31,10 +31,12 @@ class ContactRingtonePicker(
                 onDone.run()
             }
         }
-    private var ringtoneUri: Uri? = null
+
+    // The ringtone waiting for the user to pick a contact.
+    private val pending = PendingAction(activity, "ContactRingtonePicker")
 
     fun pick(ringtoneUri: Uri) {
-        this.ringtoneUri = ringtoneUri
+        pending.uri = ringtoneUri
         if (activity.checkSelfPermission(Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             pickLauncher.launch(null)
         } else {
@@ -43,7 +45,8 @@ class ContactRingtonePicker(
     }
 
     private fun onContactPicked(contactUri: Uri?) {
-        val ringtone = ringtoneUri
+        val ringtone = pending.uri
+        pending.uri = null
         if (contactUri != null && ringtone != null) {
             try {
                 val projection = arrayOf(Contacts._ID, Contacts.DISPLAY_NAME)

@@ -17,17 +17,17 @@ class DefaultSoundSetter(
     private val activity: ComponentActivity,
     private val onDone: () -> Unit = {},
 ) {
-    private var pendingType = 0
-    private var pendingUri: Uri? = null
+    // The request waiting for the user to grant the permission in system settings.
+    private val pending = PendingAction(activity, "DefaultSoundSetter")
 
     init {
         activity.lifecycle.addObserver(
             object : DefaultLifecycleObserver {
                 override fun onResume(owner: LifecycleOwner) {
-                    val uri = pendingUri ?: return
-                    pendingUri = null
+                    val uri = pending.uri ?: return
+                    pending.uri = null
                     if (PermissionUtils.hasWriteSettingsPermission(activity)) {
-                        apply(pendingType, uri)
+                        apply(pending.type, uri)
                     }
                     onDone()
                 }
@@ -45,8 +45,8 @@ class DefaultSoundSetter(
             onDone()
             return
         }
-        pendingType = type
-        pendingUri = uri
+        pending.type = type
+        pending.uri = uri
         Toast.makeText(activity, R.string.required_system_modify_permission, Toast.LENGTH_SHORT).show()
         PermissionUtils.requestWriteSettingsPermission(activity)
     }

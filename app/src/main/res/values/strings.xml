@@ -210,4 +210,5 @@
     <string name="decoding_audio_samples">Decoding audio samples…</string>
     <string name="progress_initial_percentage" translatable="false">0%%</string>
     <string name="recording_initial_time" translatable="false">0:00.00</string>
+    <string name="recording_time" translatable="false">%1$d:%2$05.2f</string>
 </resources>

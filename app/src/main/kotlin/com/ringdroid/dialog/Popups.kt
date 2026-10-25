@@ -1,11 +1,11 @@
 package com.ringdroid.dialog
 
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.doOnDetach
 
 /** Shared setup for the dropdown popups on the select screen. */
 internal object Popups {
@@ -30,6 +30,8 @@ internal object Popups {
     ) {
         val density = anchor.resources.displayMetrics.density
         val xOffset = anchor.width - (widthDp * density).toInt() - (8 * density).toInt()
+        // Close with the screen, so recreating the activity doesn't leak the popup.
+        anchor.doOnDetach { popup.dismiss() }
         popup.showAsDropDown(anchor, xOffset, (yOffsetDp * density).toInt())
     }
 }

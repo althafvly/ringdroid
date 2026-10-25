@@ -1,20 +1,21 @@
 package com.ringdroid.activity
 
-import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
-import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.ringdroid.R
 import com.ringdroid.data.EditorSelection
@@ -23,9 +24,13 @@ import com.ringdroid.dialog.AmplifyDialog
 import com.ringdroid.soundfile.SamplePlayer
 import com.ringdroid.soundfile.SoundFile
 import com.ringdroid.util.RingdroidUtils
+import com.ringdroid.util.showErrorAlert
+import com.ringdroid.util.showFinalAlert
 import com.ringdroid.view.MarkerLayout
 import com.ringdroid.view.MarkerView
 import com.ringdroid.view.WaveformView
+import com.ringdroid.viewmodel.EditorViewModel
+import com.ringdroid.viewmodel.SaveViewModel
 import java.util.Locale
 
 /**
@@ -36,28 +41,23 @@ class RingdroidEditActivity :
     ComponentActivity(),
     MarkerView.MarkerListener,
     WaveformView.WaveformListener {
-    private val saveFlow = SaveFlow(this)
+    private val saveFlow = SaveFlow(this, viewModels<SaveViewModel>())
+    private val viewModelLazy = viewModels<EditorViewModel>()
+    private val viewModel by viewModelLazy
     private val soundLoader =
         SoundLoader(
             this,
-            object : SoundLoader.Listener {
-                override fun onMetadata(
-                    title: String,
-                    artist: String?,
-                ) {
-                    songTitle = title
-                    songArtist = artist
+            viewModelLazy,
+            object : SoundLoader.Callbacks {
+                override fun onMetadata() {
+                    val title = viewModel.songTitle.orEmpty()
+                    val artist = viewModel.songArtist
                     setTitle(if (artist.isNullOrEmpty()) title else "$title - $artist")
                     updateToolbarTitle()
                 }
 
-                override fun onLoaded(
-                    soundFile: SoundFile,
-                    player: SamplePlayer,
-                ) {
-                    this@RingdroidEditActivity.soundFile = soundFile
-                    this@RingdroidEditActivity.player = player
-                    finishOpeningSoundFile(soundFile)
+                override fun onLoaded() {
+                    showNewSound()
                 }
 
                 override fun onFatalError(
@@ -67,18 +67,16 @@ class RingdroidEditActivity :
                     if (cause != null) {
                         binding.info.text = cause.toString().take(MAX_INFO_LENGTH)
                     }
-                    showFinalAlert(cause, message)
+                    closeWithError(cause, message)
                 }
             },
         )
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private var soundFile: SoundFile? = null
-    private var player: SamplePlayer? = null
-    private var songTitle: String? = null
-    private var songArtist: String? = null
-    private var amplifyFactor = 1.0f
+    private val soundFile: SoundFile? get() = viewModel.soundFile
+    private val player: SamplePlayer? get() = viewModel.player
+    private val selection: EditorSelection get() = viewModel.selection
 
     private lateinit var binding: EditorBinding
     private lateinit var waveformView: WaveformView
@@ -86,9 +84,7 @@ class RingdroidEditActivity :
     private lateinit var endMarker: MarkerView
     private lateinit var startText: TextView
     private lateinit var endText: TextView
-    private var caption = ""
 
-    private val selection = EditorSelection()
     private lateinit var markerLayout: MarkerLayout
     private var lastDisplayedStartPos = -1
     private var lastDisplayedEndPos = -1
@@ -150,48 +146,32 @@ class RingdroidEditActivity :
         super.onCreate(savedInstanceState)
 
         val data = intent.data
-        if (data == null) {
+        val record = intent.action == MediaStore.Audio.Media.RECORD_SOUND_ACTION
+        if (data == null && !record) {
             Toast.makeText(this, R.string.alert_title_failure, Toast.LENGTH_SHORT).show()
             finish()
             return
         }
-        loadGui(zoomLevel = null)
+        loadGui()
         handler.postDelayed(timerRunnable, 100)
-
-        if (data.toString() == RECORD) soundLoader.record() else soundLoader.load(data)
+        soundLoader.start(data)
+        saveFlow.attach()
     }
 
     override fun onDestroy() {
         handler.removeCallbacksAndMessages(null)
-        soundLoader.cancel()
-        saveFlow.dismiss()
-        player?.release()
-        player = null
+        soundLoader.detach()
+        saveFlow.detach()
         if (::binding.isInitialized) {
+            // The view model keeps the sound; only this editor's views and playback go.
+            viewModel.zoomLevel = waveformView.zoomLevel
+            handlePause()
+            player?.onCompletionListener = null
             waveformView.listener = null
             startMarker.listener = null
             endMarker.listener = null
-            waveformView.setSoundFile(null)
         }
-        soundFile?.release()
-        soundFile = null
         super.onDestroy()
-    }
-
-    /** Rotation, theme and locale changes rebuild the layout without restarting the editor. */
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        if (!::binding.isInitialized) {
-            return
-        }
-        val zoomLevel = waveformView.zoomLevel
-        loadGui(zoomLevel)
-        handler.postDelayed({
-            startMarker.requestFocus()
-            markerFocus(startMarker)
-            waveformView.recomputeHeights(density)
-            updateDisplay()
-        }, 500)
     }
 
     override fun onKeyDown(
@@ -318,15 +298,15 @@ class RingdroidEditActivity :
         handler.postDelayed({ updateDisplay() }, 100)
     }
 
-    /** Builds the layout; [zoomLevel] restores the waveform zoom after a configuration change. */
-    private fun loadGui(zoomLevel: Int?) {
+    /** Builds the layout, restoring the sound, zoom and selection kept by the view model. */
+    private fun loadGui() {
         binding = EditorBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val toolbar = binding.editorToolbar
         RingdroidUtils.applyStatusBarInsets(toolbar.toolbarContainer)
         toolbar.btnBack.setOnClickListener { finish() }
-        toolbar.btnAmplify.setOnClickListener { AmplifyDialog.show(this, amplifyFactor) { amplifyFactor = it } }
+        toolbar.btnAmplify.setOnClickListener { AmplifyDialog.show(this, viewModel.amplifyFactor) { viewModel.amplifyFactor = it } }
         toolbar.btnReset.setOnClickListener {
             resetPositions()
             selection.scrollToStart()
@@ -388,18 +368,14 @@ class RingdroidEditActivity :
 
         waveformView = binding.waveform
         waveformView.listener = this
-        binding.info.text = caption
-
-        selection.maxPos = 0
         lastDisplayedStartPos = -1
         lastDisplayedEndPos = -1
         soundFile?.let { sound ->
             waveformView.setSoundFile(sound)
-            if (zoomLevel != null) {
-                waveformView.zoomLevel = zoomLevel
-            }
+            viewModel.zoomLevel?.let { waveformView.zoomLevel = it }
             waveformView.recomputeHeights(density)
             selection.maxPos = waveformView.maxPos()
+            binding.info.text = caption(sound)
         }
 
         startMarker = binding.startmarker
@@ -415,30 +391,34 @@ class RingdroidEditActivity :
 
     private fun updateToolbarTitle() {
         val toolbar = binding.editorToolbar
-        val title = songTitle
+        val title = viewModel.songTitle
+        val artist = viewModel.songArtist
         if (title.isNullOrEmpty()) {
             toolbar.toolbarTitle.setText(R.string.edit_intent)
             toolbar.toolbarSubtitle.isVisible = false
         } else {
             toolbar.toolbarTitle.text = title
-            toolbar.toolbarSubtitle.text = songArtist
-            toolbar.toolbarSubtitle.isVisible = !songArtist.isNullOrEmpty()
+            toolbar.toolbarSubtitle.text = artist
+            toolbar.toolbarSubtitle.isVisible = !artist.isNullOrEmpty()
         }
     }
 
-    private fun finishOpeningSoundFile(loaded: SoundFile) {
-        waveformView.setSoundFile(loaded)
+    /** Shows a newly loaded sound with the default selection. */
+    private fun showNewSound() {
+        val sound = soundFile ?: return
+        waveformView.setSoundFile(sound)
         waveformView.recomputeHeights(density)
         selection.maxPos = waveformView.maxPos()
         lastDisplayedStartPos = -1
         lastDisplayedEndPos = -1
         resetPositions()
-        caption =
-            loaded.filetype + ", " + loaded.sampleRate + " Hz, " + loaded.avgBitrateKbps + " kbps, " +
-            formatTime(selection.maxPos) + " " + getString(R.string.time_seconds)
-        binding.info.text = caption
+        binding.info.text = caption(sound)
         updateDisplay()
     }
+
+    private fun caption(sound: SoundFile) =
+        sound.filetype + ", " + sound.sampleRate + " Hz, " + sound.avgBitrateKbps + " kbps, " +
+            "%.2f".format(Locale.US, sound.numSamples.toDouble() / sound.sampleRate) + " " + getString(R.string.time_seconds)
 
     private fun updateDisplay() {
         val p = player
@@ -520,29 +500,20 @@ class RingdroidEditActivity :
             updateDisplay()
             enableDisableButtons()
         } catch (e: IllegalStateException) {
-            showFinalAlert(e, getText(R.string.play_error))
+            closeWithError(e, getText(R.string.play_error))
         } catch (e: IllegalArgumentException) {
-            showFinalAlert(e, getText(R.string.play_error))
+            closeWithError(e, getText(R.string.play_error))
         }
     }
 
     /** Shows an error that closes the editor when dismissed. The cause, if any, is logged. */
-    private fun showFinalAlert(
+    private fun closeWithError(
         cause: Throwable?,
         message: CharSequence,
     ) {
         Log.e(TAG, "Error: $message", cause)
-        setResult(RESULT_CANCELED, Intent())
-        if (isFinishing || isDestroyed) {
-            return
-        }
-        AlertDialog
-            .Builder(this)
-            .setTitle(R.string.alert_title_failure)
-            .setMessage(message)
-            .setPositiveButton(R.string.alert_ok_button) { _, _ -> finish() }
-            .setCancelable(false)
-            .show()
+        setResult(RESULT_CANCELED)
+        showFinalAlert(this, message)
     }
 
     private fun onSave() {
@@ -559,15 +530,25 @@ class RingdroidEditActivity :
         val startFrame = waveformView.secondsToFrames(startTime)
         val endFrame = waveformView.secondsToFrames(endTime)
         val durationMs = ((endTime - startTime) * 1000 + 0.5).toInt()
-        saveFlow.start(loaded, songTitle, amplifyFactor, startFrame, endFrame - startFrame, durationMs)
+        saveFlow.start(loaded, viewModel.songTitle, viewModel.amplifyFactor, startFrame, endFrame - startFrame, durationMs)
     }
 
     companion object {
         /** Set when the list screen was opened to pick content for another app. */
         const val EXTRA_WAS_GET_CONTENT_INTENT = "was_get_content_intent"
 
-        /** Editor data URI that starts a recording instead of opening a file. */
-        const val RECORD = "record"
+        /** Opens [data] in the editor, or starts a recording when it's null. */
+        fun newIntent(
+            context: Context,
+            data: Uri?,
+            wasGetContentIntent: Boolean,
+        ): Intent {
+            val action = if (data == null) MediaStore.Audio.Media.RECORD_SOUND_ACTION else Intent.ACTION_EDIT
+            return Intent(action, data, context, RingdroidEditActivity::class.java)
+                .putExtra(EXTRA_WAS_GET_CONTENT_INTENT, wasGetContentIntent)
+                // Passes on access to a content URI shared with the list screen.
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
 
         private const val TAG = "RingdroidEditActivity"
         private const val MAX_INFO_LENGTH = 5000

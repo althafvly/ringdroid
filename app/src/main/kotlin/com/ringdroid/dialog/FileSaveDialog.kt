@@ -8,7 +8,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.ringdroid.R
 import com.ringdroid.databinding.FileSaveBinding
-import com.ringdroid.util.RingdroidUtils
+import com.ringdroid.util.createDialog
 import java.util.Locale
 
 /** Asks for the name and kind (music, alarm, notification, ringtone) of the file to save. */
@@ -46,8 +46,7 @@ class FileSaveDialog(
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
 
-        dialog = AlertDialog.Builder(context).setView(binding.root).create()
-        RingdroidUtils.setTransparentBackground(dialog)
+        dialog = createDialog(context, binding.root)
         binding.save.setOnClickListener {
             dialog.dismiss()
             listener(binding.filename.text, binding.ringtoneType.selectedItemPosition)

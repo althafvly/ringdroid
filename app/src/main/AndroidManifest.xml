@@ -60,7 +60,6 @@
         <!-- Main activity that's launched when the user opens Ringdroid. -->
         <activity
             android:name=".activity.RingdroidSelectActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:exported="true"
             android:label="@string/main_activity_label">
             <intent-filter>
@@ -93,7 +92,6 @@
         file. -->
         <activity
             android:name=".activity.RingdroidEditActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|uiMode|keyboard|keyboardHidden|navigation|density|fontScale|locale|layoutDirection"
             android:exported="true"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">

@@ -1,6 +1,5 @@
 package com.ringdroid.dialog
 
-import android.app.AlertDialog
 import android.content.Context
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -8,7 +7,7 @@ import androidx.core.text.HtmlCompat
 import com.ringdroid.BuildConfig
 import com.ringdroid.R
 import com.ringdroid.databinding.AboutDialogBinding
-import com.ringdroid.util.RingdroidUtils
+import com.ringdroid.util.createDialog
 
 object AboutDialog {
     fun show(context: Context) {
@@ -18,8 +17,7 @@ object AboutDialog {
         binding.aboutText.text = HtmlCompat.fromHtml(html.trim(), HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.aboutText.movementMethod = LinkMovementMethod.getInstance()
 
-        val dialog = AlertDialog.Builder(context).setView(binding.root).create()
-        RingdroidUtils.setTransparentBackground(dialog)
+        val dialog = createDialog(context, binding.root)
         binding.buttonAboutOk.setOnClickListener { dialog.dismiss() }
         dialog.show()
     }

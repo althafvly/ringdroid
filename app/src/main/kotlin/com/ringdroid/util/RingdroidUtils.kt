@@ -1,10 +1,6 @@
 package com.ringdroid.util
 
-import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -13,12 +9,8 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.MimeTypeMap
-import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.ringdroid.R
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -29,10 +21,6 @@ object RingdroidUtils {
     private const val TAG = "RingdroidUtils"
 
     val BACKGROUND: ExecutorService = Executors.newCachedThreadPool()
-
-    fun setTransparentBackground(dialog: Dialog) {
-        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-    }
 
     val externalAudioCollectionUri: Uri
         get() =

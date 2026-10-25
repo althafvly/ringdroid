@@ -1,20 +1,13 @@
 package com.ringdroid.activity
 
-import android.app.AlertDialog
 import android.content.ActivityNotFoundException
-import android.content.ContentUris
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.database.Cursor
-import android.database.MergeCursor
 import android.media.RingtoneManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
-import android.os.Looper
-import android.os.storage.StorageManager
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
@@ -24,14 +17,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.content.IntentCompat
-import androidx.core.content.getSystemService
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import com.ringdroid.BuildConfig
 import com.ringdroid.R
-import com.ringdroid.data.AudioQuery
+import com.ringdroid.data.AudioRow
 import com.ringdroid.databinding.MediaSelectBinding
 import com.ringdroid.databinding.SelectOptionsPopupBinding
 import com.ringdroid.dialog.AboutDialog
@@ -42,12 +34,15 @@ import com.ringdroid.util.ContactRingtonePicker
 import com.ringdroid.util.DefaultSoundSetter
 import com.ringdroid.util.PermissionUtils
 import com.ringdroid.util.RingdroidUtils
+import com.ringdroid.util.showFinalAlert
 import com.ringdroid.view.SearchToolbarHelper
-import java.io.File
+import com.ringdroid.viewmodel.SelectViewModel
 
 /** Main screen: lists audio files, and opens the editor for a file or a new recording. */
-class RingdroidSelectActivity : ComponentActivity() {
-    private val uiHandler = Handler(Looper.getMainLooper())
+class RingdroidSelectActivity :
+    ComponentActivity(),
+    SelectViewModel.Listener {
+    private val viewModel: SelectViewModel by viewModels()
     private val editActivityLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             // When picking content for another app, hand the saved file straight back.
@@ -66,9 +61,6 @@ class RingdroidSelectActivity : ComponentActivity() {
     private var adapter: SimpleCursorAdapter? = null
     private var searchHelper: SearchToolbarHelper? = null
     private var wasGetContentIntent = false
-    private var showAll = false
-    private var internalRowCount = 0
-    private var loadGeneration = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,7 +80,7 @@ class RingdroidSelectActivity : ComponentActivity() {
                 else -> R.string.no_sdcard
             }
         if (storageError != null) {
-            showFinalAlert(getText(storageError))
+            showFinalAlert(this, getText(storageError))
             return
         }
         wasGetContentIntent = intent.action == Intent.ACTION_GET_CONTENT
@@ -123,13 +115,32 @@ class RingdroidSelectActivity : ComponentActivity() {
             true
         }
 
+        if (savedInstanceState?.getBoolean(STATE_SEARCH_OPEN) == true) {
+            searchHelper?.openSearch()
+        }
+        viewModel.events.listener = this
+        onAudioLoaded()
+
         // Clear the extras to avoid TransactionTooLargeException when this activity is stopped.
         intent.replaceExtras(null as Bundle?)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(STATE_SEARCH_OPEN, searchHelper?.isSearchOpen == true)
+    }
+
     override fun onDestroy() {
-        adapter?.changeCursor(null)
+        viewModel.events.listener = null
+        // The view model owns and closes the cursor.
+        adapter?.swapCursor(null)
         super.onDestroy()
+    }
+
+    override fun onAudioLoaded() {
+        val b = binding ?: return
+        b.emptyText.isVisible = viewModel.loaded && viewModel.cursor == null
+        adapter?.swapCursor(viewModel.cursor)
     }
 
     override fun onResume() {
@@ -183,79 +194,8 @@ class RingdroidSelectActivity : ComponentActivity() {
 
     private fun refreshListView() {
         if (binding != null) {
-            loadAudio(searchHelper?.activeQuery)
+            viewModel.load(searchHelper?.activeQuery)
         }
-    }
-
-    private fun loadAudio(filter: String?) {
-        val generation = ++loadGeneration
-        RingdroidUtils.BACKGROUND.execute {
-            var internal: Cursor? = null
-            var external: Cursor? = null
-
-            fun failed(e: Exception) {
-                Log.e(TAG, "Loader error", e)
-                internal?.close()
-                external?.close()
-            }
-            try {
-                val query = AudioQuery.build(showAll, filter, SoundFile.getSupportedExtensions(), storageRoots())
-                internal = query.run(contentResolver, MediaStore.Audio.Media.INTERNAL_CONTENT_URI)
-                external = query.run(contentResolver, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
-            } catch (e: SecurityException) {
-                failed(e)
-                return@execute
-            } catch (e: IllegalArgumentException) {
-                failed(e)
-                return@execute
-            } catch (e: IllegalStateException) {
-                failed(e)
-                return@execute
-            } catch (e: UnsupportedOperationException) {
-                failed(e)
-                return@execute
-            }
-            val internalResult = internal
-            val externalResult = external
-            uiHandler.post {
-                // Drop results of a search that has since been replaced.
-                if (generation != loadGeneration || isDestroyed) {
-                    internalResult?.close()
-                    externalResult?.close()
-                } else {
-                    showCursors(internalResult, externalResult)
-                }
-            }
-        }
-    }
-
-    private fun storageRoots(): List<String> {
-        val roots = mutableListOf(Environment.getExternalStorageDirectory().path)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            getSystemService<StorageManager>()?.storageVolumes?.mapNotNullTo(roots) { it.directory?.absolutePath }
-        }
-        return roots
-    }
-
-    private fun showCursors(
-        internal: Cursor?,
-        external: Cursor?,
-    ) {
-        val b = binding ?: return
-        val cursorAdapter = adapter ?: return
-        val internalCount = internal?.count ?: 0
-        val externalCount = external?.count ?: 0
-        if (internalCount == 0 && externalCount == 0 && !showAll) {
-            b.emptyText.isVisible = true
-            internal?.close()
-            external?.close()
-            internalRowCount = 0
-            cursorAdapter.changeCursor(null)
-            return
-        }
-        b.emptyText.isVisible = false
-        internalRowCount = internalCount
-        cursorAdapter.changeCursor(MergeCursor(listOfNotNull(internal, external).toTypedArray()))
     }
 
     private fun setSoundIcon(
@@ -307,19 +247,19 @@ class RingdroidSelectActivity : ComponentActivity() {
         RingdroidUtils.applyStatusBarInsets(b.toolbarContainer)
         RingdroidUtils.applyNavigationBarInsets(b.list, 16)
         searchHelper = SearchToolbarHelper(this, b.toolbarNormal, b.toolbarSearch, b.btnSearch) { refreshListView() }
-        b.btnRecord.setOnClickListener { startEditor(RingdroidEditActivity.RECORD.toUri()) }
+        b.btnRecord.setOnClickListener { startEditor(null) }
         b.btnMore.setOnClickListener { showOptionsMenu(it) }
     }
 
     private fun showOptionsMenu(anchor: View) {
         val popupBinding = SelectOptionsPopupBinding.inflate(layoutInflater)
-        popupBinding.switchShowAll.isChecked = showAll
+        popupBinding.switchShowAll.isChecked = viewModel.showAll
         popupBinding.menuAboutVersion.text = getString(R.string.version_label, BuildConfig.VERSION_NAME)
         val widthDp = 280
         val popup = Popups.create(popupBinding.root, widthDp)
         popupBinding.menuItemShowAll.setOnClickListener {
-            showAll = !showAll
-            popupBinding.switchShowAll.isChecked = showAll
+            viewModel.showAll = !viewModel.showAll
+            popupBinding.switchShowAll.isChecked = viewModel.showAll
             refreshListView()
         }
         popupBinding.menuItemAbout.setOnClickListener {
@@ -329,88 +269,49 @@ class RingdroidSelectActivity : ComponentActivity() {
         Popups.showAlignedRight(popup, anchor, widthDp, 8)
     }
 
-    /**
-     * Built-in sounds can't be deleted. From Android 10 MediaStore decides (asking the user where
-     * needed); before that the folder must be writable.
-     */
-    private fun canDelete(
-        position: Int,
-        path: String?,
-    ): Boolean {
-        if (path == null || position < internalRowCount) {
-            return false
+    /** The row at [position] of the list, or null if the list changed. */
+    private fun rowAt(position: Int): AudioRow? {
+        val c = adapter?.cursor ?: return null
+        if (c.isClosed || !c.moveToPosition(position)) {
+            return null
         }
-        val file = File(path)
-        if (!file.exists()) {
-            return false
-        }
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || file.parentFile?.canWrite() == true
+        return AudioRow.from(c, isInternal = position < viewModel.internalRowCount)
     }
 
     private fun showRowOptions(
         anchor: View,
         position: Int,
     ) {
-        val c = adapter?.cursor ?: return
-        if (c.isClosed || !c.moveToPosition(position)) {
-            return
-        }
-        val title = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE))
-        val path = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA))
-        val isRingtone = c.isFlagSet(MediaStore.Audio.Media.IS_RINGTONE)
-        val isNotification = c.isFlagSet(MediaStore.Audio.Media.IS_NOTIFICATION)
-        val uri = rowUri(c)
+        val row = rowAt(position) ?: return
         RowOptionsPopup.show(
             anchor,
-            title,
-            isRingtone,
-            isNotification,
-            canDelete(position, path),
+            row.title,
+            row.isRingtone,
+            row.isNotification,
+            row.canDelete(),
             object : RowOptionsPopup.Actions {
                 override fun onEdit() {
-                    if (path != null) {
-                        startEditor(path.toUri())
-                    }
+                    startEditor(row.uri)
                 }
 
                 override fun onSetDefault() {
-                    defaultSoundSetter.set(if (isRingtone) RingtoneManager.TYPE_RINGTONE else RingtoneManager.TYPE_NOTIFICATION, uri)
+                    val type = if (row.isRingtone) RingtoneManager.TYPE_RINGTONE else RingtoneManager.TYPE_NOTIFICATION
+                    defaultSoundSetter.set(type, row.uri)
                 }
 
                 override fun onAssignContact() {
                     try {
-                        contactPicker.pick(uri)
+                        contactPicker.pick(row.uri)
                     } catch (e: ActivityNotFoundException) {
                         Log.e(TAG, "Couldn't open the contact picker", e)
                     }
                 }
 
                 override fun onDelete() {
-                    deleter.delete(uri, path, title)
+                    deleter.delete(row.uri, row.path, row.title)
                 }
             },
         )
-    }
-
-    /** The MediaStore URI of the cursor's current row; internal rows come first. */
-    private fun rowUri(c: Cursor): Uri {
-        val id = c.getLong(c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
-        val collection =
-            if (c.position < internalRowCount) MediaStore.Audio.Media.INTERNAL_CONTENT_URI else MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        return ContentUris.withAppendedId(collection, id)
-    }
-
-    private fun showFinalAlert(message: CharSequence) {
-        if (isFinishing || isDestroyed) {
-            return
-        }
-        AlertDialog
-            .Builder(this)
-            .setTitle(R.string.alert_title_failure)
-            .setMessage(message)
-            .setPositiveButton(R.string.alert_ok_button) { _, _ -> finish() }
-            .setCancelable(false)
-            .show()
     }
 
     /** Opens the editor for audio viewed or shared from another app; the editor copies it if needed. */
@@ -427,21 +328,12 @@ class RingdroidSelectActivity : ComponentActivity() {
     }
 
     private fun startEditorForRow(position: Int) {
-        val c = adapter?.cursor ?: return
-        if (c.isClosed || !c.moveToPosition(position)) {
-            return
-        }
-        c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA))?.let { startEditor(it.toUri()) }
+        rowAt(position)?.let { startEditor(it.uri) }
     }
 
-    private fun startEditor(data: Uri) {
+    private fun startEditor(data: Uri?) {
         try {
-            val intent =
-                Intent(Intent.ACTION_EDIT, data, this, RingdroidEditActivity::class.java)
-                    .putExtra(RingdroidEditActivity.EXTRA_WAS_GET_CONTENT_INTENT, wasGetContentIntent)
-                    // Passes on access to a content URI shared with this activity.
-                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            editActivityLauncher.launch(intent)
+            editActivityLauncher.launch(RingdroidEditActivity.newIntent(this, data, wasGetContentIntent))
         } catch (e: ActivityNotFoundException) {
             Log.e(TAG, "Couldn't start editor", e)
         } catch (e: SecurityException) {
@@ -451,6 +343,7 @@ class RingdroidSelectActivity : ComponentActivity() {
 
     private companion object {
         const val TAG = "RingdroidSelectActivity"
+        const val STATE_SEARCH_OPEN = "search_open"
 
         fun Cursor.isFlagSet(column: String) = getInt(getColumnIndexOrThrow(column)) != 0
     }
