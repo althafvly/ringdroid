@@ -41,14 +41,16 @@ internal class AacEncoder(
         // Queue whole sample frames only, however large the input buffer is.
         val capacity = inputBuffer?.capacity() ?: 0
         val length = minOf(buffer.size, capacity, samplesLeft * bytesPerFrame) / bytesPerFrame * bytesPerFrame
+        val presentationTimeUs = samplesQueued * MICROS_PER_SECOND / sampleRate
         if (inputBuffer == null || length == 0) {
-            codec.queueInputBuffer(inputIndex, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
+            // Some encoders stamp their last frame with this time; the muxer rejects going back.
+            codec.queueInputBuffer(inputIndex, 0, 0, presentationTimeUs, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
             doneReading = true
         } else {
             inputBuffer.clear()
             read(buffer, length)
             inputBuffer.put(buffer, 0, length)
-            codec.queueInputBuffer(inputIndex, 0, length, samplesQueued * MICROS_PER_SECOND / sampleRate, 0)
+            codec.queueInputBuffer(inputIndex, 0, length, presentationTimeUs, 0)
             samplesQueued += length / bytesPerFrame
             samplesLeft -= length / bytesPerFrame
         }
