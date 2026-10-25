@@ -1,5 +1,6 @@
 package com.ringdroid.data
 
+import android.media.MediaExtractor
 import android.media.MediaMetadataRetriever
 import android.util.Log
 import java.io.IOException
@@ -16,9 +17,18 @@ internal class SongMetadataReader(
         var tagArtist: String? = null
         val retriever = MediaMetadataRetriever()
         try {
+            MediaExtractor().apply {
+                try {
+                    setDataSource(filename)
+                } finally {
+                    release()
+                }
+            }
             retriever.setDataSource(filename)
             tagTitle = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
             tagArtist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
+        } catch (e: IOException) {
+            Log.w(TAG, "Failed to read metadata from $filename", e)
         } catch (e: IllegalArgumentException) {
             Log.w(TAG, "Failed to read metadata from $filename", e)
         } catch (e: IllegalStateException) {

@@ -25,6 +25,19 @@ class SongMetadataReaderTest {
     }
 
     @Test
+    fun corruptFilesFallBackToFileName() {
+        val file = File(InstrumentationRegistry.getInstrumentation().targetContext.cacheDir, "Broken.wav")
+        file.writeBytes(ByteArray(64) { it.toByte() })
+        try {
+            val reader = SongMetadataReader(file.path)
+            assertEquals("Broken", reader.title)
+            assertNull(reader.artist)
+        } finally {
+            file.delete()
+        }
+    }
+
+    @Test
     fun unreadableFilesFallBackToFileName() {
         assertEquals("Track", SongMetadataReader("/nonexistent/dir/Track.mp3").title)
         assertEquals("README", SongMetadataReader("/nonexistent/README").title)
