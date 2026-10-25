@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.ringdroid.R
 import com.ringdroid.data.EditorSelection
 import com.ringdroid.data.SongMetadataReader
+import com.ringdroid.data.SourceFiles
 import com.ringdroid.soundfile.SamplePlayer
 import com.ringdroid.soundfile.SoundFile
 import com.ringdroid.soundfile.SoundRecorder
@@ -14,7 +15,6 @@ import com.ringdroid.util.ListenerEvents
 import com.ringdroid.util.RingdroidUtils
 import java.io.File
 import java.io.IOException
-import java.util.Locale
 
 /**
  * The editor's state, kept across activity recreation: the loaded sound and its player, the song
@@ -75,8 +75,8 @@ internal class EditorViewModel(
     /** Resolves [data] to a file, reads its tags and decodes it in the background. */
     fun load(data: Uri) {
         var file: File? = null
-        runJob(Task.LOADING, R.string.read_error, { unsupportedMessage(file) }) {
-            val resolved = resolveFile(data) ?: throw IOException("Cannot open $data")
+        runJob(Task.LOADING, R.string.read_error, { SourceFiles.unsupportedMessage(app, file) }) {
+            val resolved = SourceFiles.resolve(app, data) ?: throw IOException("Cannot open $data")
             file = resolved
             val metadata = SongMetadataReader(resolved.path)
             events.post {
@@ -205,37 +205,6 @@ internal class EditorViewModel(
         events.post {
             task = Task.IDLE
             it.onFailed(cause, message)
-        }
-    }
-
-    private fun unsupportedMessage(file: File?): String {
-        val name = file?.name.orEmpty().lowercase(Locale.ROOT)
-        return if (!name.contains('.')) {
-            app.getString(R.string.no_extension_error)
-        } else {
-            app.getString(R.string.bad_extension_error) + " " + name.substringAfterLast('.')
-        }
-    }
-
-    /**
-     * Returns the file for an editor URI: the MediaStore file of a list row, a file:// URI, or a
-     * copy of another content:// URI. The app's own private files (other than shared copies in the
-     * cache) are refused.
-     */
-    private fun resolveFile(data: Uri): File? {
-        val file =
-            when (data.scheme) {
-                "content" -> RingdroidUtils.getFileFromUri(app, data)
-                "file" -> data.path?.let { File(it) }
-                else -> null
-            } ?: return null
-        return try {
-            val path = file.canonicalPath
-            val dataDir = File(app.applicationInfo.dataDir).canonicalPath + "/"
-            val cache = app.cacheDir.canonicalPath + "/"
-            if (path.startsWith(dataDir) && !path.startsWith(cache)) null else file
-        } catch (e: IOException) {
-            null
         }
     }
 

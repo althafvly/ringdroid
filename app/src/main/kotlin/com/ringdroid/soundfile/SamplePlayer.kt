@@ -33,7 +33,8 @@ internal class SamplePlayer(
         val channelMask = getChannelMask(channels)
         var bufferSize = channels * sampleRate * 2
         if (channelMask != AudioFormat.CHANNEL_INVALID) {
-            bufferSize = maxOf(AudioTrack.getMinBufferSize(sampleRate, channelMask, AudioFormat.ENCODING_PCM_16BIT), bufferSize)
+            bufferSize =
+                maxOf(AudioTrack.getMinBufferSize(sampleRate, channelMask, AudioFormat.ENCODING_PCM_16BIT), bufferSize)
         }
         buffer = ShortArray(bufferSize / 2)
         val formatBuilder = AudioFormat.Builder().setSampleRate(sampleRate).setEncoding(AudioFormat.ENCODING_PCM_16BIT)
@@ -58,7 +59,7 @@ internal class SamplePlayer(
         audioTrack.setNotificationMarkerPosition(numSamples - 1)
         audioTrack.setPlaybackPositionUpdateListener(
             object : AudioTrack.OnPlaybackPositionUpdateListener {
-                override fun onPeriodicNotification(track: AudioTrack) {}
+                override fun onPeriodicNotification(track: AudioTrack) = Unit
 
                 override fun onMarkerReached(track: AudioTrack) {
                     stop()
@@ -122,7 +123,7 @@ internal class SamplePlayer(
     fun seekTo(msec: Int) {
         val wasPlaying = isPlaying
         stop()
-        playbackStart = minOf((msec * (sampleRate / 1000.0)).toInt(), numSamples)
+        playbackStart = minOf((msec * (sampleRate / MILLIS_PER_SECOND)).toInt(), numSamples)
         audioTrack.setNotificationMarkerPosition(numSamples - 1 - playbackStart)
         if (wasPlaying) {
             start()
@@ -130,17 +131,22 @@ internal class SamplePlayer(
     }
 
     val currentPosition: Int
-        get() = ((playbackStart + audioTrack.playbackHeadPosition) * (1000.0 / sampleRate)).toInt()
+        get() = ((playbackStart + audioTrack.playbackHeadPosition) * (MILLIS_PER_SECOND / sampleRate)).toInt()
 
     private companion object {
+        const val MILLIS_PER_SECOND = 1000.0
+        const val QUAD_CHANNELS = 4
+        const val SURROUND_5_1_CHANNELS = 6
+        const val SURROUND_7_1_CHANNELS = 8
+
         // Positional masks let AudioTrack downmix to the device's outputs.
         fun getChannelMask(channels: Int): Int =
             when (channels) {
                 1 -> AudioFormat.CHANNEL_OUT_MONO
                 2 -> AudioFormat.CHANNEL_OUT_STEREO
-                4 -> AudioFormat.CHANNEL_OUT_QUAD
-                6 -> AudioFormat.CHANNEL_OUT_5POINT1
-                8 -> AudioFormat.CHANNEL_OUT_7POINT1_SURROUND
+                QUAD_CHANNELS -> AudioFormat.CHANNEL_OUT_QUAD
+                SURROUND_5_1_CHANNELS -> AudioFormat.CHANNEL_OUT_5POINT1
+                SURROUND_7_1_CHANNELS -> AudioFormat.CHANNEL_OUT_7POINT1_SURROUND
                 else -> AudioFormat.CHANNEL_INVALID
             }
     }

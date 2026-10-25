@@ -82,7 +82,9 @@ internal class RingtoneSaver(
                 put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
         val resolver = context.contentResolver
-        val uri = resolver.insert(RingdroidUtils.externalAudioCollectionUri, values) ?: throw IOException("MediaStore insert failed")
+        val uri =
+            resolver.insert(RingdroidUtils.externalAudioCollectionUri, values)
+                ?: throw IOException("MediaStore insert failed")
         var written = false
         try {
             if (wav) {
@@ -119,7 +121,9 @@ internal class RingtoneSaver(
         numFrames: Int,
         durationMs: Int,
     ): Uri {
-        val path = makeRingtoneFilename(title, if (wav) ".wav" else ".m4a") ?: throw SaveException(R.string.no_unique_filename, null)
+        val path =
+            makeRingtoneFilename(title, if (wav) ".wav" else ".m4a")
+                ?: throw SaveException(R.string.no_unique_filename, null)
         val file = File(path)
         var saved = false
         try {
@@ -129,22 +133,7 @@ internal class RingtoneSaver(
                 writer.writeM4A(file, startFrame, numFrames)
             }
             verifyReadable(file)
-            if (file.length() <= 512) {
-                throw SaveException(R.string.too_small_error, null)
-            }
-            val values =
-                fileKindValues().apply {
-                    put(MediaStore.MediaColumns.DATA, file.path)
-                    put(MediaStore.MediaColumns.DISPLAY_NAME, title.toString())
-                    put(MediaStore.MediaColumns.SIZE, file.length())
-                    put(MediaStore.MediaColumns.MIME_TYPE, mimeType(wav))
-                    put(MediaStore.Audio.Media.TITLE, title.toString())
-                    put(MediaStore.Audio.Media.ARTIST, context.getString(R.string.artist_name))
-                    put(MediaStore.Audio.Media.DURATION, durationMs)
-                }
-            val uri =
-                context.contentResolver.insert(RingdroidUtils.externalAudioCollectionUri, values)
-                    ?: throw SaveException(R.string.write_error, null)
+            val uri = insertFile(file, title, wav, durationMs)
             saved = true
             return uri
         } finally {
@@ -154,11 +143,34 @@ internal class RingtoneSaver(
         }
     }
 
+    private fun insertFile(
+        file: File,
+        title: CharSequence,
+        wav: Boolean,
+        durationMs: Int,
+    ): Uri {
+        val values =
+            fileKindValues().apply {
+                put(MediaStore.MediaColumns.DATA, file.path)
+                put(MediaStore.MediaColumns.DISPLAY_NAME, title.toString())
+                put(MediaStore.MediaColumns.SIZE, file.length())
+                put(MediaStore.MediaColumns.MIME_TYPE, mimeType(wav))
+                put(MediaStore.Audio.Media.TITLE, title.toString())
+                put(MediaStore.Audio.Media.ARTIST, context.getString(R.string.artist_name))
+                put(MediaStore.Audio.Media.DURATION, durationMs)
+            }
+        return context.contentResolver.insert(RingdroidUtils.externalAudioCollectionUri, values)
+            ?: throw SaveException(R.string.write_error, null)
+    }
+
     private fun verifyReadable(file: File) {
         try {
             SoundFile.create(context.cacheDir, file.path) { false }?.release()
         } catch (e: SoundFile.InvalidInputException) {
             throw IOException("Saved file is unreadable", e)
+        }
+        if (file.length() <= MIN_FILE_SIZE) {
+            throw SaveException(R.string.too_small_error, null)
         }
     }
 
@@ -173,7 +185,14 @@ internal class RingtoneSaver(
     // MediaStore only accepts standard top-level folders such as Ringtones from Android 10.
     private val subDir: String
         get() {
-            val saveDir = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) Environment.DIRECTORY_RINGTONES else "media/audio"
+            val saveDir =
+                if (Build.VERSION.SDK_INT >=
+                    Build.VERSION_CODES.Q
+                ) {
+                    Environment.DIRECTORY_RINGTONES
+                } else {
+                    "media/audio"
+                }
             val kindDir =
                 when (fileKind) {
                     FileSaveDialog.FILE_KIND_MUSIC -> "music"
@@ -200,13 +219,15 @@ internal class RingtoneSaver(
             parentDir = externalRootDir
         }
         val filename = title.filter { it.isLetterOrDigit() }
-        return (0 until 100)
+        return (0 until MAX_FILENAME_ATTEMPTS)
             .map { i -> parentDir + filename + (if (i > 0) i.toString() else "") + extension }
             .firstOrNull { !File(it).exists() }
     }
 
     private companion object {
         const val TAG = "RingtoneSaver"
+        const val MIN_FILE_SIZE = 512
+        const val MAX_FILENAME_ATTEMPTS = 100
 
         fun mimeType(wav: Boolean) = if (wav) "audio/wav" else "audio/mp4a-latm"
     }

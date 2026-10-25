@@ -38,7 +38,10 @@ class WaveformDataTest {
     @Test
     fun zoomLevelsHalveTheLength() {
         val data = WaveformData(gains(1000, 50))
-        assertEquals(listOf(2000, 1000, 500, 250, 125), (0 until WaveformData.NUM_ZOOM_LEVELS).map { data.getLength(it) })
+        assertEquals(
+            listOf(2000, 1000, 500, 250, 125),
+            (0 until WaveformData.NUM_ZOOM_LEVELS).map { data.getLength(it) },
+        )
         assertEquals(2.0, data.getZoomFactor(0), 0.0)
         assertEquals(1.0, data.getZoomFactor(1), 0.0)
         assertEquals(0.125, data.getZoomFactor(4), 0.0)

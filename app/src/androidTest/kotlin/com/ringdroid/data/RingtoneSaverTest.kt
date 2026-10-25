@@ -37,8 +37,9 @@ class RingtoneSaverTest {
             val uiAutomation = InstrumentationRegistry.getInstrumentation().uiAutomation
             for (permission in listOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE)) {
                 ParcelFileDescriptor
-                    .AutoCloseInputStream(uiAutomation.executeShellCommand("pm grant ${context.packageName} $permission"))
-                    .use { it.readBytes() }
+                    .AutoCloseInputStream(
+                        uiAutomation.executeShellCommand("pm grant ${context.packageName} $permission"),
+                    ).use { it.readBytes() }
             }
             val deadline = SystemClock.uptimeMillis() + GRANT_TIMEOUT_MS
             while (!Environment.getExternalStorageDirectory().canWrite() && SystemClock.uptimeMillis() < deadline) {
@@ -65,7 +66,13 @@ class RingtoneSaverTest {
                 Triple(FileSaveDialog.FILE_KIND_RINGTONE, MediaStore.Audio.Media.IS_RINGTONE, "ringtones"),
             )
         for ((kind, flag, folder) in kinds) {
-            val uri = RingtoneSaver(context, soundFile, 1.0f, kind).save("RingtoneSaverTest" + System.nanoTime(), 0, 20, 464)
+            val uri =
+                RingtoneSaver(
+                    context,
+                    soundFile,
+                    1.0f,
+                    kind,
+                ).save("RingtoneSaverTest" + System.nanoTime(), 0, 20, 464)
             try {
                 assertSaved(uri, flag, folder)
             } finally {
@@ -82,7 +89,12 @@ class RingtoneSaverTest {
         val scoped = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
         val projection =
             if (scoped) {
-                arrayOf(flag, MediaStore.MediaColumns.MIME_TYPE, MediaStore.MediaColumns.RELATIVE_PATH, MediaStore.MediaColumns.IS_PENDING)
+                arrayOf(
+                    flag,
+                    MediaStore.MediaColumns.MIME_TYPE,
+                    MediaStore.MediaColumns.RELATIVE_PATH,
+                    MediaStore.MediaColumns.IS_PENDING,
+                )
             } else {
                 arrayOf(flag, MediaStore.MediaColumns.MIME_TYPE)
             }

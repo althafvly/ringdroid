@@ -12,10 +12,10 @@ internal class MarkerLayout(
     private val waveformView: WaveformView,
     density: Float,
 ) {
-    private val leftInset = (46 * density).toInt()
-    private val rightInset = (48 * density).toInt()
-    private val topOffset = (10 * density).toInt()
-    private val bottomOffset = (10 * density).toInt()
+    private val leftInset = (LEFT_INSET_DP * density).toInt()
+    private val rightInset = (RIGHT_INSET_DP * density).toInt()
+    private val topOffset = (VERTICAL_OFFSET_DP * density).toInt()
+    private val bottomOffset = (VERTICAL_OFFSET_DP * density).toInt()
     private var startVisible = true
     private var endVisible = true
 
@@ -61,5 +61,12 @@ internal class MarkerLayout(
         return onScreen
     }
 
-    private fun params() = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
+    private fun params() =
+        RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
+
+    private companion object {
+        const val LEFT_INSET_DP = 46
+        const val RIGHT_INSET_DP = 48
+        const val VERTICAL_OFFSET_DP = 10
+    }
 }

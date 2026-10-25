@@ -1,7 +1,6 @@
 package com.ringdroid.view
 
 import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.KeyEvent
@@ -42,11 +41,7 @@ class MarkerView(
             velocity: Int,
         )
 
-        fun markerEnter(marker: MarkerView)
-
         fun markerKeyUp()
-
-        fun markerDraw()
     }
 
     private var velocity = 0
@@ -92,37 +87,31 @@ class MarkerView(
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
     }
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-        listener?.markerDraw()
-    }
-
     override fun onKeyDown(
         keyCode: Int,
         event: KeyEvent,
     ): Boolean {
         velocity++
-        val v = sqrt(1 + velocity / 2.0).toInt()
+        val step = sqrt(1 + velocity / 2.0).toInt()
         val l = listener
-        if (l != null) {
-            when (keyCode) {
-                KeyEvent.KEYCODE_DPAD_LEFT -> {
-                    l.markerLeft(this, v)
-                    return true
-                }
+        val handled =
+            l != null &&
+                when (keyCode) {
+                    KeyEvent.KEYCODE_DPAD_LEFT -> {
+                        l.markerLeft(this, step)
+                        true
+                    }
 
-                KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                    l.markerRight(this, v)
-                    return true
-                }
+                    KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                        l.markerRight(this, step)
+                        true
+                    }
 
-                KeyEvent.KEYCODE_DPAD_CENTER -> {
-                    l.markerEnter(this)
-                    return true
+                    else -> {
+                        keyCode == KeyEvent.KEYCODE_DPAD_CENTER
+                    }
                 }
-            }
-        }
-        return super.onKeyDown(keyCode, event)
+        return handled || super.onKeyDown(keyCode, event)
     }
 
     override fun onKeyUp(

@@ -10,6 +10,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.ringdroid.R
+import com.ringdroid.data.Clip
 import com.ringdroid.databinding.DialogProgressBinding
 import com.ringdroid.dialog.AfterSaveActionDialog
 import com.ringdroid.dialog.FileSaveDialog
@@ -39,12 +40,10 @@ internal class SaveFlow(
         soundFile: SoundFile,
         title: String?,
         gain: Float,
-        startFrame: Int,
-        numFrames: Int,
-        durationMs: Int,
+        clip: Clip,
     ) {
         FileSaveDialog(activity, title) { newTitle, kind ->
-            viewModel.save(soundFile, newTitle, gain, kind, startFrame, numFrames, durationMs)
+            viewModel.save(soundFile, newTitle, gain, kind, clip)
             onSaveStateChanged()
         }.show()
     }
@@ -68,8 +67,11 @@ internal class SaveFlow(
         if (viewModel.isSaving) {
             if (progressDialog == null) {
                 progressDialog =
-                    createDialog(activity, DialogProgressBinding.inflate(activity.layoutInflater).root, cancelable = false)
-                        .also { it.show() }
+                    createDialog(
+                        activity,
+                        DialogProgressBinding.inflate(activity.layoutInflater).root,
+                        cancelable = false,
+                    ).also { it.show() }
             }
             return
         }
@@ -115,9 +117,20 @@ internal class SaveFlow(
                 AfterSaveActionDialog(activity) { action ->
                     onFollowUpChosen()
                     when (action) {
-                        AfterSaveActionDialog.ACTION_MAKE_DEFAULT -> defaultSoundSetter.set(RingtoneManager.TYPE_RINGTONE, uri)
-                        AfterSaveActionDialog.ACTION_CHOOSE_CONTACT -> chooseContact(uri)
-                        else -> activity.finish()
+                        AfterSaveActionDialog.ACTION_MAKE_DEFAULT -> {
+                            defaultSoundSetter.set(
+                                RingtoneManager.TYPE_RINGTONE,
+                                uri,
+                            )
+                        }
+
+                        AfterSaveActionDialog.ACTION_CHOOSE_CONTACT -> {
+                            chooseContact(uri)
+                        }
+
+                        else -> {
+                            activity.finish()
+                        }
                     }
                 }.show()
             }

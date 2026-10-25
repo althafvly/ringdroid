@@ -37,7 +37,10 @@ class RingdroidUtilsTest {
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
             }
         assertEquals(external, RingdroidUtils.externalAudioCollectionUri)
-        assertEquals(MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_INTERNAL), RingdroidUtils.internalAudioCollectionUri)
+        assertEquals(
+            MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_INTERNAL),
+            RingdroidUtils.internalAudioCollectionUri,
+        )
     }
 
     @Test

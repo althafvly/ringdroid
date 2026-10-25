@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import com.ringdroid.data.Clip
 import com.ringdroid.data.RingtoneSaver
 import com.ringdroid.dialog.FileSaveDialog
 import com.ringdroid.soundfile.SoundFile
@@ -37,9 +38,7 @@ internal class SaveViewModel(
         title: CharSequence,
         gain: Float,
         kind: Int,
-        startFrame: Int,
-        numFrames: Int,
-        durationMs: Int,
+        clip: Clip,
     ) {
         isSaving = true
         fileKind = kind
@@ -47,7 +46,7 @@ internal class SaveViewModel(
         val saver = RingtoneSaver(getApplication(), soundFile, gain, kind)
         RingdroidUtils.BACKGROUND.execute {
             try {
-                val uri = saver.save(title, startFrame, numFrames, durationMs)
+                val uri = saver.save(title, clip.startFrame, clip.numFrames, clip.durationMs)
                 finish { savedUri = uri }
             } catch (e: RingtoneSaver.SaveException) {
                 Log.e(TAG, "Save failed", e.cause)

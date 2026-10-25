@@ -3,17 +3,11 @@ package com.ringdroid.soundfile
 import android.media.MediaCodec
 import android.media.MediaExtractor
 import android.media.MediaFormat
-import android.os.SystemClock
-import android.util.Log
 import java.io.File
 import java.io.FileNotFoundException
-import java.io.IOException
-import java.io.RandomAccessFile
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.nio.MappedByteBuffer
 import java.nio.ShortBuffer
-import java.nio.channels.FileChannel
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.sqrt
@@ -57,9 +51,7 @@ class SoundFile private constructor() {
     private var progressListener: ProgressListener? = null
     private var decodedBytes: ByteBuffer? = null
     private var decodedSamples: ShortBuffer? = null
-    private var pcmTempFile: File? = null
-    private var pcmRaf: RandomAccessFile? = null
-    private var pcmChannel: FileChannel? = null
+    private var pcmFile: PcmFile? = null
 
     /** Independent view of the raw PCM bytes, or null after [release]. */
     internal fun getDecodedBytes(): ByteBuffer? = decodedBytes?.duplicate()
@@ -73,23 +65,8 @@ class SoundFile private constructor() {
         decodedBytes = null
         decodedSamples = null
         frameGains = null
-        try {
-            pcmChannel?.close()
-        } catch (ignored: IOException) {
-        }
-        pcmChannel = null
-        try {
-            pcmRaf?.close()
-        } catch (ignored: IOException) {
-        }
-        pcmRaf = null
-        pcmTempFile?.let { file ->
-            synchronized(activePcmFiles) { activePcmFiles.remove(file) }
-            if (!file.delete() && file.exists()) {
-                Log.w(TAG, "Failed to delete temporary PCM file: ${file.absolutePath}")
-            }
-        }
-        pcmTempFile = null
+        pcmFile?.delete()
+        pcmFile = null
     }
 
     private fun readFile(
@@ -101,62 +78,35 @@ class SoundFile private constructor() {
         val extractor = MediaExtractor()
         var codec: MediaCodec? = null
         try {
-            extractor.setDataSource(inputFile.path)
-            val trackIndex =
-                (0 until extractor.trackCount).firstOrNull {
-                    extractor.getTrackFormat(it).getString(MediaFormat.KEY_MIME)?.startsWith("audio/") == true
-                } ?: throw InvalidInputException("No audio track found in $inputFile")
-            extractor.selectTrack(trackIndex)
-            val format = extractor.getTrackFormat(trackIndex)
-            val mime =
-                format.getString(MediaFormat.KEY_MIME)
-                    ?: throw InvalidInputException("Audio track has no MIME type in $inputFile")
-            if (!format.containsKey(MediaFormat.KEY_CHANNEL_COUNT) || !format.containsKey(MediaFormat.KEY_SAMPLE_RATE)) {
-                throw InvalidInputException("Audio track missing channel count or sample rate in $inputFile")
-            }
+            val format = selectAudioTrack(extractor, inputFile)
             channels = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
             sampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
-
-            // The container duration only sizes the initial buffer; decoding runs to end of stream.
-            val durationUs = if (format.containsKey(MediaFormat.KEY_DURATION)) format.getLong(MediaFormat.KEY_DURATION) else 0L
-            val expectedBytes = durationUs * sampleRate / 1_000_000L * channels * 2
-
+            val mime = format.getString(MediaFormat.KEY_MIME).orEmpty()
             codec = MediaCodec.createDecoderByType(mime)
             codec.configure(format, null, null, 0)
             codec.start()
 
-            synchronized(activePcmFiles) {
-                deleteStalePcmFiles(cacheDir)
-                val tempFile = File.createTempFile(PCM_PREFIX, ".raw", cacheDir)
-                pcmTempFile = tempFile
-                activePcmFiles.add(tempFile)
-            }
-            val initialSize = maxOf(expectedBytes, 1L shl 20)
-            val raf = RandomAccessFile(pcmTempFile, "rw")
-            pcmRaf = raf
-            raf.setLength(initialSize)
-            val channel = raf.channel
-            pcmChannel = channel
-            var output: MappedByteBuffer = channel.map(FileChannel.MapMode.READ_WRITE, 0, initialSize)
-            decodedBytes = output
-
-            if (!decode(extractor, codec, format, fileSize) { newSize ->
-                    val position = output.position()
-                    raf.setLength(newSize)
-                    output = channel.map(FileChannel.MapMode.READ_WRITE, 0, newSize)
-                    output.position(position)
-                    decodedBytes = output
-                    output
+            // The container duration only sizes the initial buffer; decoding runs to end of stream.
+            val durationUs =
+                if (format.containsKey(
+                        MediaFormat.KEY_DURATION,
+                    )
+                ) {
+                    format.getLong(MediaFormat.KEY_DURATION)
+                } else {
+                    0L
                 }
-            ) {
-                return
+            val expectedBytes = durationUs * sampleRate / MICROS_PER_SECOND * channels * Short.SIZE_BYTES
+            val pcm = PcmFile.create(cacheDir, maxOf(expectedBytes, MIN_PCM_BYTES))
+            pcmFile = pcm
+            val decoder = AudioDecoder(extractor, codec, mime == AAC_MIME, fileSize, progressListener, pcm)
+            if (decoder.run()) {
+                decoder.outputFormat?.let {
+                    sampleRate = it.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+                    channels = it.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
+                }
+                useDecoded(pcm.buffer, fileSize)
             }
-            numSamples = output.position() / (channels * 2)
-            output.rewind()
-            output.order(ByteOrder.LITTLE_ENDIAN)
-            decodedSamples = output.asShortBuffer()
-            avgBitrateKbps = if (numSamples > 0) (fileSize * 8 * sampleRate / numSamples / 1000).toInt() else 0
-            computeFrameGains()
         } finally {
             if (codec != null) {
                 try {
@@ -169,89 +119,22 @@ class SoundFile private constructor() {
         }
     }
 
-    /**
-     * Feeds the extractor through the codec into [decodedBytes], calling [grow] with a new total
-     * size when more room is needed. Returns false if the listener canceled.
-     */
-    private fun decode(
-        extractor: MediaExtractor,
-        codec: MediaCodec,
-        format: MediaFormat,
+    private fun useDecoded(
+        output: ByteBuffer,
         fileSize: Long,
-        grow: (Long) -> ByteBuffer,
-    ): Boolean {
-        val info = MediaCodec.BufferInfo()
-        var chunk = ByteArray(0)
-        var totalSizeRead = 0L
-        var doneReading = false
-        var firstSampleData = true
-        var inputDoneAt = 0L
-        var output = decodedBytes!!
-        while (true) {
-            if (!doneReading) {
-                val inputIndex = codec.dequeueInputBuffer(100)
-                val inputBuffer = if (inputIndex >= 0) codec.getInputBuffer(inputIndex) else null
-                if (inputBuffer != null) {
-                    inputBuffer.clear()
-                    val sampleSize = extractor.readSampleData(inputBuffer, 0)
-                    if (firstSampleData && format.getString(MediaFormat.KEY_MIME) == "audio/mp4a-latm" && sampleSize == 2) {
-                        // Some devices (e.g. Samsung S3) crash when given the 2-byte AAC config
-                        // that the codec has already been configured with, so skip it.
-                        extractor.advance()
-                        totalSizeRead += sampleSize
-                        codec.queueInputBuffer(inputIndex, 0, 0, 0, 0)
-                    } else if (sampleSize < 0) {
-                        codec.queueInputBuffer(inputIndex, 0, 0, -1, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
-                        doneReading = true
-                        inputDoneAt = SystemClock.uptimeMillis()
-                    } else {
-                        codec.queueInputBuffer(inputIndex, 0, sampleSize, extractor.sampleTime, 0)
-                        extractor.advance()
-                        totalSizeRead += sampleSize
-                        if (progressListener?.reportProgress(totalSizeRead.toDouble() / fileSize) == true) {
-                            return false
-                        }
-                    }
-                    firstSampleData = false
-                }
-            }
-
-            val outputIndex = codec.dequeueOutputBuffer(info, 100)
-            if (outputIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
-                val outputFormat = codec.outputFormat
-                sampleRate = outputFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE)
-                channels = outputFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
-                Log.d(TAG, "Decoder output format: $sampleRate Hz, $channels channels")
-            } else if (outputIndex >= 0) {
-                // Release every buffer, including empty ones, or the codec runs out of them.
-                val outputBuffer = codec.getOutputBuffer(outputIndex)
-                if (outputBuffer != null && info.size > 0) {
-                    if (chunk.size < info.size) {
-                        chunk = ByteArray(info.size)
-                    }
-                    outputBuffer.get(chunk, 0, info.size)
-                    if (output.remaining() < info.size) {
-                        // Estimate the final size from the share of input read so far.
-                        val position = output.position()
-                        val estimate = (position * (fileSize.toDouble() / maxOf(totalSizeRead, 1L)) * 1.2).toLong()
-                        output = grow(maxOf(estimate, position + info.size + 5L * (1 shl 20)))
-                    }
-                    output.put(chunk, 0, info.size)
-                }
-                codec.releaseOutputBuffer(outputIndex, false)
-                if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) {
-                    return true
-                }
-                inputDoneAt = if (doneReading) SystemClock.uptimeMillis() else inputDoneAt
-            } else if (doneReading && SystemClock.uptimeMillis() - inputDoneAt > EOS_TIMEOUT_MS) {
-                // Some devices never flag the end of stream; stop once output dries up.
-                return true
-            }
-        }
+    ) {
+        numSamples = output.position() / (channels * Short.SIZE_BYTES)
+        output.rewind()
+        output.order(ByteOrder.LITTLE_ENDIAN)
+        decodedBytes = output
+        val shorts = output.asShortBuffer()
+        decodedSamples = shorts
+        avgBitrateKbps =
+            if (numSamples > 0) (fileSize * Byte.SIZE_BITS * sampleRate / numSamples / BITS_PER_KILOBIT).toInt() else 0
+        computeFrameGains(shorts)
     }
 
-    private fun computeFrameGains() {
-        val samples = decodedSamples!!
+    private fun computeFrameGains(samples: ShortBuffer) {
         val frames = (numSamples + SAMPLES_PER_FRAME - 1) / SAMPLES_PER_FRAME
         val gains = IntArray(frames)
         samples.rewind()
@@ -274,15 +157,13 @@ class SoundFile private constructor() {
     }
 
     companion object {
-        private const val TAG = "SoundFile"
-        private const val PCM_PREFIX = "ringdroid_pcm_"
         private const val SAMPLES_PER_FRAME = 1024
-        private const val EOS_TIMEOUT_MS = 2000L
+        private const val AAC_MIME = "audio/mp4a-latm"
+        private const val MICROS_PER_SECOND = 1_000_000L
+        private const val MIN_PCM_BYTES = 1L shl 20
+        private const val BITS_PER_KILOBIT = 1000
         private val SUPPORTED_EXTENSIONS =
             arrayOf("mp3", "wav", "3gpp", "3gp", "amr", "aac", "m4a", "ogg", "flac", "opus", "wma", "mkv")
-
-        // Temp files in use by this process; any other ones were left behind by a killed process.
-        private val activePcmFiles = mutableSetOf<File>()
 
         fun getSupportedExtensions(): Array<String> = SUPPORTED_EXTENSIONS.copyOf()
 
@@ -301,27 +182,22 @@ class SoundFile private constructor() {
             if (!file.exists()) {
                 throw FileNotFoundException(fileName)
             }
-            val name = file.name.lowercase(Locale.ROOT)
-            if (!name.contains('.') || name.substringAfterLast('.') !in SUPPORTED_EXTENSIONS) {
+            if (!isFilenameSupported(file.name.lowercase(Locale.ROOT))) {
                 return null
             }
             val soundFile = SoundFile()
             soundFile.progressListener = progressListener
-            var readCompleted = false
+            var loaded = false
             try {
                 soundFile.readFile(cacheDir, file)
-                readCompleted = true
-                if (soundFile.decodedSamples == null) {
-                    // Canceled by the progress listener.
-                    soundFile.release()
-                    return null
-                }
-                return soundFile
+                // No samples means the progress listener canceled.
+                loaded = soundFile.decodedSamples != null
             } finally {
-                if (!readCompleted) {
+                if (!loaded) {
                     soundFile.release()
                 }
             }
+            return soundFile.takeIf { loaded }
         }
 
         /** Wraps mono 16-bit little-endian PCM recorded from the microphone. */
@@ -335,19 +211,35 @@ class SoundFile private constructor() {
             soundFile.sampleRate = sampleRate
             soundFile.channels = 1
             soundFile.numSamples = numSamples
-            soundFile.avgBitrateKbps = sampleRate * 16 / 1000
+            soundFile.avgBitrateKbps = sampleRate * Short.SIZE_BITS / BITS_PER_KILOBIT
             soundFile.decodedBytes = pcm.order(ByteOrder.LITTLE_ENDIAN)
-            soundFile.decodedSamples = pcm.asShortBuffer()
-            soundFile.computeFrameGains()
+            val shorts = pcm.asShortBuffer()
+            soundFile.decodedSamples = shorts
+            soundFile.computeFrameGains(shorts)
             return soundFile
         }
 
-        private fun deleteStalePcmFiles(dir: File) {
-            dir.listFiles { _, name -> name.startsWith(PCM_PREFIX) }?.forEach { file ->
-                if (file !in activePcmFiles && !file.delete()) {
-                    Log.w(TAG, "Failed to delete stale PCM file: $file")
-                }
+        // Selects the first audio track and returns its format, which must have the decoder's basics.
+        private fun selectAudioTrack(
+            extractor: MediaExtractor,
+            inputFile: File,
+        ): MediaFormat {
+            extractor.setDataSource(inputFile.path)
+            val trackIndex =
+                (0 until extractor.trackCount).firstOrNull {
+                    extractor.getTrackFormat(it).getString(MediaFormat.KEY_MIME)?.startsWith("audio/") == true
+                } ?: throw InvalidInputException("No audio track found in $inputFile")
+            extractor.selectTrack(trackIndex)
+            val format = extractor.getTrackFormat(trackIndex)
+            if (format.getString(MediaFormat.KEY_MIME) == null ||
+                !format.containsKey(MediaFormat.KEY_CHANNEL_COUNT) ||
+                !format.containsKey(MediaFormat.KEY_SAMPLE_RATE)
+            ) {
+                throw InvalidInputException(
+                    "Audio track missing its MIME type, channel count or sample rate in $inputFile",
+                )
             }
+            return format
         }
     }
 }

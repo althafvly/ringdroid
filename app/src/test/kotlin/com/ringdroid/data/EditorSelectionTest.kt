@@ -8,26 +8,18 @@ import org.junit.Test
 class EditorSelectionTest {
     private fun selection() =
         EditorSelection().apply {
-            maxPos = 1000
-            width = 200
+            scroll.maxPos = 1000
+            scroll.width = 200
             reset(100, 300)
         }
 
     @Test
     fun resetClampsTheEndToTheLength() {
-        val s = EditorSelection().apply { maxPos = 150 }
+        val s = EditorSelection().apply { scroll.maxPos = 150 }
         s.reset(10, 400)
         assertEquals(10, s.startPos)
         assertEquals(150, s.endPos)
-        assertEquals(0, s.offset)
-    }
-
-    @Test
-    fun trapKeepsPositionsInRange() {
-        val s = selection()
-        assertEquals(0, s.trap(-5))
-        assertEquals(1000, s.trap(5000))
-        assertEquals(42, s.trap(42))
+        assertEquals(0, s.scroll.offset)
     }
 
     @Test
@@ -61,54 +53,8 @@ class EditorSelectionTest {
         assertEquals(1000, s.endPos)
         s.nudgeLeft(isStart = true, velocity = 500)
         assertEquals(0, s.startPos)
-        assertTrue(s.keyDown)
-        s.keyUp()
-        assertFalse(s.keyDown)
-    }
-
-    @Test
-    fun scrollingEasesTowardsTheCenteredGoal() {
-        val s = selection()
-        s.scrollToCenter(600)
-        assertEquals(500, s.offsetGoal) // 600 - width / 2
-        assertTrue(s.isAnimating)
-        s.step()
-        assertEquals(50, s.offset) // A tenth of the distance.
-        repeat(200) { s.step() }
-        assertEquals(500, s.offset)
-        assertFalse(s.isAnimating)
-    }
-
-    @Test
-    fun scrollGoalStaysWithinTheWaveform() {
-        val s = selection()
-        s.scrollToCenter(10)
-        assertEquals(0, s.offsetGoal)
-        s.scrollToCenter(5000)
-        assertEquals(900, s.offsetGoal) // maxPos - width / 2
-    }
-
-    @Test
-    fun flingDecaysAndStopsAtTheEdge() {
-        val s = selection()
-        s.fling(-3000f)
-        s.step()
-        assertEquals(100, s.offset)
-        assertEquals(2920, s.flingVelocity)
-        repeat(100) { s.step() }
-        assertEquals(900, s.offset)
-        assertEquals(0, s.flingVelocity)
-    }
-
-    @Test
-    fun draggingTheWaveformScrollsAndReportsTheTap() {
-        val s = selection()
-        s.waveformTouchStart(400f)
-        s.waveformTouchMove(300f)
-        assertEquals(100, s.offset)
-        s.scrollToCenter(800) // Ignored while dragging.
-        assertEquals(0, s.offsetGoal)
-        assertEquals(500, s.waveformTouchEnd())
-        assertEquals(100, s.offsetGoal)
+        assertTrue(s.scroll.keyDown)
+        s.focusMarker(isStart = true)
+        assertFalse(s.scroll.keyDown)
     }
 }

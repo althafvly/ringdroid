@@ -1,5 +1,8 @@
+import dev.detekt.gradle.Detekt
+
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -92,6 +95,18 @@ kotlin {
             "-Xno-call-assertions",
             "-Xno-receiver-assertions",
         )
+    }
+}
+
+detekt {
+    buildUponDefaultConfig = true
+}
+
+// Type resolution needs the generated view binding, R and BuildConfig classes.
+tasks.withType<Detekt>().configureEach {
+    val javac = tasks.findByName(name.replaceFirst("detekt", "compile") + "JavaWithJavac") as? JavaCompile
+    if (javac != null) {
+        classpath.from(javac.classpath, javac.destinationDirectory)
     }
 }
 

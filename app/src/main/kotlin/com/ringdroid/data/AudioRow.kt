@@ -34,15 +34,23 @@ internal data class AudioRow(
             cursor: Cursor,
             isInternal: Boolean,
         ): AudioRow {
-            val collection = if (isInternal) MediaStore.Audio.Media.INTERNAL_CONTENT_URI else MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+            val collection =
+                if (isInternal) {
+                    MediaStore.Audio.Media.INTERNAL_CONTENT_URI
+                } else {
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                }
+            val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
             return AudioRow(
-                uri = ContentUris.withAppendedId(collection, cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))),
+                uri = ContentUris.withAppendedId(collection, id),
                 title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)),
                 path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)),
-                isRingtone = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_RINGTONE)) != 0,
-                isNotification = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.IS_NOTIFICATION)) != 0,
+                isRingtone = cursor.isFlagSet(MediaStore.Audio.Media.IS_RINGTONE),
+                isNotification = cursor.isFlagSet(MediaStore.Audio.Media.IS_NOTIFICATION),
                 isInternal = isInternal,
             )
         }
+
+        fun Cursor.isFlagSet(column: String) = getInt(getColumnIndexOrThrow(column)) != 0
     }
 }

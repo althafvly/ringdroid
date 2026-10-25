@@ -9,6 +9,9 @@ import androidx.core.view.doOnDetach
 
 /** Shared setup for the dropdown popups on the select screen. */
 internal object Popups {
+    private const val ELEVATION_DP = 12
+    private const val MARGIN_DP = 8
+
     fun create(
         contentView: View,
         widthDp: Int,
@@ -17,7 +20,7 @@ internal object Popups {
         return PopupWindow(contentView, (widthDp * density).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT, true).apply {
             setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
             isOutsideTouchable = true
-            elevation = 12 * density
+            elevation = ELEVATION_DP * density
             animationStyle = android.R.style.Animation_Dialog
         }
     }
@@ -29,7 +32,7 @@ internal object Popups {
         yOffsetDp: Int,
     ) {
         val density = anchor.resources.displayMetrics.density
-        val xOffset = anchor.width - (widthDp * density).toInt() - (8 * density).toInt()
+        val xOffset = anchor.width - (widthDp * density).toInt() - (MARGIN_DP * density).toInt()
         // Close with the screen, so recreating the activity doesn't leak the popup.
         anchor.doOnDetach { popup.dismiss() }
         popup.showAsDropDown(anchor, xOffset, (yOffsetDp * density).toInt())

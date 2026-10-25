@@ -33,5 +33,6 @@ object PermissionUtils {
         )
     }
 
-    private fun Context.isGranted(permission: String) = checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
+    private fun Context.isGranted(permission: String) =
+        checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
 }

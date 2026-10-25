@@ -1,12 +1,11 @@
 package com.ringdroid.view
 
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import com.ringdroid.databinding.ToolbarSearchBinding
 import com.ringdroid.util.RingdroidUtils
 
@@ -22,28 +21,10 @@ class SearchToolbarHelper(
         searchTriggerButton?.setOnClickListener { openSearch() }
         searchBinding.btnSearchBack.setOnClickListener { closeSearch() }
         searchBinding.btnSearchClear.setOnClickListener { searchBinding.searchQueryInput.setText("") }
-        searchBinding.searchQueryInput.addTextChangedListener(
-            object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int,
-                ) {}
-
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int,
-                ) {
-                    searchBinding.btnSearchClear.isVisible = !s.isNullOrEmpty()
-                    onQueryChanged(s?.toString().orEmpty())
-                }
-
-                override fun afterTextChanged(s: Editable?) {}
-            },
-        )
+        searchBinding.searchQueryInput.doOnTextChanged { text, _, _, _ ->
+            searchBinding.btnSearchClear.isVisible = !text.isNullOrEmpty()
+            onQueryChanged(text?.toString().orEmpty())
+        }
         searchBinding.searchQueryInput.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 RingdroidUtils.hideKeyboard(v)

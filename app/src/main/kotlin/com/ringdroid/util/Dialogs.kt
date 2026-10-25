@@ -26,8 +26,19 @@ fun createDialog(
 /** Dismisses the dialog when its activity is destroyed, so recreating the activity doesn't leak its window. */
 fun <D : Dialog> D.dismissOnDestroy(): D =
     apply {
-        val owner = generateSequence(context) { (it as? ContextWrapper)?.baseContext }.firstNotNullOfOrNull { it as? LifecycleOwner }
-        owner?.lifecycle?.addObserver(LifecycleEventObserver { _, event -> if (event == Lifecycle.Event.ON_DESTROY) dismiss() })
+        val owner =
+            generateSequence(context) {
+                (it as? ContextWrapper)?.baseContext
+            }.firstNotNullOfOrNull { it as? LifecycleOwner }
+        owner?.lifecycle?.addObserver(
+            LifecycleEventObserver { _, event ->
+                if (event ==
+                    Lifecycle.Event.ON_DESTROY
+                ) {
+                    dismiss()
+                }
+            },
+        )
     }
 
 /** Shows an error that closes [activity] when dismissed. */

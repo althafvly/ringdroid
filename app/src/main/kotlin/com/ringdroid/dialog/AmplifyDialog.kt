@@ -10,6 +10,7 @@ import java.util.Locale
 /** Lets the user pick an output volume between 10% and the seek bar maximum. */
 internal object AmplifyDialog {
     private const val MIN_PERCENT = 10
+    private const val PERCENT = 100f
 
     fun show(
         context: Context,
@@ -17,7 +18,7 @@ internal object AmplifyDialog {
         onApply: (Float) -> Unit,
     ) {
         val binding = DialogAmplifyBinding.inflate(LayoutInflater.from(context))
-        val current = maxOf(MIN_PERCENT, (currentFactor * 100).toInt())
+        val current = maxOf(MIN_PERCENT, (currentFactor * PERCENT).toInt())
         binding.amplifySeekbar.progress = current
         binding.amplifyPercentageText.text = formatPercent(current)
 
@@ -36,14 +37,14 @@ internal object AmplifyDialog {
                     binding.amplifyPercentageText.text = formatPercent(maxOf(progress, MIN_PERCENT))
                 }
 
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                override fun onStartTrackingTouch(seekBar: SeekBar) = Unit
 
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar) = Unit
             },
         )
         binding.btnCancel.setOnClickListener { dialog.dismiss() }
         binding.btnApply.setOnClickListener {
-            onApply(binding.amplifySeekbar.progress / 100.0f)
+            onApply(binding.amplifySeekbar.progress / PERCENT)
             dialog.dismiss()
         }
         dialog.show()

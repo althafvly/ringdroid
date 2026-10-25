@@ -21,8 +21,8 @@ internal class RecordingDialog(
     init {
         dialog =
             createDialog(context, binding.root).apply { setOnCancelListener { onCancel() } }
-        val pulse = ObjectAnimator.ofFloat(binding.recordingDot, "alpha", 1.0f, 0.2f)
-        pulse.duration = 750
+        val pulse = ObjectAnimator.ofFloat(binding.recordingDot, "alpha", 1.0f, PULSE_MIN_ALPHA)
+        pulse.duration = PULSE_DURATION_MS
         pulse.repeatCount = ValueAnimator.INFINITE
         pulse.repeatMode = ValueAnimator.REVERSE
         dialog.setOnShowListener { pulse.start() }
@@ -47,7 +47,14 @@ internal class RecordingDialog(
     }
 
     fun setElapsedSeconds(seconds: Double) {
-        val min = (seconds / 60).toInt()
-        binding.recordAudioTimer.text = binding.root.context.getString(R.string.recording_time, min, (seconds - 60 * min).toFloat())
+        val min = (seconds / SECONDS_PER_MINUTE).toInt()
+        binding.recordAudioTimer.text =
+            binding.root.context.getString(R.string.recording_time, min, (seconds - SECONDS_PER_MINUTE * min).toFloat())
+    }
+
+    private companion object {
+        const val PULSE_DURATION_MS = 750L
+        const val PULSE_MIN_ALPHA = 0.2f
+        const val SECONDS_PER_MINUTE = 60
     }
 }

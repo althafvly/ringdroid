@@ -49,16 +49,7 @@ class ContactRingtonePicker(
         pending.uri = null
         if (contactUri != null && ringtone != null) {
             try {
-                val projection = arrayOf(Contacts._ID, Contacts.DISPLAY_NAME)
-                activity.contentResolver.query(contactUri, projection, null, null, null)?.use { c ->
-                    if (c.moveToFirst()) {
-                        val uri = ContentUris.withAppendedId(Contacts.CONTENT_URI, c.getLong(0))
-                        val values = ContentValues().apply { put(Contacts.CUSTOM_RINGTONE, ringtone.toString()) }
-                        activity.contentResolver.update(uri, values, null, null)
-                        val message = activity.getString(R.string.success_contact_ringtone) + " " + c.getString(1)
-                        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
-                    }
-                }
+                assign(contactUri, ringtone)
             } catch (e: SecurityException) {
                 Log.e(TAG, "Failed to assign ringtone to $contactUri", e)
             } catch (e: IllegalArgumentException) {
@@ -66,6 +57,22 @@ class ContactRingtonePicker(
             }
         }
         onDone.run()
+    }
+
+    private fun assign(
+        contactUri: Uri,
+        ringtone: Uri,
+    ) {
+        val projection = arrayOf(Contacts._ID, Contacts.DISPLAY_NAME)
+        activity.contentResolver.query(contactUri, projection, null, null, null)?.use { c ->
+            if (c.moveToFirst()) {
+                val uri = ContentUris.withAppendedId(Contacts.CONTENT_URI, c.getLong(0))
+                val values = ContentValues().apply { put(Contacts.CUSTOM_RINGTONE, ringtone.toString()) }
+                activity.contentResolver.update(uri, values, null, null)
+                val message = activity.getString(R.string.success_contact_ringtone) + " " + c.getString(1)
+                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private companion object {

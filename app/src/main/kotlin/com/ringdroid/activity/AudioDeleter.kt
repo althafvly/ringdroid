@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import com.ringdroid.R
 import com.ringdroid.databinding.DialogConfirmDeleteBinding
 import com.ringdroid.util.PendingAction
@@ -49,11 +50,9 @@ internal class AudioDeleter(
                 val request = MediaStore.createDeleteRequest(activity.contentResolver, listOf(uri))
                 consentLauncher.launch(IntentSenderRequest.Builder(request).build())
             } catch (e: IllegalArgumentException) {
-                Log.e(TAG, "Failed to request delete of $uri", e)
-                showFailed()
+                showFailed(e)
             } catch (e: SecurityException) {
-                Log.e(TAG, "Failed to request delete of $uri", e)
-                showFailed()
+                showFailed(e)
             }
             return
         }
@@ -81,27 +80,38 @@ internal class AudioDeleter(
     private fun deleteFromMediaStore(uri: Uri) {
         try {
             if (activity.contentResolver.delete(uri, null, null) == 0) {
-                showFailed()
+                showFailed(null)
             } else {
                 onDeleted()
             }
         } catch (e: SecurityException) {
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q && e is RecoverableSecurityException) {
-                pending.uri = uri
-                consentLauncher.launch(IntentSenderRequest.Builder(e.userAction.actionIntent).build())
-            } else {
-                showFailed()
-            }
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) requestConsent(uri, e) else showFailed(e)
         } catch (e: IllegalArgumentException) {
-            showFailed()
+            showFailed(e)
         } catch (e: IllegalStateException) {
-            showFailed()
+            showFailed(e)
         } catch (e: UnsupportedOperationException) {
-            showFailed()
+            showFailed(e)
         }
     }
 
-    private fun showFailed() {
+    // On Android 10 the user can allow deleting another app's file.
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun requestConsent(
+        uri: Uri,
+        e: SecurityException,
+    ) {
+        val recoverable = e as? RecoverableSecurityException
+        if (recoverable != null) {
+            pending.uri = uri
+            consentLauncher.launch(IntentSenderRequest.Builder(recoverable.userAction.actionIntent).build())
+        } else {
+            showFailed(e)
+        }
+    }
+
+    private fun showFailed(cause: RuntimeException?) {
+        Log.e(TAG, "Delete failed", cause)
         Toast.makeText(activity, R.string.delete_failed, Toast.LENGTH_SHORT).show()
     }
 

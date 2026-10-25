@@ -1,6 +1,7 @@
 [versions]
 agp = "9.4.1"
 spotless = "8.10.4"
+detekt = "2.0.0-alpha.6"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.3.0"
 androidx-test-runner = "1.7.0"
@@ -19,3 +20,4 @@ androidx-core = { group = "androidx.core", name = "core", version.ref = "android
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }

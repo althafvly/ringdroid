@@ -4,13 +4,14 @@ import android.annotation.SuppressLint
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
+import android.util.Log
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.ShortBuffer
 
 /** Records mono 16-bit audio from the microphone into a SoundFile. */
 class SoundRecorder private constructor() {
-    private var bytes: ByteBuffer = allocate(20 * SAMPLE_RATE * 2)
+    private var bytes: ByteBuffer = allocate(INITIAL_SECONDS * SAMPLE_RATE * Short.SIZE_BYTES)
     private var samples: ShortBuffer = bytes.asShortBuffer()
 
     @SuppressLint("MissingPermission")
@@ -53,19 +54,15 @@ class SoundRecorder private constructor() {
         listener: SoundFile.ProgressListener,
     ) {
         val buffer = ShortArray(CHUNK_SAMPLES)
-        while (true) {
+        var done = false
+        while (!done) {
             // Grow by 10 seconds when the next chunk would not fit.
-            if (samples.remaining() < CHUNK_SAMPLES && !grow(10 * SAMPLE_RATE * 2)) {
-                break
+            val hasRoom = samples.remaining() >= CHUNK_SAMPLES || grow(GROW_SECONDS * SAMPLE_RATE * Short.SIZE_BYTES)
+            val numRead = if (hasRoom) audioRecord.read(buffer, 0, buffer.size) else -1
+            if (numRead >= 0) {
+                samples.put(buffer, 0, numRead)
             }
-            val numRead = audioRecord.read(buffer, 0, buffer.size)
-            if (numRead < 0) {
-                break
-            }
-            samples.put(buffer, 0, numRead)
-            if (listener.reportProgress(samples.position().toDouble() / SAMPLE_RATE)) {
-                break
-            }
+            done = numRead < 0 || listener.reportProgress(samples.position().toDouble() / SAMPLE_RATE)
         }
     }
 
@@ -76,6 +73,7 @@ class SoundRecorder private constructor() {
             try {
                 allocate(oldBytes.capacity() + extraBytes)
             } catch (e: OutOfMemoryError) {
+                Log.w(TAG, "Recording buffer full", e)
                 return false
             }
         oldBytes.rewind()
@@ -89,6 +87,9 @@ class SoundRecorder private constructor() {
     companion object {
         private const val SAMPLE_RATE = 44100
         private const val CHUNK_SAMPLES = 1024
+        private const val INITIAL_SECONDS = 20
+        private const val GROW_SECONDS = 10
+        private const val TAG = "SoundRecorder"
 
         private fun allocate(capacity: Int): ByteBuffer = ByteBuffer.allocate(capacity).order(ByteOrder.LITTLE_ENDIAN)
 
@@ -98,6 +99,7 @@ class SoundRecorder private constructor() {
          *
          * @return the recording, or null if there is no listener or the microphone is unavailable
          */
-        fun record(listener: SoundFile.ProgressListener?): SoundFile? = listener?.let { SoundRecorder().recordInternal(it) }
+        fun record(listener: SoundFile.ProgressListener?): SoundFile? =
+            listener?.let { SoundRecorder().recordInternal(it) }
     }
 }

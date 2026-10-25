@@ -43,7 +43,7 @@ class FileSaveDialog(
                     updateFilename(onlyIfNotEdited = true)
                 }
 
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
+                override fun onNothingSelected(parent: AdapterView<*>?) = Unit
             }
 
         dialog = createDialog(context, binding.root)
@@ -75,7 +75,13 @@ class FileSaveDialog(
 
     // Keeps the name in sync with the chosen kind unless the user edited it.
     private fun updateFilename(onlyIfNotEdited: Boolean) {
-        val expected = if (baseName.isEmpty()) typeNames[previousSelection] else baseName + " " + typeNames[previousSelection]
+        val expected =
+            if (baseName.isEmpty()) {
+                typeNames[previousSelection]
+            } else {
+                baseName + " " +
+                    typeNames[previousSelection]
+            }
         if (onlyIfNotEdited && !expected.contentEquals(binding.filename.text)) {
             return
         }

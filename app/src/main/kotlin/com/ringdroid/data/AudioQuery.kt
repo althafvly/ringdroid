@@ -16,6 +16,8 @@ internal class AudioQuery private constructor(
     ): Cursor? = resolver.query(collection, PROJECTION, selection, selectionArgs, MediaStore.Audio.Media.TITLE + " ASC")
 
     companion object {
+        private val SEARCH_COLUMNS = listOf("TITLE", "ARTIST", "ALBUM")
+
         val PROJECTION =
             arrayOf(
                 MediaStore.Audio.Media._ID,
@@ -54,8 +56,8 @@ internal class AudioQuery private constructor(
                 storageRoots.mapTo(args) { "$it/%" }
             }
             if (!filter.isNullOrEmpty()) {
-                selection.insert(0, '(').append(" AND (TITLE LIKE ? OR ARTIST LIKE ? OR ALBUM LIKE ?))")
-                repeat(3) { args.add("%$filter%") }
+                selection.insert(0, '(').append(SEARCH_COLUMNS.joinToString(" OR ", " AND (", "))") { "$it LIKE ?" })
+                repeat(SEARCH_COLUMNS.size) { args.add("%$filter%") }
             }
             return AudioQuery(selection.toString(), args.toTypedArray())
         }

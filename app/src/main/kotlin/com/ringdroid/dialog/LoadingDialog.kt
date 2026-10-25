@@ -17,7 +17,7 @@ internal class LoadingDialog(
     private val dialog: AlertDialog
 
     init {
-        binding.progressBar.max = 100
+        binding.progressBar.max = PROGRESS_MAX
         binding.loadingSubtitle.isVisible = false
         dialog =
             createDialog(context, binding.root).apply { setOnCancelListener { onCancel() } }
@@ -43,8 +43,12 @@ internal class LoadingDialog(
     }
 
     fun setProgress(fraction: Double) {
-        val progress = (fraction * 100).toInt()
+        val progress = (fraction * PROGRESS_MAX).toInt()
         binding.progressBar.progress = progress
         binding.progressPercentageText.text = binding.root.context.getString(R.string.progress_percentage, progress)
+    }
+
+    private companion object {
+        const val PROGRESS_MAX = 100
     }
 }

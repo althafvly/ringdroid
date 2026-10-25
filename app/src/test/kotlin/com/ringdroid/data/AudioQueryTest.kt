@@ -31,6 +31,9 @@ class AudioQueryTest {
 
     @Test
     fun emptyFilterIsIgnored() {
-        assertEquals(AudioQuery.build(true, null, extensions, roots).selection, AudioQuery.build(true, "", extensions, roots).selection)
+        assertEquals(
+            AudioQuery.build(true, null, extensions, roots).selection,
+            AudioQuery.build(true, "", extensions, roots).selection,
+        )
     }
 }

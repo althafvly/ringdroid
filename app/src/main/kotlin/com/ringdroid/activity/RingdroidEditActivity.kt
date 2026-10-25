@@ -6,41 +6,32 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.core.view.isVisible
+import androidx.core.view.doOnLayout
 import com.ringdroid.R
+import com.ringdroid.data.Clip
 import com.ringdroid.data.EditorSelection
 import com.ringdroid.databinding.EditorBinding
-import com.ringdroid.dialog.AmplifyDialog
-import com.ringdroid.soundfile.SamplePlayer
 import com.ringdroid.soundfile.SoundFile
-import com.ringdroid.util.RingdroidUtils
 import com.ringdroid.util.showErrorAlert
 import com.ringdroid.util.showFinalAlert
 import com.ringdroid.view.MarkerLayout
-import com.ringdroid.view.MarkerView
 import com.ringdroid.view.WaveformView
 import com.ringdroid.viewmodel.EditorViewModel
 import com.ringdroid.viewmodel.SaveViewModel
 import java.util.Locale
+import kotlin.math.roundToInt
 
 /**
  * The editor: shows the waveform and the start / end markers, plays the selection and saves it.
  * Positions are in waveform pixels at the current zoom level.
  */
-class RingdroidEditActivity :
-    ComponentActivity(),
-    MarkerView.MarkerListener,
-    WaveformView.WaveformListener {
+class RingdroidEditActivity : ComponentActivity() {
     private val saveFlow = SaveFlow(this, viewModels<SaveViewModel>())
     private val viewModelLazy = viewModels<EditorViewModel>()
     private val viewModel by viewModelLazy
@@ -53,11 +44,14 @@ class RingdroidEditActivity :
                     val title = viewModel.songTitle.orEmpty()
                     val artist = viewModel.songArtist
                     setTitle(if (artist.isNullOrEmpty()) title else "$title - $artist")
-                    updateToolbarTitle()
+                    toolbar.showTitle()
                 }
 
                 override fun onLoaded() {
-                    showNewSound()
+                    val sound = viewModel.soundFile ?: return
+                    showSound(sound, zoomLevel = null)
+                    resetPositions()
+                    updateDisplay()
                 }
 
                 override fun onFatalError(
@@ -73,74 +67,14 @@ class RingdroidEditActivity :
         )
 
     private val handler = Handler(Looper.getMainLooper())
-
-    private val soundFile: SoundFile? get() = viewModel.soundFile
-    private val player: SamplePlayer? get() = viewModel.player
     private val selection: EditorSelection get() = viewModel.selection
 
     private lateinit var binding: EditorBinding
     private lateinit var waveformView: WaveformView
-    private lateinit var startMarker: MarkerView
-    private lateinit var endMarker: MarkerView
-    private lateinit var startText: TextView
-    private lateinit var endText: TextView
-
     private lateinit var markerLayout: MarkerLayout
-    private var lastDisplayedStartPos = -1
-    private var lastDisplayedEndPos = -1
-    private var playStartMsec = 0
-    private var playEndMsec = 0
-    private var isPlaying = false
-    private var waveformTouchStartMsec = 0L
-    private var density = 1f
-
-    private val textWatcher =
-        object : TextWatcher {
-            override fun beforeTextChanged(
-                s: CharSequence,
-                start: Int,
-                count: Int,
-                after: Int,
-            ) {}
-
-            override fun onTextChanged(
-                s: CharSequence,
-                start: Int,
-                before: Int,
-                count: Int,
-            ) {}
-
-            override fun afterTextChanged(s: Editable) {
-                if (!waveformView.isInitialized) {
-                    return
-                }
-                val seconds = s.toString().toDoubleOrNull() ?: return
-                if (startText.hasFocus()) {
-                    selection.startPos = selection.trap(waveformView.secondsToPixels(seconds))
-                    updateDisplay()
-                }
-                if (endText.hasFocus()) {
-                    selection.endPos = selection.trap(waveformView.secondsToPixels(seconds))
-                    updateDisplay()
-                }
-            }
-        }
-
-    // Updating an EditText is slow, so only update the times when they changed.
-    private val timerRunnable: Runnable =
-        object : Runnable {
-            override fun run() {
-                if (selection.startPos != lastDisplayedStartPos && !startText.hasFocus()) {
-                    startText.text = formatTime(selection.startPos)
-                    lastDisplayedStartPos = selection.startPos
-                }
-                if (selection.endPos != lastDisplayedEndPos && !endText.hasFocus()) {
-                    endText.text = formatTime(selection.endPos)
-                    lastDisplayedEndPos = selection.endPos
-                }
-                handler.postDelayed(this, 100)
-            }
-        }
+    private lateinit var labels: PositionLabels
+    private lateinit var playback: EditorPlayback
+    private lateinit var toolbar: EditorToolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -153,7 +87,7 @@ class RingdroidEditActivity :
             return
         }
         loadGui()
-        handler.postDelayed(timerRunnable, 100)
+        labels.start()
         soundLoader.start(data)
         saveFlow.attach()
     }
@@ -165,11 +99,10 @@ class RingdroidEditActivity :
         if (::binding.isInitialized) {
             // The view model keeps the sound; only this editor's views and playback go.
             viewModel.zoomLevel = waveformView.zoomLevel
-            handlePause()
-            player?.onCompletionListener = null
+            playback.release()
             waveformView.listener = null
-            startMarker.listener = null
-            endMarker.listener = null
+            binding.startmarker.listener = null
+            binding.endmarker.listener = null
         }
         super.onDestroy()
     }
@@ -179,331 +112,82 @@ class RingdroidEditActivity :
         event: KeyEvent,
     ): Boolean {
         if (keyCode == KeyEvent.KEYCODE_SPACE) {
-            onPlay(selection.startPos)
+            playback.toggle(selection.startPos)
             return true
         }
         return super.onKeyDown(keyCode, event)
-    }
-
-    // WaveformListener
-
-    /** Each redraw animates the scroll position towards its goal. */
-    override fun waveformDraw() {
-        selection.width = waveformView.measuredWidth
-        if (selection.isAnimating || isPlaying) {
-            updateDisplay()
-        }
-    }
-
-    override fun waveformTouchStart(x: Float) {
-        selection.waveformTouchStart(x)
-        waveformTouchStartMsec = SystemClock.uptimeMillis()
-    }
-
-    override fun waveformTouchMove(x: Float) {
-        selection.waveformTouchMove(x)
-        updateDisplay()
-    }
-
-    override fun waveformTouchEnd() {
-        val tapPos = selection.waveformTouchEnd()
-        if (SystemClock.uptimeMillis() - waveformTouchStartMsec >= 300) {
-            return
-        }
-        // A tap: seek within the playing range, or start playing from there.
-        if (isPlaying) {
-            val seekMsec = waveformView.pixelsToMillisecs(tapPos)
-            if (seekMsec in playStartMsec until playEndMsec) {
-                player?.seekTo(seekMsec)
-            } else {
-                handlePause()
-            }
-        } else {
-            onPlay(tapPos)
-        }
-    }
-
-    override fun waveformFling(x: Float) {
-        selection.fling(x)
-        updateDisplay()
-    }
-
-    override fun waveformZoomIn() {
-        if (waveformView.isInitialized) {
-            waveformView.zoomIn()
-            syncZoom()
-        }
-    }
-
-    override fun waveformZoomOut() {
-        if (waveformView.isInitialized) {
-            waveformView.zoomOut()
-            syncZoom()
-        }
-    }
-
-    private fun syncZoom() {
-        selection.syncZoom(waveformView.selectionStart, waveformView.selectionEnd, waveformView.maxPos(), waveformView.offset)
-        updateDisplay()
-    }
-
-    // MarkerListener
-
-    override fun markerDraw() {}
-
-    override fun markerTouchStart(
-        marker: MarkerView,
-        pos: Float,
-    ) = selection.markerTouchStart(pos)
-
-    override fun markerTouchMove(
-        marker: MarkerView,
-        pos: Float,
-    ) {
-        selection.markerTouchMove(marker === startMarker, pos)
-        updateDisplay()
-    }
-
-    override fun markerTouchEnd(marker: MarkerView) {
-        selection.markerTouchEnd(marker === startMarker)
-        updateDisplay()
-    }
-
-    override fun markerLeft(
-        marker: MarkerView,
-        velocity: Int,
-    ) {
-        selection.nudgeLeft(marker === startMarker, velocity)
-        updateDisplay()
-    }
-
-    override fun markerRight(
-        marker: MarkerView,
-        velocity: Int,
-    ) {
-        selection.nudgeRight(marker === startMarker, velocity)
-        updateDisplay()
-    }
-
-    override fun markerEnter(marker: MarkerView) {}
-
-    override fun markerKeyUp() {
-        selection.keyUp()
-        updateDisplay()
-    }
-
-    override fun markerFocus(marker: MarkerView) {
-        selection.focusMarker(marker === startMarker)
-        // Delay so that a touch causing the focus is handled first.
-        handler.postDelayed({ updateDisplay() }, 100)
     }
 
     /** Builds the layout, restoring the sound, zoom and selection kept by the view model. */
     private fun loadGui() {
         binding = EditorBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val toolbar = binding.editorToolbar
-        RingdroidUtils.applyStatusBarInsets(toolbar.toolbarContainer)
-        toolbar.btnBack.setOnClickListener { finish() }
-        toolbar.btnAmplify.setOnClickListener { AmplifyDialog.show(this, viewModel.amplifyFactor) { viewModel.amplifyFactor = it } }
-        toolbar.btnReset.setOnClickListener {
-            resetPositions()
-            selection.scrollToStart()
-            updateDisplay()
-        }
-        toolbar.btnSave.setOnClickListener { onSave() }
-        updateToolbarTitle()
-
-        density = resources.displayMetrics.density
-
-        startText = binding.starttext
-        startText.addTextChangedListener(textWatcher)
-        endText = binding.endtext
-        endText.addTextChangedListener(textWatcher)
-
-        binding.play.setOnClickListener { onPlay(selection.startPos) }
-        binding.rew.setOnClickListener {
-            val p = player
-            if (isPlaying && p != null) {
-                p.seekTo(maxOf(p.currentPosition - 5000, playStartMsec))
-            } else {
-                startMarker.requestFocus()
-                markerFocus(startMarker)
-            }
-        }
-        binding.ffwd.setOnClickListener {
-            val p = player
-            if (isPlaying && p != null) {
-                p.seekTo(minOf(p.currentPosition + 5000, playEndMsec))
-            } else {
-                endMarker.requestFocus()
-                markerFocus(endMarker)
-            }
-        }
-        binding.zoomIn.setOnClickListener {
-            waveformZoomIn()
-            waveformFling(1f)
-        }
-        binding.zoomOut.setOnClickListener {
-            waveformZoomOut()
-            waveformFling(1f)
-        }
-        binding.markStart.setOnClickListener {
-            val p = player
-            if (isPlaying && p != null) {
-                selection.startPos = waveformView.millisecsToPixels(p.currentPosition)
+        toolbar =
+            EditorToolbar(binding.editorToolbar, this, viewModel, onReset = {
+                resetPositions()
+                selection.scroll.scrollToStart()
                 updateDisplay()
-            }
-        }
-        binding.markEnd.setOnClickListener {
-            val p = player
-            if (isPlaying && p != null) {
-                selection.endPos = waveformView.millisecsToPixels(p.currentPosition)
-                updateDisplay()
-                handlePause()
-            }
-        }
-        enableDisableButtons()
+            }, onSave = ::onSave)
 
         waveformView = binding.waveform
-        waveformView.listener = this
-        lastDisplayedStartPos = -1
-        lastDisplayedEndPos = -1
-        soundFile?.let { sound ->
-            waveformView.setSoundFile(sound)
-            viewModel.zoomLevel?.let { waveformView.zoomLevel = it }
-            waveformView.recomputeHeights(density)
-            selection.maxPos = waveformView.maxPos()
-            binding.info.text = caption(sound)
+        val markerInput = MarkerInput(selection, binding.startmarker, handler, ::updateDisplay)
+        playback =
+            EditorPlayback(binding, viewModel, markerInput, ::updateDisplay) {
+                closeWithError(it, getText(R.string.play_error))
+            }
+        labels = PositionLabels(binding, selection, handler, ::updateDisplay)
+        val waveformInput = WaveformInput(selection, waveformView, playback, ::updateDisplay)
+        waveformView.listener = waveformInput
+        binding.zoomIn.setOnClickListener {
+            waveformInput.waveformZoomIn()
+            waveformInput.waveformFling(1f)
         }
+        binding.zoomOut.setOnClickListener {
+            waveformInput.waveformZoomOut()
+            waveformInput.waveformFling(1f)
+        }
+        viewModel.soundFile?.let { showSound(it, viewModel.zoomLevel) }
 
-        startMarker = binding.startmarker
-        endMarker = binding.endmarker
-        for (marker in listOf(startMarker, endMarker)) {
-            marker.listener = this
+        for (marker in listOf(binding.startmarker, binding.endmarker)) {
+            marker.listener = markerInput
             marker.isFocusable = true
             marker.isFocusableInTouchMode = true
         }
-        markerLayout = MarkerLayout(startMarker, endMarker, waveformView, density)
-        updateDisplay()
+        markerLayout =
+            MarkerLayout(binding.startmarker, binding.endmarker, waveformView, resources.displayMetrics.density)
+        // The markers are placed relative to the waveform's size, which is only known after layout.
+        waveformView.doOnLayout { it.post(::updateDisplay) }
     }
 
-    private fun updateToolbarTitle() {
-        val toolbar = binding.editorToolbar
-        val title = viewModel.songTitle
-        val artist = viewModel.songArtist
-        if (title.isNullOrEmpty()) {
-            toolbar.toolbarTitle.setText(R.string.edit_intent)
-            toolbar.toolbarSubtitle.isVisible = false
-        } else {
-            toolbar.toolbarTitle.text = title
-            toolbar.toolbarSubtitle.text = artist
-            toolbar.toolbarSubtitle.isVisible = !artist.isNullOrEmpty()
-        }
-    }
-
-    /** Shows a newly loaded sound with the default selection. */
-    private fun showNewSound() {
-        val sound = soundFile ?: return
+    /** Shows [sound] at [zoomLevel], or at the zoom level that fits its length. */
+    private fun showSound(
+        sound: SoundFile,
+        zoomLevel: Int?,
+    ) {
         waveformView.setSoundFile(sound)
-        waveformView.recomputeHeights(density)
-        selection.maxPos = waveformView.maxPos()
-        lastDisplayedStartPos = -1
-        lastDisplayedEndPos = -1
-        resetPositions()
-        binding.info.text = caption(sound)
-        updateDisplay()
+        zoomLevel?.let { waveformView.zoomLevel = it }
+        waveformView.density = resources.displayMetrics.density
+        selection.scroll.maxPos = waveformView.maxPos
+        labels.invalidate()
+        val seconds = "%.2f".format(Locale.US, sound.numSamples.toDouble() / sound.sampleRate)
+        val caption =
+            "${sound.filetype}, ${sound.sampleRate} Hz, ${sound.avgBitrateKbps} kbps, $seconds " +
+                getString(R.string.time_seconds)
+        binding.info.text = caption
     }
-
-    private fun caption(sound: SoundFile) =
-        sound.filetype + ", " + sound.sampleRate + " Hz, " + sound.avgBitrateKbps + " kbps, " +
-            "%.2f".format(Locale.US, sound.numSamples.toDouble() / sound.sampleRate) + " " + getString(R.string.time_seconds)
 
     private fun updateDisplay() {
-        val p = player
-        if (isPlaying && p != null) {
-            val now = p.currentPosition
-            val playbackPos = waveformView.millisecsToPixels(now)
-            waveformView.setPlayback(playbackPos)
-            selection.scrollToCenter(playbackPos)
-            if (now >= playEndMsec) {
-                handlePause()
-            }
-        }
-        selection.step()
-        val startPos = selection.startPos
-        val endPos = selection.endPos
-        val offset = selection.offset
-        waveformView.setParameters(startPos, endPos, offset)
+        playback.update()
+        val scroll = selection.scroll
+        scroll.step()
+        waveformView.setSelection(selection.startPos, selection.endPos, scroll.offset)
         waveformView.invalidate()
-
-        if (startPos != lastDisplayedStartPos) {
-            startMarker.contentDescription = getString(R.string.start_marker) + " " + formatTime(startPos)
-        }
-        if (endPos != lastDisplayedEndPos) {
-            endMarker.contentDescription = getString(R.string.end_marker) + " " + formatTime(endPos)
-        }
-
-        markerLayout.place(startPos, endPos, offset)
-    }
-
-    private fun enableDisableButtons() {
-        if (isPlaying) {
-            binding.play.setImageResource(R.drawable.baseline_pause_24)
-            binding.play.contentDescription = getText(R.string.stop)
-        } else {
-            binding.play.setImageResource(R.drawable.baseline_play_arrow_24)
-            binding.play.contentDescription = getText(R.string.play)
-        }
+        markerLayout.place(selection.startPos, selection.endPos, scroll.offset)
     }
 
     private fun resetPositions() {
-        selection.reset(waveformView.secondsToPixels(0.0), waveformView.secondsToPixels(15.0))
-    }
-
-    private fun formatTime(pixels: Int): String =
-        if (::waveformView.isInitialized && waveformView.isInitialized) {
-            "%.2f".format(Locale.US, waveformView.pixelsToSeconds(pixels))
-        } else {
-            ""
-        }
-
-    private fun handlePause() {
-        player?.let { if (it.isPlaying) it.pause() }
-        waveformView.setPlayback(-1)
-        isPlaying = false
-        enableDisableButtons()
-    }
-
-    private fun onPlay(startPosition: Int) {
-        if (isPlaying) {
-            handlePause()
-            return
-        }
-        val p = player ?: return // Not loaded yet.
-        try {
-            playStartMsec = waveformView.pixelsToMillisecs(startPosition)
-            // Play to the start marker, the end marker or the end of the file.
-            playEndMsec =
-                waveformView.pixelsToMillisecs(
-                    when {
-                        startPosition < selection.startPos -> selection.startPos
-                        startPosition > selection.endPos -> selection.maxPos
-                        else -> selection.endPos
-                    },
-                )
-            p.onCompletionListener = { handlePause() }
-            isPlaying = true
-            p.seekTo(playStartMsec)
-            p.start()
-            updateDisplay()
-            enableDisableButtons()
-        } catch (e: IllegalStateException) {
-            closeWithError(e, getText(R.string.play_error))
-        } catch (e: IllegalArgumentException) {
-            closeWithError(e, getText(R.string.play_error))
-        }
+        val scale = waveformView.scale
+        selection.reset(scale.secondsToPixels(0.0), scale.secondsToPixels(DEFAULT_SELECTION_SECONDS))
     }
 
     /** Shows an error that closes the editor when dismissed. The cause, if any, is logged. */
@@ -517,20 +201,25 @@ class RingdroidEditActivity :
     }
 
     private fun onSave() {
-        if (isPlaying) {
-            handlePause()
+        if (playback.isPlaying) {
+            playback.pause()
         }
-        val loaded = soundFile ?: return
+        val loaded = viewModel.soundFile ?: return
         if (selection.endPos <= selection.startPos) {
             showErrorAlert(this, R.string.too_small_error)
             return
         }
-        val startTime = waveformView.pixelsToSeconds(selection.startPos)
-        val endTime = waveformView.pixelsToSeconds(selection.endPos)
-        val startFrame = waveformView.secondsToFrames(startTime)
-        val endFrame = waveformView.secondsToFrames(endTime)
-        val durationMs = ((endTime - startTime) * 1000 + 0.5).toInt()
-        saveFlow.start(loaded, viewModel.songTitle, viewModel.amplifyFactor, startFrame, endFrame - startFrame, durationMs)
+        val scale = waveformView.scale
+        val startTime = scale.pixelsToSeconds(selection.startPos)
+        val endTime = scale.pixelsToSeconds(selection.endPos)
+        val startFrame = scale.secondsToFrames(startTime)
+        val clip =
+            Clip(
+                startFrame,
+                scale.secondsToFrames(endTime) - startFrame,
+                ((endTime - startTime) * MILLIS_PER_SECOND).roundToInt(),
+            )
+        saveFlow.start(loaded, viewModel.songTitle, viewModel.amplifyFactor, clip)
     }
 
     companion object {
@@ -552,5 +241,7 @@ class RingdroidEditActivity :
 
         private const val TAG = "RingdroidEditActivity"
         private const val MAX_INFO_LENGTH = 5000
+        private const val DEFAULT_SELECTION_SECONDS = 15.0
+        private const val MILLIS_PER_SECOND = 1000
     }
 }

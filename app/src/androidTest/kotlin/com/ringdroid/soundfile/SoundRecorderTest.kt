@@ -32,7 +32,9 @@ class SoundRecorderTest {
         val packageName = instrumentation.targetContext.packageName
         ParcelFileDescriptor
             .AutoCloseInputStream(
-                instrumentation.uiAutomation.executeShellCommand("pm grant $packageName android.permission.RECORD_AUDIO"),
+                instrumentation.uiAutomation.executeShellCommand(
+                    "pm grant $packageName android.permission.RECORD_AUDIO",
+                ),
             ).use { it.readBytes() }
 
         val soundFile = SoundRecorder.record { seconds -> seconds >= 0.5 }

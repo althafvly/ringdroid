@@ -20,11 +20,11 @@ class SoundFileWriter(
     private val gain: Float,
 ) {
     private val decodedBytes: ByteBuffer =
-        soundFile.getDecodedBytes() ?: throw IllegalStateException("Sound file has no decoded samples")
+        soundFile.getDecodedBytes() ?: error("Sound file has no decoded samples")
     private val sampleRate = soundFile.sampleRate
     private val channels = soundFile.channels
     private val samplesPerFrame = soundFile.samplesPerFrame
-    private val bytesPerFrame = channels * 2
+    private val bytesPerFrame = channels * Short.SIZE_BYTES
 
     fun writeM4A(
         outputFile: File,
@@ -41,7 +41,9 @@ class SoundFileWriter(
         startFrame: Int,
         numFrames: Int,
     ) {
-        val pfd = context.contentResolver.openFileDescriptor(outputUri, "rw") ?: throw IOException("Cannot open MediaStore output")
+        val pfd =
+            context.contentResolver.openFileDescriptor(outputUri, "rw")
+                ?: throw IOException("Cannot open MediaStore output")
         pfd.use {
             writeAAC(MediaMuxer(it.fileDescriptor, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4), startFrame, numFrames)
         }
@@ -61,7 +63,9 @@ class SoundFileWriter(
         startFrame: Int,
         numFrames: Int,
     ) {
-        val out = context.contentResolver.openOutputStream(outputUri) ?: throw IOException("Cannot open MediaStore output stream")
+        val out =
+            context.contentResolver.openOutputStream(outputUri)
+                ?: throw IOException("Cannot open MediaStore output stream")
         writeWAVData(out, startFrame, numFrames)
     }
 
@@ -104,10 +108,10 @@ class SoundFileWriter(
         length: Int,
     ) {
         for (i in 0 until length step 2) {
-            val sample = ((buffer[i].toInt() and 0xFF) or (buffer[i + 1].toInt() shl 8)).toShort()
+            val sample = ((buffer[i].toInt() and BYTE_MASK) or (buffer[i + 1].toInt() shl Byte.SIZE_BITS)).toShort()
             val scaled = (sample * gain).roundToInt().coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
             buffer[i] = scaled.toByte()
-            buffer[i + 1] = (scaled shr 8).toByte()
+            buffer[i + 1] = (scaled shr Byte.SIZE_BITS).toByte()
         }
     }
 
@@ -120,64 +124,13 @@ class SoundFileWriter(
         var codec: MediaCodec? = null
         try {
             // Two extra AAC frames make up for the encoder priming delay.
-            var samplesLeft = seekToRange(startFrame, numFrames) + 2 * AAC_FRAME_SAMPLES
+            val samples = seekToRange(startFrame, numFrames) + 2 * AacEncoder.FRAME_SAMPLES
             codec = MediaCodec.createEncoderByType(mimeType)
             val format = MediaFormat.createAudioFormat(mimeType, sampleRate, channels)
-            format.setInteger(MediaFormat.KEY_BIT_RATE, 64000 * channels)
+            format.setInteger(MediaFormat.KEY_BIT_RATE, BIT_RATE_PER_CHANNEL * channels)
             codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
             codec.start()
-
-            val buffer = ByteArray(AAC_FRAME_SAMPLES * bytesPerFrame)
-            var samplesQueued = 0L
-            var doneReading = false
-            var track = -1
-            val info = MediaCodec.BufferInfo()
-            while (true) {
-                if (!doneReading) {
-                    val inputIndex = codec.dequeueInputBuffer(100)
-                    if (inputIndex >= 0) {
-                        val inputBuffer = codec.getInputBuffer(inputIndex)
-                        // Queue whole sample frames only, however large the input buffer is.
-                        val length =
-                            if (inputBuffer == null) {
-                                0
-                            } else {
-                                minOf(buffer.size, inputBuffer.capacity(), samplesLeft * bytesPerFrame) / bytesPerFrame * bytesPerFrame
-                            }
-                        if (length == 0) {
-                            codec.queueInputBuffer(inputIndex, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
-                            doneReading = true
-                        } else {
-                            inputBuffer!!.clear()
-                            readPadded(buffer, length)
-                            inputBuffer.put(buffer, 0, length)
-                            val presentationTimeUs = samplesQueued * 1_000_000L / sampleRate
-                            codec.queueInputBuffer(inputIndex, 0, length, presentationTimeUs, 0)
-                            samplesQueued += length / bytesPerFrame
-                            samplesLeft -= length / bytesPerFrame
-                        }
-                    }
-                }
-
-                val outputIndex = codec.dequeueOutputBuffer(info, 100)
-                if (outputIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
-                    track = muxer.addTrack(codec.outputFormat)
-                    muxer.start()
-                } else if (outputIndex >= 0) {
-                    val outputBuffer = codec.getOutputBuffer(outputIndex)
-                    val isConfig = info.flags and MediaCodec.BUFFER_FLAG_CODEC_CONFIG != 0
-                    if (outputBuffer != null && track >= 0 && info.size > 0 && !isConfig) {
-                        muxer.writeSampleData(track, outputBuffer, info)
-                    }
-                    codec.releaseOutputBuffer(outputIndex, false)
-                    if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) {
-                        break
-                    }
-                }
-            }
-            if (track < 0) {
-                throw IOException("Encoder produced no output")
-            }
+            AacEncoder(codec, muxer, bytesPerFrame, sampleRate, samples, ::readPadded).run()
             codec.stop()
             muxer.stop()
         } finally {
@@ -194,7 +147,7 @@ class SoundFileWriter(
         outputStream.use { out ->
             val numSamples = seekToRange(startFrame, numFrames)
             out.write(WAVHeader.getWAVHeader(sampleRate, channels, numSamples))
-            val buffer = ByteArray(1024 * bytesPerFrame)
+            val buffer = ByteArray(WAV_CHUNK_SAMPLES * bytesPerFrame)
             var bytesLeft = numSamples * bytesPerFrame
             while (bytesLeft > 0) {
                 val length = minOf(buffer.size, bytesLeft)
@@ -206,6 +159,8 @@ class SoundFileWriter(
     }
 
     private companion object {
-        const val AAC_FRAME_SAMPLES = 1024
+        const val BIT_RATE_PER_CHANNEL = 64000
+        const val BYTE_MASK = 0xFF
+        const val WAV_CHUNK_SAMPLES = 1024
     }
 }

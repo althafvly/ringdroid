@@ -42,7 +42,15 @@ class SoundFileTest {
 
     @Test
     fun filenameSupport() {
-        for (name in listOf("audio.wav", "music.mp3", "track.m4a", "track.flac", "track.opus", "track.wma", "track.mkv")) {
+        for (name in listOf(
+            "audio.wav",
+            "music.mp3",
+            "track.m4a",
+            "track.flac",
+            "track.opus",
+            "track.wma",
+            "track.mkv",
+        )) {
             assertTrue(name, SoundFile.isFilenameSupported(name))
         }
         assertFalse(SoundFile.isFilenameSupported("image.jpg"))
@@ -133,5 +141,6 @@ class SoundFileTest {
         assertFalse(File(outDir, own.first()).exists())
     }
 
-    private fun pcmFileNames(): Set<String> = outDir.list { _, name -> name.startsWith("ringdroid_pcm_") }.orEmpty().toSet()
+    private fun pcmFileNames(): Set<String> =
+        outDir.list { _, name -> name.startsWith("ringdroid_pcm_") }.orEmpty().toSet()
 }

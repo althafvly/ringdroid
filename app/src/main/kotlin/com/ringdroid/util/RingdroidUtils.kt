@@ -1,5 +1,6 @@
 package com.ringdroid.util
 
+import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.os.Build
@@ -94,44 +95,31 @@ object RingdroidUtils {
         uri: Uri?,
     ): File? {
         if (context == null || uri == null) return null
-        if ("file".equals(uri.scheme, ignoreCase = true)) {
-            return uri.path?.let { File(it) }
+        return if ("file".equals(uri.scheme, ignoreCase = true)) {
+            uri.path?.let { File(it) }
+        } else {
+            mediaStoreFile(context.contentResolver, uri) ?: copyToCache(context, uri)
         }
+    }
+
+    // Only MediaStore is trusted to report a real file path.
+    private fun mediaStoreFile(
+        resolver: ContentResolver,
+        uri: Uri,
+    ): File? =
+        queryString(resolver, uri.takeIf { it.authority == MediaStore.AUTHORITY }, MediaStore.MediaColumns.DATA)
+            ?.let { File(it) }
+            ?.takeIf { it.exists() && it.canRead() }
+
+    // Copies [uri] into the cache, keeping only the latest shared copy.
+    private fun copyToCache(
+        context: Context,
+        uri: Uri,
+    ): File? {
         val resolver = context.contentResolver
-
-        // Only MediaStore is trusted to report a real file path.
-        if (uri.authority == MediaStore.AUTHORITY) {
-            try {
-                resolver.query(uri, arrayOf(MediaStore.MediaColumns.DATA), null, null, null)?.use { cursor ->
-                    val idx = cursor.getColumnIndex(MediaStore.MediaColumns.DATA)
-                    if (cursor.moveToFirst() && idx >= 0) {
-                        val file = cursor.getString(idx)?.let { File(it) }
-                        if (file != null && file.exists() && file.canRead()) {
-                            return file
-                        }
-                    }
-                }
-            } catch (ignored: SecurityException) {
-            } catch (ignored: IllegalArgumentException) {
-            }
-        }
-
-        var fileName = "shared_audio"
-        try {
-            resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
-                val idx = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                if (cursor.moveToFirst() && idx >= 0) {
-                    fileName = toSafeFileName(cursor.getString(idx), fileName)
-                }
-            }
-        } catch (ignored: SecurityException) {
-        } catch (ignored: IllegalArgumentException) {
-        }
+        var fileName = toSafeFileName(queryString(resolver, uri, OpenableColumns.DISPLAY_NAME), "shared_audio")
         if (!fileName.contains('.')) {
-            val extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(resolver.getType(uri))
-            if (extension != null) {
-                fileName += ".$extension"
-            }
+            MimeTypeMap.getSingleton().getExtensionFromMimeType(resolver.getType(uri))?.let { fileName += ".$it" }
         }
 
         val sharedDir = File(context.cacheDir, "shared")
@@ -139,9 +127,10 @@ object RingdroidUtils {
         sharedDir.mkdirs()
         val cacheFile = File(sharedDir, fileName)
         return try {
-            val input = resolver.openInputStream(uri) ?: return null
-            input.use { inp -> FileOutputStream(cacheFile).use { out -> inp.copyTo(out) } }
-            cacheFile
+            resolver.openInputStream(uri)?.use { input ->
+                FileOutputStream(cacheFile).use { input.copyTo(it) }
+                cacheFile
+            }
         } catch (e: IOException) {
             Log.e(TAG, "Failed to copy content URI to cache: $uri", e)
             null
@@ -150,4 +139,21 @@ object RingdroidUtils {
             null
         }
     }
+
+    // The first row's value of [column], or null.
+    private fun queryString(
+        resolver: ContentResolver,
+        uri: Uri?,
+        column: String,
+    ): String? =
+        try {
+            uri?.let { resolver.query(it, arrayOf(column), null, null, null) }?.use { cursor ->
+                val idx = cursor.getColumnIndex(column)
+                if (cursor.moveToFirst() && idx >= 0) cursor.getString(idx) else null
+            }
+        } catch (ignored: SecurityException) {
+            null
+        } catch (ignored: IllegalArgumentException) {
+            null
+        }
 }
