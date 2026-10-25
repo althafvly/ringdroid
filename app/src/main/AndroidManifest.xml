@@ -59,7 +59,7 @@
 
         <!-- Main activity that's launched when the user opens Ringdroid. -->
         <activity
-            android:name=".select.RingdroidSelectActivity"
+            android:name=".activity.RingdroidSelectActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:exported="true"
             android:label="@string/main_activity_label">
@@ -80,7 +80,7 @@
         <activity-alias
             android:name=".RingdroidSelectActivity"
             android:exported="true"
-            android:targetActivity=".select.RingdroidSelectActivity">
+            android:targetActivity=".activity.RingdroidSelectActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -92,7 +92,7 @@
         positions, playback, and triggering saving of the output
         file. -->
         <activity
-            android:name=".editor.RingdroidEditActivity"
+            android:name=".activity.RingdroidEditActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|uiMode|keyboard|keyboardHidden|navigation|density|fontScale|locale|layoutDirection"
             android:exported="true"
             android:hardwareAccelerated="true"
