@@ -46,9 +46,12 @@ object TestAudio {
         return soundFile!!
     }
 
-    /** Copies the bundled test_audio.wav (1 s of mono audio at 44.1 kHz) to [file]. */
-    fun copyAsset(file: File): File {
-        InstrumentationRegistry.getInstrumentation().context.assets.open("test_audio.wav").use { input ->
+    /** Copies the bundled test_audio.wav (1 s of mono audio at 44.1 kHz) or another asset to [file]. */
+    fun copyAsset(
+        file: File,
+        asset: String = "test_audio.wav",
+    ): File {
+        InstrumentationRegistry.getInstrumentation().context.assets.open(asset).use { input ->
             FileOutputStream(file).use { input.copyTo(it) }
         }
         return file

@@ -1,19 +1,15 @@
 package com.ringdroid.data
 
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
-import android.os.ParcelFileDescriptor
-import android.os.SystemClock
 import android.provider.MediaStore
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.ringdroid.dialog.FileSaveDialog
 import com.ringdroid.soundfile.SoundFile
 import com.ringdroid.soundfile.TestAudio
+import com.ringdroid.testing.TestPermissions
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -31,21 +27,7 @@ class RingtoneSaverTest {
 
     @Before
     fun setUp() {
-        // Before Android 10 the saver writes shared storage itself, which needs both storage
-        // permissions; the grant reaches this process asynchronously.
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            val uiAutomation = InstrumentationRegistry.getInstrumentation().uiAutomation
-            for (permission in listOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE)) {
-                ParcelFileDescriptor
-                    .AutoCloseInputStream(
-                        uiAutomation.executeShellCommand("pm grant ${context.packageName} $permission"),
-                    ).use { it.readBytes() }
-            }
-            val deadline = SystemClock.uptimeMillis() + GRANT_TIMEOUT_MS
-            while (!Environment.getExternalStorageDirectory().canWrite() && SystemClock.uptimeMillis() < deadline) {
-                SystemClock.sleep(GRANT_POLL_MS)
-            }
-        }
+        TestPermissions.grantStorage()
         input = TestAudio.writeWav(File(context.cacheDir, "saver_input.wav"), 1, TestAudio.ramp(TestAudio.SAMPLE_RATE))
         soundFile = TestAudio.load(input)
     }
@@ -113,10 +95,5 @@ class RingtoneSaverTest {
             assertNotNull(pfd)
             assertTrue(pfd!!.statSize > 512)
         }
-    }
-
-    private companion object {
-        const val GRANT_TIMEOUT_MS = 5000L
-        const val GRANT_POLL_MS = 100L
     }
 }

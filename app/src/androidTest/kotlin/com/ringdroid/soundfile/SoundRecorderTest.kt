@@ -1,8 +1,8 @@
 package com.ringdroid.soundfile
 
-import android.os.ParcelFileDescriptor
+import android.Manifest
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
+import com.ringdroid.testing.TestPermissions
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -28,14 +28,7 @@ class SoundRecorderTest {
 
     @Test
     fun recordsMonoAudio() {
-        val instrumentation = InstrumentationRegistry.getInstrumentation()
-        val packageName = instrumentation.targetContext.packageName
-        ParcelFileDescriptor
-            .AutoCloseInputStream(
-                instrumentation.uiAutomation.executeShellCommand(
-                    "pm grant $packageName android.permission.RECORD_AUDIO",
-                ),
-            ).use { it.readBytes() }
+        TestPermissions.grant(Manifest.permission.RECORD_AUDIO)
 
         val soundFile = SoundRecorder.record { seconds -> seconds >= 0.5 }
         assertNotNull(soundFile)

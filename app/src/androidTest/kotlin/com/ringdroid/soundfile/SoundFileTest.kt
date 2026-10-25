@@ -79,6 +79,20 @@ class SoundFileTest {
     }
 
     @Test
+    fun decodesOggVorbis() {
+        val ogg = TestAudio.copyAsset(File(outDir, "test_audio.ogg"), "test_audio.ogg")
+        val soundFile = SoundFile.create(outDir, ogg.absolutePath) { false }!!
+        try {
+            assertEquals("ogg", soundFile.filetype)
+            assertTrue(soundFile.numSamples > 0)
+            assertNotNull(soundFile.frameGains)
+        } finally {
+            soundFile.release()
+            ogg.delete()
+        }
+    }
+
+    @Test
     fun decodesValidFile() {
         val soundFile = SoundFile.create(outDir, testWavFile.absolutePath) { false }!!
         assertEquals("wav", soundFile.filetype)
