@@ -94,3 +94,8 @@ kotlin {
         )
     }
 }
+
+configurations.configureEach {
+    // Baseline profiles barely help an app this small.
+    exclude(group = "androidx.profileinstaller")
+}
