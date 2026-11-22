@@ -41,6 +41,20 @@ class SamplePlayerTest {
         }
     }
 
+    @Test
+    fun seekBeforeStartIsClamped() {
+        val numSamples = SAMPLE_RATE / 10
+        val player = SamplePlayer(ShortBuffer.allocate(numSamples), SAMPLE_RATE, 1, numSamples)
+        try {
+            player.seekTo(-500)
+            player.start()
+            player.stop()
+            assertTrue(player.currentPosition >= 0)
+        } finally {
+            player.release()
+        }
+    }
+
     private companion object {
         const val SAMPLE_RATE = 44100
     }

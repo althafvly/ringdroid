@@ -135,7 +135,8 @@ internal class SamplePlayer(
     fun seekTo(msec: Int) {
         val wasPlaying = isPlaying
         stop()
-        playbackStart = minOf((msec * (sampleRate / MILLIS_PER_SECOND)).toInt(), numSamples)
+        playbackStart =
+            (msec * (sampleRate / MILLIS_PER_SECOND)).toInt().coerceIn(0, numSamples)
         audioTrack.setNotificationMarkerPosition(numSamples - 1 - playbackStart)
         if (wasPlaying) {
             start()
