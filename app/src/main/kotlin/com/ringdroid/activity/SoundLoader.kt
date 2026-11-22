@@ -57,7 +57,7 @@ internal class SoundLoader(
                 viewModel.load(data)
             }
         }
-        showDialog()
+        activity.window.decorView.post { showDialog() }
     }
 
     /** Disconnects from the view model; a finishing editor also cancels the job. */
