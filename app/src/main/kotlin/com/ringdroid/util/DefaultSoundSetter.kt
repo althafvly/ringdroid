@@ -27,9 +27,10 @@ class DefaultSoundSetter(
                     val uri = pending.uri ?: return
                     pending.uri = null
                     if (PermissionUtils.hasWriteSettingsPermission(activity)) {
-                        apply(pending.type, uri)
+                        apply(pending.type, uri, onDone)
+                    } else {
+                        onDone()
                     }
-                    onDone()
                 }
             },
         )
@@ -38,8 +39,7 @@ class DefaultSoundSetter(
     /** [type] is RingtoneManager.TYPE_RINGTONE or TYPE_NOTIFICATION. */
     fun set(type: Int, uri: Uri) {
         if (PermissionUtils.hasWriteSettingsPermission(activity)) {
-            apply(type, uri)
-            onDone()
+            apply(type, uri, onDone)
             return
         }
         pending.type = type
@@ -53,18 +53,28 @@ class DefaultSoundSetter(
         PermissionUtils.requestWriteSettingsPermission(activity)
     }
 
-    private fun apply(type: Int, uri: Uri) {
-        val error =
-            try {
-                RingtoneManager.setActualDefaultRingtoneUri(activity, type, uri)
-                null
-            } catch (e: IllegalArgumentException) {
-                e
-            } catch (e: SecurityException) {
-                e
-            } catch (e: IllegalStateException) {
-                e
+    // Writing system settings is a slow binder call, so it runs off the main thread.
+    private fun apply(type: Int, uri: Uri, then: () -> Unit) {
+        RingdroidUtils.BACKGROUND.execute {
+            val error: Exception? =
+                try {
+                    RingtoneManager.setActualDefaultRingtoneUri(activity, type, uri)
+                    null
+                } catch (e: IllegalArgumentException) {
+                    e
+                } catch (e: SecurityException) {
+                    e
+                } catch (e: IllegalStateException) {
+                    e
+                }
+            activity.runOnUiThread {
+                showResult(type, error)
+                then()
             }
+        }
+    }
+
+    private fun showResult(type: Int, error: Exception?) {
         if (error != null) {
             Log.e(TAG, "Failed to set default sound", error)
             Toast
