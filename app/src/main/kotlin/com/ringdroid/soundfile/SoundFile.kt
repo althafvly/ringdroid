@@ -82,18 +82,7 @@ class SoundFile private constructor() {
             codec.start()
 
             // The container duration only sizes the initial buffer; decoding runs to end of stream.
-            val durationUs =
-                if (format.containsKey(
-                        MediaFormat.KEY_DURATION,
-                    )
-                ) {
-                    format.getLong(MediaFormat.KEY_DURATION)
-                } else {
-                    0L
-                }
-            val expectedBytes =
-                durationUs * sampleRate / MICROS_PER_SECOND * channels * Short.SIZE_BYTES
-            val pcm = PcmFile.create(cacheDir, maxOf(expectedBytes, MIN_PCM_BYTES))
+            val pcm = PcmFile.create(cacheDir)
             pcmFile = pcm
             val decoder =
                 AudioDecoder(extractor, codec, mime == AAC_MIME, fileSize, progressListener, pcm)
@@ -102,7 +91,7 @@ class SoundFile private constructor() {
                     sampleRate = it.getInteger(MediaFormat.KEY_SAMPLE_RATE)
                     channels = it.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
                 }
-                useDecoded(pcm.buffer, fileSize)
+                useDecoded(pcm.mapWritten(), fileSize)
             }
         } finally {
             if (codec != null) {
@@ -117,7 +106,7 @@ class SoundFile private constructor() {
     }
 
     private fun useDecoded(output: ByteBuffer, fileSize: Long) {
-        numSamples = output.position() / (channels * Short.SIZE_BYTES)
+        numSamples = output.limit() / (channels * Short.SIZE_BYTES)
         output.rewind()
         output.order(ByteOrder.LITTLE_ENDIAN)
         decodedBytes = output
@@ -159,8 +148,6 @@ class SoundFile private constructor() {
     companion object {
         private const val SAMPLES_PER_FRAME = 1024
         private const val AAC_MIME = "audio/mp4a-latm"
-        private const val MICROS_PER_SECOND = 1_000_000L
-        private const val MIN_PCM_BYTES = 1L shl 20
         private const val BITS_PER_KILOBIT = 1000
         private val SUPPORTED_EXTENSIONS =
             arrayOf(

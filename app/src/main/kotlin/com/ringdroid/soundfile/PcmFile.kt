@@ -4,29 +4,23 @@ import android.util.Log
 import java.io.File
 import java.io.IOException
 import java.io.RandomAccessFile
+import java.nio.ByteBuffer
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 
-/** A temporary file holding decoded PCM, memory-mapped and grown as decoding needs more room. */
-internal class PcmFile private constructor(private val file: File, initialSize: Long) {
+internal class PcmFile private constructor(private val file: File) {
     private val raf = RandomAccessFile(file, "rw")
+    private val channel: FileChannel = raf.channel
+    private var written = 0L
 
-    var buffer: MappedByteBuffer
-        private set
-
-    init {
-        raf.setLength(initialSize)
-        buffer = raf.channel.map(FileChannel.MapMode.READ_WRITE, 0, initialSize)
+    fun append(bytes: ByteArray, length: Int) {
+        val buffer = ByteBuffer.wrap(bytes, 0, length)
+        while (buffer.hasRemaining()) {
+            written += channel.write(buffer, written)
+        }
     }
 
-    /** Grows the file to [newSize] bytes and returns the new mapping at the same position. */
-    fun grow(newSize: Long): MappedByteBuffer {
-        val position = buffer.position()
-        raf.setLength(newSize)
-        buffer = raf.channel.map(FileChannel.MapMode.READ_WRITE, 0, newSize)
-        buffer.position(position)
-        return buffer
-    }
+    fun mapWritten(): MappedByteBuffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, written)
 
     fun delete() {
         try {
@@ -47,14 +41,14 @@ internal class PcmFile private constructor(private val file: File, initialSize: 
         // Temp files in use by this process; any other ones were left behind by a killed process.
         private val activeFiles = mutableSetOf<File>()
 
-        fun create(cacheDir: File, initialSize: Long): PcmFile {
+        fun create(cacheDir: File): PcmFile {
             val file =
                 synchronized(activeFiles) {
                     deleteStaleFiles(cacheDir)
                     File.createTempFile(PREFIX, ".raw", cacheDir).also { activeFiles.add(it) }
                 }
             try {
-                return PcmFile(file, initialSize)
+                return PcmFile(file)
             } catch (e: IOException) {
                 synchronized(activeFiles) { activeFiles.remove(file) }
                 file.delete()

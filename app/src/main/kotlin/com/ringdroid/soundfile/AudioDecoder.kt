@@ -111,18 +111,7 @@ internal class AudioDecoder(
             chunk = ByteArray(info.size)
         }
         outputBuffer.get(chunk, 0, info.size)
-        var output = pcm.buffer
-        if (output.remaining() < info.size) {
-            // Estimate the final size from the share of input read so far.
-            val position = output.position()
-            val estimate =
-                (
-                    position * (fileSize.toDouble() / maxOf(totalSizeRead, 1L)) *
-                        GROWTH_MARGIN
-                    ).toLong()
-            output = pcm.grow(maxOf(estimate, position + info.size + MIN_GROWTH_BYTES))
-        }
-        output.put(chunk, 0, info.size)
+        pcm.append(chunk, info.size)
     }
 
     private companion object {
@@ -130,7 +119,5 @@ internal class AudioDecoder(
         const val TIMEOUT_US = 100L
         const val AAC_CONFIG_SIZE = 2
         const val EOS_TIMEOUT_MS = 2000L
-        const val GROWTH_MARGIN = 1.2
-        const val MIN_GROWTH_BYTES = 5L shl 20
     }
 }
